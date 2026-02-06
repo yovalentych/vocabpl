@@ -4,6 +4,8 @@ import { getAuthUser, getJwtSecret } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { ObjectId } from "mongodb";
 import { sendPasswordResetEmail } from "@/lib/mailer";
+export const dynamic = "force-dynamic";
+
 
 const CODE_TTL_MINUTES = 15;
 const RESEND_COOLDOWN_MS = 60 * 1000;

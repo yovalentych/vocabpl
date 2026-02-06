@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/auth";
 import { getDb } from "@/lib/db";
+export const dynamic = "force-dynamic";
+
 
 const typeMap: Record<
   string,

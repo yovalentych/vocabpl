@@ -5,6 +5,8 @@ import { getDb } from "@/lib/db";
 import { getExpiryDate, PromoDuration } from "@/lib/promo";
 import { ObjectId } from "mongodb";
 import { sendVerificationEmail } from "@/lib/mailer";
+export const dynamic = "force-dynamic";
+
 
 const CODE_TTL_MINUTES = 15;
 

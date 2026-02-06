@@ -3,6 +3,8 @@ import crypto from "crypto";
 import { getAuthUser, getJwtSecret, hashPassword } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { ObjectId } from "mongodb";
+export const dynamic = "force-dynamic";
+
 
 function hashCode(code: string) {
   return crypto.createHash("sha256").update(`${code}:${getJwtSecret()}`).digest("hex");
