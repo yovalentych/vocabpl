@@ -1,22 +1,24 @@
 import { MongoClient } from "mongodb";
 
-const uri = process.env.MONGODB_URI;
-
-if (!uri) {
-  throw new Error("Missing MONGODB_URI in environment");
-}
-
 const globalForMongo = globalThis as unknown as {
   mongoClient?: MongoClient;
 };
 
-export const mongoClient = globalForMongo.mongoClient ?? new MongoClient(uri);
+function getMongoClient() {
+  const uri = process.env.MONGODB_URI;
+  if (!uri) {
+    throw new Error("Missing MONGODB_URI in environment");
+  }
 
-if (process.env.NODE_ENV !== "production") {
-  globalForMongo.mongoClient = mongoClient;
+  if (!globalForMongo.mongoClient) {
+    globalForMongo.mongoClient = new MongoClient(uri);
+  }
+
+  return globalForMongo.mongoClient;
 }
 
 export async function connectMongo() {
-  await mongoClient.connect();
-  return mongoClient;
+  const client = getMongoClient();
+  await client.connect();
+  return client;
 }
