@@ -1,0 +1,269 @@
+{
+  "version": "1.0.0",
+  "source": "generated (Polish aspect verb pairs: niedokonany/dokonany)",
+  "items": [
+    {
+      "id": "asp_001",
+      "imp": { "pl": "robić", "uk": "робити" },
+      "perf": { "pl": "zrobić", "uk": "зробити" },
+      "pos": "verb_aspect_pair"
+    },
+    {
+      "id": "asp_002",
+      "imp": { "pl": "pisać", "uk": "писати" },
+      "perf": { "pl": "napisać", "uk": "написати" },
+      "pos": "verb_aspect_pair"
+    },
+    {
+      "id": "asp_003",
+      "imp": { "pl": "czytać", "uk": "читати" },
+      "perf": { "pl": "przeczytać", "uk": "прочитати" },
+      "pos": "verb_aspect_pair"
+    },
+    {
+      "id": "asp_004",
+      "imp": { "pl": "jeść", "uk": "їсти" },
+      "perf": { "pl": "zjeść", "uk": "з’їсти" },
+      "pos": "verb_aspect_pair"
+    },
+    {
+      "id": "asp_005",
+      "imp": { "pl": "pić", "uk": "пити" },
+      "perf": { "pl": "wypić", "uk": "випити" },
+      "pos": "verb_aspect_pair"
+    },
+
+    {
+      "id": "asp_006",
+      "imp": { "pl": "kupować", "uk": "купувати" },
+      "perf": { "pl": "kupić", "uk": "купити" },
+      "pos": "verb_aspect_pair"
+    },
+    {
+      "id": "asp_007",
+      "imp": { "pl": "sprzedawać", "uk": "продавати" },
+      "perf": { "pl": "sprzedać", "uk": "продати" },
+      "pos": "verb_aspect_pair"
+    },
+    {
+      "id": "asp_008",
+      "imp": { "pl": "płacić", "uk": "платити" },
+      "perf": { "pl": "zapłacić", "uk": "заплатити" },
+      "pos": "verb_aspect_pair"
+    },
+    {
+      "id": "asp_009",
+      "imp": { "pl": "dawać", "uk": "давати" },
+      "perf": { "pl": "dać", "uk": "дати" },
+      "pos": "verb_aspect_pair"
+    },
+    {
+      "id": "asp_010",
+      "imp": { "pl": "brać", "uk": "брати" },
+      "perf": { "pl": "wziąć", "uk": "взяти" },
+      "pos": "verb_aspect_pair"
+    },
+
+    {
+      "id": "asp_011",
+      "imp": { "pl": "otwierać", "uk": "відкривати" },
+      "perf": { "pl": "otworzyć", "uk": "відкрити" },
+      "pos": "verb_aspect_pair"
+    },
+    {
+      "id": "asp_012",
+      "imp": { "pl": "zamykać", "uk": "закривати" },
+      "perf": { "pl": "zamknąć", "uk": "закрити" },
+      "pos": "verb_aspect_pair"
+    },
+    {
+      "id": "asp_013",
+      "imp": { "pl": "włączać", "uk": "вмикати" },
+      "perf": { "pl": "włączyć", "uk": "увімкнути" },
+      "pos": "verb_aspect_pair"
+    },
+    {
+      "id": "asp_014",
+      "imp": { "pl": "wyłączać", "uk": "вимикати" },
+      "perf": { "pl": "wyłączyć", "uk": "вимкнути" },
+      "pos": "verb_aspect_pair"
+    },
+
+    {
+      "id": "asp_015",
+      "imp": { "pl": "uczyć się", "uk": "вчитися" },
+      "perf": { "pl": "nauczyć się", "uk": "вивчити / навчитися" },
+      "pos": "verb_aspect_pair"
+    },
+    {
+      "id": "asp_016",
+      "imp": { "pl": "powtarzać", "uk": "повторювати" },
+      "perf": { "pl": "powtórzyć", "uk": "повторити" },
+      "pos": "verb_aspect_pair"
+    },
+    {
+      "id": "asp_017",
+      "imp": { "pl": "tłumaczyć", "uk": "пояснювати/перекладати" },
+      "perf": { "pl": "wytłumaczyć", "uk": "пояснити" },
+      "pos": "verb_aspect_pair"
+    },
+    {
+      "id": "asp_018",
+      "imp": { "pl": "pytać", "uk": "питати" },
+      "perf": { "pl": "zapytać", "uk": "запитати" },
+      "pos": "verb_aspect_pair"
+    },
+    {
+      "id": "asp_019",
+      "imp": { "pl": "odpowiadać", "uk": "відповідати" },
+      "perf": { "pl": "odpowiedzieć", "uk": "відповісти" },
+      "pos": "verb_aspect_pair"
+    },
+
+    {
+      "id": "asp_020",
+      "imp": { "pl": "spotykać (się)", "uk": "зустрічати(ся)" },
+      "perf": { "pl": "spotkać (się)", "uk": "зустріти(ся)" },
+      "pos": "verb_aspect_pair"
+    },
+    {
+      "id": "asp_021",
+      "imp": { "pl": "dzwonić", "uk": "дзвонити" },
+      "perf": { "pl": "zadzwonić", "uk": "зателефонувати" },
+      "pos": "verb_aspect_pair"
+    },
+    {
+      "id": "asp_022",
+      "imp": { "pl": "mówić", "uk": "говорити" },
+      "perf": { "pl": "powiedzieć", "uk": "сказати" },
+      "pos": "verb_aspect_pair"
+    },
+
+    {
+      "id": "asp_023",
+      "imp": { "pl": "oglądać", "uk": "дивитися" },
+      "perf": { "pl": "obejrzeć", "uk": "подивитися" },
+      "pos": "verb_aspect_pair"
+    },
+    {
+      "id": "asp_024",
+      "imp": { "pl": "słuchać", "uk": "слухати" },
+      "perf": { "pl": "posłuchać", "uk": "послухати" },
+      "pos": "verb_aspect_pair"
+    },
+
+    {
+      "id": "asp_025",
+      "imp": { "pl": "szukać", "uk": "шукати" },
+      "perf": { "pl": "poszukać", "uk": "пошукати" },
+      "pos": "verb_aspect_pair"
+    },
+    {
+      "id": "asp_026",
+      "imp": { "pl": "znajdować", "uk": "знаходити" },
+      "perf": { "pl": "znaleźć", "uk": "знайти" },
+      "pos": "verb_aspect_pair"
+    },
+    {
+      "id": "asp_027",
+      "imp": { "pl": "czekać", "uk": "чекати" },
+      "perf": { "pl": "poczekać", "uk": "почекати" },
+      "pos": "verb_aspect_pair"
+    },
+
+    {
+      "id": "asp_028",
+      "imp": { "pl": "zaczynać", "uk": "починати" },
+      "perf": { "pl": "zacząć", "uk": "почати" },
+      "pos": "verb_aspect_pair"
+    },
+    {
+      "id": "asp_029",
+      "imp": { "pl": "kończyć", "uk": "закінчувати" },
+      "perf": { "pl": "skończyć", "uk": "закінчити" },
+      "pos": "verb_aspect_pair"
+    },
+
+    {
+      "id": "asp_030",
+      "imp": { "pl": "gotować", "uk": "готувати" },
+      "perf": { "pl": "ugotować", "uk": "зварити/приготувати" },
+      "pos": "verb_aspect_pair"
+    },
+    {
+      "id": "asp_031",
+      "imp": { "pl": "sprzątać", "uk": "прибирати" },
+      "perf": { "pl": "posprzątać", "uk": "прибрати (до кінця)" },
+      "pos": "verb_aspect_pair"
+    },
+    {
+      "id": "asp_032",
+      "imp": { "pl": "myć", "uk": "мити" },
+      "perf": { "pl": "umyć", "uk": "помити" },
+      "pos": "verb_aspect_pair"
+    },
+    {
+      "id": "asp_033",
+      "imp": { "pl": "naprawiać", "uk": "ремонтувати" },
+      "perf": { "pl": "naprawić", "uk": "відремонтувати" },
+      "pos": "verb_aspect_pair"
+    },
+
+    {
+      "id": "asp_034",
+      "imp": { "pl": "przygotowywać", "uk": "готувати/підготовлювати" },
+      "perf": { "pl": "przygotować", "uk": "підготувати" },
+      "pos": "verb_aspect_pair"
+    },
+    {
+      "id": "asp_035",
+      "imp": { "pl": "planować", "uk": "планувати" },
+      "perf": { "pl": "zaplanować", "uk": "запланувати" },
+      "pos": "verb_aspect_pair"
+    },
+    {
+      "id": "asp_036",
+      "imp": { "pl": "decydować", "uk": "вирішувати" },
+      "perf": { "pl": "zdecydować", "uk": "вирішити" },
+      "pos": "verb_aspect_pair"
+    },
+
+    {
+      "id": "asp_037",
+      "imp": { "pl": "pomagać", "uk": "допомагати" },
+      "perf": { "pl": "pomóc", "uk": "допомогти" },
+      "pos": "verb_aspect_pair"
+    },
+    {
+      "id": "asp_038",
+      "imp": { "pl": "prosić", "uk": "просити" },
+      "perf": { "pl": "poprosić", "uk": "попросити" },
+      "pos": "verb_aspect_pair"
+    },
+    {
+      "id": "asp_039",
+      "imp": { "pl": "pytać (się)", "uk": "питати(ся)" },
+      "perf": { "pl": "spytać (się)", "uk": "спитати(ся)" },
+      "pos": "verb_aspect_pair"
+    },
+
+    {
+      "id": "asp_040",
+      "imp": { "pl": "przychodzić", "uk": "приходити" },
+      "perf": { "pl": "przyjść", "uk": "прийти" },
+      "pos": "verb_aspect_pair"
+    },
+    {
+      "id": "asp_041",
+      "imp": { "pl": "wychodzić", "uk": "виходити" },
+      "perf": { "pl": "wyjść", "uk": "вийти" },
+      "pos": "verb_aspect_pair"
+    },
+    {
+      "id": "asp_042",
+      "imp": { "pl": "wracać", "uk": "повертатися" },
+      "perf": { "pl": "wrócić", "uk": "повернутися" },
+      "pos": "verb_aspect_pair"
+    }
+  ]
+}

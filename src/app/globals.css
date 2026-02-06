@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-body), serif;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: var(--font-display), serif;
+  letter-spacing: 0.01em;
+}
+
+:where(.bg-ink) {
+  background-image: linear-gradient(135deg, #2b2118 0%, #3a2a1f 55%, #4a3325 100%);
+  background-color: #2b2118;
+}
+
+:where(.bg-terracotta) {
+  background-image: linear-gradient(135deg, #d46a4c 0%, #e07c5f 60%, #f09472 100%);
+  background-color: #d46a4c;
+}
+
+:where(.bg-ink, .bg-terracotta) {
+  box-shadow: 0 10px 18px rgba(43, 33, 24, 0.18);
+}
+
+.fade-in {
+  animation: fade-in 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.pattern-grid {
+  background-image: linear-gradient(rgba(120, 84, 63, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(120, 84, 63, 0.12) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.notes-editor {
+  height: 100%;
+  overflow-y: auto;
+  max-height: 100%;
+}
+
+.notes-editor .bn-container {
+  height: 100%;
+  min-height: 100%;
+  overflow: visible;
+}

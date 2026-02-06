@@ -1,0 +1,1206 @@
+{
+  "version": "1.0.0",
+  "source": "Słowniczek Czasowniki.docx",
+  "items": [
+    {
+      "id": "verb_001",
+      "pl": "bać się",
+      "uk": "боятися",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_002",
+      "pl": "biegać",
+      "uk": "бігати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_003",
+      "pl": "boleć",
+      "uk": "хворіти",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_004",
+      "pl": "brać",
+      "uk": "брати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_005",
+      "pl": "być",
+      "uk": "бути",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_006",
+      "pl": "całować",
+      "uk": "цілувати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_007",
+      "pl": "chcieć",
+      "uk": "хотіти",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_008",
+      "pl": "chodzić",
+      "uk": "ходити",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_009",
+      "pl": "chronić",
+      "uk": "захищати, охороняти",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_010",
+      "pl": "cieszyć się",
+      "uk": "радіти",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_011",
+      "pl": "ćwiczyć",
+      "uk": "тренуватися",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_012",
+      "pl": "czekać",
+      "uk": "чекати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_013",
+      "pl": "czuć",
+      "uk": "відчувати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_014",
+      "pl": "czytać",
+      "uk": "читати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_015",
+      "pl": "dać",
+      "uk": "дати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_016",
+      "pl": "dokonać",
+      "uk": "доробити",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_017",
+      "pl": "dostać",
+      "uk": "отримати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_018",
+      "pl": "dotrzeć",
+      "uk": "добратися",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_019",
+      "pl": "dowiedzieć się",
+      "uk": "довідатися",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_020",
+      "pl": "drażnić",
+      "uk": "дратувати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_021",
+      "pl": "działać",
+      "uk": "діяти",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_022",
+      "pl": "dziękować",
+      "uk": "дякувати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_023",
+      "pl": "dzwonić",
+      "uk": "дзвонити",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_024",
+      "pl": "farbować",
+      "uk": "фарбувати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_025",
+      "pl": "gotować",
+      "uk": "готувати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_026",
+      "pl": "grać",
+      "uk": "грати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_027",
+      "pl": "interesować się",
+      "uk": "цікавитися",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_028",
+      "pl": "irytować",
+      "uk": "дратувати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_029",
+      "pl": "jechać",
+      "uk": "їхати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_030",
+      "pl": "jeść",
+      "uk": "їсти",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_031",
+      "pl": "jeździć",
+      "uk": "їздити",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_032",
+      "pl": "kierować",
+      "uk": "керувати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_033",
+      "pl": "kochać",
+      "uk": "кохати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_034",
+      "pl": "kończyć",
+      "uk": "закінчити",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_035",
+      "pl": "korzystać",
+      "uk": "користуватися",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_036",
+      "pl": "kosztować",
+      "uk": "коштувати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_037",
+      "pl": "kroić",
+      "uk": "різати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_038",
+      "pl": "kupić",
+      "uk": "купити",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_039",
+      "pl": "kupować",
+      "uk": "купувати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_040",
+      "pl": "łapać",
+      "uk": "ловити",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_041",
+      "pl": "leżeć",
+      "uk": "лежати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_042",
+      "pl": "liczyć",
+      "uk": "рахувати , розраховувати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_043",
+      "pl": "lubić",
+      "uk": "любити",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_044",
+      "pl": "malować",
+      "uk": "малювати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_045",
+      "pl": "martwić się",
+      "uk": "хвилюватися",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_046",
+      "pl": "marzyć",
+      "uk": "мріяти",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_047",
+      "pl": "mieć",
+      "uk": "мати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_048",
+      "pl": "mieszkać",
+      "uk": "мешкати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_049",
+      "pl": "móc",
+      "uk": "могти",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_050",
+      "pl": "mówić",
+      "uk": "говорити",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_051",
+      "pl": "musieć",
+      "uk": "мусіти, бути змушеним",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_052",
+      "pl": "myśleć",
+      "uk": "думати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_053",
+      "pl": "napisać",
+      "uk": "написати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_054",
+      "pl": "nauczyć",
+      "uk": "навчити",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_055",
+      "pl": "nazywać się",
+      "uk": "називатися",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_056",
+      "pl": "nieść",
+      "uk": "нести",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_057",
+      "pl": "nosić",
+      "uk": "носити",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_058",
+      "pl": "nudzić się",
+      "uk": "нудьгувати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_059",
+      "pl": "oddać",
+      "uk": "віддати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_060",
+      "pl": "oddzwonić",
+      "uk": "передзвонити",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_061",
+      "pl": "odebrać",
+      "uk": "забрати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_062",
+      "pl": "odejść",
+      "uk": "відійти",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_063",
+      "pl": "odnaleźć",
+      "uk": "віднайти",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_064",
+      "pl": "odpoczywać",
+      "uk": "відпочивати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_065",
+      "pl": "odpowiedzieć",
+      "uk": "відповісти",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_066",
+      "pl": "okazać",
+      "uk": "надати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_067",
+      "pl": "opowiedzieć",
+      "uk": "розказувати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_068",
+      "pl": "organizować",
+      "uk": "організувати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_069",
+      "pl": "otworzyć",
+      "uk": "відкрити",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_070",
+      "pl": "ożenić się",
+      "uk": "оженитися",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_071",
+      "pl": "palić",
+      "uk": "курити",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_072",
+      "pl": "pamiętać",
+      "uk": "пам’ятати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_073",
+      "pl": "patrzeć",
+      "uk": "дивитися",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_074",
+      "pl": "pić",
+      "uk": "пити",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_075",
+      "pl": "pisać",
+      "uk": "писати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_076",
+      "pl": "płacić",
+      "uk": "платити",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_077",
+      "pl": "planować",
+      "uk": "планувати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_078",
+      "pl": "pływać",
+      "uk": "плавати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_079",
+      "pl": "pobrać się",
+      "uk": "одружитися",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_080",
+      "pl": "podnieść",
+      "uk": "піднести",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_081",
+      "pl": "podobać się",
+      "uk": "подобатися",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_082",
+      "pl": "podróżować",
+      "uk": "подорожувати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_083",
+      "pl": "pójść",
+      "uk": "піти",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_084",
+      "pl": "pokazać",
+      "uk": "показати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_085",
+      "pl": "polecać",
+      "uk": "рекомендувати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_086",
+      "pl": "położyć",
+      "uk": "покласти",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_087",
+      "pl": "pomóc",
+      "uk": "допомогти",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_088",
+      "pl": "pomyśleć",
+      "uk": "подумати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_089",
+      "pl": "poprosić",
+      "uk": "попросити",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_090",
+      "pl": "potrzebować",
+      "uk": "потребувати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_091",
+      "pl": "powiedzieć",
+      "uk": "сказати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_092",
+      "pl": "powstrzymać",
+      "uk": "притримати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_093",
+      "pl": "powtarzać",
+      "uk": "повторювати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_094",
+      "pl": "powtórzyć",
+      "uk": "повторити",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_095",
+      "pl": "poznać",
+      "uk": "пізнати , дізнатися",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_096",
+      "pl": "pozostać",
+      "uk": "залишитися",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_097",
+      "pl": "pozwolić",
+      "uk": "дозволити",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_098",
+      "pl": "pracować",
+      "uk": "працювати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_099",
+      "pl": "proponować",
+      "uk": "пропонувати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_100",
+      "pl": "prosić",
+      "uk": "просити",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_101",
+      "pl": "przeczytać",
+      "uk": "прочитати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_102",
+      "pl": "przedstawić się",
+      "uk": "представитися",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_103",
+      "pl": "przejść",
+      "uk": "прийти",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_104",
+      "pl": "przekonać",
+      "uk": "переконати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_105",
+      "pl": "przepraszać",
+      "uk": "вибачатися",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_106",
+      "pl": "przyjąć",
+      "uk": "прийняти",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_107",
+      "pl": "przyjmować",
+      "uk": "приймати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_108",
+      "pl": "przyjść",
+      "uk": "прийти",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_109",
+      "pl": "przymierzyć",
+      "uk": "приміряти",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_110",
+      "pl": "przypomnieć",
+      "uk": "пригадати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_111",
+      "pl": "pytać",
+      "uk": "питати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_112",
+      "pl": "rezerwować",
+      "uk": "резервувати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_113",
+      "pl": "robić",
+      "uk": "робити",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_114",
+      "pl": "rozbić",
+      "uk": "розбити",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_115",
+      "pl": "rozmawiać",
+      "uk": "розмовляти",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_116",
+      "pl": "rozumieć",
+      "uk": "розуміти",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_117",
+      "pl": "rzucić",
+      "uk": "кинути",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_118",
+      "pl": "segregować",
+      "uk": "сортувати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_119",
+      "pl": "siedzieć",
+      "uk": "сидіти",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_120",
+      "pl": "skończyć",
+      "uk": "закінчити",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_121",
+      "pl": "słuchać",
+      "uk": "слухати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_122",
+      "pl": "słychać",
+      "uk": "чути, чувати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_123",
+      "pl": "słyszeć",
+      "uk": "чути",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_124",
+      "pl": "spać",
+      "uk": "спати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_125",
+      "pl": "śpiewać",
+      "uk": "співати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_126",
+      "pl": "spodziewać się",
+      "uk": "очікувати, сподіватися",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_127",
+      "pl": "spojrzeć",
+      "uk": "поглянути",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_128",
+      "pl": "spotkać",
+      "uk": "зустріти",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_129",
+      "pl": "spotykać się",
+      "uk": "зустрітися",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_130",
+      "pl": "spóźnić się",
+      "uk": "спізнитися",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_131",
+      "pl": "sprawdzić",
+      "uk": "перевірити",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_132",
+      "pl": "spróbować",
+      "uk": "спробувати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_133",
+      "pl": "sprzątać",
+      "uk": "прибирати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_134",
+      "pl": "sprzedawać",
+      "uk": "продавати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_135",
+      "pl": "stać",
+      "uk": "стати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_136",
+      "pl": "stosować",
+      "uk": "застосовувати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_137",
+      "pl": "studiować",
+      "uk": "вчитися(в ВНЗ)",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_138",
+      "pl": "szukać",
+      "uk": "шукати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_139",
+      "pl": "tańczyć",
+      "uk": "танцювати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_140",
+      "pl": "telefonować",
+      "uk": "телефонувати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_141",
+      "pl": "tłumaczyć",
+      "uk": "перекладати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_142",
+      "pl": "tyć",
+      "uk": "набиративагу, гладшати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_143",
+      "pl": "uciekać",
+      "uk": "втікати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_144",
+      "pl": "uczyć się",
+      "uk": "вчитися",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_145",
+      "pl": "uczynić",
+      "uk": "зробити, виконати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_146",
+      "pl": "uderzyć się",
+      "uk": "вдаритися",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_147",
+      "pl": "ukraść",
+      "uk": "вкрасти",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_148",
+      "pl": "ukryć",
+      "uk": "сховати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_149",
+      "pl": "umawiać się",
+      "uk": "домовлятися",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_150",
+      "pl": "umrzeć",
+      "uk": "померти",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_151",
+      "pl": "upaść",
+      "uk": "впасти",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_152",
+      "pl": "urodzić się",
+      "uk": "народитися",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_153",
+      "pl": "usłyszeć",
+      "uk": "почути",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_154",
+      "pl": "uśmiechać się",
+      "uk": "посміхатися",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_155",
+      "pl": "uwierzyć",
+      "uk": "повірити",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_156",
+      "pl": "używać",
+      "uk": "вживати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_157",
+      "pl": "walczyć",
+      "uk": "битися",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_158",
+      "pl": "wejść",
+      "uk": "ввійти",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_159",
+      "pl": "widać",
+      "uk": "видно, можна побачити",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_160",
+      "pl": "widzieć",
+      "uk": "бачити",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_161",
+      "pl": "wiedzieć",
+      "uk": "знати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_162",
+      "pl": "wierzyć",
+      "uk": "вірити",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_163",
+      "pl": "wisieć",
+      "uk": "висіти",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_164",
+      "pl": "woleć",
+      "uk": "хотіти, бажати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_165",
+      "pl": "wracać",
+      "uk": "повертатися",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_166",
+      "pl": "wrócić",
+      "uk": "повернутися",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_167",
+      "pl": "wybierać",
+      "uk": "вибирати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_168",
+      "pl": "wyglądać",
+      "uk": "виглядати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_169",
+      "pl": "wyjść",
+      "uk": "вийти",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_170",
+      "pl": "wynająć",
+      "uk": "винайняти",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_171",
+      "pl": "wyobrazić",
+      "uk": "уявити",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_172",
+      "pl": "wysłać",
+      "uk": "надіслати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_173",
+      "pl": "wziąć",
+      "uk": "взяти",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_174",
+      "pl": "zachować",
+      "uk": "зберегти, затримати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_175",
+      "pl": "zacząć",
+      "uk": "почати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_176",
+      "pl": "zależeć",
+      "uk": "залежати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_177",
+      "pl": "zapomnieć",
+      "uk": "забути",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_178",
+      "pl": "zapraszać",
+      "uk": "запрошувати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_179",
+      "pl": "zapytać",
+      "uk": "запитати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_180",
+      "pl": "zarabiać",
+      "uk": "заробляти",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_181",
+      "pl": "zarejestrować",
+      "uk": "зареєструвати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_182",
+      "pl": "żartować",
+      "uk": "жартувати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_183",
+      "pl": "zaspać",
+      "uk": "проспати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_184",
+      "pl": "zastanawiać się",
+      "uk": "роздумувати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_185",
+      "pl": "zatrzymać",
+      "uk": "затримати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_186",
+      "pl": "zbudować",
+      "uk": "збудувати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_187",
+      "pl": "zdążyć",
+      "uk": "встигнути",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_188",
+      "pl": "zdecydować",
+      "uk": "вирішити",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_189",
+      "pl": "zdobyć",
+      "uk": "отримати, здобути",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_190",
+      "pl": "zepsuć się",
+      "uk": "зіпсуватися",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_191",
+      "pl": "zgubić",
+      "uk": "загубити",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_192",
+      "pl": "złamać",
+      "uk": "зламати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_193",
+      "pl": "zmienić",
+      "uk": "змінити",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_194",
+      "pl": "znać",
+      "uk": "знати",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_195",
+      "pl": "znaleźć",
+      "uk": "знайти",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_196",
+      "pl": "zobaczyć",
+      "uk": "побачити",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_197",
+      "pl": "zostać",
+      "uk": "залишитися",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_198",
+      "pl": "zostawić",
+      "uk": "залишити",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_199",
+      "pl": "zrobić",
+      "uk": "зробити",
+      "pos": "verb"
+    },
+    {
+      "id": "verb_200",
+      "pl": "zrozumieć",
+      "uk": "зрозуміти",
+      "pos": "verb"
+    }
+  ]
+}

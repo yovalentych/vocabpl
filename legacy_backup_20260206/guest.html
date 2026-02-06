@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Polish Vocab Trainer — Guest</title>
+  <link rel="stylesheet" href="./guest.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">PL</div>
+      <div>
+        <div class="title" data-i18n="title">Polish Vocab Trainer</div>
+        <div class="subtitle" data-i18n="subtitle">Вчимо польську швидко: слова, тести, прогрес</div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <div class="lang">
+        <button class="chip" id="langUk" aria-pressed="true">UK</button>
+        <button class="chip" id="langPl" aria-pressed="false">PL</button>
+      </div>
+
+      <button class="btn ghost" id="loginBtn" data-i18n="login">Увійти</button>
+      <button class="btn" id="signupBtn" data-i18n="signup">Створити акаунт</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="heroText">
+        <div class="pill" data-i18n="pill">Гість • демо-доступ</div>
+        <h1 data-i18n="h1">Тренуй слова та проходь тести — збережемо твій прогрес після реєстрації</h1>
+        <p class="lead" data-i18n="lead">
+          Дієслова + прислівники, флешкарти, квіз, список і тест з автоперевіркою та статистикою.
+        </p>
+
+        <div class="heroCtas">
+          <button class="btn" id="ctaSignup" data-i18n="ctaSignup">Зареєструватися (безкоштовно)</button>
+          <button class="btn ghost" id="ctaDemo" data-i18n="ctaDemo">Спробувати демо</button>
+        </div>
+
+        <div class="note" data-i18n="note">
+          У гостьовому режимі прогрес зберігається лише на цьому пристрої. Для синхронізації — акаунт.
+        </div>
+      </div>
+
+      <div class="heroCard">
+        <div class="cardHeader">
+          <div class="tag" data-i18n="demoTag">Демо</div>
+          <div class="muted" data-i18n="demoHint">Натисни, щоб перевернути</div>
+        </div>
+
+        <div class="demoCard" id="demoCard" role="button" tabindex="0" aria-label="Demo flashcard (click to flip)">
+          <div class="demoInner" id="demoInner">
+            <div class="demoFace demoFront">
+              <div class="pos">verb</div>
+              <div class="big" id="demoFrontText">być</div>
+              <div class="small" data-i18n="flipHint">Click / Space = flip</div>
+            </div>
+            <div class="demoFace demoBack">
+              <div class="pos">uk</div>
+              <div class="big" id="demoBackText">бути</div>
+              <div class="small" data-i18n="flipBackHint">Реєстрація = прогрес + статистика</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cardFooter">
+          <button class="chip" id="demoShuffle" data-i18n="shuffle">Shuffle</button>
+          <div class="muted" id="demoCount">1 / 6</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid">
+      <article class="panel">
+        <div class="icon">🃏</div>
+        <h3 data-i18n="f1t">Флешкарти</h3>
+        <p data-i18n="f1d">Клікай, перегортай, позначай “знаю”, перемішуй набір.</p>
+      </article>
+
+      <article class="panel">
+        <div class="icon">✅</div>
+        <h3 data-i18n="f2t">Квіз</h3>
+        <p data-i18n="f2d">4 варіанти відповіді, швидкий тренажер на закріплення.</p>
+      </article>
+
+      <article class="panel">
+        <div class="icon">📋</div>
+        <h3 data-i18n="f3t">Список + пошук</h3>
+        <p data-i18n="f3d">Фільтруй за фразою або перекладом. Помічай вивчене.</p>
+      </article>
+
+      <article class="panel">
+        <div class="icon">📈</div>
+        <h3 data-i18n="f4t">Тест + статистика</h3>
+        <p data-i18n="f4d">Автоперевірка, відсоток, історія спроб, список помилок.</p>
+      </article>
+    </section>
+
+    <section class="ctaBlock">
+      <div>
+        <h2 data-i18n="ctaTitle">Хочеш зберігати прогрес і бачити статистику на будь-якому пристрої?</h2>
+        <p class="muted" data-i18n="ctaDesc">
+          Створи акаунт — і твої “знаю”, результати тестів та історія будуть синхронізовані.
+        </p>
+      </div>
+      <div class="ctaBtns">
+        <button class="btn" id="ctaSignup2" data-i18n="signup">Створити акаунт</button>
+        <button class="btn ghost" id="loginBtn2" data-i18n="login">Увійти</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- simple modal -->
+  <div class="modal hidden" id="modal">
+    <div class="modalCard">
+      <div class="modalTop">
+        <div class="modalTitle" id="modalTitle">—</div>
+        <button class="x" id="modalClose" aria-label="Close">✕</button>
+      </div>
+      <div class="modalBody" id="modalBody">—</div>
+      <div class="modalActions">
+        <button class="btn ghost" id="modalSecondary">OK</button>
+        <button class="btn" id="modalPrimary">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="muted">© Polish Vocab Trainer • Guest page</div>
+    <div class="muted">Tip: відкривай через локальний сервер (http.server)</div>
+  </footer>
+
+  <script src="./guest.js"></script>
+</body>
+</html>

@@ -1,0 +1,69 @@
+import { NextResponse } from "next/server";
+import crypto from "crypto";
+import { getJwtSecret, getUserByEmail } from "@/lib/auth";
+import { getDb } from "@/lib/db";
+import { sendPasswordResetEmail } from "@/lib/mailer";
+
+const CODE_TTL_MINUTES = 15;
+const RESEND_COOLDOWN_MS = 60 * 1000;
+
+function isValidEmail(email: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function generateCode() {
+  return String(Math.floor(100000 + Math.random() * 900000));
+}
+
+function hashCode(code: string) {
+  return crypto.createHash("sha256").update(`${code}:${getJwtSecret()}`).digest("hex");
+}
+
+export async function POST(request: Request) {
+  const { email } = await request.json();
+  const normalizedEmail = String(email || "").trim().toLowerCase();
+  if (!normalizedEmail || !isValidEmail(normalizedEmail)) {
+    return NextResponse.json({ error: "Invalid email" }, { status: 400 });
+  }
+
+  const user = await getUserByEmail(normalizedEmail);
+  if (!user) {
+    return NextResponse.json({ ok: true });
+  }
+
+  if (user.emailVerified === false) {
+    return NextResponse.json({ error: "Email not verified" }, { status: 403 });
+  }
+
+  const db = await getDb();
+  const existing = await db.collection("password_resets").findOne({ userId: user._id });
+  if (existing?.sentAt && new Date(existing.sentAt).getTime() > Date.now() - RESEND_COOLDOWN_MS) {
+    return NextResponse.json({ error: "Please wait before resending" }, { status: 429 });
+  }
+
+  const code = generateCode();
+  const codeHash = hashCode(code);
+  const expiresAt = new Date(Date.now() + CODE_TTL_MINUTES * 60 * 1000);
+
+  await db.collection("password_resets").updateOne(
+    { userId: user._id },
+    {
+      $set: {
+        userId: user._id,
+        codeHash,
+        expiresAt,
+        sentAt: new Date(),
+        attempts: 0
+      }
+    },
+    { upsert: true }
+  );
+
+  try {
+    await sendPasswordResetEmail(normalizedEmail, code);
+  } catch (error) {
+    return NextResponse.json({ error: "Failed to send email" }, { status: 500 });
+  }
+
+  return NextResponse.json({ ok: true });
+}

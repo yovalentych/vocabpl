@@ -1,0 +1,242 @@
+{
+  "version": "1.0.0",
+  "source": "generated (Polish abbreviations & acronyms: chat + everyday + office)",
+  "items": [
+    {
+      "id": "abbr_001",
+      "pl": "np.",
+      "uk": "напр. (na przykład) — наприклад",
+      "pos": "other"
+    },
+    {
+      "id": "abbr_002",
+      "pl": "itd.",
+      "uk": "і т.д. (i tak dalej) — і так далі",
+      "pos": "other"
+    },
+    {
+      "id": "abbr_003",
+      "pl": "itp.",
+      "uk": "і т.п. (i tym podobne) — і т.п.",
+      "pos": "other"
+    },
+    {
+      "id": "abbr_004",
+      "pl": "m.in.",
+      "uk": "зокрема / серед іншого (między innymi)",
+      "pos": "other"
+    },
+    {
+      "id": "abbr_005",
+      "pl": "tzn.",
+      "uk": "тобто (to znaczy)",
+      "pos": "other"
+    },
+    {
+      "id": "abbr_006",
+      "pl": "tj.",
+      "uk": "тобто / а саме (to jest)",
+      "pos": "other"
+    },
+    {
+      "id": "abbr_007",
+      "pl": "czyt.",
+      "uk": "читай / тобто (czytaj)",
+      "pos": "other"
+    },
+    {
+      "id": "abbr_008",
+      "pl": "por.",
+      "uk": "порівняй (porównaj)",
+      "pos": "other"
+    },
+    { "id": "abbr_009", "pl": "zob.", "uk": "див. (zobacz)", "pos": "other" },
+
+    { "id": "abbr_010", "pl": "dr", "uk": "доктор", "pos": "other" },
+    { "id": "abbr_011", "pl": "mgr", "uk": "магістр", "pos": "other" },
+    {
+      "id": "abbr_012",
+      "pl": "lic.",
+      "uk": "ліценціат (бакалаврський рівень у PL)",
+      "pos": "other"
+    },
+    { "id": "abbr_013", "pl": "prof.", "uk": "професор", "pos": "other" },
+
+    { "id": "abbr_014", "pl": "ul.", "uk": "вул. (ulica)", "pos": "other" },
+    { "id": "abbr_015", "pl": "al.", "uk": "алея (aleja)", "pos": "other" },
+    { "id": "abbr_016", "pl": "pl.", "uk": "площа (plac)", "pos": "other" },
+    { "id": "abbr_017", "pl": "nr", "uk": "№ (numer) — номер", "pos": "other" },
+    {
+      "id": "abbr_018",
+      "pl": "m.",
+      "uk": "м. (miasto / miejscowość) — місто/нас. пункт",
+      "pos": "other"
+    },
+    {
+      "id": "abbr_019",
+      "pl": "woj.",
+      "uk": "воєв. (województwo) — воєводство",
+      "pos": "other"
+    },
+
+    {
+      "id": "abbr_020",
+      "pl": "godz.",
+      "uk": "год. (godzina) — година",
+      "pos": "other"
+    },
+    {
+      "id": "abbr_021",
+      "pl": "min",
+      "uk": "хв (minuta) — хвилина",
+      "pos": "other"
+    },
+    {
+      "id": "abbr_022",
+      "pl": "sek.",
+      "uk": "сек. (sekunda) — секунда",
+      "pos": "other"
+    },
+    {
+      "id": "abbr_023",
+      "pl": "ok.",
+      "uk": "прибл. (około) — приблизно",
+      "pos": "other"
+    },
+    { "id": "abbr_024", "pl": "r.", "uk": "р. (rok) — рік", "pos": "other" },
+    {
+      "id": "abbr_025",
+      "pl": "br.",
+      "uk": "цього року (bieżącego roku)",
+      "pos": "other"
+    },
+    {
+      "id": "abbr_026",
+      "pl": "ub.r.",
+      "uk": "минулого року (ubiegłego roku)",
+      "pos": "other"
+    },
+
+    {
+      "id": "abbr_027",
+      "pl": "p.",
+      "uk": "п. (pan / pani) — пан/пані (контекстно)",
+      "pos": "other"
+    },
+    {
+      "id": "abbr_028",
+      "pl": "pp.",
+      "uk": "панові/пані (państwo) або множина (залежно від контексту)",
+      "pos": "other"
+    },
+    { "id": "abbr_029", "pl": "tel.", "uk": "тел. (telefon)", "pos": "other" },
+    { "id": "abbr_030", "pl": "e-mail", "uk": "ел. пошта", "pos": "other" },
+
+    {
+      "id": "abbr_031",
+      "pl": "PESEL",
+      "uk": "польський ідентифікаційний номер",
+      "pos": "other"
+    },
+    {
+      "id": "abbr_032",
+      "pl": "NIP",
+      "uk": "податковий номер (для бізнесу)",
+      "pos": "other"
+    },
+    {
+      "id": "abbr_033",
+      "pl": "REGON",
+      "uk": "реєстраційний номер підприємства/організації",
+      "pos": "other"
+    },
+    { "id": "abbr_034", "pl": "VAT", "uk": "ПДВ", "pos": "other" },
+    {
+      "id": "abbr_035",
+      "pl": "ZUS",
+      "uk": "соцстрах/пенсійний фонд (Zakład Ubezpieczeń Społecznych)",
+      "pos": "other"
+    },
+    {
+      "id": "abbr_036",
+      "pl": "US",
+      "uk": "податкова (Urząd Skarbowy)",
+      "pos": "other"
+    },
+    {
+      "id": "abbr_037",
+      "pl": "NFZ",
+      "uk": "нац. фонд здоров'я (Narodowy Fundusz Zdrowia)",
+      "pos": "other"
+    },
+
+    {
+      "id": "abbr_038",
+      "pl": "PKP",
+      "uk": "польські залізниці (Polskie Koleje Państwowe)",
+      "pos": "other"
+    },
+    {
+      "id": "abbr_039",
+      "pl": "MPK",
+      "uk": "міський транспорт (Miejskie Przedsiębiorstwo Komunikacyjne)",
+      "pos": "other"
+    },
+
+    { "id": "abbr_040", "pl": "asap", "uk": "якнайшвидше", "pos": "other" },
+    { "id": "abbr_041", "pl": "FYI", "uk": "до відома", "pos": "other" },
+    { "id": "abbr_042", "pl": "IMO", "uk": "на мою думку", "pos": "other" },
+    {
+      "id": "abbr_043",
+      "pl": "IMHO",
+      "uk": "на мою скромну думку",
+      "pos": "other"
+    },
+    { "id": "abbr_044", "pl": "BTW", "uk": "до речі", "pos": "other" },
+    { "id": "abbr_045", "pl": "OT", "uk": "не по темі", "pos": "other" },
+
+    { "id": "abbr_046", "pl": "OK", "uk": "ок", "pos": "other" },
+    {
+      "id": "abbr_047",
+      "pl": "pzdr",
+      "uk": "привіти / з повагою (pozdro / pozdrawiam)",
+      "pos": "other"
+    },
+    {
+      "id": "abbr_048",
+      "pl": "pozdr.",
+      "uk": "з повагою / привіти (pozdrawiam)",
+      "pos": "other"
+    },
+    { "id": "abbr_049", "pl": "thx", "uk": "дякую", "pos": "other" },
+    { "id": "abbr_050", "pl": "pls", "uk": "будь ласка", "pos": "other" },
+
+    {
+      "id": "abbr_051",
+      "pl": "w/",
+      "uk": "з (with) — інколи в тех/чатах",
+      "pos": "other"
+    },
+    {
+      "id": "abbr_052",
+      "pl": "bez",
+      "uk": "без (часто скорочують у чаті без крапок)",
+      "pos": "other"
+    },
+
+    { "id": "abbr_053", "pl": "lol", "uk": "лол / смішно", "pos": "other" },
+    { "id": "abbr_054", "pl": "xd", "uk": "XD / дуже смішно", "pos": "other" },
+    {
+      "id": "abbr_055",
+      "pl": ":)",
+      "uk": "смайлик — дружній тон",
+      "pos": "other"
+    },
+
+    { "id": "abbr_056", "pl": "SMS", "uk": "смс", "pos": "other" },
+    { "id": "abbr_057", "pl": "MMS", "uk": "ммс", "pos": "other" },
+    { "id": "abbr_058", "pl": "Wi-Fi", "uk": "вайфай", "pos": "other" },
+    { "id": "abbr_059", "pl": "PDF", "uk": "пдф-файл", "pos": "other" },
+    { "id": "abbr_060", "pl": "CV", "uk": "резюме", "pos": "other" }
+  ]
+}

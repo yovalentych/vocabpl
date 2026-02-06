@@ -1,0 +1,2079 @@
+{
+  "version": "1.0.0",
+  "title": "Test plasujący 1",
+  "source": "Test plasujący 1.docx",
+  "items": [
+    {
+      "id": "t1_q001",
+      "number": 1,
+      "type": "mcq",
+      "prompt": "Jak się Pan nazywa?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Pan nazywa się Kowalski."
+        },
+        {
+          "id": "b",
+          "text": "Nazywa się Kowalski."
+        },
+        {
+          "id": "c",
+          "text": "Nazywam się Kowalski."
+        }
+      ],
+      "answer": "c",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q002",
+      "number": 2,
+      "type": "mcq",
+      "prompt": "To jest Anna.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Co to jest?"
+        },
+        {
+          "id": "b",
+          "text": "Kto to jest?"
+        },
+        {
+          "id": "c",
+          "text": "Kto ona jest?"
+        }
+      ],
+      "answer": "b",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q003",
+      "number": 3,
+      "type": "mcq",
+      "prompt": "Piotr i Andrzej ............... z Polski.",
+      "options": [
+        {
+          "id": "a",
+          "text": "są"
+        },
+        {
+          "id": "b",
+          "text": "jest"
+        },
+        {
+          "id": "c",
+          "text": "jesteśmy"
+        }
+      ],
+      "answer": "a",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q004",
+      "number": 4,
+      "type": "mcq",
+      "prompt": "Mój ojciec jest ..................... .",
+      "options": [
+        {
+          "id": "a",
+          "text": "dobry dentysta"
+        },
+        {
+          "id": "b",
+          "text": "dobrym dentystą"
+        },
+        {
+          "id": "c",
+          "text": "dobrą dentystką"
+        }
+      ],
+      "answer": "b",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q005",
+      "number": 5,
+      "type": "mcq",
+      "prompt": "Do pracy jadę ..................... .",
+      "options": [
+        {
+          "id": "a",
+          "text": "z autobusem"
+        },
+        {
+          "id": "b",
+          "text": "autobusem"
+        },
+        {
+          "id": "c",
+          "text": "na autobusie"
+        }
+      ],
+      "answer": "b",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q006",
+      "number": 6,
+      "type": "mcq",
+      "prompt": "Nie umiem ......................... na nartach.",
+      "options": [
+        {
+          "id": "a",
+          "text": "jeżdżę"
+        },
+        {
+          "id": "b",
+          "text": "jeździć"
+        },
+        {
+          "id": "c",
+          "text": "jechać"
+        }
+      ],
+      "answer": "b",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q007",
+      "number": 7,
+      "type": "mcq",
+      "prompt": "Lubię ...................................... .",
+      "options": [
+        {
+          "id": "a",
+          "text": "mojego komputera"
+        },
+        {
+          "id": "b",
+          "text": "mój komputer"
+        },
+        {
+          "id": "c",
+          "text": "moim komputerem"
+        }
+      ],
+      "answer": "b",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q008",
+      "number": 8,
+      "type": "mcq",
+      "prompt": "Proszę kawę bez ............................ .",
+      "options": [
+        {
+          "id": "a",
+          "text": "cukier"
+        },
+        {
+          "id": "b",
+          "text": "cukrem"
+        },
+        {
+          "id": "c",
+          "text": "cukru"
+        }
+      ],
+      "answer": "c",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q009",
+      "number": 9,
+      "type": "mcq",
+      "prompt": "Osiemnaście plus dwieście piętnaście to ....................... .",
+      "options": [
+        {
+          "id": "a",
+          "text": "trzydzieści trzy"
+        },
+        {
+          "id": "b",
+          "text": "dwieście trzydzieści trzy"
+        },
+        {
+          "id": "c",
+          "text": "dwieście trzynaście"
+        }
+      ],
+      "answer": "b",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q010",
+      "number": 10,
+      "type": "mcq",
+      "prompt": "Lekcja zaczyna się o ................. (19:20)",
+      "options": [
+        {
+          "id": "a",
+          "text": "dziesiątej dwadzieścia."
+        },
+        {
+          "id": "b",
+          "text": "dziewiątej dwadzieścia."
+        },
+        {
+          "id": "c",
+          "text": "dziewiętnastej dwadzieścia."
+        }
+      ],
+      "answer": "c",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q011",
+      "number": 11,
+      "type": "mcq",
+      "prompt": "Często jemy w barach mlecznych, ale oni ..................... w restauracji.",
+      "options": [
+        {
+          "id": "a",
+          "text": "jem"
+        },
+        {
+          "id": "b",
+          "text": "jemy"
+        },
+        {
+          "id": "c",
+          "text": "jedzą"
+        }
+      ],
+      "answer": "c",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q012",
+      "number": 12,
+      "type": "mcq",
+      "prompt": "Wczoraj (my) .................... dziesięć godzin.",
+      "options": [
+        {
+          "id": "a",
+          "text": "pracowali"
+        },
+        {
+          "id": "b",
+          "text": "pracowaliśmy"
+        },
+        {
+          "id": "c",
+          "text": "pracowały"
+        }
+      ],
+      "answer": "b",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q013",
+      "number": 13,
+      "type": "mcq",
+      "prompt": "Jutro Ania i Piotr ......................... egzamin.",
+      "options": [
+        {
+          "id": "a",
+          "text": "będą zdawać"
+        },
+        {
+          "id": "b",
+          "text": "będziecie zdawać"
+        },
+        {
+          "id": "c",
+          "text": "będą zdawały"
+        }
+      ],
+      "answer": "a",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q014",
+      "number": 14,
+      "type": "mcq",
+      "prompt": "Teraz mieszkam w ............................ .",
+      "options": [
+        {
+          "id": "a",
+          "text": "Polsce"
+        },
+        {
+          "id": "b",
+          "text": "Polska"
+        },
+        {
+          "id": "c",
+          "text": "Polski"
+        }
+      ],
+      "answer": "a",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q015",
+      "number": 15,
+      "type": "mcq",
+      "prompt": "Nauczyciel poprosił was, …………………………… weszły do klasy.",
+      "options": [
+        {
+          "id": "a",
+          "text": "żebyśmy"
+        },
+        {
+          "id": "b",
+          "text": "żeby"
+        },
+        {
+          "id": "c",
+          "text": "żebyście"
+        }
+      ],
+      "answer": "c",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q016",
+      "number": 16,
+      "type": "mcq",
+      "prompt": "Mężczyźni, ……………………….. uprawiają sport, żyją dłużej.",
+      "options": [
+        {
+          "id": "a",
+          "text": "który"
+        },
+        {
+          "id": "b",
+          "text": "które"
+        },
+        {
+          "id": "c",
+          "text": "którzy"
+        }
+      ],
+      "answer": "c",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q017",
+      "number": 17,
+      "type": "mcq",
+      "prompt": "W zeszłym roku często ………………………… za granicę.",
+      "options": [
+        {
+          "id": "a",
+          "text": "pojechałem"
+        },
+        {
+          "id": "b",
+          "text": "wyjeżdżałem"
+        },
+        {
+          "id": "c",
+          "text": "wyjechałem"
+        }
+      ],
+      "answer": "b",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q018",
+      "number": 18,
+      "type": "mcq",
+      "prompt": "……………….. ludzie mają dużo problemów.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Ci"
+        },
+        {
+          "id": "b",
+          "text": "Te"
+        },
+        {
+          "id": "c",
+          "text": "Jacy"
+        }
+      ],
+      "answer": "a",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q019",
+      "number": 19,
+      "type": "mcq",
+      "prompt": "On urodził się w ……………………………… roku.",
+      "options": [
+        {
+          "id": "a",
+          "text": "siedemdziesiątym trzecim"
+        },
+        {
+          "id": "b",
+          "text": "siedemdziesiątego trzeciego"
+        },
+        {
+          "id": "c",
+          "text": "siedemdziesiąty trzeci"
+        }
+      ],
+      "answer": "a",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q020",
+      "number": 20,
+      "type": "mcq",
+      "prompt": "Kraków jest ………………………..miastem od Tarnowa.",
+      "options": [
+        {
+          "id": "a",
+          "text": "dłuższym"
+        },
+        {
+          "id": "b",
+          "text": "dużym"
+        },
+        {
+          "id": "c",
+          "text": "większym"
+        }
+      ],
+      "answer": "c",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q021",
+      "number": 21,
+      "type": "mcq",
+      "prompt": "Ten samochód został zaprojektowany przez ………………………. .",
+      "options": [
+        {
+          "id": "a",
+          "text": "niego"
+        },
+        {
+          "id": "b",
+          "text": "jego"
+        },
+        {
+          "id": "c",
+          "text": "go"
+        }
+      ],
+      "answer": "a",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q022",
+      "number": 22,
+      "type": "mcq",
+      "prompt": "Powiedz ……………………………….., co dziś robiłeś?",
+      "options": [
+        {
+          "id": "a",
+          "text": "mnie"
+        },
+        {
+          "id": "b",
+          "text": "mi"
+        },
+        {
+          "id": "c",
+          "text": "mną"
+        }
+      ],
+      "answer": "b",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q023",
+      "number": 23,
+      "type": "mcq",
+      "prompt": "Gdybyśmy były bogate, ……………………………… na długie wakacje.",
+      "options": [
+        {
+          "id": "a",
+          "text": "pojechaliby"
+        },
+        {
+          "id": "b",
+          "text": "pojechałybyśmy"
+        },
+        {
+          "id": "c",
+          "text": "pojechalibyśmy"
+        }
+      ],
+      "answer": "b",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q024",
+      "number": 24,
+      "type": "mcq",
+      "prompt": "Kraków leży nad ………………………… .",
+      "options": [
+        {
+          "id": "a",
+          "text": "Wiśle"
+        },
+        {
+          "id": "b",
+          "text": "Wisłę"
+        },
+        {
+          "id": "c",
+          "text": "Wisłą"
+        }
+      ],
+      "answer": "a",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q025",
+      "number": 25,
+      "type": "mcq",
+      "prompt": "Dziś jest zimniej …………………………. wczoraj.",
+      "options": [
+        {
+          "id": "a",
+          "text": "niż"
+        },
+        {
+          "id": "b",
+          "text": "od"
+        },
+        {
+          "id": "c",
+          "text": "przed"
+        }
+      ],
+      "answer": "a",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q026",
+      "number": 26,
+      "type": "mcq",
+      "prompt": "………………………. miał czas, przeczytałbym tę książkę.",
+      "options": [
+        {
+          "id": "a",
+          "text": "gdybyś"
+        },
+        {
+          "id": "b",
+          "text": "gdyby"
+        },
+        {
+          "id": "c",
+          "text": "gdybym"
+        }
+      ],
+      "answer": "a",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q027",
+      "number": 27,
+      "type": "mcq",
+      "prompt": "Nie chodzę często do teatru, ……………………………. nie mam pieniędzy.",
+      "options": [
+        {
+          "id": "a",
+          "text": "dlatego, że"
+        },
+        {
+          "id": "b",
+          "text": "dlatego"
+        },
+        {
+          "id": "c",
+          "text": "że"
+        }
+      ],
+      "answer": "a",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q028",
+      "number": 28,
+      "type": "mcq",
+      "prompt": "Ania zapytała mnie, ……………………widziałam ten film.",
+      "options": [
+        {
+          "id": "a",
+          "text": "żebym"
+        },
+        {
+          "id": "b",
+          "text": "że"
+        },
+        {
+          "id": "c",
+          "text": "czy"
+        }
+      ],
+      "answer": "c",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q029",
+      "number": 29,
+      "type": "mcq",
+      "prompt": "……………………………ludzie lubią poznawać inne kultury i miejsca.",
+      "options": [
+        {
+          "id": "a",
+          "text": "otwarte"
+        },
+        {
+          "id": "b",
+          "text": "otwarty"
+        },
+        {
+          "id": "c",
+          "text": "otwarci"
+        }
+      ],
+      "answer": "c",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q030",
+      "number": 30,
+      "type": "mcq",
+      "prompt": "Wieczorem najpierw zjem kolację, ………. potem obejrzę film.",
+      "options": [
+        {
+          "id": "a",
+          "text": "i"
+        },
+        {
+          "id": "b",
+          "text": "a"
+        },
+        {
+          "id": "c",
+          "text": "albo"
+        }
+      ],
+      "answer": "b",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q031",
+      "number": 31,
+      "type": "mcq",
+      "prompt": "Nasze miasto odwiedzili dwaj znani …………………………… .",
+      "options": [
+        {
+          "id": "a",
+          "text": "Włosi"
+        },
+        {
+          "id": "b",
+          "text": "Włochy"
+        },
+        {
+          "id": "c",
+          "text": "Włoszki"
+        }
+      ],
+      "answer": "a",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q032",
+      "number": 32,
+      "type": "mcq",
+      "prompt": "Mój dziadek ……………………………….. z babcią w 1947 r.",
+      "options": [
+        {
+          "id": "a",
+          "text": "pobrał się"
+        },
+        {
+          "id": "b",
+          "text": "wyszedł za mąż"
+        },
+        {
+          "id": "c",
+          "text": "ożenił się"
+        }
+      ],
+      "answer": "c",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q033",
+      "number": 33,
+      "type": "mcq",
+      "prompt": "Czy już skończyłeś ………………………….. referat?",
+      "options": [
+        {
+          "id": "a",
+          "text": "gotować"
+        },
+        {
+          "id": "b",
+          "text": "przygotować"
+        },
+        {
+          "id": "c",
+          "text": "przygotowywać"
+        }
+      ],
+      "answer": "c",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q034",
+      "number": 34,
+      "type": "mcq",
+      "prompt": "Olga dobrze czuje się w Polsce. Jej przyjaciele są bardzo ................................... .",
+      "options": [
+        {
+          "id": "a",
+          "text": "życzliwymi"
+        },
+        {
+          "id": "b",
+          "text": "życzliwe"
+        },
+        {
+          "id": "c",
+          "text": "życzliwi"
+        }
+      ],
+      "answer": "c",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q035",
+      "number": 35,
+      "type": "mcq",
+      "prompt": "Marek i Agata mają .............................. dzieci.",
+      "options": [
+        {
+          "id": "a",
+          "text": "cztery"
+        },
+        {
+          "id": "b",
+          "text": "czworo"
+        },
+        {
+          "id": "c",
+          "text": "czterech"
+        }
+      ],
+      "answer": "b",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q036",
+      "number": 36,
+      "type": "mcq",
+      "prompt": "W nowym miejscu zamieszkania brakowało mi ............................................. .",
+      "options": [
+        {
+          "id": "a",
+          "text": "przyjaciele"
+        },
+        {
+          "id": "b",
+          "text": "przyjaciółmi"
+        },
+        {
+          "id": "c",
+          "text": "przyjaciół"
+        }
+      ],
+      "answer": "c",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q037",
+      "number": 37,
+      "type": "mcq",
+      "prompt": "Wczoraj cały dzień bolał mnie ząb. Wieczorem pojechałam ................... dentysty.",
+      "options": [
+        {
+          "id": "a",
+          "text": "u"
+        },
+        {
+          "id": "b",
+          "text": "do"
+        },
+        {
+          "id": "c",
+          "text": "z"
+        }
+      ],
+      "answer": "b",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q038",
+      "number": 38,
+      "type": "mcq",
+      "prompt": "Przesyłamy serdeczne pozdrowienia ........................... morza.",
+      "options": [
+        {
+          "id": "a",
+          "text": "z"
+        },
+        {
+          "id": "b",
+          "text": "od"
+        },
+        {
+          "id": "c",
+          "text": "znad"
+        }
+      ],
+      "answer": "c",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q039",
+      "number": 39,
+      "type": "mcq",
+      "prompt": "Sławku, bardzo cię proszę, żebyś ............................................. ze mną do teatru.",
+      "options": [
+        {
+          "id": "a",
+          "text": "poszliśmy"
+        },
+        {
+          "id": "b",
+          "text": "poszedł"
+        },
+        {
+          "id": "c",
+          "text": "poszedłbyś"
+        }
+      ],
+      "answer": "c",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q040",
+      "number": 40,
+      "type": "mcq",
+      "prompt": "W wiadomościach radiowych mówili o tym, co dzieje się na ............................. .",
+      "options": [
+        {
+          "id": "a",
+          "text": "świat"
+        },
+        {
+          "id": "b",
+          "text": "światem"
+        },
+        {
+          "id": "c",
+          "text": "świecie"
+        }
+      ],
+      "answer": "c",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q041",
+      "number": 41,
+      "type": "mcq",
+      "prompt": "Niech państwo ................................................ na resztę gości.",
+      "options": [
+        {
+          "id": "a",
+          "text": "zaczekać"
+        },
+        {
+          "id": "b",
+          "text": "zaczekali"
+        },
+        {
+          "id": "c",
+          "text": "zaczekają"
+        }
+      ],
+      "answer": "c",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q042",
+      "number": 42,
+      "type": "mcq",
+      "prompt": "Marysiu, .............................. czapkę, bo jest zimno.",
+      "options": [
+        {
+          "id": "a",
+          "text": "ubiera"
+        },
+        {
+          "id": "b",
+          "text": "ubierz"
+        },
+        {
+          "id": "c",
+          "text": "ubrała"
+        }
+      ],
+      "answer": "b",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q043",
+      "number": 43,
+      "type": "mcq",
+      "prompt": "Kiedy go poprosiłam, zaraz .................................... mi herbatę.",
+      "options": [
+        {
+          "id": "a",
+          "text": "zrobić"
+        },
+        {
+          "id": "b",
+          "text": "zrobiła"
+        },
+        {
+          "id": "c",
+          "text": "zrobił"
+        }
+      ],
+      "answer": "c",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q044",
+      "number": 44,
+      "type": "mcq",
+      "prompt": "Z ...................... nie mogę tutaj porozmawiać, bo nikt nie mówi po angielsku.",
+      "options": [
+        {
+          "id": "a",
+          "text": "nikim"
+        },
+        {
+          "id": "b",
+          "text": "nikomu"
+        },
+        {
+          "id": "c",
+          "text": "nikt"
+        }
+      ],
+      "answer": "a",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q045",
+      "number": 45,
+      "type": "mcq",
+      "prompt": "Poinformowano mnie, że od kilku ........................ nikt tu nie mieszkał.",
+      "options": [
+        {
+          "id": "a",
+          "text": "rok"
+        },
+        {
+          "id": "b",
+          "text": "latami"
+        },
+        {
+          "id": "c",
+          "text": "lat"
+        }
+      ],
+      "answer": "c",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q046",
+      "number": 46,
+      "type": "mcq",
+      "prompt": "Od ........................ pożyczyłeś pieniądze?",
+      "options": [
+        {
+          "id": "a",
+          "text": "komu"
+        },
+        {
+          "id": "b",
+          "text": "kto"
+        },
+        {
+          "id": "c",
+          "text": "kogo"
+        }
+      ],
+      "answer": "c",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q047",
+      "number": 47,
+      "type": "mcq",
+      "prompt": "Maria .............................. Sławkowi na urodziny nowy zegarek.",
+      "options": [
+        {
+          "id": "a",
+          "text": "kupowała"
+        },
+        {
+          "id": "b",
+          "text": "kupił"
+        },
+        {
+          "id": "c",
+          "text": "kupiła"
+        }
+      ],
+      "answer": "c",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q048",
+      "number": 48,
+      "type": "mcq",
+      "prompt": "Ela codziennie .................................. zakupy w supermarkecie.",
+      "options": [
+        {
+          "id": "a",
+          "text": "zrobi"
+        },
+        {
+          "id": "b",
+          "text": "robi"
+        },
+        {
+          "id": "c",
+          "text": "zrobiła"
+        }
+      ],
+      "answer": "b",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q049",
+      "number": 49,
+      "type": "mcq",
+      "prompt": "Na zebranie przyszli studenci i ....................................",
+      "options": [
+        {
+          "id": "a",
+          "text": "nauczycielami"
+        },
+        {
+          "id": "b",
+          "text": "nauczycielach"
+        },
+        {
+          "id": "c",
+          "text": "nauczyciele"
+        }
+      ],
+      "answer": "c",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q050",
+      "number": 50,
+      "type": "mcq",
+      "prompt": "Wybieramy aparaty coraz ........................................... w obsłudze.",
+      "options": [
+        {
+          "id": "a",
+          "text": "łatwiejsze"
+        },
+        {
+          "id": "b",
+          "text": "najłatwiejsze"
+        },
+        {
+          "id": "c",
+          "text": "łatwiejszymi"
+        }
+      ],
+      "answer": "a",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q051",
+      "number": 51,
+      "type": "mcq",
+      "prompt": "Ten komputer okazał się ...................................... ze wszystkich w tym sklepie.",
+      "options": [
+        {
+          "id": "a",
+          "text": "dobry"
+        },
+        {
+          "id": "b",
+          "text": "lepszy"
+        },
+        {
+          "id": "c",
+          "text": "najlepszy"
+        }
+      ],
+      "answer": "c",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q052",
+      "number": 52,
+      "type": "mcq",
+      "prompt": "Ewelina tłumaczyła się nie brakiem czasu, ale brakiem ............................. na wakacje.",
+      "options": [
+        {
+          "id": "a",
+          "text": "pieniędzmi"
+        },
+        {
+          "id": "b",
+          "text": "pieniądz"
+        },
+        {
+          "id": "c",
+          "text": "pieniędzy"
+        }
+      ],
+      "answer": "c",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q053",
+      "number": 53,
+      "type": "mcq",
+      "prompt": "Marek mi ..............................., kiedy będę się przeprowadzać.",
+      "options": [
+        {
+          "id": "a",
+          "text": "pomoże"
+        },
+        {
+          "id": "b",
+          "text": "pomóc"
+        },
+        {
+          "id": "c",
+          "text": "pomagać"
+        }
+      ],
+      "answer": "a",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q054",
+      "number": 54,
+      "type": "mcq",
+      "prompt": "Nie zachowuj się tak jakby wszystko było przeciwko …………………………… .",
+      "options": [
+        {
+          "id": "a",
+          "text": "ci"
+        },
+        {
+          "id": "b",
+          "text": "tobie"
+        },
+        {
+          "id": "c",
+          "text": "ciebie"
+        }
+      ],
+      "answer": "b",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q055",
+      "number": 55,
+      "type": "mcq",
+      "prompt": "Czy to prawda, że oni tak dużo pracują i mają ręce pełne …………………….. .",
+      "options": [
+        {
+          "id": "a",
+          "text": "pieniędzy"
+        },
+        {
+          "id": "b",
+          "text": "roboty"
+        },
+        {
+          "id": "c",
+          "text": "zajęcia"
+        }
+      ],
+      "answer": "b",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q056",
+      "number": 56,
+      "type": "mcq",
+      "prompt": "Ty wiesz, że ja nigdy nie kłamię, zawsze mówię ……………………………. .",
+      "options": [
+        {
+          "id": "a",
+          "text": "kłamstwo"
+        },
+        {
+          "id": "b",
+          "text": "nieprawdę"
+        },
+        {
+          "id": "c",
+          "text": "prawdę"
+        }
+      ],
+      "answer": "c",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q057",
+      "number": 57,
+      "type": "mcq",
+      "prompt": "Marek waży 10 kg za dużo. Ma 10 kg ………………………………… .",
+      "options": [
+        {
+          "id": "a",
+          "text": "nadwagi"
+        },
+        {
+          "id": "b",
+          "text": "wagi"
+        },
+        {
+          "id": "c",
+          "text": "przewagi"
+        }
+      ],
+      "answer": "a",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q058",
+      "number": 58,
+      "type": "mcq",
+      "prompt": "Monika zawróciła Piotrowi w …………………………… .",
+      "options": [
+        {
+          "id": "a",
+          "text": "sercu"
+        },
+        {
+          "id": "b",
+          "text": "mózgu"
+        },
+        {
+          "id": "c",
+          "text": "głowie"
+        }
+      ],
+      "answer": "c",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q059",
+      "number": 59,
+      "type": "mcq",
+      "prompt": "Pan Kowalski nigdy nie lubił pracować. Może właśnie dlatego niczego się nie …………………… .",
+      "options": [
+        {
+          "id": "a",
+          "text": "przerobił"
+        },
+        {
+          "id": "b",
+          "text": "nadrobił"
+        },
+        {
+          "id": "c",
+          "text": "dorobił"
+        }
+      ],
+      "answer": "b",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q060",
+      "number": 60,
+      "type": "mcq",
+      "prompt": "Jeszcze nie skończyłeś czytać tej książki, a już chcesz o niej dyskutować . Będzie lepiej, jeśli ………………………………. ją do końca.",
+      "options": [
+        {
+          "id": "a",
+          "text": "odczytasz"
+        },
+        {
+          "id": "b",
+          "text": "poczytasz"
+        },
+        {
+          "id": "c",
+          "text": "doczytasz"
+        }
+      ],
+      "answer": "c",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q061",
+      "number": 61,
+      "type": "mcq",
+      "prompt": "To są ważne dokumenty. Dlatego proszę się pod nimi starannie …………………………….. .",
+      "options": [
+        {
+          "id": "a",
+          "text": "zapisać"
+        },
+        {
+          "id": "b",
+          "text": "podpisać"
+        },
+        {
+          "id": "c",
+          "text": "wpisać"
+        }
+      ],
+      "answer": "b",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q062",
+      "number": 62,
+      "type": "mcq",
+      "prompt": "To słowo jest bardzo trudne. Nie potrafię go niestety ………………………………… .",
+      "options": [
+        {
+          "id": "a",
+          "text": "zamówić"
+        },
+        {
+          "id": "b",
+          "text": "omówić"
+        },
+        {
+          "id": "c",
+          "text": "wymówić"
+        }
+      ],
+      "answer": "c",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q063",
+      "number": 63,
+      "type": "mcq",
+      "prompt": "Przepraszam, że się spóźniłem, ale niestety ………………………………………. .",
+      "options": [
+        {
+          "id": "a",
+          "text": "zaspałem"
+        },
+        {
+          "id": "b",
+          "text": "przespałem"
+        },
+        {
+          "id": "c",
+          "text": "wyspałem"
+        }
+      ],
+      "answer": "a",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q064",
+      "number": 64,
+      "type": "mcq",
+      "prompt": "Musimy bardzo wcześnie wstać, ……………….. zdążyć na pociąg.",
+      "options": [
+        {
+          "id": "a",
+          "text": "w celu"
+        },
+        {
+          "id": "b",
+          "text": "żeby"
+        },
+        {
+          "id": "c",
+          "text": "jeśli"
+        }
+      ],
+      "answer": "b",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q065",
+      "number": 65,
+      "type": "text",
+      "prompt": "Kiedy pił herbatę, rozmawiał z przyjacielem. ……………………………… herbatę, rozmawiał z przyjacielem.",
+      "options": [],
+      "answer": [
+        "pijąc"
+      ],
+      "answerType": "text"
+    },
+    {
+      "id": "t1_q066",
+      "number": 66,
+      "type": "mcq",
+      "prompt": "………………………………. choroby Jurek nie poszedł do szkoły.",
+      "options": [
+        {
+          "id": "a",
+          "text": "W związku"
+        },
+        {
+          "id": "b",
+          "text": "Przez"
+        },
+        {
+          "id": "c",
+          "text": "Z powodu"
+        }
+      ],
+      "answer": "b",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q067",
+      "number": 67,
+      "type": "mcq",
+      "prompt": "Od kilku dni Ewa i Janek gniewają się na siebie. Ona wypomina ………………………..., że za dużo pracuje.",
+      "options": [
+        {
+          "id": "a",
+          "text": "on"
+        },
+        {
+          "id": "b",
+          "text": "mu"
+        },
+        {
+          "id": "c",
+          "text": "jego"
+        }
+      ],
+      "answer": "b",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q068",
+      "number": 68,
+      "type": "mcq",
+      "prompt": "Janek zarzuca Ewie, że nie dba o ich …………………………. dzieci i o dom.",
+      "options": [
+        {
+          "id": "a",
+          "text": "dwa"
+        },
+        {
+          "id": "b",
+          "text": "dwie"
+        },
+        {
+          "id": "c",
+          "text": "dwójkę"
+        }
+      ],
+      "answer": "c",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q069",
+      "number": 69,
+      "type": "mcq",
+      "prompt": "W końcu może zrozumieją, że ona nie może żyć bez ………………………… .",
+      "options": [
+        {
+          "id": "a",
+          "text": "jego"
+        },
+        {
+          "id": "b",
+          "text": "on"
+        },
+        {
+          "id": "c",
+          "text": "niego"
+        }
+      ],
+      "answer": "c",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q070",
+      "number": 70,
+      "type": "mcq",
+      "prompt": "On nie może żyć bez …………………… .",
+      "options": [
+        {
+          "id": "a",
+          "text": "niej"
+        },
+        {
+          "id": "b",
+          "text": "jej"
+        },
+        {
+          "id": "c",
+          "text": "nią"
+        }
+      ],
+      "answer": "a",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q071",
+      "number": 71,
+      "type": "mcq",
+      "prompt": "Wczoraj w fabryce palił się magazyn. Niestety, mimo szybkiej interwencji …..…………… się cały.",
+      "options": [
+        {
+          "id": "a",
+          "text": "zapalił"
+        },
+        {
+          "id": "b",
+          "text": "wypalił"
+        },
+        {
+          "id": "c",
+          "text": "spalił"
+        }
+      ],
+      "answer": "c",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q072",
+      "number": 72,
+      "type": "mcq",
+      "prompt": "Kowalski jest świetnym biznesmenem. On ma rzeczywiście ......………………… .",
+      "options": [
+        {
+          "id": "a",
+          "text": "głowę na karku"
+        },
+        {
+          "id": "b",
+          "text": "pstro w głowie"
+        },
+        {
+          "id": "c",
+          "text": "ciężką rękę"
+        }
+      ],
+      "answer": "a",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q073",
+      "number": 73,
+      "type": "mcq",
+      "prompt": "Oni bardzo mało zarabiają. Pracują dosłownie za ………………………………….. .",
+      "options": [
+        {
+          "id": "a",
+          "text": "fortunę"
+        },
+        {
+          "id": "b",
+          "text": "ciężkie pieniądze"
+        },
+        {
+          "id": "c",
+          "text": "pół darmo"
+        }
+      ],
+      "answer": "c",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q074",
+      "number": 74,
+      "type": "text",
+      "prompt": "Boję się, że on tu wróci. Boje się jego ………………….…….. tutaj.",
+      "options": [],
+      "answer": [
+        "powrotu",
+        "powrot"
+      ],
+      "answerType": "text"
+    },
+    {
+      "id": "t1_q075",
+      "number": 75,
+      "type": "text",
+      "prompt": "Nie wierzyła, że ci ludzie są uczciwi. Wątpiła w ich ………………………………………. .",
+      "options": [],
+      "answer": [
+        "uczciwość",
+        "uczciwosc"
+      ],
+      "answerType": "text"
+    },
+    {
+      "id": "t1_q076",
+      "number": 76,
+      "type": "text",
+      "prompt": "Jeśli będzie deszcz, schronimy się w jakiejś najbliższej kawiarni. W razie………………………………………………………………………………………………………….... .",
+      "options": [],
+      "answer": [
+        "deszczu"
+      ],
+      "answerType": "text"
+    },
+    {
+      "id": "t1_q077",
+      "number": 77,
+      "type": "text",
+      "prompt": "Powiedział, że boli go głowa i wyszedł z biura. Pod pozorem ……………………………………………………………………………………………………… .",
+      "options": [],
+      "answer": [
+        "bólu głowy",
+        "bolu głowy",
+        "bolu glowy"
+      ],
+      "answerType": "text"
+    },
+    {
+      "id": "t1_q078",
+      "number": 78,
+      "type": "text",
+      "prompt": "Chociaż jesteście różnej płci, macie takie same prawa. Bez względu na …………………………………………………………………………………………………. .",
+      "options": [],
+      "answer": [
+        "płeć",
+        "plec"
+      ],
+      "answerType": "text"
+    },
+    {
+      "id": "t1_q079",
+      "number": 79,
+      "type": "mcq",
+      "prompt": "Miała duże powodzenie u chłopców, ……………………………..……… nie była piękna.",
+      "options": [
+        {
+          "id": "a",
+          "text": "ponieważ"
+        },
+        {
+          "id": "b",
+          "text": "tymczasem"
+        },
+        {
+          "id": "c",
+          "text": "chociaż"
+        }
+      ],
+      "answer": "c",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q080",
+      "number": 80,
+      "type": "mcq",
+      "prompt": "Jestem zobowiązany do tajemnicy, …………….…………….. nie odpowiem na to pytanie.",
+      "options": [
+        {
+          "id": "a",
+          "text": "więc"
+        },
+        {
+          "id": "b",
+          "text": "ale"
+        },
+        {
+          "id": "c",
+          "text": "bowiem"
+        }
+      ],
+      "answer": "a",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q081",
+      "number": 81,
+      "type": "text",
+      "prompt": "Myślę czasami o ………………..……………….(2) rodzeństwa, którego nie znam.",
+      "options": [],
+      "answer": [
+        "dwojgu"
+      ],
+      "answerType": "text"
+    },
+    {
+      "id": "t1_q082",
+      "number": 82,
+      "type": "mcq",
+      "prompt": "Urzędnik wziął kilka dni urlopu i wreszcie sobie………………………..",
+      "options": [
+        {
+          "id": "a",
+          "text": "wypoczął"
+        },
+        {
+          "id": "b",
+          "text": "wypoczywał"
+        },
+        {
+          "id": "c",
+          "text": "spoczął"
+        }
+      ],
+      "answer": "a",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q083",
+      "number": 83,
+      "type": "mcq",
+      "prompt": "Twoje wspomnienia ………………………… mi na myśl moje dzieciństwo.",
+      "options": [
+        {
+          "id": "a",
+          "text": "przywiozły"
+        },
+        {
+          "id": "b",
+          "text": "przywozili"
+        },
+        {
+          "id": "c",
+          "text": "przywiodły"
+        }
+      ],
+      "answer": "c",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q084",
+      "number": 84,
+      "type": "mcq",
+      "prompt": "Z naszą dietą ……………………………………………..nawet 10 kilogramów!",
+      "options": [
+        {
+          "id": "a",
+          "text": "zrzucisz"
+        },
+        {
+          "id": "b",
+          "text": "wyrzucisz"
+        },
+        {
+          "id": "c",
+          "text": "odrzucisz"
+        }
+      ],
+      "answer": "a",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q085",
+      "number": 85,
+      "type": "text",
+      "prompt": "Wygrał ten konkurs, ponieważ wiele wiedział. = Dzięki ……………………………………………………….. .",
+      "options": [],
+      "answer": [
+        "dzięki swojej wiedzy",
+        "dzieki swojej wiedzy",
+        "dzięki wiedzy",
+        "dzieki wiedzy"
+      ],
+      "answerType": "text"
+    },
+    {
+      "id": "t1_q086",
+      "number": 86,
+      "type": "text",
+      "prompt": "Mężczyzna musi być odważny. = Mężczyznę musi cechować ….……………………………………………. .",
+      "options": [],
+      "answer": [
+        "odwaga",
+        "odwagą",
+        "odwaga.",
+        "odwagą."
+      ],
+      "answerType": "text"
+    },
+    {
+      "id": "t1_q087",
+      "number": 87,
+      "type": "mcq",
+      "prompt": "…………………………………………… swój błąd, zamilkł.",
+      "options": [
+        {
+          "id": "a",
+          "text": "Spostrzegłszy"
+        },
+        {
+          "id": "b",
+          "text": "Spostrzeżony"
+        },
+        {
+          "id": "c",
+          "text": "Spostrzegła"
+        }
+      ],
+      "answer": "a",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q088",
+      "number": 88,
+      "type": "mcq",
+      "prompt": "Kierowca był ………………………………………………………….. alkoholu.",
+      "options": [
+        {
+          "id": "a",
+          "text": "podczas"
+        },
+        {
+          "id": "b",
+          "text": "w trakcie"
+        },
+        {
+          "id": "c",
+          "text": "pod wpływem"
+        }
+      ],
+      "answer": "c",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q089",
+      "number": 89,
+      "type": "mcq",
+      "prompt": "Na pustyni często …………………………………………. optycznemu złudzeniu.",
+      "options": [
+        {
+          "id": "a",
+          "text": "ulega się"
+        },
+        {
+          "id": "b",
+          "text": "polega się"
+        },
+        {
+          "id": "c",
+          "text": "poświęca się"
+        }
+      ],
+      "answer": "a",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q090",
+      "number": 90,
+      "type": "mcq",
+      "prompt": "Podczas jedzenia ………………………………………….. łyżką, nożem i widelcem.",
+      "options": [
+        {
+          "id": "a",
+          "text": "używamy"
+        },
+        {
+          "id": "b",
+          "text": "posługujemy się"
+        },
+        {
+          "id": "c",
+          "text": "stosujemy"
+        }
+      ],
+      "answer": "b",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q091",
+      "number": 91,
+      "type": "mcq",
+      "prompt": "Dzisiaj nie ma na zajęciach …………………………………………………..: Kasi, Eli i Piotra.",
+      "options": [
+        {
+          "id": "a",
+          "text": "troje studentów"
+        },
+        {
+          "id": "b",
+          "text": "trojga studentów"
+        },
+        {
+          "id": "c",
+          "text": "trojgu studentom"
+        }
+      ],
+      "answer": "b",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q092",
+      "number": 92,
+      "type": "text",
+      "prompt": "Dziewczynki lubią nosić kolorowe (pod/kolano) …………………………………………….. .",
+      "options": [],
+      "answer": [
+        "podkolanówki",
+        "podkolanowki"
+      ],
+      "answerType": "text"
+    },
+    {
+      "id": "t1_q093",
+      "number": 93,
+      "type": "text",
+      "prompt": "Marzyli o zwiedzaniu (za/morze) ……………………………………………………..…… krain.",
+      "options": [],
+      "answer": [
+        "zamorskich"
+      ],
+      "answerType": "text"
+    },
+    {
+      "id": "t1_q094",
+      "number": 94,
+      "type": "mcq",
+      "prompt": "Twój wyjazd nie może stanąć nam na …………………………………………….. .",
+      "options": [
+        {
+          "id": "a",
+          "text": "przeszkodę"
+        },
+        {
+          "id": "b",
+          "text": "przeszkodą"
+        },
+        {
+          "id": "c",
+          "text": "przeszkodzie"
+        }
+      ],
+      "answer": "c",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q095",
+      "number": 95,
+      "type": "mcq",
+      "prompt": "Podjęto próby, żeby zreformować rząd. = Podjęto próby ………………………….reformy rządu.",
+      "options": [
+        {
+          "id": "a",
+          "text": "w celu"
+        },
+        {
+          "id": "b",
+          "text": "mimo"
+        },
+        {
+          "id": "c",
+          "text": "w razie"
+        }
+      ],
+      "answer": "a",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q096",
+      "number": 96,
+      "type": "text",
+      "prompt": "Nie dasz sobie rady za granicą, jeśli nie będziesz znał języka. Bez …………………………………………………………………………………………………………………………… .",
+      "options": [],
+      "answer": [
+        "bez znajomości języka",
+        "bez znajomosci jezyka",
+        "bez znajomości języka.",
+        "bez znajomosci jezyka."
+      ],
+      "answerType": "text"
+    },
+    {
+      "id": "t1_q097",
+      "number": 97,
+      "type": "mcq",
+      "prompt": "Otworzył usta, ……………………………………zastanawiając się, co powiedzieć.",
+      "options": [
+        {
+          "id": "a",
+          "text": "jakby"
+        },
+        {
+          "id": "b",
+          "text": "więc"
+        },
+        {
+          "id": "c",
+          "text": "kiedy"
+        }
+      ],
+      "answer": "a",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q098",
+      "number": 98,
+      "type": "mcq",
+      "prompt": "Dzwoniłem cały ranek, ale nie mogłem ……………………………………………………. do urzędu.",
+      "options": [
+        {
+          "id": "a",
+          "text": "zadzwonić"
+        },
+        {
+          "id": "b",
+          "text": "dodzwonić się"
+        },
+        {
+          "id": "c",
+          "text": "dzwonić"
+        }
+      ],
+      "answer": "b",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q099",
+      "number": 99,
+      "type": "mcq",
+      "prompt": "To jest jasne i oczywiste. = To się rozumie ……………………………………………… .",
+      "options": [
+        {
+          "id": "a",
+          "text": "samo przez się"
+        },
+        {
+          "id": "b",
+          "text": "samemu przez siebie"
+        },
+        {
+          "id": "c",
+          "text": "sam dla siebie"
+        }
+      ],
+      "answer": "a",
+      "answerType": "mcq"
+    },
+    {
+      "id": "t1_q100",
+      "number": 100,
+      "type": "text",
+      "prompt": "Był zaniedbany i godny litości w tym swoim……………………………… płaszczu. (podrzeć)",
+      "options": [],
+      "answer": [
+        "podartym"
+      ],
+      "answerType": "text"
+    }
+  ]
+}

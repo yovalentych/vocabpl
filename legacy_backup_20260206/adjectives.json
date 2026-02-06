@@ -1,0 +1,1206 @@
+{
+  "version": "1.0.0",
+  "source": "generated (common Polish adjectives)",
+  "items": [
+    {
+      "id": "adj_001",
+      "pl": "dobry",
+      "uk": "добрий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_002",
+      "pl": "zły",
+      "uk": "поганий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_003",
+      "pl": "nowy",
+      "uk": "новий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_004",
+      "pl": "stary",
+      "uk": "старий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_005",
+      "pl": "młody",
+      "uk": "молодий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_006",
+      "pl": "duży",
+      "uk": "великий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_007",
+      "pl": "mały",
+      "uk": "малий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_008",
+      "pl": "długi",
+      "uk": "довгий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_009",
+      "pl": "krótki",
+      "uk": "короткий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_010",
+      "pl": "wysoki",
+      "uk": "високий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_011",
+      "pl": "niski",
+      "uk": "низький",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_012",
+      "pl": "szeroki",
+      "uk": "широкий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_013",
+      "pl": "wąski",
+      "uk": "вузький",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_014",
+      "pl": "gruby",
+      "uk": "товстий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_015",
+      "pl": "cienki",
+      "uk": "тонкий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_016",
+      "pl": "lekki",
+      "uk": "легкий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_017",
+      "pl": "ciężki",
+      "uk": "важкий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_018",
+      "pl": "drogi",
+      "uk": "дорогий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_019",
+      "pl": "tani",
+      "uk": "дешевий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_020",
+      "pl": "szybki",
+      "uk": "швидкий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_021",
+      "pl": "wolny",
+      "uk": "повільний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_022",
+      "pl": "łatwy",
+      "uk": "легкий (простий)",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_023",
+      "pl": "trudny",
+      "uk": "важкий (складний)",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_024",
+      "pl": "prosty",
+      "uk": "простий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_025",
+      "pl": "skomplikowany",
+      "uk": "складний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_026",
+      "pl": "ważny",
+      "uk": "важливий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_027",
+      "pl": "nieważny",
+      "uk": "неважливий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_028",
+      "pl": "piękny",
+      "uk": "гарний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_029",
+      "pl": "brzydki",
+      "uk": "потворний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_030",
+      "pl": "ładny",
+      "uk": "миловидний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_031",
+      "pl": "ciepły",
+      "uk": "теплий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_032",
+      "pl": "zimny",
+      "uk": "холодний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_033",
+      "pl": "gorący",
+      "uk": "гарячий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_034",
+      "pl": "chłodny",
+      "uk": "прохолодний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_035",
+      "pl": "suchy",
+      "uk": "сухий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_036",
+      "pl": "mokry",
+      "uk": "мокрий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_037",
+      "pl": "czysty",
+      "uk": "чистий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_038",
+      "pl": "brudny",
+      "uk": "брудний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_039",
+      "pl": "jasny",
+      "uk": "світлий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_040",
+      "pl": "ciemny",
+      "uk": "темний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_041",
+      "pl": "biały",
+      "uk": "білий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_042",
+      "pl": "czarny",
+      "uk": "чорний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_043",
+      "pl": "czerwony",
+      "uk": "червоний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_044",
+      "pl": "zielony",
+      "uk": "зелений",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_045",
+      "pl": "niebieski",
+      "uk": "синій",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_046",
+      "pl": "żółty",
+      "uk": "жовтий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_047",
+      "pl": "różowy",
+      "uk": "рожевий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_048",
+      "pl": "fioletowy",
+      "uk": "фіолетовий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_049",
+      "pl": "szary",
+      "uk": "сірий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_050",
+      "pl": "brązowy",
+      "uk": "коричневий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_051",
+      "pl": "złoty",
+      "uk": "золотий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_052",
+      "pl": "srebrny",
+      "uk": "срібний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_053",
+      "pl": "miły",
+      "uk": "приємний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_054",
+      "pl": "niemiły",
+      "uk": "неприємний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_055",
+      "pl": "uprzejmy",
+      "uk": "ввічливий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_056",
+      "pl": "nieuprzejmy",
+      "uk": "неввічливий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_057",
+      "pl": "grzeczny",
+      "uk": "ввічливий/слухняний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_058",
+      "pl": "niegrzeczny",
+      "uk": "невихований",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_059",
+      "pl": "wesoły",
+      "uk": "веселий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_060",
+      "pl": "smutny",
+      "uk": "сумний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_061",
+      "pl": "szczęśliwy",
+      "uk": "щасливий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_062",
+      "pl": "nieszczęśliwy",
+      "uk": "нещасний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_063",
+      "pl": "spokojny",
+      "uk": "спокійний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_064",
+      "pl": "nerwowy",
+      "uk": "нервовий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_065",
+      "pl": "odważny",
+      "uk": "сміливий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_066",
+      "pl": "tchórzliwy",
+      "uk": "боязкий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_067",
+      "pl": "silny",
+      "uk": "сильний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_068",
+      "pl": "słaby",
+      "uk": "слабкий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_069",
+      "pl": "zdrowy",
+      "uk": "здоровий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_070",
+      "pl": "chory",
+      "uk": "хворий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_071",
+      "pl": "bogaty",
+      "uk": "багатий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_072",
+      "pl": "biedny",
+      "uk": "бідний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_073",
+      "pl": "inteligentny",
+      "uk": "розумний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_074",
+      "pl": "głupi",
+      "uk": "дурний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_075",
+      "pl": "mądry",
+      "uk": "мудрий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_076",
+      "pl": "pracowity",
+      "uk": "працьовитий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_077",
+      "pl": "leniwy",
+      "uk": "лінивий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_078",
+      "pl": "uczciwy",
+      "uk": "чесний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_079",
+      "pl": "nieuczciwy",
+      "uk": "нечесний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_080",
+      "pl": "cierpliwy",
+      "uk": "терплячий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_081",
+      "pl": "niecierpliwy",
+      "uk": "нетерплячий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_082",
+      "pl": "ambitny",
+      "uk": "амбіційний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_083",
+      "pl": "skromny",
+      "uk": "скромний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_084",
+      "pl": "pewny",
+      "uk": "упевнений",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_085",
+      "pl": "niepewny",
+      "uk": "невпевнений",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_086",
+      "pl": "zajęty",
+      "uk": "зайнятий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_087",
+      "pl": "wolny (czas)",
+      "uk": "вільний (час)",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_088",
+      "pl": "głośny",
+      "uk": "гучний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_089",
+      "pl": "cichy",
+      "uk": "тихий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_090",
+      "pl": "bliski",
+      "uk": "близький",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_091",
+      "pl": "daleki",
+      "uk": "далекий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_092",
+      "pl": "prawdziwy",
+      "uk": "справжній",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_093",
+      "pl": "fałszywy",
+      "uk": "фальшивий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_094",
+      "pl": "bezpieczny",
+      "uk": "безпечний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_095",
+      "pl": "niebezpieczny",
+      "uk": "небезпечний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_096",
+      "pl": "pełny",
+      "uk": "повний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_097",
+      "pl": "pusty",
+      "uk": "порожній",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_098",
+      "pl": "okrągły",
+      "uk": "круглий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_099",
+      "pl": "kwadratowy",
+      "uk": "квадратний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_100",
+      "pl": "prostokątny",
+      "uk": "прямокутний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_101",
+      "pl": "twardy",
+      "uk": "твердий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_102",
+      "pl": "miękki",
+      "uk": "м'який",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_103",
+      "pl": "gładki",
+      "uk": "гладкий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_104",
+      "pl": "szorstki",
+      "uk": "шорсткий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_105",
+      "pl": "ostry",
+      "uk": "гострий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_106",
+      "pl": "tępy",
+      "uk": "тупий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_107",
+      "pl": "słodki",
+      "uk": "солодкий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_108",
+      "pl": "kwaśny",
+      "uk": "кислий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_109",
+      "pl": "słony",
+      "uk": "солоний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_110",
+      "pl": "gorzki",
+      "uk": "гіркий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_111",
+      "pl": "pyszny",
+      "uk": "смачний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_112",
+      "pl": "niesmaczny",
+      "uk": "несмачний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_113",
+      "pl": "świeży",
+      "uk": "свіжий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_114",
+      "pl": "zepsuty",
+      "uk": "зіпсований",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_115",
+      "pl": "dojrzały",
+      "uk": "стиглий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_116",
+      "pl": "surowy",
+      "uk": "сирий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_117",
+      "pl": "modny",
+      "uk": "модний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_118",
+      "pl": "niemodny",
+      "uk": "немодний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_119",
+      "pl": "wygodny",
+      "uk": "зручний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_120",
+      "pl": "niewygodny",
+      "uk": "незручний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_121",
+      "pl": "ciekawy",
+      "uk": "цікавий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_122",
+      "pl": "nudny",
+      "uk": "нудний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_123",
+      "pl": "zabawny",
+      "uk": "смішний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_124",
+      "pl": "poważny",
+      "uk": "серйозний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_125",
+      "pl": "popularny",
+      "uk": "популярний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_126",
+      "pl": "nieznany",
+      "uk": "невідомий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_127",
+      "pl": "prywatny",
+      "uk": "приватний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_128",
+      "pl": "publiczny",
+      "uk": "публічний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_129",
+      "pl": "lokalny",
+      "uk": "місцевий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_130",
+      "pl": "globalny",
+      "uk": "глобальний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_131",
+      "pl": "codzienny",
+      "uk": "щоденний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_132",
+      "pl": "rzadki",
+      "uk": "рідкісний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_133",
+      "pl": "częsty",
+      "uk": "частий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_134",
+      "pl": "pierwszy",
+      "uk": "перший",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_135",
+      "pl": "ostatni",
+      "uk": "останній",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_136",
+      "pl": "następny",
+      "uk": "наступний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_137",
+      "pl": "wczesny",
+      "uk": "ранній",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_138",
+      "pl": "późny",
+      "uk": "пізній",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_139",
+      "pl": "możliwy",
+      "uk": "можливий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_140",
+      "pl": "niemożliwy",
+      "uk": "неможливий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_141",
+      "pl": "gotowy",
+      "uk": "готовий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_142",
+      "pl": "niegotowy",
+      "uk": "неготовий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_143",
+      "pl": "otwarty",
+      "uk": "відкритий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_144",
+      "pl": "zamknięty",
+      "uk": "закритий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_145",
+      "pl": "równy",
+      "uk": "рівний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_146",
+      "pl": "nierówny",
+      "uk": "нерівний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_147",
+      "pl": "różny",
+      "uk": "різний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_148",
+      "pl": "wspólny",
+      "uk": "спільний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_149",
+      "pl": "osobny",
+      "uk": "окремий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_150",
+      "pl": "dostępny",
+      "uk": "доступний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_151",
+      "pl": "niedostępny",
+      "uk": "недоступний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_152",
+      "pl": "legalny",
+      "uk": "легальний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_153",
+      "pl": "nielegalny",
+      "uk": "нелегальний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_154",
+      "pl": "oficjalny",
+      "uk": "офіційний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_155",
+      "pl": "nieoficjalny",
+      "uk": "неофіційний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_156",
+      "pl": "główny",
+      "uk": "головний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_157",
+      "pl": "drugorzędny",
+      "uk": "другорядний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_158",
+      "pl": "dokładny",
+      "uk": "точний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_159",
+      "pl": "niedokładny",
+      "uk": "неточний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_160",
+      "pl": "aktywny",
+      "uk": "активний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_161",
+      "pl": "pasywny",
+      "uk": "пасивний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_162",
+      "pl": "realny",
+      "uk": "реальний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_163",
+      "pl": "wirtualny",
+      "uk": "віртуальний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_164",
+      "pl": "naturalny",
+      "uk": "природний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_165",
+      "pl": "sztuczny",
+      "uk": "штучний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_166",
+      "pl": "tradycyjny",
+      "uk": "традиційний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_167",
+      "pl": "nowoczesny",
+      "uk": "сучасний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_168",
+      "pl": "profesjonalny",
+      "uk": "професійний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_169",
+      "pl": "amatorski",
+      "uk": "аматорський",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_170",
+      "pl": "darmowy",
+      "uk": "безкоштовний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_171",
+      "pl": "płatny",
+      "uk": "платний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_172",
+      "pl": "ogólny",
+      "uk": "загальний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_173",
+      "pl": "szczegółowy",
+      "uk": "детальний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_174",
+      "pl": "typowy",
+      "uk": "типовий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_175",
+      "pl": "nietypowy",
+      "uk": "нетиповий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_176",
+      "pl": "sprawny",
+      "uk": "справний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_177",
+      "pl": "niesprawny",
+      "uk": "несправний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_178",
+      "pl": "skuteczny",
+      "uk": "ефективний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_179",
+      "pl": "nieskuteczny",
+      "uk": "неефективний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_180",
+      "pl": "wydajny",
+      "uk": "продуктивний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_181",
+      "pl": "niewydajny",
+      "uk": "непродуктивний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_182",
+      "pl": "stabilny",
+      "uk": "стабільний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_183",
+      "pl": "niestabilny",
+      "uk": "нестабільний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_184",
+      "pl": "elastyczny",
+      "uk": "гнучкий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_185",
+      "pl": "sztywny",
+      "uk": "жорсткий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_186",
+      "pl": "wrażliwy",
+      "uk": "чутливий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_187",
+      "pl": "niewrażliwy",
+      "uk": "нечутливий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_188",
+      "pl": "agresywny",
+      "uk": "агресивний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_189",
+      "pl": "łagodny",
+      "uk": "лагідний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_190",
+      "pl": "przyjazny",
+      "uk": "дружній",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_191",
+      "pl": "wrogi",
+      "uk": "ворожий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_192",
+      "pl": "gęsty",
+      "uk": "густий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_193",
+      "pl": "rzadki (płyn)",
+      "uk": "рідкий (про рідину)",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_194",
+      "pl": "przezroczysty",
+      "uk": "прозорий",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_195",
+      "pl": "mętny",
+      "uk": "каламутний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_196",
+      "pl": "zatłoczony",
+      "uk": "переповнений",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_197",
+      "pl": "śliski",
+      "uk": "слизький",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_198",
+      "pl": "ogromny",
+      "uk": "величезний",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_199",
+      "pl": "malutki",
+      "uk": "малесенький",
+      "pos": "adjective"
+    },
+    {
+      "id": "adj_200",
+      "pl": "sprawiedliwy",
+      "uk": "справедливий",
+      "pos": "adjective"
+    }
+  ]
+}

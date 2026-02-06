@@ -1,0 +1,236 @@
+{
+  "version": "1.0.0",
+  "source": "generated (safe everyday Polish slang / colloquial)",
+  "items": [
+    {
+      "id": "sl_001",
+      "pl": "spoko",
+      "uk": "ок / норм / спокійно",
+      "pos": "slang"
+    },
+    { "id": "sl_002", "pl": "git", "uk": "клас / все ок", "pos": "slang" },
+    {
+      "id": "sl_003",
+      "pl": "luz",
+      "uk": "розслабся / без паніки",
+      "pos": "slang"
+    },
+    {
+      "id": "sl_004",
+      "pl": "na luzie",
+      "uk": "спокійно / без напрягу",
+      "pos": "slang"
+    },
+    { "id": "sl_005", "pl": "no dobra", "uk": "ну добре", "pos": "slang" },
+    {
+      "id": "sl_006",
+      "pl": "no weź",
+      "uk": "та ну / ну будь ласка",
+      "pos": "slang"
+    },
+    { "id": "sl_007", "pl": "serio?", "uk": "серйозно?", "pos": "slang" },
+    { "id": "sl_008", "pl": "mega", "uk": "дуже / мега", "pos": "slang" },
+    { "id": "sl_009", "pl": "masakra", "uk": "жесть / капець", "pos": "slang" },
+    { "id": "sl_010", "pl": "sztos", "uk": "топ / вау", "pos": "slang" },
+
+    { "id": "sl_011", "pl": "fajnie", "uk": "класно", "pos": "slang" },
+    { "id": "sl_012", "pl": "super", "uk": "супер", "pos": "slang" },
+    { "id": "sl_013", "pl": "świetnie", "uk": "чудово", "pos": "slang" },
+    {
+      "id": "sl_014",
+      "pl": "beznadzieja",
+      "uk": "безнадія / відстій",
+      "pos": "slang"
+    },
+    { "id": "sl_015", "pl": "lipа", "uk": "фігня / підстава", "pos": "slang" },
+    {
+      "id": "sl_016",
+      "pl": "słabo",
+      "uk": "так собі / слабенько",
+      "pos": "slang"
+    },
+    {
+      "id": "sl_017",
+      "pl": "średnio",
+      "uk": "посередньо / так собі",
+      "pos": "slang"
+    },
+    { "id": "sl_018", "pl": "kozacko", "uk": "дуже круто", "pos": "slang" },
+    { "id": "sl_019", "pl": "czad", "uk": "крутяк", "pos": "slang" },
+    {
+      "id": "sl_020",
+      "pl": "wymiatać",
+      "uk": "розривати / бути дуже крутим",
+      "pos": "slang"
+    },
+
+    { "id": "sl_021", "pl": "ziomek", "uk": "дружбан", "pos": "slang" },
+    { "id": "sl_022", "pl": "ziom", "uk": "бро / дружбан", "pos": "slang" },
+    {
+      "id": "sl_023",
+      "pl": "ekipa",
+      "uk": "компанія / тусовка",
+      "pos": "slang"
+    },
+    { "id": "sl_024", "pl": "laska", "uk": "дівчина (розм.)", "pos": "slang" },
+    { "id": "sl_025", "pl": "koleś", "uk": "чувак", "pos": "slang" },
+    { "id": "sl_026", "pl": "typ", "uk": "тип / чувак", "pos": "slang" },
+    {
+      "id": "sl_027",
+      "pl": "stary / stara",
+      "uk": "чувак/друже (букв. старий/стара)",
+      "pos": "slang"
+    },
+    {
+      "id": "sl_028",
+      "pl": "mordo",
+      "uk": "друже (дуже розм., між своїми)",
+      "pos": "slang"
+    },
+    { "id": "sl_029", "pl": "siema", "uk": "привіт (розм.)", "pos": "slang" },
+    {
+      "id": "sl_030",
+      "pl": "elo",
+      "uk": "привіт/бувай (дуже розм.)",
+      "pos": "slang"
+    },
+
+    { "id": "sl_031", "pl": "nara", "uk": "бувай", "pos": "slang" },
+    {
+      "id": "sl_032",
+      "pl": "wpadnij",
+      "uk": "заскочи / зайди",
+      "pos": "slang"
+    },
+    {
+      "id": "sl_033",
+      "pl": "zbijemy piątkę",
+      "uk": "дамо п’ять",
+      "pos": "slang"
+    },
+    {
+      "id": "sl_034",
+      "pl": "ogarniasz?",
+      "uk": "розумієш? / шариш?",
+      "pos": "slang"
+    },
+    {
+      "id": "sl_035",
+      "pl": "ogarnąć",
+      "uk": "розрулити / розібратися / впоратися",
+      "pos": "slang"
+    },
+    {
+      "id": "sl_036",
+      "pl": "jakoś to będzie",
+      "uk": "якось буде",
+      "pos": "slang"
+    },
+    { "id": "sl_037", "pl": "dawaj", "uk": "давай", "pos": "slang" },
+    { "id": "sl_038", "pl": "lecę", "uk": "я побіг / я пішов", "pos": "slang" },
+    {
+      "id": "sl_039",
+      "pl": "zaraz wracam",
+      "uk": "зараз повернусь",
+      "pos": "slang"
+    },
+    {
+      "id": "sl_040",
+      "pl": "nie ma sprawy",
+      "uk": "без проблем",
+      "pos": "slang"
+    },
+
+    { "id": "sl_041", "pl": "sorki", "uk": "вибач (розм.)", "pos": "slang" },
+    { "id": "sl_042", "pl": "sorry", "uk": "вибач", "pos": "slang" },
+    {
+      "id": "sl_043",
+      "pl": "dzięki wielkie",
+      "uk": "дуже дякую",
+      "pos": "slang"
+    },
+    { "id": "sl_044", "pl": "szacun", "uk": "респект", "pos": "slang" },
+    {
+      "id": "sl_045",
+      "pl": "propsy",
+      "uk": "повага / респект",
+      "pos": "slang"
+    },
+    { "id": "sl_046", "pl": "bekа", "uk": "ржака", "pos": "slang" },
+    {
+      "id": "sl_047",
+      "pl": "nie ogarniam",
+      "uk": "не доганяю",
+      "pos": "slang"
+    },
+    {
+      "id": "sl_048",
+      "pl": "mam dość",
+      "uk": "мені досить / я втомився",
+      "pos": "slang"
+    },
+    { "id": "sl_049", "pl": "zajęty", "uk": "зайнятий", "pos": "slang" },
+    {
+      "id": "sl_050",
+      "pl": "zamulony",
+      "uk": "туплю / загальмований",
+      "pos": "slang"
+    },
+
+    {
+      "id": "sl_051",
+      "pl": "wkręcać",
+      "uk": "підколювати / накручувати",
+      "pos": "slang"
+    },
+    {
+      "id": "sl_052",
+      "pl": "ściema",
+      "uk": "брехня / відмазка",
+      "pos": "slang"
+    },
+    {
+      "id": "sl_053",
+      "pl": "ależ akcja",
+      "uk": "ну й прикол/історія",
+      "pos": "slang"
+    },
+    {
+      "id": "sl_054",
+      "pl": "wtopa",
+      "uk": "факап / незручна ситуація",
+      "pos": "slang"
+    },
+    { "id": "sl_055", "pl": "przypał", "uk": "позор / палево", "pos": "slang" },
+    {
+      "id": "sl_056",
+      "pl": "zajawka",
+      "uk": "захоплення / вайб",
+      "pos": "slang"
+    },
+    {
+      "id": "sl_057",
+      "pl": "jaram się",
+      "uk": "я в захваті / мене прьот",
+      "pos": "slang"
+    },
+    {
+      "id": "sl_058",
+      "pl": "mam vibe",
+      "uk": "у мене настрій/вайб",
+      "pos": "slang"
+    },
+    {
+      "id": "sl_059",
+      "pl": "ogar",
+      "uk": "контроль / порядок (в розм.)",
+      "pos": "slang"
+    },
+    {
+      "id": "sl_060",
+      "pl": "siedzieć",
+      "uk": "тусити/зависати (розм.)",
+      "pos": "slang"
+    }
+  ]
+}

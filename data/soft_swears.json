@@ -1,0 +1,73 @@
+{
+  "version": "1.0.0",
+  "source": "generated (clean exclamations / mild slang alternatives)",
+  "items": [
+    {
+      "id": "cl_001",
+      "pl": "kurczę!",
+      "uk": "ой лихо! / ну блін!",
+      "pos": "other"
+    },
+    {
+      "id": "cl_002",
+      "pl": "kurka wodna!",
+      "uk": "йой! / та ну!",
+      "pos": "other"
+    },
+    { "id": "cl_003", "pl": "o rany!", "uk": "ой лишенько!", "pos": "other" },
+    { "id": "cl_004", "pl": "o matko!", "uk": "ой мама!", "pos": "other" },
+    { "id": "cl_005", "pl": "jeju!", "uk": "йой!", "pos": "other" },
+    { "id": "cl_006", "pl": "no nie!", "uk": "та ну!", "pos": "other" },
+    { "id": "cl_007", "pl": "serio?!", "uk": "серйозно?!", "pos": "other" },
+    { "id": "cl_008", "pl": "masakra!", "uk": "жесть!", "pos": "other" },
+    { "id": "cl_009", "pl": "ależ jazda!", "uk": "ну й треш!", "pos": "other" },
+    { "id": "cl_010", "pl": "co za pech!", "uk": "от халепа!", "pos": "other" },
+
+    { "id": "cl_011", "pl": "do licha!", "uk": "до біса!", "pos": "other" },
+    {
+      "id": "cl_012",
+      "pl": "kurcze pieczone!",
+      "uk": "йой, ну блін!",
+      "pos": "other"
+    },
+    { "id": "cl_013", "pl": "niech to!", "uk": "от же ж!", "pos": "other" },
+    { "id": "cl_014", "pl": "rany boskie!", "uk": "ой леле!", "pos": "other" },
+    {
+      "id": "cl_015",
+      "pl": "cholera...",
+      "uk": "чорт... (сильніше, але без матюка)",
+      "pos": "other"
+    },
+
+    {
+      "id": "cl_016",
+      "pl": "ja nie mogę...",
+      "uk": "я не можу...",
+      "pos": "other"
+    },
+    {
+      "id": "cl_017",
+      "pl": "to mnie dobija",
+      "uk": "мене це добиває",
+      "pos": "other"
+    },
+    {
+      "id": "cl_018",
+      "pl": "mam tego dosyć",
+      "uk": "мені це набридло",
+      "pos": "other"
+    },
+    {
+      "id": "cl_019",
+      "pl": "daj spokój",
+      "uk": "та перестань / та ну",
+      "pos": "other"
+    },
+    {
+      "id": "cl_020",
+      "pl": "nie rób jaj",
+      "uk": "не жартуй (розм.)",
+      "pos": "other"
+    }
+  ]
+}

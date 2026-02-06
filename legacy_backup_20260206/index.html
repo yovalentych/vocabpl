@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Polish Vocab Trainer</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">PL</div>
+      <div>
+        <div class="title">Polish Vocab Trainer</div>
+        <div class="subtitle">Czasowniki + Przysłówki (PL → UK / UK → PL)</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <label class="control">
+        <span>Zestaw</span>
+        <select id="datasetSelect">
+          <option value="verbs">Czasowniki (200)</option>
+          <option value="adverbs">Przysłówki (200)</option>
+          <option value="all">Wszystko (400)</option>
+        </select>
+      </label>
+
+      <label class="control">
+        <span>Tryb</span>
+        <select id="modeSelect">
+          <option value="flashcards">Fiszki</option>
+          <option value="quiz">Quiz</option>
+          <option value="list">Lista</option>
+          <option value="test">Test (auto-check)</option>
+          <option value="stats">Profil / Statystyki</option>
+          <option value="admin">Admin</option>
+        </select>
+      </label>
+
+      <label class="control">
+        <span>Kierunek</span>
+        <select id="directionSelect">
+          <option value="pl-uk">PL → UK</option>
+          <option value="uk-pl">UK → PL</option>
+          <option value="mix">Mix</option>
+        </select>
+      </label>
+
+      <button class="btn ghost hidden" id="logoutBtn">Wyloguj</button>
+    </div>
+  </header>
+
+  <section class="authModal hidden" id="loginModal">
+    <div class="panel authPanel">
+      <div class="authTitle">Logowanie</div>
+      <div class="authRow">
+        <input id="loginUsername" type="text" placeholder="Username" />
+        <input id="loginPassword" type="password" placeholder="Hasło (min 8 znaków)" />
+      </div>
+      <div class="muted" id="authStatus">—</div>
+      <div class="row">
+        <button class="btn" id="loginBtn">Zaloguj</button>
+        <button class="btn ghost" id="closeLoginBtn">Zamknij</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="authModal hidden" id="registerModal">
+    <div class="panel authPanel">
+      <div class="authTitle">Rejestracja</div>
+      <div class="authRow">
+        <input id="registerUsername" type="text" placeholder="Username" />
+        <input id="registerPassword" type="password" placeholder="Hasło (min 8 znaków)" />
+      </div>
+      <div class="muted" id="authStatus2">—</div>
+      <div class="row">
+        <button class="btn" id="registerBtn">Zarejestruj</button>
+        <button class="btn ghost" id="closeRegisterBtn">Zamknij</button>
+      </div>
+    </div>
+  </section>
+
+  <main class="container" id="appMain">
+    <section class="panel dashboardPanel">
+      <div class="row">
+        <div>
+          <div class="authTitle">Twój kabinet</div>
+          <div class="muted">Zalogowany jako: <span id="userNameText">—</span></div>
+        </div>
+        <div class="spacer"></div>
+        <div class="chip">Progres: <span id="userProgressChip">0%</span></div>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button class="btn ghost" data-mode="flashcards">Fiszki</button>
+        <button class="btn ghost" data-mode="quiz">Quiz</button>
+        <button class="btn ghost" data-mode="test">Test</button>
+        <button class="btn ghost" data-mode="stats">Statystyki</button>
+      </div>
+    </section>
+
+    <section class="panel" id="flashcardsView">
+      <div class="row">
+        <div class="chip" id="progressChip">0 / 0</div>
+        <div class="spacer"></div>
+        <button class="btn ghost" id="shuffleBtn" title="Перемішати">Shuffle</button>
+        <button class="btn ghost" id="resetKnownBtn" title="Скинути вивчене">Reset</button>
+      </div>
+
+      <div class="cardWrap">
+        <button class="navBtn" id="prevBtn" aria-label="Previous">‹</button>
+
+        <div class="card" id="card" role="button" tabindex="0" aria-label="Flashcard (click to flip)">
+          <div class="cardInner" id="cardInner">
+            <div class="cardFace cardFront">
+              <div class="tag" id="cardTag">verb</div>
+              <div class="big" id="frontText">—</div>
+              <div class="hint">Click / Space = flip</div>
+            </div>
+            <div class="cardFace cardBack">
+              <div class="tag" id="cardTag2">uk</div>
+              <div class="big" id="backText">—</div>
+              <div class="hint">Enter = mark known</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="navBtn" id="nextBtn" aria-label="Next">›</button>
+      </div>
+
+      <div class="row">
+        <button class="btn" id="knownBtn">✅ Знаю</button>
+        <button class="btn ghost" id="unknownBtn">↩️ Ще треба</button>
+      </div>
+
+      <div class="muted">
+        Hotkeys: ←/→ (prev/next), Space (flip), Enter (known), S (shuffle)
+      </div>
+    </section>
+
+    <section class="panel hidden" id="quizView">
+      <div class="row">
+        <div class="chip" id="quizChip">0 correct</div>
+        <div class="spacer"></div>
+        <button class="btn ghost" id="quizNextBtn">Next</button>
+      </div>
+
+      <div class="quizQuestion">
+        <div class="tag" id="quizTag">quiz</div>
+        <div class="big" id="quizPrompt">—</div>
+        <div class="muted" id="quizSub">Wybierz poprawną odpowiedź</div>
+      </div>
+
+      <div class="quizAnswers" id="quizAnswers"></div>
+    </section>
+
+    <section class="panel hidden" id="listView">
+      <div class="row">
+        <label class="control wide">
+          <span>Пошук</span>
+          <input id="searchInput" type="search" placeholder="наприклад: być / бути / szybko" />
+        </label>
+        <div class="spacer"></div>
+        <div class="chip" id="listCount">0</div>
+      </div>
+
+      <div class="tableWrap">
+        <table class="table" id="vocabTable">
+          <thead>
+            <tr>
+              <th>PL</th>
+              <th>UK</th>
+              <th>POS</th>
+              <th>Знаю</th>
+            </tr>
+          </thead>
+          <tbody id="vocabTbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+
+    <section class="panel hidden" id="testView">
+      <div class="row">
+        <div class="chip" id="testChip">Test • 0/0</div>
+        <div class="spacer"></div>
+        <button class="btn ghost" id="testStartBtn">Start</button>
+        <button class="btn ghost hidden" id="testResetBtn">Reset</button>
+      </div>
+
+      <div class="testBody hidden" id="testBody">
+        <div class="testProgress">
+          <div class="muted" id="testProgressText">—</div>
+          <div class="bar"><div class="barFill" id="testBarFill"></div></div>
+        </div>
+
+        <div class="testCard">
+          <div class="tag" id="testTag">Q</div>
+          <div class="testPrompt" id="testPrompt">—</div>
+
+          <div class="testOptions" id="testOptions"></div>
+
+          <div class="testInputWrap hidden" id="testInputWrap">
+            <input class="testInput" id="testInput" type="text" placeholder="Wpisz odpowiedź..." />
+            <button class="btn ghost" id="testCheckTextBtn">Check</button>
+          </div>
+
+          <div class="testFeedback" id="testFeedback"></div>
+        </div>
+
+        <div class="row testNav">
+          <button class="btn ghost" id="testPrevBtn">← Back</button>
+          <div class="spacer"></div>
+          <button class="btn ghost" id="testSkipBtn">Skip</button>
+          <button class="btn" id="testNextBtn">Next →</button>
+        </div>
+      </div>
+
+      <div class="testSummary hidden" id="testSummary">
+        <div class="summaryGrid">
+          <div class="summaryCard">
+            <div class="muted">Wynik</div>
+            <div class="summaryBig" id="summaryScore">—</div>
+            <div class="muted" id="summaryExtra">—</div>
+          </div>
+          <div class="summaryCard">
+            <div class="muted">Ostatnie próby</div>
+            <div class="summaryList" id="attemptList"></div>
+          </div>
+        </div>
+
+        <div class="summaryCard">
+          <div class="row">
+            <div class="muted">Błędy (kliknij, żeby przejść)</div>
+            <div class="spacer"></div>
+            <button class="btn ghost" id="reviewWrongBtn">Review wrong</button>
+          </div>
+          <div class="wrongList" id="wrongList"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel hidden" id="statsView">
+      <div class="summaryGrid">
+        <div class="summaryCard">
+          <div class="muted">Słowa</div>
+          <div class="summaryBig"><span id="statsKnown">0</span> / <span id="statsTotal">0</span></div>
+          <div class="muted">Znane: <span id="statsPercent">0%</span></div>
+        </div>
+        <div class="summaryCard">
+          <div class="muted">Testy</div>
+          <div class="summaryBig" id="statsTests">0</div>
+          <div class="muted">Najlepszy: <span id="statsBest">0%</span></div>
+          <div class="muted">Ostatni: <span id="statsLast">—</span></div>
+        </div>
+      </div>
+
+      <div class="summaryCard">
+        <div class="muted">Ostatnie próby</div>
+        <div class="summaryList" id="statsAttempts"></div>
+      </div>
+    </section>
+
+    <section class="panel hidden" id="adminView">
+      <div class="row">
+        <div class="chip">Users: <span id="adminUsersCount">0</span></div>
+        <div class="spacer"></div>
+      </div>
+
+      <div class="tableWrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Role</th>
+              <th>Created</th>
+              <th>Last Login</th>
+              <th>Known</th>
+              <th>Tests</th>
+            </tr>
+          </thead>
+          <tbody id="adminUsersBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div>App with API + MongoDB. Data from <code>/api/vocab</code>, <code>/api/tests</code></div>
+    <div class="muted">Tip: run backend via <code>npm start</code></div>
+  </footer>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

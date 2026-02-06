@@ -1,0 +1,701 @@
+{
+  "version": "1.0.0",
+  "title": "Hurra 2 — Lekcja 16 (Na Urok)",
+  "source": "hurra-2-lekcja-16-3670826.pdf",
+  "items": [
+    {
+      "id": "hurra2_l16_q001",
+      "number": 1,
+      "prompt": "Proszę wybrać owoce:",
+      "options": [
+        {
+          "id": "a",
+          "text": "ziemniaki"
+        },
+        {
+          "id": "b",
+          "text": "brzoskwinie"
+        },
+        {
+          "id": "c",
+          "text": "arbuz"
+        },
+        {
+          "id": "d",
+          "text": "kalafior"
+        },
+        {
+          "id": "e",
+          "text": "marchewka"
+        },
+        {
+          "id": "f",
+          "text": "gruszki"
+        }
+      ],
+      "type": "multi",
+      "answer": [
+        "b",
+        "c",
+        "f"
+      ]
+    },
+    {
+      "id": "hurra2_l16_q002",
+      "number": 2,
+      "prompt": "Proszę wybrać warzywa:",
+      "options": [
+        {
+          "id": "a",
+          "text": "brzoskwinie"
+        },
+        {
+          "id": "b",
+          "text": "truskawki"
+        },
+        {
+          "id": "c",
+          "text": "kalafior"
+        },
+        {
+          "id": "d",
+          "text": "ziemniaki"
+        },
+        {
+          "id": "e",
+          "text": "rzodkiewka"
+        },
+        {
+          "id": "f",
+          "text": "winogrona"
+        }
+      ],
+      "type": "multi",
+      "answer": [
+        "c",
+        "d",
+        "e"
+      ]
+    },
+    {
+      "id": "hurra2_l16_q003",
+      "number": 3,
+      "prompt": "Proszę wybrać nabiał:",
+      "options": [
+        {
+          "id": "a",
+          "text": "jogurt"
+        },
+        {
+          "id": "b",
+          "text": "kurczak"
+        },
+        {
+          "id": "c",
+          "text": "śmietana"
+        },
+        {
+          "id": "d",
+          "text": "płatki śniadaniowe"
+        },
+        {
+          "id": "e",
+          "text": "ser"
+        },
+        {
+          "id": "f",
+          "text": "kasza"
+        },
+        {
+          "id": "g",
+          "text": "mleko"
+        }
+      ],
+      "type": "multi",
+      "answer": [
+        "a",
+        "c",
+        "e",
+        "g"
+      ]
+    },
+    {
+      "id": "hurra2_l16_q004",
+      "number": 4,
+      "prompt": "Proszę wybrać naczynia:",
+      "options": [
+        {
+          "id": "a",
+          "text": "garnek"
+        },
+        {
+          "id": "b",
+          "text": "kubek"
+        },
+        {
+          "id": "c",
+          "text": "doniczka"
+        },
+        {
+          "id": "d",
+          "text": "nóż"
+        },
+        {
+          "id": "e",
+          "text": "patelnia"
+        },
+        {
+          "id": "f",
+          "text": "kieliszek"
+        },
+        {
+          "id": "g",
+          "text": "widelec"
+        }
+      ],
+      "type": "multi",
+      "answer": [
+        "a",
+        "b",
+        "e",
+        "f"
+      ]
+    },
+    {
+      "id": "hurra2_l16_q005",
+      "number": 5,
+      "prompt": "Proszę wybrać sztućce:",
+      "options": [
+        {
+          "id": "a",
+          "text": "filiżanka"
+        },
+        {
+          "id": "b",
+          "text": "nóż"
+        },
+        {
+          "id": "c",
+          "text": "łyżka"
+        },
+        {
+          "id": "d",
+          "text": "talerz"
+        },
+        {
+          "id": "e",
+          "text": "garnek"
+        },
+        {
+          "id": "f",
+          "text": "widelec"
+        }
+      ],
+      "type": "multi",
+      "answer": [
+        "b",
+        "c",
+        "f"
+      ]
+    },
+    {
+      "id": "hurra2_l16_q006",
+      "number": 6,
+      "prompt": "Rodzice codziennie (jeść) mięso.",
+      "options": [
+        {
+          "id": "a",
+          "text": "jedą"
+        },
+        {
+          "id": "b",
+          "text": "jedzą"
+        },
+        {
+          "id": "c",
+          "text": "jemy"
+        },
+        {
+          "id": "d",
+          "text": "jecie"
+        }
+      ],
+      "type": "single",
+      "answer": "b"
+    },
+    {
+      "id": "hurra2_l16_q007",
+      "number": 7,
+      "prompt": "Ona (nie/jeść) ryb.",
+      "options": [
+        {
+          "id": "a",
+          "text": "nie jeść"
+        },
+        {
+          "id": "b",
+          "text": "nie je"
+        },
+        {
+          "id": "c",
+          "text": "nie jem"
+        },
+        {
+          "id": "d",
+          "text": "nie jesz"
+        }
+      ],
+      "type": "single",
+      "answer": "b"
+    },
+    {
+      "id": "hurra2_l16_q008",
+      "number": 8,
+      "prompt": "Często z koleżanką (pić) kawę w tej kawiarni.",
+      "options": [
+        {
+          "id": "a",
+          "text": "pije"
+        },
+        {
+          "id": "b",
+          "text": "pijemy"
+        },
+        {
+          "id": "c",
+          "text": "piją"
+        },
+        {
+          "id": "d",
+          "text": "pijecie"
+        }
+      ],
+      "type": "single",
+      "answer": "b"
+    },
+    {
+      "id": "hurra2_l16_q009",
+      "number": 9,
+      "prompt": "Czy (ty- pić) mleko?",
+      "options": [
+        {
+          "id": "a",
+          "text": "piję"
+        },
+        {
+          "id": "b",
+          "text": "pijesz"
+        },
+        {
+          "id": "c",
+          "text": "piją"
+        },
+        {
+          "id": "d",
+          "text": "pijecie"
+        }
+      ],
+      "type": "single",
+      "answer": "b"
+    },
+    {
+      "id": "hurra2_l16_q010",
+      "number": 10,
+      "prompt": "Wczoraj (ja, r.m- jeść) sushi.",
+      "options": [
+        {
+          "id": "a",
+          "text": "jadłam"
+        },
+        {
+          "id": "b",
+          "text": "jadłem"
+        },
+        {
+          "id": "c",
+          "text": "jadł"
+        }
+      ],
+      "type": "single",
+      "answer": "b"
+    },
+    {
+      "id": "hurra2_l16_q011",
+      "number": 11,
+      "prompt": "(Zjeść -ty) całą czekoladę?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Zjadł"
+        },
+        {
+          "id": "b",
+          "text": "Zjadłeś"
+        },
+        {
+          "id": "c",
+          "text": "Zjadły"
+        },
+        {
+          "id": "d",
+          "text": "Zjedliście"
+        }
+      ],
+      "type": "single",
+      "answer": "b"
+    },
+    {
+      "id": "hurra2_l16_q012",
+      "number": 12,
+      "prompt": "Włożyłeś makaron do .....?",
+      "options": [
+        {
+          "id": "a",
+          "text": "puszki"
+        },
+        {
+          "id": "b",
+          "text": "słoika"
+        },
+        {
+          "id": "c",
+          "text": "garnka"
+        },
+        {
+          "id": "d",
+          "text": "doniczki"
+        }
+      ],
+      "type": "single",
+      "answer": "c"
+    },
+    {
+      "id": "hurra2_l16_q013",
+      "number": 13,
+      "prompt": "Mam ochotę na coś słodkiego. Podasz mi.... miodu.",
+      "options": [
+        {
+          "id": "a",
+          "text": "puszkę"
+        },
+        {
+          "id": "b",
+          "text": "słoik"
+        },
+        {
+          "id": "c",
+          "text": "pudełko"
+        },
+        {
+          "id": "d",
+          "text": "doniczkę"
+        }
+      ],
+      "type": "single",
+      "answer": "b"
+    },
+    {
+      "id": "hurra2_l16_q014",
+      "number": 14,
+      "prompt": "Herbatę pijemy z.....",
+      "options": [
+        {
+          "id": "a",
+          "text": "garnka"
+        },
+        {
+          "id": "b",
+          "text": "kubka"
+        },
+        {
+          "id": "c",
+          "text": "filiżanki"
+        },
+        {
+          "id": "d",
+          "text": "kieliszka"
+        },
+        {
+          "id": "e",
+          "text": "czaszki"
+        }
+      ],
+      "type": "multi",
+      "answer": [
+        "b",
+        "c"
+      ]
+    },
+    {
+      "id": "hurra2_l16_q015",
+      "number": 15,
+      "prompt": "Zjadłeś/zjadłaś pyszne lody. Mówisz:",
+      "options": [
+        {
+          "id": "a",
+          "text": "Ohyda!"
+        },
+        {
+          "id": "b",
+          "text": "Niebo w gębie!"
+        },
+        {
+          "id": "c",
+          "text": "Palce lizać!"
+        },
+        {
+          "id": "d",
+          "text": "Może być."
+        }
+      ],
+      "type": "multi",
+      "answer": [
+        "b",
+        "c"
+      ]
+    },
+    {
+      "id": "hurra2_l16_q016",
+      "number": 16,
+      "prompt": "Proszę wybrać zwroty pozytywne:",
+      "options": [
+        {
+          "id": "a",
+          "text": "Pyszne!"
+        },
+        {
+          "id": "b",
+          "text": "Okropne!"
+        },
+        {
+          "id": "c",
+          "text": "Smakowało mi,ale"
+        },
+        {
+          "id": "d",
+          "text": "Niebo w gębie!"
+        },
+        {
+          "id": "e",
+          "text": "Wyśmienite!"
+        },
+        {
+          "id": "f",
+          "text": "Fuj!"
+        }
+      ],
+      "type": "multi",
+      "answer": [
+        "a",
+        "d",
+        "e"
+      ]
+    },
+    {
+      "id": "hurra2_l16_q017",
+      "number": 17,
+      "prompt": "....... nie jest obowiązkowy, choć w dobrym tonie jest nagrodzić w ten sposób kelnera.",
+      "options": [
+        {
+          "id": "a",
+          "text": "napiwek"
+        },
+        {
+          "id": "b",
+          "text": "rachunek"
+        },
+        {
+          "id": "c",
+          "text": "podziękowanie"
+        }
+      ],
+      "type": "single",
+      "answer": "a"
+    },
+    {
+      "id": "hurra2_l16_q018",
+      "number": 18,
+      "prompt": "Znalazłeś/znalazłaś w zupie włos. Mówisz:",
+      "options": [
+        {
+          "id": "a",
+          "text": "Może być."
+        },
+        {
+          "id": "b",
+          "text": "Obrzydliwe."
+        },
+        {
+          "id": "c",
+          "text": "Wyśmienite."
+        },
+        {
+          "id": "d",
+          "text": "Palce lizać."
+        }
+      ],
+      "type": "single",
+      "answer": "b"
+    },
+    {
+      "id": "hurra2_l16_q019",
+      "number": 19,
+      "prompt": "Od kilku lat piję herbatę bez (cukier).",
+      "options": [
+        {
+          "id": "a",
+          "text": "cukier"
+        },
+        {
+          "id": "b",
+          "text": "cukrem"
+        },
+        {
+          "id": "c",
+          "text": "cukru"
+        },
+        {
+          "id": "d",
+          "text": "cukieru"
+        }
+      ],
+      "type": "single",
+      "answer": "c"
+    },
+    {
+      "id": "hurra2_l16_q020",
+      "number": 20,
+      "prompt": "W (lodówka) jest jeszcze trochę mięsa.",
+      "options": [
+        {
+          "id": "a",
+          "text": "lodówkie"
+        },
+        {
+          "id": "b",
+          "text": "lodówce"
+        },
+        {
+          "id": "c",
+          "text": "lodówka"
+        }
+      ],
+      "type": "single",
+      "answer": "b"
+    },
+    {
+      "id": "hurra2_l16_q021",
+      "number": 21,
+      "prompt": "Czekolada jest.....",
+      "options": [
+        {
+          "id": "a",
+          "text": "słodka"
+        },
+        {
+          "id": "b",
+          "text": "gorzka"
+        },
+        {
+          "id": "c",
+          "text": "kwaśna"
+        },
+        {
+          "id": "d",
+          "text": "kiszona"
+        }
+      ],
+      "type": "multi",
+      "answer": [
+        "a",
+        "b"
+      ]
+    },
+    {
+      "id": "hurra2_l16_q022",
+      "number": 22,
+      "prompt": "Pierogi są.....",
+      "options": [
+        {
+          "id": "a",
+          "text": "kaloryczne"
+        },
+        {
+          "id": "b",
+          "text": "tłuste"
+        },
+        {
+          "id": "c",
+          "text": "chude"
+        },
+        {
+          "id": "d",
+          "text": "słodkie"
+        },
+        {
+          "id": "e",
+          "text": "kiszone"
+        }
+      ],
+      "type": "multi",
+      "answer": [
+        "a",
+        "b",
+        "d"
+      ]
+    },
+    {
+      "id": "hurra2_l16_q023",
+      "number": 23,
+      "prompt": "Obieramy ....",
+      "options": [
+        {
+          "id": "a",
+          "text": "sok"
+        },
+        {
+          "id": "b",
+          "text": "ziemniaki"
+        },
+        {
+          "id": "c",
+          "text": "herbatę"
+        },
+        {
+          "id": "d",
+          "text": "marchewkę"
+        },
+        {
+          "id": "e",
+          "text": "chleb"
+        }
+      ],
+      "type": "multi",
+      "answer": [
+        "b",
+        "d"
+      ]
+    },
+    {
+      "id": "hurra2_l16_q024",
+      "number": 24,
+      "prompt": "Przepis to....",
+      "options": [
+        {
+          "id": "a",
+          "text": "rachunek"
+        },
+        {
+          "id": "b",
+          "text": "instrukcja, recepta"
+        },
+        {
+          "id": "c",
+          "text": "lista zakupów"
+        }
+      ],
+      "type": "single",
+      "answer": "b"
+    }
+  ]
+}
