@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
-export default function DeckRedirectPage() {
+export default function ClassPage() {
   redirect("/class/dict");
 }

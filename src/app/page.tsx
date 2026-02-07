@@ -37,7 +37,7 @@ export default async function HomePage() {
               {t.home.start}
             </Link>
             <Link
-              href="/deck"
+              href="/class/dict"
               className="rounded-full border border-ink/20 px-6 py-3 text-sm font-semibold text-ink hover:bg-ink/5"
             >
               {t.home.explore}
@@ -77,7 +77,7 @@ export default async function HomePage() {
           {
             title: t.home.cards.dictionary,
             text: t.home.cards.dictionaryText,
-            href: "/deck",
+            href: "/class/dict",
             cta: t.home.cards.dictionaryCta,
             icon: BookBookmark,
             tone: "bg-terracotta/20 text-terracotta"
@@ -85,7 +85,7 @@ export default async function HomePage() {
           {
             title: t.home.cards.tests,
             text: t.home.cards.testsText,
-            href: "/tests",
+            href: "/class/tests",
             cta: t.home.cards.testsCta,
             icon: TestTube,
             tone: "bg-moss/20 text-moss"
@@ -93,7 +93,7 @@ export default async function HomePage() {
           {
             title: t.home.cards.reading,
             text: t.home.cards.readingText,
-            href: "/reading",
+            href: "/class/reading",
             cta: t.home.cards.readingCta,
             icon: BookOpen,
             tone: "bg-gold/30 text-terracotta"
@@ -101,7 +101,7 @@ export default async function HomePage() {
           {
             title: t.home.cards.workbook,
             text: t.home.cards.workbookText,
-            href: "/workbook",
+            href: "/class/workbook",
             cta: t.home.cards.workbookCta,
             icon: NotePencil,
             tone: "bg-ink/10 text-ink"
@@ -109,7 +109,7 @@ export default async function HomePage() {
           {
             title: t.home.cards.notes,
             text: t.home.cards.notesText,
-            href: "/deck",
+            href: "/class/dict",
             cta: t.home.cards.notesCta,
             icon: Sparkle,
             tone: "bg-terracotta/15 text-terracotta"

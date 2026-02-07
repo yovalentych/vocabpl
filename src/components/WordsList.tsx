@@ -62,6 +62,7 @@ export default function WordsList() {
   const [trainerReveal, setTrainerReveal] = useState(false);
   const [trainerCorrect, setTrainerCorrect] = useState<Record<string, boolean>>({});
   const [trainerOptions, setTrainerOptions] = useState<Record<string, string[]>>({});
+  const [showControls, setShowControls] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editPl, setEditPl] = useState("");
   const [editUk, setEditUk] = useState("");
@@ -703,6 +704,24 @@ export default function WordsList() {
             className="w-full rounded-full border border-ink/20 bg-paper px-4 py-2 text-sm"
           />
           <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={() => setShowControls((prev) => !prev)}
+              className="rounded-full border border-ink/20 px-4 py-2 text-xs font-semibold text-ink hover:bg-ink/5"
+            >
+              {t.deck.controls}
+            </button>
+            <button
+              onClick={() => setTrainerOpen(true)}
+              className="rounded-full border border-ink/20 px-4 py-2 text-xs font-semibold text-ink hover:bg-ink/5 disabled:opacity-60"
+              disabled={locked}
+            >
+              {t.deck.trainerOpen}
+            </button>
+          </div>
+        </div>
+
+        {showControls && (
+          <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-ink/10 bg-paper/70 px-4 py-3 text-xs text-ink/70">
             <div className="flex items-center gap-2">
               <span className="text-xs uppercase tracking-[0.2em] text-ink/40">{t.deck.sortLabel}</span>
               <select
@@ -729,49 +748,36 @@ export default function WordsList() {
               />
               {t.common.hideTranslation}
             </label>
-            <button
-              onClick={() => setTrainerOpen(true)}
-              className="rounded-full border border-ink/20 px-4 py-2 text-xs font-semibold text-ink hover:bg-ink/5 disabled:opacity-60"
-              disabled={locked}
-            >
-              {t.deck.trainerOpen}
-            </button>
           </div>
-        </div>
+        )}
       </div>
 
       {type === "all" && groupedItems.length > 1 && (
         <div className="rounded-3xl border border-ink/10 bg-paper/80 p-5 shadow-soft">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <p className="text-xs uppercase tracking-[0.3em] text-ink/40">{t.deck.indexTitle}</p>
-              <p className="text-sm text-ink/60">{t.deck.indexHint}</p>
-            </div>
-            <div className="flex flex-wrap items-center gap-1">
+          <div className="flex flex-wrap items-center gap-1">
+            <button
+              onClick={() => setActiveLetter("all")}
+              className={`h-9 rounded-full border px-3 text-[11px] font-semibold ${
+                activeLetter === "all"
+                  ? "border-ink bg-ink text-paper"
+                  : "border-ink/10 bg-paper text-ink/70 hover:border-ink/30 hover:bg-ink/5"
+              }`}
+            >
+              {t.deck.indexAll}
+            </button>
+            {groupedItems.map(([letter]) => (
               <button
-                onClick={() => setActiveLetter("all")}
-                className={`h-9 rounded-full border px-3 text-[11px] font-semibold ${
-                  activeLetter === "all"
+                key={`jump-${letter}`}
+                onClick={() => setActiveLetter(letter)}
+                className={`h-9 w-9 rounded-full border text-xs font-semibold ${
+                  activeLetter === letter
                     ? "border-ink bg-ink text-paper"
                     : "border-ink/10 bg-paper text-ink/70 hover:border-ink/30 hover:bg-ink/5"
                 }`}
               >
-                {t.deck.indexAll}
+                {letter}
               </button>
-              {groupedItems.map(([letter]) => (
-                <button
-                  key={`jump-${letter}`}
-                  onClick={() => setActiveLetter(letter)}
-                  className={`h-9 w-9 rounded-full border text-xs font-semibold ${
-                    activeLetter === letter
-                      ? "border-ink bg-ink text-paper"
-                      : "border-ink/10 bg-paper text-ink/70 hover:border-ink/30 hover:bg-ink/5"
-                  }`}
-                >
-                  {letter}
-                </button>
-              ))}
-            </div>
+            ))}
           </div>
         </div>
       )}

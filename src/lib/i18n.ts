@@ -13,6 +13,7 @@ export const dictionary = {
       tests: "Testy",
       leaderboard: "Ranking",
       admin: "Admin",
+      class: "Klasa",
       login: "Zaloguj",
       register: "Rejestracja",
       cabinet: "Kabiniet",
@@ -264,6 +265,7 @@ export const dictionary = {
       trainerSetup: "Ustawienia",
       trainerStart: "Rozpocznij",
       trainerMode: "Tryb",
+      controls: "Ustawienia",
       trainerModes: {
         mcq: "Test wyboru",
         typing: "Wpisz tłumaczenie",
@@ -571,6 +573,7 @@ export const dictionary = {
       tests: "Тести",
       leaderboard: "Рейтинг",
       admin: "Адмін",
+      class: "Клас",
       login: "Вхід",
       register: "Реєстрація",
       cabinet: "Кабінет",
@@ -822,6 +825,7 @@ export const dictionary = {
       trainerSetup: "Налаштування",
       trainerStart: "Почати",
       trainerMode: "Режим",
+      controls: "Налаштування",
       trainerModes: {
         mcq: "Тест вибору",
         typing: "Впиши переклад",
