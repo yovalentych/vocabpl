@@ -3,8 +3,6 @@ import { getAuthUser } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { sendFeedbackEmail } from "@/lib/mailer";
 import { ObjectId } from "mongodb";
-export const dynamic = "force-dynamic";
-
 
 export async function POST(request: Request) {
   const auth = await getAuthUser();

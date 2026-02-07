@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useLocale } from "@/components/LocaleProvider";
-import { plans } from "@/lib/plans";
+import { plans as defaultPlans, Plan } from "@/lib/plans";
 type UserProfile = {
   username: string;
   name?: string;
@@ -33,6 +33,9 @@ export default function CabinetClient({ username }: { username: string }) {
   const [ackReset, setAckReset] = useState(false);
   const [ackDelete, setAckDelete] = useState(false);
   const [dangerStatus, setDangerStatus] = useState<"idle" | "saving" | "error" | "done">("idle");
+  const hasPromoAccess = Boolean(profile?.subscription?.promoCode);
+  const [billingPlans, setBillingPlans] = useState<Plan[]>(defaultPlans);
+  const [blurPlans, setBlurPlans] = useState(false);
 
   useEffect(() => {
     if (resendCooldown <= 0) return;
@@ -52,6 +55,17 @@ export default function CabinetClient({ username }: { username: string }) {
 
   useEffect(() => {
     loadProfile();
+  }, []);
+
+  useEffect(() => {
+    async function loadBilling() {
+      const res = await fetch("/api/billing");
+      if (!res.ok) return;
+      const data = await res.json();
+      if (Array.isArray(data?.plans)) setBillingPlans(data.plans);
+      setBlurPlans(Boolean(data?.blurPlans));
+    }
+    loadBilling();
   }, []);
 
   async function requestPasswordCode() {
@@ -261,8 +275,17 @@ export default function CabinetClient({ username }: { username: string }) {
               t.cabinet.billingInactive
             )}
           </div>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
-            {plans.map((plan) => (
+          {(hasPromoAccess || blurPlans) && (
+            <div className="mt-4 rounded-2xl border border-ink/10 bg-paper/60 px-4 py-3 text-sm text-ink/70">
+              {hasPromoAccess ? t.cabinet.billingPromoNotice : t.cabinet.billingSoonNotice}
+            </div>
+          )}
+          <div
+            className={`mt-4 grid gap-3 sm:grid-cols-2 ${
+              hasPromoAccess || blurPlans ? "pointer-events-none select-none blur-[8px] opacity-40" : ""
+            }`}
+          >
+            {billingPlans.map((plan) => (
               <div key={plan.id} className="rounded-2xl border border-ink/10 bg-paper/80 p-4">
                 <p className="text-xs uppercase tracking-[0.2em] text-ink/50">
                   {t.cabinet.planLabels[plan.id]}

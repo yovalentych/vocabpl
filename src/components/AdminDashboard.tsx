@@ -4,6 +4,7 @@ import { useState } from "react";
 import AdminUsersPanel from "@/components/AdminUsersPanel";
 import AdminImportPanel from "@/components/AdminImportPanel";
 import PromoCodesPanel from "@/components/PromoCodesPanel";
+import AdminBillingPanel from "@/components/AdminBillingPanel";
 import { useLocale } from "@/components/LocaleProvider";
 
 type Summary = {
@@ -94,7 +95,12 @@ export default function AdminDashboard({ summary }: { summary: Summary }) {
             </div>
           )}
 
-          {tab === "monetization" && <PromoCodesPanel />}
+          {tab === "monetization" && (
+            <div className="space-y-6">
+              <AdminBillingPanel />
+              <PromoCodesPanel />
+            </div>
+          )}
 
           {tab === "checklist" && (
             <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">

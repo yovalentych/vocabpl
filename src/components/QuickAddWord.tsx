@@ -19,7 +19,7 @@ function parseSelection(text: string) {
 
 export default function QuickAddWord() {
   const { t } = useLocale();
-  const { loading, isAuthenticated, isActive } = useAuthStatus();
+  const { loading, isAuthenticated } = useAuthStatus();
   const [open, setOpen] = useState(false);
   const [pl, setPl] = useState("");
   const [uk, setUk] = useState("");
@@ -27,7 +27,7 @@ export default function QuickAddWord() {
   const [zIndex, setZIndex] = useState(50);
 
   useEffect(() => {
-    if (loading || !isAuthenticated || !isActive) return;
+    if (loading || !isAuthenticated) return;
     function onKeyDown(event: KeyboardEvent) {
       if ((event.metaKey || event.ctrlKey) && event.shiftKey && event.key.toLowerCase() === "k") {
         event.preventDefault();
@@ -41,7 +41,7 @@ export default function QuickAddWord() {
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [loading, isAuthenticated, isActive]);
+  }, [loading, isAuthenticated]);
 
   useEffect(() => {
     if (!open) return;
@@ -51,7 +51,7 @@ export default function QuickAddWord() {
   }, [open]);
 
   useEffect(() => {
-    if (loading || !isAuthenticated || !isActive) return;
+    if (loading || !isAuthenticated) return;
     function onOpen() {
       const selection = window.getSelection()?.toString() || "";
       const parsed = parseSelection(selection);
@@ -62,7 +62,7 @@ export default function QuickAddWord() {
     }
     window.addEventListener("open-quick-add", onOpen);
     return () => window.removeEventListener("open-quick-add", onOpen);
-  }, [loading, isAuthenticated, isActive]);
+  }, [loading, isAuthenticated]);
 
   async function save() {
     setStatus("saving");
@@ -82,7 +82,7 @@ export default function QuickAddWord() {
     setTimeout(() => setOpen(false), 400);
   }
 
-  if (loading || !isAuthenticated || !isActive || !open) return null;
+  if (loading || !isAuthenticated || !open) return null;
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-ink/30 px-4" style={{ zIndex }}>

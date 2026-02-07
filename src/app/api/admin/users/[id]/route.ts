@@ -2,8 +2,6 @@ import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 import { getAuthUser } from "@/lib/auth";
 import { getDb } from "@/lib/db";
-export const dynamic = "force-dynamic";
-
 
 export async function GET(_: Request, { params }: { params: { id: string } }) {
   const auth = await getAuthUser();

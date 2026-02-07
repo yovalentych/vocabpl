@@ -3,8 +3,6 @@ import crypto from "crypto";
 import { getJwtSecret, getUserByEmail } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { sendVerificationEmail } from "@/lib/mailer";
-export const dynamic = "force-dynamic";
-
 
 const CODE_TTL_MINUTES = 15;
 

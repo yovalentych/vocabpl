@@ -1,5 +1,4 @@
 import { connectMongo } from "@/lib/mongodb";
-import type { Db } from "mongodb";
 
 export type Word = {
   _id?: string;
@@ -31,36 +30,6 @@ export type TestQuestion = {
 };
 
 export async function getDb() {
-  if (!process.env.MONGODB_URI && (process.env.CI === "true" || process.env.NEXT_PHASE === "phase-production-build")) {
-    const mockCursor = {
-      project() {
-        return this;
-      },
-      sort() {
-        return this;
-      },
-      limit() {
-        return this;
-      },
-      toArray: async () => []
-    };
-
-    const mockCollection = {
-      find: () => mockCursor,
-      aggregate: () => mockCursor,
-      findOne: async () => null,
-      countDocuments: async () => 0,
-      updateOne: async () => ({ acknowledged: true, matchedCount: 0, modifiedCount: 0, upsertedId: null }),
-      insertOne: async () => ({ acknowledged: true, insertedId: null }),
-      deleteOne: async () => ({ acknowledged: true, deletedCount: 0 }),
-      bulkWrite: async () => ({ insertedCount: 0, matchedCount: 0, modifiedCount: 0, upsertedCount: 0 })
-    };
-
-    return {
-      collection: () => mockCollection
-    } as unknown as Db;
-  }
-
   const client = await connectMongo();
   const dbName = process.env.MONGODB_DB || "polish_vocab";
   return client.db(dbName);

@@ -2,8 +2,6 @@ import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 import { getAuthUser, hashPassword, verifyPassword } from "@/lib/auth";
 import { getDb } from "@/lib/db";
-export const dynamic = "force-dynamic";
-
 
 export async function POST(request: Request) {
   const auth = await getAuthUser();

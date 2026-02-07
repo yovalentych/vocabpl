@@ -348,6 +348,11 @@ export const dictionary = {
         active: "Aktywny",
         used: "Wykorzystany"
       },
+      billingTitle: "Płatności",
+      billingSubtitle: "Zarządzaj cenami planów i widocznością cennika.",
+      billingBlur: "Rozmyj plany dla użytkowników",
+      billingSaved: "Zapisano ustawienia.",
+      billingError: "Nie udało się zapisać.",
       promoDurations: {
         week: "Tydzień",
         month: "Miesiąc",
@@ -423,7 +428,6 @@ export const dictionary = {
       verifySent: "Kod został wysłany na email.",
       verifyResent: "Kod został wysłany ponownie.",
       verifyError: "Nie udało się potwierdzić emaila.",
-      demo: "Autoryzacja działa lokalnie w tej wersji.",
       error: "Błąd logowania"
     },
     cabinet: {
@@ -472,6 +476,8 @@ export const dictionary = {
       promoInactive: "Brak aktywnej subskrypcji.",
       billingTitle: "Plan i płatność",
       billingSubtitle: "Wybierz okres dostępu i opłać przez monobank.",
+      billingPromoNotice: "Dostęp aktywny z promokodu. Plany są w przygotowaniu.",
+      billingSoonNotice: "Plany są w przygotowaniu.",
       billingActive: "Pozostało dni:",
       billingDays: "dni",
       billingInactive: "Konto w trybie darmowym.",
@@ -900,6 +906,11 @@ export const dictionary = {
         active: "Активний",
         used: "Використаний"
       },
+      billingTitle: "Оплати",
+      billingSubtitle: "Керуй цінами планів та видимістю.",
+      billingBlur: "Заблюрити плани для користувачів",
+      billingSaved: "Налаштування збережені.",
+      billingError: "Не вдалося зберегти.",
       promoDurations: {
         week: "Тиждень",
         month: "Місяць",
@@ -975,7 +986,6 @@ export const dictionary = {
       verifySent: "Код надіслано на email.",
       verifyResent: "Код надіслано повторно.",
       verifyError: "Не вдалося підтвердити email.",
-      demo: "Авторизація працює локально у цій версії.",
       error: "Помилка входу"
     },
     cabinet: {
@@ -1024,6 +1034,8 @@ export const dictionary = {
       promoInactive: "Немає активної підписки.",
       billingTitle: "План і оплата",
       billingSubtitle: "Обери період доступу та сплати через monobank.",
+      billingPromoNotice: "Доступ активний за промокодом. Плани зараз у розробці.",
+      billingSoonNotice: "Плани зараз у розробці.",
       billingActive: "Залишилось днів:",
       billingDays: "днів",
       billingInactive: "Акаунт у безкоштовному режимі.",

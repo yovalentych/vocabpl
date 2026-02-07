@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 import { getAuthUser } from "@/lib/auth";
 import { getDb } from "@/lib/db";
-export const dynamic = "force-dynamic";
-
 
 type ProgressPayload = {
   testId: string;

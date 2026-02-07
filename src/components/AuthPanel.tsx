@@ -489,7 +489,6 @@ export default function AuthPanel({ initialMode = "login" }: { initialMode?: "lo
           )}
 
           {message && <p className="mt-4 text-sm text-terracotta">{message}</p>}
-          <p className="mt-6 text-xs text-ink/50">{t.auth.demo}</p>
         </div>
       </div>
     </div>

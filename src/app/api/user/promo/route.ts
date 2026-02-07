@@ -3,8 +3,6 @@ import { ObjectId } from "mongodb";
 import { getAuthUser } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { getExpiryDate, PromoDuration } from "@/lib/promo";
-export const dynamic = "force-dynamic";
-
 
 export async function POST(request: Request) {
   const auth = await getAuthUser();

@@ -2,8 +2,6 @@ import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { getJwtSecret, getUserByEmail, hashPassword } from "@/lib/auth";
 import { getDb } from "@/lib/db";
-export const dynamic = "force-dynamic";
-
 
 function hashCode(code: string) {
   return crypto.createHash("sha256").update(`${code}:${getJwtSecret()}`).digest("hex");

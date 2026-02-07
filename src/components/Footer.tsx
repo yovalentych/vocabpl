@@ -5,7 +5,7 @@ export default function Footer() {
   const locale = getServerLocale();
   const year = new Date().getFullYear();
   return (
-    <footer className="mt-10 border-t border-ink/10 bg-paper/60">
+    <footer className="border-t border-ink/10 bg-paper/60">
       <div className="mx-auto w-full max-w-6xl px-6 py-6">
         <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-ink/60">
           <div className="flex flex-wrap items-center gap-3">

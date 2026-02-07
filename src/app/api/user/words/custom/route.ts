@@ -3,8 +3,6 @@ import { ObjectId } from "mongodb";
 import { getAuthUser } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { isSubscriptionActive } from "@/lib/subscription";
-export const dynamic = "force-dynamic";
-
 
 function normalizeText(value: string) {
   return value

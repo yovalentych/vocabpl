@@ -10,7 +10,6 @@ import NotesManager from "@/components/NotesManager";
 import Footer from "@/components/Footer";
 import { LocaleProvider } from "@/components/LocaleProvider";
 import { getServerLocale } from "@/lib/i18n-server";
-import FooterHotkeys from "@/components/FooterHotkeys";
 import { AuthStatusProvider } from "@/components/useAuthStatus";
 
 const displayFont = Outfit({
@@ -45,16 +44,13 @@ export default function RootLayout({
               <NavBar />
               <QuickAddWord />
               <NotesManager />
-              <div className="flex-1">{children}</div>
-              <Footer />
-              <div className="mx-auto w-full max-w-6xl px-6 pb-6">
-                <div className="flex flex-wrap items-center justify-between gap-3 text-[11px] text-ink/40">
-                  <FooterHotkeys />
-                  <div className="flex flex-wrap items-center gap-3">
-                    <FloatingNotesButton />
-                    <FloatingAddWordButton />
-                  </div>
-                </div>
+              <div className="flex min-h-[calc(100vh-72px)] flex-col transition-[padding] duration-300 ease-out md:pl-[var(--sidebar-width,0px)]">
+                <div className="flex-1">{children}</div>
+                <Footer />
+              </div>
+              <div className="fixed bottom-20 right-6 z-40 flex flex-col gap-3">
+                <FloatingNotesButton />
+                <FloatingAddWordButton />
               </div>
               <CookieConsent />
             </div>
