@@ -1,0 +1,837 @@
+"use client";
+
+import { useState, useEffect, useMemo } from "react";
+import { useLocale } from "@/components/LocaleProvider";
+import { Word } from "@/lib/types";
+import { hasConsent, readPrefs, writePrefs } from "@/lib/prefs";
+import Loader from "@/components/ui/Loader";
+import Link from "next/link";
+import { ArrowLeft } from "@phosphor-icons/react";
+
+// Import new modular components
+import DictFilters from "./DictFilters";
+import DictAlphabetNav from "./DictAlphabetNav";
+import DictWordGrid from "./DictWordGrid";
+import WordAIModal from "./WordAIModal";
+
+export default function DictBrowse() {
+  const { t } = useLocale();
+
+  // All state from WordsList.tsx
+  const [type, setType] = useState<
+    | "all"
+    | "verbs"
+    | "adverbs"
+    | "adjectives"
+    | "slang"
+    | "others"
+    | "soft_swears"
+    | "clean_emotions"
+    | "abbreviations"
+    | "aspect_pairs"
+    | "favorites"
+    | "my_words"
+  >("all");
+  const [sort, setSort] = useState<"plAsc" | "plDesc" | "ukAsc" | "ukDesc">("plAsc");
+  const [search, setSearch] = useState("");
+  const [items, setItems] = useState<(Word & { duplicate?: boolean })[]>([]);
+  const [pairItems, setPairItems] = useState<
+    { id: string; imp: { pl: string; uk: string }; perf: { pl: string; uk: string }; pos: string }[]
+  >([]);
+  const [loading, setLoading] = useState(true);
+  const [locked, setLocked] = useState(false);
+  const [progressMap, setProgressMap] = useState<
+    Record<string, { seenCount: number; correctCount: number; lastSeen?: string }>
+  >({});
+  const [hideTranslations, setHideTranslations] = useState(false);
+  const [revealedMap, setRevealedMap] = useState<Record<string, boolean>>({});
+  const [markedMap, setMarkedMap] = useState<Record<string, boolean>>({});
+  const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
+  const [favoriteWords, setFavoriteWords] = useState<Word[]>([]);
+  const [myWordsTick, setMyWordsTick] = useState(0);
+  const [trainerOpen, setTrainerOpen] = useState(false);
+  const [trainerStep, setTrainerStep] = useState<"setup" | "train" | "done">("setup");
+  const [trainerMode, setTrainerMode] = useState<"mcq" | "typing" | "flash">("mcq");
+  const [trainerDirection, setTrainerDirection] = useState<"pluk" | "ukpl" | "mixed">("pluk");
+  const [trainerCount, setTrainerCount] = useState<10 | 20 | 30 | 50>(20);
+  const [trainerParts, setTrainerParts] = useState<
+    | "all"
+    | "verbs"
+    | "adverbs"
+    | "adjectives"
+    | "slang"
+    | "others"
+    | "soft_swears"
+    | "clean_emotions"
+    | "abbreviations"
+    | "my_words"
+  >("all");
+  const [trainerQueue, setTrainerQueue] = useState<Word[]>([]);
+  const [trainerIndex, setTrainerIndex] = useState(0);
+  const [trainerAnswer, setTrainerAnswer] = useState("");
+  const [trainerReveal, setTrainerReveal] = useState(false);
+  const [trainerCorrect, setTrainerCorrect] = useState<Record<string, boolean>>({});
+  const [trainerOptions, setTrainerOptions] = useState<Record<string, string[]>>({});
+  const [showControls, setShowControls] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editPl, setEditPl] = useState("");
+  const [editUk, setEditUk] = useState("");
+  const [editStatus, setEditStatus] = useState<"idle" | "saving" | "error">("idle");
+  const [activeLetter, setActiveLetter] = useState<string>("all");
+  const [aiModalWord, setAiModalWord] = useState<Word | null>(null);
+
+  // Load words based on type and search
+  useEffect(() => {
+    let mounted = true;
+    async function load() {
+      setLoading(true);
+      if (type === "favorites") {
+        setItems(favoriteWords);
+        setPairItems([]);
+        setLocked(false);
+        setLoading(false);
+        return;
+      }
+      if (type === "my_words") {
+        const res = await fetch(`/api/user/words/custom?search=${encodeURIComponent(search || "")}`);
+        const data = await res.json();
+        if (mounted) {
+          setItems(data.items || []);
+          setPairItems([]);
+          setLocked(false);
+          setLoading(false);
+        }
+        return;
+      }
+      if (type === "aspect_pairs") {
+        const res = await fetch("/api/verb-pairs");
+        const data = await res.json();
+        if (mounted) {
+          setLocked(Boolean(data.locked));
+          const list = (data.items || []).filter((item: any) => {
+            if (!search.trim()) return true;
+            const needle = search.trim().toLowerCase();
+            return (
+              item.imp?.pl?.toLowerCase().includes(needle) ||
+              item.imp?.uk?.toLowerCase().includes(needle) ||
+              item.perf?.pl?.toLowerCase().includes(needle) ||
+              item.perf?.uk?.toLowerCase().includes(needle)
+            );
+          });
+          setPairItems(list);
+          setItems([]);
+          setLoading(false);
+        }
+        return;
+      }
+      const params = new URLSearchParams();
+      if (type !== "all") params.set("type", type);
+      params.set("limit", "2000");
+      if (search.trim()) params.set("search", search.trim());
+      const res = await fetch(`/api/words?${params.toString()}`);
+      const data = await res.json();
+      if (mounted) {
+        setLocked(Boolean(data.locked));
+        setItems(data.items || []);
+        setPairItems([]);
+        setLoading(false);
+      }
+    }
+    load();
+    return () => {
+      mounted = false;
+    };
+  }, [type, search, favoriteWords, myWordsTick]);
+
+  // Reset active letter on type/search change
+  useEffect(() => {
+    setActiveLetter("all");
+  }, [type, search]);
+
+  // Load user progress
+  useEffect(() => {
+    let mounted = true;
+    async function loadProgress() {
+      const res = await fetch("/api/user/words/progress");
+      if (!res.ok) return;
+      const data = await res.json();
+      if (!mounted) return;
+      const map: Record<string, { seenCount: number; correctCount: number; lastSeen?: string }> = {};
+      for (const entry of data.wordProgress || []) {
+        if (!entry?.wordId) continue;
+        map[entry.wordId] = {
+          seenCount: Number(entry.seenCount || 0),
+          correctCount: Number(entry.correctCount || 0),
+          lastSeen: entry.lastSeen
+        };
+      }
+      setProgressMap(map);
+    }
+    loadProgress();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  // Load preferences
+  useEffect(() => {
+    if (!hasConsent()) return;
+    const prefs = readPrefs();
+    if (!prefs) return;
+    if (prefs.wordsSort) setSort(prefs.wordsSort as typeof sort);
+    if (typeof prefs.hideTranslations === "boolean") setHideTranslations(prefs.hideTranslations);
+    if (prefs.trainerMode) setTrainerMode(prefs.trainerMode as typeof trainerMode);
+    if (prefs.trainerDirection) setTrainerDirection(prefs.trainerDirection as typeof trainerDirection);
+    if (prefs.trainerCount) setTrainerCount(prefs.trainerCount as typeof trainerCount);
+    if (prefs.trainerParts) setTrainerParts(prefs.trainerParts as typeof trainerParts);
+  }, []);
+
+  // Save preferences
+  useEffect(() => {
+    if (!hasConsent()) return;
+    const current = readPrefs() || {};
+    writePrefs({
+      ...current,
+      wordsSort: sort,
+      hideTranslations,
+      trainerMode,
+      trainerDirection,
+      trainerCount,
+      trainerParts
+    });
+  }, [sort, hideTranslations, trainerMode, trainerDirection, trainerCount, trainerParts]);
+
+  // Load favorites list
+  useEffect(() => {
+    let mounted = true;
+    async function loadFavorites() {
+      const res = await fetch("/api/user/favorites");
+      if (!res.ok) return;
+      const data = await res.json();
+      if (!mounted) return;
+      const ids = Array.isArray(data.favorites) ? data.favorites : [];
+      setFavoriteIds(new Set(ids));
+    }
+    loadFavorites();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  // Load favorite words details
+  useEffect(() => {
+    let mounted = true;
+    async function loadFavoriteWords(ids: string[]) {
+      if (!ids.length) {
+        setFavoriteWords([]);
+        return;
+      }
+      const res = await fetch(`/api/words?ids=${ids.join(",")}`);
+      const data = await res.json();
+      if (!mounted) return;
+      setFavoriteWords(data.items || []);
+    }
+    loadFavoriteWords(Array.from(favoriteIds));
+    return () => {
+      mounted = false;
+    };
+  }, [favoriteIds]);
+
+  // Listen for my words updates
+  useEffect(() => {
+    function handleMyWordsUpdated() {
+      setMyWordsTick((prev) => prev + 1);
+    }
+    window.addEventListener("my-words-updated", handleMyWordsUpdated);
+    return () => window.removeEventListener("my-words-updated", handleMyWordsUpdated);
+  }, []);
+
+  // Compute sort field
+  const sortField = useMemo(() => (sort.startsWith("uk") ? "uk" : "pl"), [sort]);
+
+  // Sort items
+  const sortedItems = useMemo(() => {
+    const list = items.slice();
+    const compare = (a: Word, b: Word, field: "pl" | "uk", dir: "asc" | "desc") => {
+      const locale = field === "uk" ? "uk" : "pl";
+      const result = a[field].localeCompare(b[field], locale);
+      return dir === "asc" ? result : -result;
+    };
+    switch (sort) {
+      case "plDesc":
+        list.sort((a, b) => compare(a, b, "pl", "desc"));
+        break;
+      case "ukAsc":
+        list.sort((a, b) => compare(a, b, "uk", "asc"));
+        break;
+      case "ukDesc":
+        list.sort((a, b) => compare(a, b, "uk", "desc"));
+        break;
+      default:
+        list.sort((a, b) => compare(a, b, "pl", "asc"));
+        break;
+    }
+    return list;
+  }, [items, sort]);
+
+  // Group items by first letter
+  const groupedItems = useMemo(() => {
+    const groups = new Map<string, Word[]>();
+    for (const word of sortedItems) {
+      const value = sortField === "uk" ? word.uk : word.pl;
+      const letter = value?.trim().charAt(0).toUpperCase() || "#";
+      if (!groups.has(letter)) groups.set(letter, []);
+      groups.get(letter)?.push(word);
+    }
+    return Array.from(groups.entries());
+  }, [sortedItems, sortField]);
+
+  // Group pair items by first letter
+  const pairGroups = useMemo(() => {
+    const list = pairItems.slice();
+    list.sort((a, b) => a.imp.pl.localeCompare(b.imp.pl, "pl"));
+    const groups = new Map<string, typeof pairItems>();
+    for (const item of list) {
+      const letter = item.imp.pl?.trim().charAt(0).toUpperCase() || "#";
+      if (!groups.has(letter)) groups.set(letter, []);
+      groups.get(letter)?.push(item);
+    }
+    return Array.from(groups.entries());
+  }, [pairItems]);
+
+  // Helper functions
+  function getDecaySteps(lastSeen?: string) {
+    if (!lastSeen) return 0;
+    const last = new Date(lastSeen).getTime();
+    if (Number.isNaN(last)) return 0;
+    const days = Math.floor((Date.now() - last) / (1000 * 60 * 60 * 24));
+    return days >= 5 ? Math.floor(days / 5) : 0;
+  }
+
+  function getFilledDots(wordId: string) {
+    const progress = progressMap[wordId];
+    if (!progress) return 0;
+    const base = Math.min(5, Math.max(progress.correctCount || progress.seenCount || 0, 0));
+    const decay = getDecaySteps(progress.lastSeen);
+    return Math.max(0, base - decay);
+  }
+
+  async function markWord(wordId: string, correct: boolean) {
+    if (markedMap[wordId]) return;
+    setMarkedMap((prev) => ({ ...prev, [wordId]: true }));
+    const res = await fetch("/api/user/words/progress", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ wordId, correct, incrementSession: false })
+    }).catch(() => null);
+    if (!res) return;
+    const data = await res.json().catch(() => ({}));
+    if (data?.throttled) return;
+    setProgressMap((prev) => {
+      const current = prev[wordId] || { seenCount: 0, correctCount: 0 };
+      return {
+        ...prev,
+        [wordId]: {
+          seenCount: current.seenCount + 1,
+          correctCount: current.correctCount + (correct ? 1 : 0),
+          lastSeen: new Date().toISOString()
+        }
+      };
+    });
+  }
+
+  function shuffle<T>(list: T[]) {
+    const copy = list.slice();
+    for (let i = copy.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [copy[i], copy[j]] = [copy[j], copy[i]];
+    }
+    return copy;
+  }
+
+  function getDirectionForIndex(index: number) {
+    if (trainerDirection === "mixed") {
+      return index % 2 === 0 ? "pluk" : "ukpl";
+    }
+    return trainerDirection;
+  }
+
+  function getFront(word: Word, direction: "pluk" | "ukpl") {
+    return direction === "pluk" ? word.pl : word.uk;
+  }
+
+  function getBack(word: Word, direction: "pluk" | "ukpl") {
+    return direction === "pluk" ? word.uk : word.pl;
+  }
+
+  async function startTrainer() {
+    let list: Word[] = [];
+    let pool: Word[] = [];
+    if (trainerParts === "my_words") {
+      const res = await fetch(`/api/user/words/custom?limit=${trainerCount}`);
+      const data = await res.json();
+      const items: Word[] = Array.isArray(data.items) ? (data.items as Word[]) : [];
+      list = shuffle(items).slice(0, trainerCount);
+      pool = list;
+    } else {
+      const params = new URLSearchParams();
+      params.set("count", String(trainerCount));
+      if (trainerParts !== "all") params.set("type", trainerParts);
+      const res = await fetch(`/api/words/random?${params.toString()}`);
+      const data = await res.json();
+      const items: Word[] = Array.isArray(data.items) ? (data.items as Word[]) : [];
+      list = shuffle(items);
+
+      const poolRes = await fetch("/api/words?limit=200");
+      const poolData = await poolRes.json();
+      pool = Array.isArray(poolData.items) ? (poolData.items as Word[]) : [];
+    }
+
+    const optionsMap: Record<string, string[]> = {};
+    if (trainerMode === "mcq") {
+      for (let idx = 0; idx < list.length; idx += 1) {
+        const item = list[idx];
+        const direction = getDirectionForIndex(idx);
+        const correct = getBack(item, direction as "pluk" | "ukpl");
+        const distractors = shuffle(
+          pool
+            .filter((candidate: Word) => candidate.id !== item.id)
+            .map((candidate: Word) => getBack(candidate, direction as "pluk" | "ukpl"))
+        ).slice(0, 3);
+        optionsMap[item.id] = shuffle([correct, ...distractors]);
+      }
+    }
+    setTrainerOptions(optionsMap);
+    setTrainerQueue(list);
+    setTrainerIndex(0);
+    setTrainerAnswer("");
+    setTrainerReveal(false);
+    setTrainerCorrect({});
+    setTrainerStep("train");
+  }
+
+  function checkAnswer(word: Word, value: string) {
+    const direction = getDirectionForIndex(trainerIndex);
+    const expected = getBack(word, direction).trim().toLowerCase();
+    const actual = value.trim().toLowerCase();
+    return expected === actual;
+  }
+
+  function markTrainerResult(word: Word, correct: boolean) {
+    setTrainerCorrect((prev) => ({ ...prev, [word.id]: correct }));
+    markWord(word.id, correct);
+  }
+
+  function nextTrainer() {
+    if (trainerIndex >= trainerQueue.length - 1) {
+      setTrainerStep("done");
+      return;
+    }
+    setTrainerIndex((prev) => prev + 1);
+    setTrainerAnswer("");
+    setTrainerReveal(false);
+  }
+
+  async function toggleFavorite(wordId: string) {
+    const isFavorite = favoriteIds.has(wordId);
+    await fetch("/api/user/favorites", {
+      method: isFavorite ? "DELETE" : "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ wordId })
+    }).catch(() => null);
+    setFavoriteIds((prev) => {
+      const next = new Set(prev);
+      if (isFavorite) {
+        next.delete(wordId);
+      } else {
+        next.add(wordId);
+      }
+      return next;
+    });
+  }
+
+  async function deleteMyWord(wordId: string) {
+    await fetch(`/api/user/words/custom?id=${encodeURIComponent(wordId)}`, {
+      method: "DELETE"
+    }).catch(() => null);
+    setMyWordsTick((prev) => prev + 1);
+  }
+
+  function startEdit(word: Word & { duplicate?: boolean }) {
+    setEditingId(word.id);
+    setEditPl(word.pl);
+    setEditUk(word.uk);
+    setEditStatus("idle");
+  }
+
+  async function saveEdit() {
+    if (!editingId) return;
+    setEditStatus("saving");
+    const res = await fetch("/api/user/words/custom", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: editingId, pl: editPl, uk: editUk })
+    }).catch(() => null);
+    if (!res || !res.ok) {
+      setEditStatus("error");
+      return;
+    }
+    setEditStatus("idle");
+    setEditingId(null);
+    setEditPl("");
+    setEditUk("");
+    setMyWordsTick((prev) => prev + 1);
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Back to dict home */}
+      <Link
+        href="/class/dict"
+        className="inline-flex items-center gap-2 text-sm text-ink/60 transition hover:text-ink"
+      >
+        <ArrowLeft size={16} weight="bold" />
+        <span>Назад до словника</span>
+      </Link>
+
+      {/* Filters */}
+      <DictFilters
+        type={type}
+        search={search}
+        sort={sort}
+        hideTranslations={hideTranslations}
+        showControls={showControls}
+        locked={locked}
+        onTypeChange={(newType) => setType(newType as typeof type)}
+        onSearchChange={setSearch}
+        onSortChange={(newSort) => setSort(newSort as typeof sort)}
+        onHideTranslationsChange={(hide) => {
+          setHideTranslations(hide);
+          setRevealedMap({});
+          setMarkedMap({});
+        }}
+        onToggleControls={() => setShowControls((prev) => !prev)}
+        onOpenTrainer={() => setTrainerOpen(true)}
+      />
+
+      {/* Alphabet Navigation */}
+      {type === "all" && groupedItems.length > 1 && (
+        <DictAlphabetNav
+          letters={groupedItems.map(([letter]) => letter)}
+          activeLetter={activeLetter}
+          onLetterChange={setActiveLetter}
+        />
+      )}
+
+      {/* Locked state */}
+      {locked && (
+        <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
+          <h2 className="text-2xl font-semibold">{t.paywall.title}</h2>
+          <p className="mt-2 text-sm text-ink/60">{t.paywall.dictionary}</p>
+        </div>
+      )}
+
+      {/* Loading or Words Grid */}
+      {loading ? (
+        <Loader label={t.common.loading} />
+      ) : (
+        <DictWordGrid
+          type={type}
+          groupedItems={groupedItems}
+          pairGroups={pairGroups}
+          activeLetter={activeLetter}
+          sortField={sortField}
+          hideTranslations={hideTranslations}
+          revealedMap={revealedMap}
+          markedMap={markedMap}
+          favoriteIds={favoriteIds}
+          progressMap={progressMap}
+          editingId={editingId}
+          editPl={editPl}
+          editUk={editUk}
+          editStatus={editStatus}
+          onToggleFavorite={toggleFavorite}
+          onMarkWord={markWord}
+          onRevealToggle={(wordId) =>
+            setRevealedMap((prev) => ({
+              ...prev,
+              [wordId]: !prev[wordId]
+            }))
+          }
+          onStartEdit={startEdit}
+          onSaveEdit={saveEdit}
+          onCancelEdit={() => {
+            setEditingId(null);
+            setEditStatus("idle");
+          }}
+          onDeleteWord={deleteMyWord}
+          setEditPl={setEditPl}
+          setEditUk={setEditUk}
+          onOpenAI={setAiModalWord}
+        />
+      )}
+
+      {/* Trainer Modal */}
+      {trainerOpen && !locked && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/30 px-4">
+          <div className="w-full max-w-4xl rounded-3xl border border-ink/10 bg-paper p-6 shadow-soft">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-semibold">{t.deck.trainerTitle}</h2>
+              <button
+                onClick={() => {
+                  setTrainerOpen(false);
+                  setTrainerStep("setup");
+                }}
+                className="rounded-full border border-ink/20 px-3 py-1 text-xs font-semibold"
+              >
+                {t.deck.trainerClose}
+              </button>
+            </div>
+
+            {trainerStep === "setup" && (
+              <div className="mt-6 grid gap-6 md:grid-cols-2">
+                <div className="rounded-2xl border border-ink/10 bg-paper/80 p-5">
+                  <p className="text-xs uppercase tracking-[0.3em] text-ink/40">{t.deck.trainerParts}</p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                      {[
+                        { id: "all", label: t.deck.trainerAll },
+                        { id: "verbs", label: t.deck.verbs },
+                        { id: "adverbs", label: t.deck.adverbs },
+                        { id: "adjectives", label: t.deck.adjectives },
+                        { id: "slang", label: t.deck.slang },
+                        { id: "others", label: t.deck.others },
+                        { id: "soft_swears", label: t.deck.softSwears },
+                        { id: "clean_emotions", label: t.deck.cleanEmotions },
+                        { id: "abbreviations", label: t.deck.abbreviations },
+                        { id: "my_words", label: t.words.myWords }
+                      ].map((item) => (
+                      <button
+                        key={item.id}
+                        onClick={() => setTrainerParts(item.id as typeof trainerParts)}
+                        className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                          trainerParts === item.id ? "bg-ink text-paper" : "border border-ink/20 text-ink"
+                        }`}
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="rounded-2xl border border-ink/10 bg-paper/80 p-5">
+                  <p className="text-xs uppercase tracking-[0.3em] text-ink/40">{t.deck.trainerCount}</p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {[10, 20, 30, 50].map((count) => (
+                      <button
+                        key={count}
+                        onClick={() => setTrainerCount(count as typeof trainerCount)}
+                        className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                          trainerCount === count ? "bg-ink text-paper" : "border border-ink/20 text-ink"
+                        }`}
+                      >
+                        {count}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="rounded-2xl border border-ink/10 bg-paper/80 p-5">
+                  <p className="text-xs uppercase tracking-[0.3em] text-ink/40">{t.deck.trainerDirection}</p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {[
+                      { id: "pluk", label: t.deck.trainerDirections.pluk },
+                      { id: "ukpl", label: t.deck.trainerDirections.ukpl },
+                      { id: "mixed", label: t.deck.trainerDirections.mixed }
+                    ].map((item) => (
+                      <button
+                        key={item.id}
+                        onClick={() => setTrainerDirection(item.id as typeof trainerDirection)}
+                        className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                          trainerDirection === item.id ? "bg-ink text-paper" : "border border-ink/20 text-ink"
+                        }`}
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="rounded-2xl border border-ink/10 bg-paper/80 p-5">
+                  <p className="text-xs uppercase tracking-[0.3em] text-ink/40">{t.deck.trainerMode}</p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {[
+                      { id: "mcq", label: t.deck.trainerModes.mcq },
+                      { id: "typing", label: t.deck.trainerModes.typing },
+                      { id: "flash", label: t.deck.trainerModes.flash }
+                    ].map((item) => (
+                      <button
+                        key={item.id}
+                        onClick={() => setTrainerMode(item.id as typeof trainerMode)}
+                        className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                          trainerMode === item.id ? "bg-ink text-paper" : "border border-ink/20 text-ink"
+                        }`}
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="md:col-span-2 flex justify-end">
+                  <button
+                    onClick={startTrainer}
+                    className="rounded-full bg-ink px-5 py-2 text-xs font-semibold text-paper"
+                  >
+                    {t.deck.trainerStart}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {trainerStep === "train" && trainerQueue[trainerIndex] && (
+              <div className="mt-6 grid gap-6 md:grid-cols-[1.2fr_0.8fr]">
+                <div className="rounded-2xl border border-ink/10 bg-paper/80 p-6">
+                  <p className="text-xs uppercase tracking-[0.3em] text-ink/40">
+                    {t.deck.trainerStep} {trainerIndex + 1} / {trainerQueue.length}
+                  </p>
+                  <h3 className="mt-3 text-3xl font-semibold">
+                    {getFront(trainerQueue[trainerIndex], getDirectionForIndex(trainerIndex))}
+                  </h3>
+                  {trainerMode === "typing" && (
+                    <div className="mt-6 space-y-4">
+                      <label className="block text-sm text-ink/70">
+                        {t.deck.trainerYourAnswer}
+                        <input
+                          value={trainerAnswer}
+                          onChange={(event) => setTrainerAnswer(event.target.value)}
+                          className="mt-2 w-full rounded-2xl border border-ink/20 bg-paper px-4 py-3"
+                        />
+                      </label>
+                      <button
+                        onClick={() => {
+                          const current = trainerQueue[trainerIndex];
+                          const ok = checkAnswer(current, trainerAnswer);
+                          markTrainerResult(current, ok);
+                          nextTrainer();
+                        }}
+                        className="rounded-full bg-ink px-5 py-2 text-xs font-semibold text-paper"
+                      >
+                        {trainerIndex < trainerQueue.length - 1 ? t.deck.trainerNext : t.deck.trainerFinish}
+                      </button>
+                    </div>
+                  )}
+                  {trainerMode === "mcq" && (
+                    <div className="mt-6 space-y-3">
+                      {(trainerOptions[trainerQueue[trainerIndex].id] || []).map((option) => (
+                        <button
+                          key={option}
+                          onClick={() => {
+                            const current = trainerQueue[trainerIndex];
+                            const direction = getDirectionForIndex(trainerIndex);
+                            const correctAnswer = getBack(current, direction);
+                            const ok = option === correctAnswer;
+                            markTrainerResult(current, ok);
+                            nextTrainer();
+                          }}
+                          className="w-full rounded-2xl border border-ink/10 bg-paper/70 px-4 py-3 text-left text-sm text-ink/70 hover:border-ink/30"
+                        >
+                          {option}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  {trainerMode === "flash" && (
+                    <div className="mt-6 space-y-4">
+                      <button
+                        onClick={() => setTrainerReveal((prev) => !prev)}
+                        className="rounded-full border border-ink/20 px-4 py-2 text-xs font-semibold text-ink"
+                      >
+                        {t.deck.trainerReveal}
+                      </button>
+                      {trainerReveal && (
+                        <p className="text-lg text-ink/70">
+                          {getBack(trainerQueue[trainerIndex], getDirectionForIndex(trainerIndex))}
+                        </p>
+                      )}
+                      <div className="flex flex-wrap gap-2">
+                        <button
+                          onClick={() => {
+                            markTrainerResult(trainerQueue[trainerIndex], true);
+                            nextTrainer();
+                          }}
+                          className="rounded-full bg-moss px-4 py-2 text-xs font-semibold text-paper"
+                        >
+                          {t.deck.trainerKnow}
+                        </button>
+                        <button
+                          onClick={() => {
+                            markTrainerResult(trainerQueue[trainerIndex], false);
+                            nextTrainer();
+                          }}
+                          className="rounded-full border border-ink/20 px-4 py-2 text-xs font-semibold text-ink"
+                        >
+                          {t.deck.trainerDontKnow}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div className="rounded-2xl border border-ink/10 bg-paper/80 p-6">
+                  <p className="text-xs uppercase tracking-[0.3em] text-ink/40">{t.deck.trainerProgress}</p>
+                  <div className="mt-4 grid grid-cols-5 gap-2">
+                    {trainerQueue.map((word, idx) => {
+                      const status = trainerCorrect[word.id];
+                      const active = idx === trainerIndex;
+                      return (
+                        <div
+                          key={word.id}
+                          className={`h-2 rounded-full ${
+                            status === true
+                              ? "bg-moss"
+                              : status === false
+                                ? "bg-terracotta"
+                                : active
+                                  ? "bg-ink/40"
+                                  : "bg-ink/10"
+                          }`}
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {trainerStep === "done" && (
+              <div className="mt-6 rounded-2xl border border-ink/10 bg-paper/80 p-6">
+                <h3 className="text-2xl font-semibold">{t.deck.trainerScore}</h3>
+                <p className="mt-3 text-sm text-ink/70">
+                  {Object.values(trainerCorrect).filter(Boolean).length} / {trainerQueue.length}
+                </p>
+                <div className="mt-6 flex flex-wrap gap-3">
+                  <button
+                    onClick={() => setTrainerStep("setup")}
+                    className="rounded-full border border-ink/20 px-4 py-2 text-xs font-semibold"
+                  >
+                    {t.deck.trainerSetup}
+                  </button>
+                  <button
+                    onClick={() => setTrainerOpen(false)}
+                    className="rounded-full bg-ink px-5 py-2 text-xs font-semibold text-paper"
+                  >
+                    {t.deck.trainerClose}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* AI Modal */}
+      {aiModalWord && (
+        <WordAIModal
+          word={aiModalWord}
+          isOpen={true}
+          onClose={() => setAiModalWord(null)}
+        />
+      )}
+    </div>
+  );
+}
