@@ -91,6 +91,10 @@ export default function AuthPanel({ initialMode = "login" }: { initialMode?: "lo
         setStage("verify");
         setMessage(t.auth.verifySent);
         startCooldown(60);
+      } else if (data?.code === "USERNAME_EXISTS") {
+        setMessage(t.auth.usernameExists);
+      } else if (data?.code === "EMAIL_EXISTS") {
+        setMessage(t.auth.emailExists);
       } else {
         setMessage(data?.error || t.auth.error);
       }

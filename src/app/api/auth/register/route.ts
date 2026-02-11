@@ -58,12 +58,12 @@ export async function POST(request: Request) {
 
   const existing = await getUserByUsername(normalizedUsername);
   if (existing) {
-    return NextResponse.json({ error: "Username already exists" }, { status: 409 });
+    return NextResponse.json({ error: "Username already exists", code: "USERNAME_EXISTS" }, { status: 409 });
   }
 
   const existingEmail = await getUserByEmail(normalizedEmail);
   if (existingEmail) {
-    return NextResponse.json({ error: "Email already exists" }, { status: 409 });
+    return NextResponse.json({ error: "Email already exists", code: "EMAIL_EXISTS" }, { status: 409 });
   }
 
   const forwardedFor = request.headers.get("x-forwarded-for");
