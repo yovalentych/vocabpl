@@ -177,25 +177,38 @@ function buildPrompt(mode: string, userInput: string, context: string) {
 SITUATION: ${situation}
 LEVEL: ${level}
 
-Your task: Start a natural dialogue by providing the FIRST AI turn (greeting or opening line).
+Your task: Start a natural dialogue by providing the FIRST AI turn.
+
+CRITICAL INSTRUCTIONS:
+1. Analyze the situation: "${situation}"
+2. Determine what ROLE the AI should play (e.g., for "проблема з інтернетом" → internet provider employee; for "замовлення каві" → barista; for "питання про дорогу" → local person)
+3. Create an opening line from that role's perspective that:
+   - Introduces the role naturally (e.g., "Dzień dobry! Nazywam się Anna, pracuję w firmie internetowej TechNet. Jak mogę pomóc?")
+   - Sets the conversation direction (e.g., asks about the problem, offers help, responds to customer)
+   - Is appropriate and realistic for the situation
 
 REQUIREMENTS:
-- Opening line should be appropriate for the situation: "${situation}"
+- Opening MUST be contextual and role-appropriate for: "${situation}"
 - Use vocabulary and grammar suitable for ${level} learners
-- Keep it SHORT (1-2 sentences)
-- Sound NATURAL and conversational
-- This will be the AI's first line in the conversation
+- Keep it SHORT but complete (2-3 sentences max)
+- Sound NATURAL and professional/friendly as appropriate
+- Establish clear context for the learner to respond
+
+EXAMPLES:
+- "Проблема з інтернетом" → "Dzień dobry! Nazywam się Tomasz z działu technicznego NetPol. Rozumiem, że ma Pan/Pani problem z internetem. Proszę opisać, co się dzieje?"
+- "Замовлення каві" → "Dzień dobry! Witam w naszej kawiarni. Co mogę dla Pani/Pana przygotować?"
+- "Питання про дорогу" → "Dzień dobry! Tak, oczywiście mogę pomóc. Dokąd Pan/Pani chce się dostać?"
 
 RETURN STRICT JSON ONLY:
 {
-  "firstTurn": string (AI's opening line in Polish)
+  "firstTurn": string (AI's contextual opening line in Polish)
 }
 
 IMPORTANT:
 - firstTurn must be in POLISH
-- Keep it SHORT and conversational
+- Must establish clear role and context
 - Match the ${level} difficulty level
-- Make it appropriate for the situation`
+- Be professional but friendly`
       },
       {
         role: "user",
@@ -233,12 +246,20 @@ ${conversationContext}
 
 Your task: Continue the dialogue by providing the NEXT AI turn (response).
 
+CRITICAL INSTRUCTIONS:
+1. Identify the ROLE you're playing from the conversation history (e.g., internet provider employee, barista, local person, etc.)
+2. Stay IN CHARACTER throughout the conversation
+3. Respond naturally to what the user just said
+4. Keep the conversation flowing toward resolving the situation
+
 REQUIREMENTS:
+- Maintain the SAME ROLE and context established in the first message
 - Keep response natural and appropriate for ${level} level
-- Stay in context of the situation: "${situation}"
+- Stay focused on the situation: "${situation}"
 - Response should be 1-2 short sentences max
 - Use vocabulary and grammar appropriate for ${level} learners
-- Make it conversational and realistic
+- Make it conversational, helpful, and realistic
+- If appropriate, ask follow-up questions or offer solutions
 
 RETURN STRICT JSON ONLY:
 {
@@ -248,8 +269,9 @@ RETURN STRICT JSON ONLY:
 IMPORTANT:
 - nextTurn must be in POLISH
 - Keep it SHORT (1-2 sentences)
-- Sound NATURAL and conversational
-- Match the ${level} difficulty level`
+- Sound NATURAL and stay in character
+- Match the ${level} difficulty level
+- Be helpful and guide the conversation naturally`
       },
       {
         role: "user",
