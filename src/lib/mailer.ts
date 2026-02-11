@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import type SMTPTransport from "nodemailer/lib/smtp-transport";
 
 function getSmtpConfig() {
   const host = process.env.SMTP_HOST;
@@ -30,7 +31,7 @@ export async function sendVerificationEmail(to: string, code: string) {
     secure,
     auth: { user, pass },
     family: 4
-  });
+  } satisfies SMTPTransport.Options);
 
   const subject = "Polish Vocab Studio — підтвердження пошти / Email verification";
   const preheader = "Ваш код підтвердження / Your verification code";
@@ -68,7 +69,7 @@ export async function sendPasswordResetEmail(to: string, code: string) {
     secure,
     auth: { user, pass },
     family: 4
-  });
+  } satisfies SMTPTransport.Options);
 
   const subject = "Polish Vocab Studio — зміна пароля / Password reset";
   const preheader = "Код для зміни пароля / Password reset code";
@@ -116,7 +117,7 @@ export async function sendFeedbackEmail({
     secure,
     auth: { user, pass },
     family: 4
-  });
+  } satisfies SMTPTransport.Options);
 
   const mailSubject = subject?.trim()
     ? `Feedback: ${subject.trim()}`
