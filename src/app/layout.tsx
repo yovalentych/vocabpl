@@ -37,7 +37,7 @@ export default function RootLayout({
               <NavBar />
               <QuickAddWord />
               <NotesManager />
-              <div className="flex flex-1 flex-col min-h-[calc(100vh-var(--header-height,88px))] pb-[calc(var(--footer-height,96px)+24px)]">
+              <div className="flex flex-1 flex-col min-h-[calc(100vh-var(--header-height,88px))] pb-32 sm:pb-[calc(var(--footer-height,96px)+24px)]">
                 <main className="flex flex-1 min-h-0 pb-6">
                   <ClassFloatingNav />
                   <div className="min-w-0 flex-1">{children}</div>
