@@ -1,0 +1,13 @@
+{
+  "app": "Polish Vocab Trainer (static)",
+  "generated_from": [
+    "Słowniczek Czasowniki.docx",
+    "200_bazovih_ta_nayposhiren_shih_prisl_vnik_v_u_polsk_y_mov_.pdf",
+    "generated (common Polish adjectives)"
+  ],
+  "counts": {
+    "verbs": 200,
+    "adverbs": 200,
+    "adjectives": 200
+  }
+}

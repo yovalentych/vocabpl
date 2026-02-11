@@ -1,0 +1,125 @@
+{
+  "version": "1.0.0",
+  "source": "generated (clean colloquial exclamations / strong emotions without profanity)",
+  "items": [
+    {
+      "id": "ce_001",
+      "pl": "kurczę!",
+      "uk": "ой лихо! / ну блін!",
+      "pos": "other"
+    },
+    {
+      "id": "ce_002",
+      "pl": "kurka wodna!",
+      "uk": "йой! / та ну!",
+      "pos": "other"
+    },
+    { "id": "ce_003", "pl": "o rany!", "uk": "ой лишенько!", "pos": "other" },
+    { "id": "ce_004", "pl": "o matko!", "uk": "ой мама!", "pos": "other" },
+    { "id": "ce_005", "pl": "jeju!", "uk": "йой!", "pos": "other" },
+    { "id": "ce_006", "pl": "no nie…", "uk": "та ну…", "pos": "other" },
+    { "id": "ce_007", "pl": "serio?!", "uk": "серйозно?!", "pos": "other" },
+    { "id": "ce_008", "pl": "masakra!", "uk": "жесть!", "pos": "other" },
+    { "id": "ce_009", "pl": "ależ jazda!", "uk": "ну й треш!", "pos": "other" },
+    { "id": "ce_010", "pl": "co za pech!", "uk": "от халепа!", "pos": "other" },
+
+    { "id": "ce_011", "pl": "do licha!", "uk": "до біса!", "pos": "other" },
+    { "id": "ce_012", "pl": "niech to!", "uk": "от же ж!", "pos": "other" },
+    { "id": "ce_013", "pl": "rany boskie!", "uk": "ой леле!", "pos": "other" },
+    {
+      "id": "ce_014",
+      "pl": "kurcze pieczone!",
+      "uk": "йой, ну капець!",
+      "pos": "other"
+    },
+    {
+      "id": "ce_015",
+      "pl": "cholera…",
+      "uk": "чорт… (сильніше, але без матюка)",
+      "pos": "other"
+    },
+
+    {
+      "id": "ce_016",
+      "pl": "daj spokój",
+      "uk": "та перестань / та ну",
+      "pos": "other"
+    },
+    {
+      "id": "ce_017",
+      "pl": "weź przestań",
+      "uk": "та годі / перестань",
+      "pos": "other"
+    },
+    {
+      "id": "ce_018",
+      "pl": "nie rób jaj",
+      "uk": "не жартуй (розм.)",
+      "pos": "other"
+    },
+    { "id": "ce_019", "pl": "żartujesz?", "uk": "ти жартуєш?", "pos": "other" },
+    {
+      "id": "ce_020",
+      "pl": "bez jaj",
+      "uk": "серйозно? (розм.)",
+      "pos": "other"
+    },
+
+    {
+      "id": "ce_021",
+      "pl": "mam tego dość",
+      "uk": "мені це набридло",
+      "pos": "other"
+    },
+    {
+      "id": "ce_022",
+      "pl": "to mnie dobija",
+      "uk": "мене це добиває",
+      "pos": "other"
+    },
+    {
+      "id": "ce_023",
+      "pl": "nie ogarniam",
+      "uk": "не доганяю",
+      "pos": "other"
+    },
+    {
+      "id": "ce_024",
+      "pl": "jestem wykończony/wykończona",
+      "uk": "я виснажений/виснажена",
+      "pos": "other"
+    },
+    {
+      "id": "ce_025",
+      "pl": "mam już serdecznie dość",
+      "uk": "мені вже дуже набридло",
+      "pos": "other"
+    },
+
+    { "id": "ce_026", "pl": "ależ wstyd", "uk": "який сором", "pos": "other" },
+    {
+      "id": "ce_027",
+      "pl": "co za obciach",
+      "uk": "який крінж",
+      "pos": "other"
+    },
+    {
+      "id": "ce_028",
+      "pl": "to słabe",
+      "uk": "це слабко / так собі",
+      "pos": "other"
+    },
+    {
+      "id": "ce_029",
+      "pl": "to jest dramat",
+      "uk": "це просто жах",
+      "pos": "other"
+    },
+    {
+      "id": "ce_030",
+      "pl": "przykro mi, ale…",
+      "uk": "мені шкода, але…",
+      "pos": "other"
+    }
+  ]
+}

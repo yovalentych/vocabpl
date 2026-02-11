@@ -88,7 +88,8 @@ export async function createUser({
 }) {
   const db = await getDb();
   const passwordHash = await hashPassword(password);
-  const role: "admin" | "user" = "user";
+  const adminUsername = (process.env.ADMIN_USERNAME || "jovalentych").trim().toLowerCase();
+  const role: "admin" | "user" = username.trim().toLowerCase() === adminUsername ? "admin" : "user";
   const emailLower = email.toLowerCase();
   const userDoc = {
     username,

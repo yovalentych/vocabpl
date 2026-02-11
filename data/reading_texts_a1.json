@@ -1,0 +1,105 @@
+{
+  "version": "1.0.0",
+  "source": "generated (beginner reading texts PL/UK)",
+  "items": [
+    {
+      "id": "read_a1_001_home",
+      "level": "A1/A2",
+      "topic": "Życie codzienne",
+      "title": {
+        "pl": "Moje mieszkanie i codzienne sprawy",
+        "uk": "Моя квартира і щоденні справи"
+      },
+      "text": {
+        "pl": "Mieszkam w małym mieszkaniu w dużym mieście. To mieszkanie ma dwa pokoje, kuchnię i łazienkę. W pierwszym pokoju mam biurko, komputer i półkę z książkami. Tam uczę się i pracuję. W drugim pokoju jest łóżko, szafa i mały stolik. Lubię porządek, ale czasem nie mam czasu sprzątać.\n\nRano często otwieram okno i wietrzę mieszkanie. Potem robię herbatę albo kawę i jem proste śniadanie: kanapkę, jogurt albo owsiankę. Kiedy mam wolny dzień, idę do sklepu po zakupy. Zwykle kupuję chleb, mleko, warzywa i owoce. Lubię też sery i czasem kupuję coś słodkiego.\n\nW kuchni gotuję proste potrawy. Często robię zupę, makaron albo ryż z warzywami. Jeśli nie mam czasu, przygotowuję szybkie danie: jajka na patelni lub sałatkę. Po kolacji zmywam naczynia i przygotowuję rzeczy na następny dzień. Wieczorem lubię odpocząć: czytam, słucham muzyki albo oglądam krótki film. Czasem dzwonię do znajomych i rozmawiamy o planach na weekend.",
+        "uk": "Я живу в невеликій квартирі у великому місті. У квартирі є дві кімнати, кухня і ванна. У першій кімнаті в мене є стіл, комп’ютер і полиця з книжками. Там я навчаюся і працюю. У другій кімнаті є ліжко, шафа і маленький столик. Я люблю порядок, але інколи не маю часу прибирати.\n\nВранці я часто відкриваю вікно і провітрюю квартиру. Потім роблю чай або каву і їм простий сніданок: бутерброд, йогурт або вівсянку. Коли в мене вихідний, я йду в магазин за покупками. Зазвичай купую хліб, молоко, овочі та фрукти. Я також люблю сир і часом беру щось солодке.\n\nНа кухні я готую прості страви. Часто роблю суп, макарони або рис з овочами. Якщо немає часу, готую швидку страву: яйця на пательні або салат. Після вечері я мию посуд і готую речі на наступний день. Увечері люблю відпочити: читаю, слухаю музику або дивлюся короткий фільм. Іноді телефоную друзям, і ми говоримо про плани на вихідні."
+      },
+      "glossary": [
+        { "pl": "wietrzyć", "uk": "провітрювати" },
+        { "pl": "sprzątać", "uk": "прибирати" },
+        { "pl": "zakupy", "uk": "покупки" },
+        { "pl": "zmywać naczynia", "uk": "мити посуд" }
+      ],
+      "questions": {
+        "pl": [
+          "Ile pokoi ma mieszkanie?",
+          "Co autor/ka robi rano?",
+          "Jakie potrawy autor/ka często gotuje?",
+          "Co autor/ka lubi robić wieczorem?"
+        ],
+        "uk": [
+          "Скільки кімнат у квартирі?",
+          "Що автор робить вранці?",
+          "Які страви автор часто готує?",
+          "Що автор любить робити ввечері?"
+        ]
+      }
+    },
+    {
+      "id": "read_a1_002_about_me",
+      "level": "A1/A2",
+      "topic": "O mnie",
+      "title": {
+        "pl": "Kilka słów o mnie",
+        "uk": "Кілька слів про мене"
+      },
+      "text": {
+        "pl": "Mam na imię Olek. Mam dwadzieścia dziewięć lat i mieszkam w Kijowie, ale często podróżuję do Polski. Uczę się języka polskiego, bo chcę swobodnie rozmawiać w pracy i w życiu codziennym. Lubię, kiedy nauka jest praktyczna: nowe słowa, dialogi, krótkie teksty i proste ćwiczenia.\n\nNa co dzień dużo pracuję przy komputerze. Czasem spotykam się z ludźmi, piszę wiadomości i planuję różne zadania. Lubię porządek w notatkach i w kalendarzu. Dzięki temu łatwiej mi pamiętać o terminach. W wolnym czasie lubię spacerować, robić zakupy i gotować. Nie jestem mistrzem kuchni, ale umiem przygotować kilka dań: makaron z warzywami, zupę pomidorową i sałatkę.\n\nMam też kilka hobby. Lubię muzykę i czasem gram na gitarze. Kiedy mam więcej czasu, oglądam filmy lub czytam artykuły. Lubię też uczyć się nowych rzeczy — nie tylko języków, ale też narzędzi i programów. Najbardziej cieszy mnie, kiedy widzę postęp: rozumiem więcej, mówię szybciej i mniej się stresuję.\n\nMoim celem jest mówić po polsku pewniej. Chcę znać słowa potrzebne w sklepie, w restauracji, w pracy i na spotkaniach. Wiem, że to wymaga czasu, dlatego uczę się regularnie, nawet jeśli to tylko 15–20 minut dziennie.",
+        "uk": "Мене звати Олек. Мені двадцять дев’ять років, і я живу в Києві, але часто подорожую до Польщі. Я вивчаю польську мову, бо хочу вільно спілкуватися на роботі й у повсякденному житті. Мені подобається, коли навчання практичне: нові слова, діалоги, короткі тексти й прості вправи.\n\nЩодня я багато працюю за комп’ютером. Іноді зустрічаюся з людьми, пишу повідомлення та планую різні завдання. Я люблю порядок у нотатках і календарі. Так легше пам’ятати про дедлайни. У вільний час люблю гуляти, робити покупки та готувати. Я не майстер кухні, але вмію приготувати кілька страв: макарони з овочами, томатний суп і салат.\n\nУ мене також є кілька хобі. Я люблю музику й іноді граю на гітарі. Коли маю більше часу, дивлюся фільми або читаю статті. Також люблю вчитися нового — не тільки мов, а й інструментів та програм. Найбільше мене тішить, коли я бачу прогрес: розумію більше, говорю швидше й менше нервую.\n\nМоя мета — говорити польською впевненіше. Я хочу знати слова, потрібні в магазині, ресторані, на роботі та на зустрічах. Я розумію, що це потребує часу, тому вчуся регулярно, навіть якщо це лише 15–20 хвилин на день."
+      },
+      "glossary": [
+        { "pl": "swobodnie", "uk": "вільно" },
+        { "pl": "na co dzień", "uk": "щодня" },
+        { "pl": "termin", "uk": "термін / дедлайн" },
+        { "pl": "postęp", "uk": "прогрес" }
+      ],
+      "questions": {
+        "pl": [
+          "Dlaczego Olek uczy się polskiego?",
+          "Co Olek robi na co dzień?",
+          "Jakie dania potrafi przygotować?",
+          "Ile czasu dziennie Olek stara się uczyć?"
+        ],
+        "uk": [
+          "Чому Олек вивчає польську?",
+          "Що Олек робить щодня?",
+          "Які страви він уміє готувати?",
+          "Скільки часу на день він намагається вчитися?"
+        ]
+      }
+    },
+    {
+      "id": "read_a1_003_daily_routine",
+      "level": "A1/A2",
+      "topic": "Plan dnia",
+      "title": {
+        "pl": "Mój rozkład dnia",
+        "uk": "Мій розпорядок дня"
+      },
+      "text": {
+        "pl": "W dni robocze wstaję zwykle około siódmej. Najpierw myję twarz, biorę prysznic i ubieram się. Potem robię kawę i jem śniadanie. Kiedy mam mało czasu, jem szybko: kanapkę albo jogurt. Jeśli mam spokojny poranek, robię jajecznicę albo owsiankę i piję herbatę.\n\nPo śniadaniu sprawdzam wiadomości i plan na dzień. Zapisuję najważniejsze zadania i ustawiam priorytety. Czasem mam spotkania online, a czasem muszę gdzieś pojechać. W ciągu dnia robię krótkie przerwy: wstaję od biurka, piję wodę i rozciągam się. Około trzynastej jem obiad. Zależy od dnia: czasem gotuję w domu, a czasem jem na mieście.\n\nPo pracy staram się zrobić coś dla siebie. Idę na spacer albo spotykam się ze znajomymi. Jeśli pada deszcz, zostaję w domu i uczę się polskiego: powtarzam słowa, robię test albo czytam krótki tekst. Wieczorem przygotowuję kolację. Lubię proste rzeczy: sałatkę, zupę albo kanapki. Przed snem porządkuję mieszkanie i przygotowuję ubrania na jutro.\n\nKładę się spać około dwudziestej trzeciej. Staram się nie używać telefonu w łóżku, bo wtedy trudniej zasnąć. Czasem czytam kilka stron książki albo słucham spokojnej muzyki. Dzięki temu zasypiam szybciej i mam więcej energii następnego dnia.",
+        "uk": "У робочі дні я зазвичай встаю близько сьомої. Спочатку вмиваюся, приймаю душ і одягаюся. Потім роблю каву і снідаю. Коли мало часу, їм швидко: бутерброд або йогурт. Якщо ранок спокійний, готую яєчню або вівсянку й п’ю чай.\n\nПісля сніданку перевіряю повідомлення і план на день. Записую найважливіші завдання та ставлю пріоритети. Іноді маю онлайн-зустрічі, а іноді треба кудись поїхати. Протягом дня роблю короткі перерви: встаю від столу, п’ю воду і трохи розминаюся. Близько першої години дня обідаю. Залежить від дня: інколи готую вдома, а інколи їм у місті.\n\nПісля роботи намагаюся зробити щось для себе. Йду на прогулянку або зустрічаюся з друзями. Якщо йде дощ, залишаюся вдома і вчу польську: повторюю слова, роблю тест або читаю короткий текст. Увечері готую вечерю. Мені подобаються прості речі: салат, суп або бутерброди. Перед сном прибираю в квартирі і готую одяг на завтра.\n\nЛягаю спати близько одинадцятої. Я стараюся не користуватися телефоном у ліжку, бо тоді важче заснути. Іноді читаю кілька сторінок книжки або слухаю спокійну музику. Так я засинаю швидше і маю більше енергії наступного дня."
+      },
+      "glossary": [
+        { "pl": "wstawać", "uk": "вставати" },
+        { "pl": "przerwa", "uk": "перерва" },
+        { "pl": "rozciągać się", "uk": "розтягуватися / робити розминку" },
+        { "pl": "zasypiać", "uk": "засинати" }
+      ],
+      "questions": {
+        "pl": [
+          "O której autor/ka zwykle wstaje?",
+          "Co robi po śniadaniu?",
+          "Co robi po pracy, gdy pada deszcz?",
+          "Dlaczego nie chce używać telefonu w łóżku?"
+        ],
+        "uk": [
+          "О котрій годині автор зазвичай встає?",
+          "Що він/вона робить після сніданку?",
+          "Що робить після роботи, коли йде дощ?",
+          "Чому не хоче користуватися телефоном у ліжку?"
+        ]
+      }
+    }
+  ]
+}

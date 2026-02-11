@@ -60,8 +60,7 @@ MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/
 MONGODB_DB=polish_vocab
 PVS_OPENAI_API_KEY=sk-...
 JWT_SECRET=your-random-secret-min-32-chars
-ADMIN_BOOTSTRAP_TOKEN=one-time-admin-token
-ADMIN_BOOTSTRAP_TTL_HOURS=2
+ADMIN_USERNAME=jovalentych
 MONO_ACQUIRING_TOKEN=your-monobank-merchant-token
 MONO_PUBKEY_BASE64=your-monobank-pubkey-base64
 MONO_WEBHOOK_URL=https://your-domain/api/payments/mono/webhook
@@ -79,8 +78,7 @@ SMTP_FROM="Polish Vocab Studio <your-email@gmail.com>"
 
 **Важливо:**
 - `JWT_SECRET` - згенеруйте випадковий string (мін. 32 символа)
-- `ADMIN_BOOTSTRAP_TOKEN` - одноразовий токен для bootstrap адміна (використати при реєстрації)
-- `ADMIN_BOOTSTRAP_TTL_HOURS` - TTL для резерву токена (за замовчуванням 2 години)
+- `ADMIN_USERNAME` - логін, який отримує роль admin при реєстрації
 - `MONO_ACQUIRING_TOKEN` - токен монобанк еквайрингу
 - `MONO_PUBKEY_BASE64` - публічний ключ для перевірки webhook підпису
 - `MONO_WEBHOOK_URL` - URL для webhook від monobank
@@ -101,7 +99,7 @@ SMTP_FROM="Polish Vocab Studio <your-email@gmail.com>"
 
 ### 2. Створіть першого адміна
 1. Відкрийте додаток
-2. Register → передайте `adminToken` = `ADMIN_BOOTSTRAP_TOKEN` при реєстрації
+2. Register → введіть логін, який дорівнює `ADMIN_USERNAME`
 3. Підтвердіть email
 4. Зайдіть → перевірте доступ до `/admin`
 

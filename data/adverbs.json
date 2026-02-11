@@ -1,0 +1,1206 @@
+{
+  "version": "1.0.0",
+  "source": "200_bazovih_ta_nayposhiren_shih_prisl_vnik_v_u_polsk_y_mov_.pdf",
+  "items": [
+    {
+      "id": "adv_001",
+      "pl": "agresywnie",
+      "uk": "агресивно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_002",
+      "pl": "aktywnie",
+      "uk": "активно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_003",
+      "pl": "atrakcyjnie",
+      "uk": "привабливо",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_004",
+      "pl": "bardzo",
+      "uk": "дуже",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_005",
+      "pl": "bezpośrednio",
+      "uk": "безпосередньо",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_006",
+      "pl": "biegle",
+      "uk": "побіжно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_007",
+      "pl": "blisko",
+      "uk": "близько",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_008",
+      "pl": "brzydko",
+      "uk": "потворно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_009",
+      "pl": "całkiem",
+      "uk": "цілком",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_010",
+      "pl": "całkowicie",
+      "uk": "повністю",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_011",
+      "pl": "całkowicie",
+      "uk": "цілком",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_012",
+      "pl": "celnie",
+      "uk": "точно, вдало",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_013",
+      "pl": "chętnie, ochoczo, z ochotą",
+      "uk": "із задоволенням, охоче, з готовністю",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_014",
+      "pl": "chmurnie",
+      "uk": "похмуро",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_015",
+      "pl": "cicho",
+      "uk": "тихо",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_016",
+      "pl": "ciekawie",
+      "uk": "цікаво",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_017",
+      "pl": "ciemno",
+      "uk": "темно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_018",
+      "pl": "cienko",
+      "uk": "тонко",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_019",
+      "pl": "cierpliwie",
+      "uk": "терпляче",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_020",
+      "pl": "ciężko",
+      "uk": "тяжко",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_021",
+      "pl": "codziennie",
+      "uk": "щоденно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_022",
+      "pl": "cudnie",
+      "uk": "чудово",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_023",
+      "pl": "cudownie",
+      "uk": "чудесно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_024",
+      "pl": "czasem",
+      "uk": "іноді, часом",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_025",
+      "pl": "częściowo, cząstkowo",
+      "uk": "частково",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_026",
+      "pl": "często",
+      "uk": "часто",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_027",
+      "pl": "czule",
+      "uk": "з любов'ю, ніжно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_028",
+      "pl": "dalej, potem",
+      "uk": "потім",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_029",
+      "pl": "daleko",
+      "uk": "далеко",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_030",
+      "pl": "delikatnie",
+      "uk": "обережно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_031",
+      "pl": "długo",
+      "uk": "довго",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_032",
+      "pl": "do dołu, na dół",
+      "uk": "вниз",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_033",
+      "pl": "do domu",
+      "uk": "додому",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_034",
+      "pl": "do góry",
+      "uk": "вверх",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_035",
+      "pl": "do tyłu, w tył",
+      "uk": "назад",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_036",
+      "pl": "dobrze",
+      "uk": "добре",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_037",
+      "pl": "dokładnie, akurat",
+      "uk": "точно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_038",
+      "pl": "dość, wystarczy",
+      "uk": "достатнтьо",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_039",
+      "pl": "doskonale",
+      "uk": "досконало , відмінно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_040",
+      "pl": "drogo/niedrogo",
+      "uk": "дорого /недорого",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_041",
+      "pl": "dużo",
+      "uk": "багато",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_042",
+      "pl": "dzisiaj/dziś",
+      "uk": "сьогодні",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_043",
+      "pl": "dziwnie",
+      "uk": "дивно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_044",
+      "pl": "fachowo",
+      "uk": "кваліфіковано",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_045",
+      "pl": "fajnie",
+      "uk": "файно , добре",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_046",
+      "pl": "fantastycznie",
+      "uk": "дивовижно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_047",
+      "pl": "genialnie",
+      "uk": "геніально",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_048",
+      "pl": "głęboko",
+      "uk": "глибоко",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_049",
+      "pl": "głośno",
+      "uk": "голосно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_050",
+      "pl": "gościnnie",
+      "uk": "гостинно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_051",
+      "pl": "groźnie",
+      "uk": "грізно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_052",
+      "pl": "grubo",
+      "uk": "грубо",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_053",
+      "pl": "grzecznie",
+      "uk": "ввічливо",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_054",
+      "pl": "haniebnie",
+      "uk": "ганебно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_055",
+      "pl": "idealnie",
+      "uk": "ідеально",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_056",
+      "pl": "inaczej",
+      "uk": "інакше",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_057",
+      "pl": "intensywnie",
+      "uk": "інтенсивно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_058",
+      "pl": "jasno",
+      "uk": "світло , ясно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_059",
+      "pl": "jutro",
+      "uk": "завтра",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_060",
+      "pl": "kapitalnie",
+      "uk": "хвацько",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_061",
+      "pl": "katastrofalnie",
+      "uk": "катастрофічно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_062",
+      "pl": "kiepsko",
+      "uk": "погано",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_063",
+      "pl": "koło",
+      "uk": "біля",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_064",
+      "pl": "korzystnie",
+      "uk": "корисно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_065",
+      "pl": "krótko",
+      "uk": "коротко",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_066",
+      "pl": "krzepko",
+      "uk": "міцно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_067",
+      "pl": "krzywo",
+      "uk": "криво",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_068",
+      "pl": "ledwo, zaledwie",
+      "uk": "заледве , ледь",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_069",
+      "pl": "ładnie",
+      "uk": "гарно , добре",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_070",
+      "pl": "łaskawie",
+      "uk": "ласкаво",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_071",
+      "pl": "łatwo",
+      "uk": "легко",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_072",
+      "pl": "mało",
+      "uk": "мало",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_073",
+      "pl": "marnie",
+      "uk": "погано",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_074",
+      "pl": "marząco",
+      "uk": "мрійливо",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_075",
+      "pl": "masywnie",
+      "uk": "масивно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_076",
+      "pl": "miękko",
+      "uk": "м'яко",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_077",
+      "pl": "migiem",
+      "uk": "миттю",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_078",
+      "pl": "minimalnie",
+      "uk": "мінімально",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_079",
+      "pl": "mniej",
+      "uk": "менше",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_080",
+      "pl": "mocno",
+      "uk": "міцно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_081",
+      "pl": "modnie",
+      "uk": "модно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_082",
+      "pl": "możliwie/niemożliwie",
+      "uk": "можливо /неможливо",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_083",
+      "pl": "na bieżąco",
+      "uk": "в курсі (справи )",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_084",
+      "pl": "na pewno, może być",
+      "uk": "напевно , можливо",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_085",
+      "pl": "na zewnątrz",
+      "uk": "зовні",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_086",
+      "pl": "nadal",
+      "uk": "надалі",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_087",
+      "pl": "najpierw",
+      "uk": "спочатку",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_088",
+      "pl": "naprzód, do przodu",
+      "uk": "вперед",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_089",
+      "pl": "niedaleko",
+      "uk": "недалеко",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_090",
+      "pl": "nieznośnie",
+      "uk": "нестерпно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_091",
+      "pl": "niezwykle",
+      "uk": "незвичайно , незвично",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_092",
+      "pl": "niżej",
+      "uk": "нижче",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_093",
+      "pl": "obok",
+      "uk": "біля",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_094",
+      "pl": "oczywiście, na pewno, owszem",
+      "uk": "звісно , очевидно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_095",
+      "pl": "od dołu, na dole",
+      "uk": "знизу (patrzeć od dołu - дивитися знизу , stać na dole -",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_096",
+      "pl": "ogólnie",
+      "uk": "в цілому , загалом",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_097",
+      "pl": "okropnie",
+      "uk": "жахливо",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_098",
+      "pl": "osobliwie",
+      "uk": "особливо",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_099",
+      "pl": "ostro",
+      "uk": "різко",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_100",
+      "pl": "oszałamiająco",
+      "uk": "захоплююче",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_101",
+      "pl": "paskudnie",
+      "uk": "огидно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_102",
+      "pl": "pięknie",
+      "uk": "гарно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_103",
+      "pl": "planowo",
+      "uk": "планово",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_104",
+      "pl": "płytko",
+      "uk": "мілко",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_105",
+      "pl": "pokornie",
+      "uk": "смиренно , покірно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_106",
+      "pl": "popularnie",
+      "uk": "зрозуміло , доступно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_107",
+      "pl": "poważnie",
+      "uk": "серйозно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_108",
+      "pl": "powoli",
+      "uk": "повільно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_109",
+      "pl": "prawdopodobnie",
+      "uk": "вірогідно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_110",
+      "pl": "prawie",
+      "uk": "майже",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_111",
+      "pl": "prosto",
+      "uk": "легко , просто",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_112",
+      "pl": "przyjemnie",
+      "uk": "приємно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_113",
+      "pl": "przykro",
+      "uk": "прикро",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_114",
+      "pl": "pysznie",
+      "uk": "гордо",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_115",
+      "pl": "radośnie",
+      "uk": "радісно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_116",
+      "pl": "rozkosznie",
+      "uk": "чарівно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_117",
+      "pl": "roztropnie",
+      "uk": "обдумано",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_118",
+      "pl": "rzadko",
+      "uk": "рідко",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_119",
+      "pl": "rześko",
+      "uk": "спритно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_120",
+      "pl": "rzetelnie",
+      "uk": "ретельно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_121",
+      "pl": "sennie",
+      "uk": "сонно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_122",
+      "pl": "serdecznie",
+      "uk": "сердечно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_123",
+      "pl": "skromnie",
+      "uk": "скромно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_124",
+      "pl": "słabo",
+      "uk": "погано , слабо",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_125",
+      "pl": "słodko",
+      "uk": "солодко",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_126",
+      "pl": "słonecznie",
+      "uk": "сонячно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_127",
+      "pl": "słusznie",
+      "uk": "вірно , слушно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_128",
+      "pl": "smaczne",
+      "uk": "смачно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_129",
+      "pl": "solidnie",
+      "uk": "солідно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_130",
+      "pl": "specyficznie",
+      "uk": "специфічно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_131",
+      "pl": "sprawnie",
+      "uk": "вправно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_132",
+      "pl": "spokojnie",
+      "uk": "спокійно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_133",
+      "pl": "stale",
+      "uk": "постійно , завжди",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_134",
+      "pl": "standardowo",
+      "uk": "стандартно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_135",
+      "pl": "starannie",
+      "uk": "старанно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_136",
+      "pl": "stopniowo",
+      "uk": "поступово",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_137",
+      "pl": "strasznie",
+      "uk": "страшно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_138",
+      "pl": "swobodnie",
+      "uk": "вільно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_139",
+      "pl": "sympatycznie",
+      "uk": "симпатично , приємно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_140",
+      "pl": "szczególnie",
+      "uk": "особливо , спеціально",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_141",
+      "pl": "szybko",
+      "uk": "швидко",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_142",
+      "pl": "ślicznie",
+      "uk": "прекрасно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_143",
+      "pl": "śmiało",
+      "uk": "сміливо",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_144",
+      "pl": "śmiesznie",
+      "uk": "смішно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_145",
+      "pl": "śpiesznie, pośpiesznie",
+      "uk": "спішно , поспішно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_146",
+      "pl": "świetnie",
+      "uk": "відмінно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_147",
+      "pl": "świeżo",
+      "uk": "свіжо",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_148",
+      "pl": "tajemniczo",
+      "uk": "таємниче",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_149",
+      "pl": "tanio",
+      "uk": "дешево",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_150",
+      "pl": "teraz",
+      "uk": "зараз",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_151",
+      "pl": "tęskno",
+      "uk": "сумно , тужливо",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_152",
+      "pl": "tradycyjnie",
+      "uk": "традиційно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_153",
+      "pl": "trochę",
+      "uk": "трохи",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_154",
+      "pl": "troskliwie",
+      "uk": "ретельно , уважно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_155",
+      "pl": "trudno",
+      "uk": "складно , тяжко",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_156",
+      "pl": "trwale",
+      "uk": "тривало",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_157",
+      "pl": "twardo",
+      "uk": "твердо",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_158",
+      "pl": "typowo/nietypowo",
+      "uk": "типово /нетипово",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_159",
+      "pl": "usłużnie",
+      "uk": "послужливо",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_160",
+      "pl": "uroczo",
+      "uk": "чудово",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_161",
+      "pl": "uważnie",
+      "uk": "уважно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_162",
+      "pl": "w końcu, wreszcie",
+      "uk": "нарешті , насамкінець",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_163",
+      "pl": "w lewo",
+      "uk": "наліво",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_164",
+      "pl": "w prawo",
+      "uk": "направо",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_165",
+      "pl": "w środku, wewnątrz",
+      "uk": "всередині",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_166",
+      "pl": "wariacko",
+      "uk": "шалено",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_167",
+      "pl": "wczoraj",
+      "uk": "вчора",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_168",
+      "pl": "wesoło",
+      "uk": "весело",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_169",
+      "pl": "więcej",
+      "uk": "більше",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_170",
+      "pl": "wkrótce",
+      "uk": "невдовзі",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_171",
+      "pl": "właśnie, dopiero co",
+      "uk": "тільки що",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_172",
+      "pl": "wrednie",
+      "uk": "підло",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_173",
+      "pl": "wściekle",
+      "uk": "дико",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_174",
+      "pl": "wspaniale",
+      "uk": "чудово",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_175",
+      "pl": "wstydliwie",
+      "uk": "соромливо",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_176",
+      "pl": "wszędzie",
+      "uk": "всюди",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_177",
+      "pl": "wulgarnie",
+      "uk": "вульгарно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_178",
+      "pl": "wyra źnie",
+      "uk": "явно, очевидно, виразно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_179",
+      "pl": "wyżej",
+      "uk": "вище",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_180",
+      "pl": "z góry, na górze",
+      "uk": "зверху (patrzeć z góry - дивитися зверху , stać na",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_181",
+      "pl": "z powrotem",
+      "uk": "знову , назад",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_182",
+      "pl": "z przodu",
+      "uk": "попереду",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_183",
+      "pl": "z przyjemnością",
+      "uk": "з задоволенням",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_184",
+      "pl": "z tyłu",
+      "uk": "ззаду",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_185",
+      "pl": "z zadowoleniem",
+      "uk": "з задоволенням",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_186",
+      "pl": "z zapałem",
+      "uk": "з ентузіазмом , збуджено",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_187",
+      "pl": "zabawnie",
+      "uk": "кумедно",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_188",
+      "pl": "zaraz",
+      "uk": "невдовзі",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_189",
+      "pl": "zawsze",
+      "uk": "завжди",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_190",
+      "pl": "zbyt",
+      "uk": "дуже (за дуже )",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_191",
+      "pl": "znakomicie",
+      "uk": "чудово",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_192",
+      "pl": "znów, znowu",
+      "uk": "знову",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_193",
+      "pl": "zuchwale",
+      "uk": "зухвало",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_194",
+      "pl": "zupełnie",
+      "uk": "повністю , цілком",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_195",
+      "pl": "zwyczajnie/niezwyczajnie",
+      "uk": "звично /незвично",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_196",
+      "pl": "zwykle",
+      "uk": "зазвичай",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_197",
+      "pl": "źle",
+      "uk": "погано",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_198",
+      "pl": "żartobliwie",
+      "uk": "жартівливо",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_199",
+      "pl": "żwawo",
+      "uk": "жваво",
+      "pos": "adverb"
+    },
+    {
+      "id": "adv_200",
+      "pl": "życzliwie",
+      "uk": "люб'язно",
+      "pos": "adverb"
+    }
+  ]
+}

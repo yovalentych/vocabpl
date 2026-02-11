@@ -1,0 +1,147 @@
+{
+  "version": "1.0.0",
+  "source": "generated (connectors/particles/conjunctions)",
+  "items": [
+    { "id": "oth_001", "pl": "prawie", "uk": "майже", "pos": "other" },
+    {
+      "id": "oth_002",
+      "pl": "ponieważ",
+      "uk": "тому що / оскільки",
+      "pos": "other"
+    },
+    { "id": "oth_003", "pl": "bowiem", "uk": "бо / адже", "pos": "other" },
+    { "id": "oth_004", "pl": "więc", "uk": "отже / тому", "pos": "other" },
+    {
+      "id": "oth_005",
+      "pl": "dlatego",
+      "uk": "тому / через це",
+      "pos": "other"
+    },
+    { "id": "oth_006", "pl": "dlatego że", "uk": "тому що", "pos": "other" },
+    { "id": "oth_007", "pl": "zatem", "uk": "отже", "pos": "other" },
+    {
+      "id": "oth_008",
+      "pl": "wobec tego",
+      "uk": "у зв’язку з цим / отже",
+      "pos": "other"
+    },
+
+    { "id": "oth_009", "pl": "ale", "uk": "але", "pos": "other" },
+    {
+      "id": "oth_010",
+      "pl": "lecz",
+      "uk": "але (більш книжн.)",
+      "pos": "other"
+    },
+    { "id": "oth_011", "pl": "jednak", "uk": "однак", "pos": "other" },
+    { "id": "oth_012", "pl": "natomiast", "uk": "натомість", "pos": "other" },
+    { "id": "oth_013", "pl": "za to", "uk": "зате", "pos": "other" },
+    { "id": "oth_014", "pl": "mimo to", "uk": "попри це", "pos": "other" },
+    { "id": "oth_015", "pl": "chociaż", "uk": "хоча", "pos": "other" },
+    { "id": "oth_016", "pl": "choć", "uk": "хоч", "pos": "other" },
+    {
+      "id": "oth_017",
+      "pl": "mimo że",
+      "uk": "хоча / попри те що",
+      "pos": "other"
+    },
+
+    { "id": "oth_018", "pl": "i", "uk": "і", "pos": "other" },
+    { "id": "oth_019", "pl": "oraz", "uk": "та / і", "pos": "other" },
+    { "id": "oth_020", "pl": "a", "uk": "а / і (в розмові)", "pos": "other" },
+    { "id": "oth_021", "pl": "ani", "uk": "ані / ні", "pos": "other" },
+    { "id": "oth_022", "pl": "albo", "uk": "або", "pos": "other" },
+    { "id": "oth_023", "pl": "lub", "uk": "або", "pos": "other" },
+    { "id": "oth_024", "pl": "czy", "uk": "чи", "pos": "other" },
+
+    { "id": "oth_025", "pl": "jeśli", "uk": "якщо", "pos": "other" },
+    { "id": "oth_026", "pl": "jeżeli", "uk": "якщо", "pos": "other" },
+    {
+      "id": "oth_027",
+      "pl": "gdy",
+      "uk": "коли / якщо (залежно від контексту)",
+      "pos": "other"
+    },
+    { "id": "oth_028", "pl": "kiedy", "uk": "коли", "pos": "other" },
+    { "id": "oth_029", "pl": "wtedy", "uk": "тоді", "pos": "other" },
+    { "id": "oth_030", "pl": "zanim", "uk": "перед тим як", "pos": "other" },
+    { "id": "oth_031", "pl": "dopóki", "uk": "поки (не)", "pos": "other" },
+    {
+      "id": "oth_032",
+      "pl": "podczas gdy",
+      "uk": "тоді як / поки",
+      "pos": "other"
+    },
+
+    { "id": "oth_033", "pl": "żeby", "uk": "щоб", "pos": "other" },
+    {
+      "id": "oth_034",
+      "pl": "aby",
+      "uk": "щоб (більш формально)",
+      "pos": "other"
+    },
+    { "id": "oth_035", "pl": "żeby nie", "uk": "щоб не", "pos": "other" },
+
+    { "id": "oth_036", "pl": "bo", "uk": "бо", "pos": "other" },
+    {
+      "id": "oth_037",
+      "pl": "gdyż",
+      "uk": "бо / оскільки (книжн.)",
+      "pos": "other"
+    },
+    { "id": "oth_038", "pl": "skoro", "uk": "якщо вже / раз", "pos": "other" },
+    { "id": "oth_039", "pl": "przez to", "uk": "через це", "pos": "other" },
+
+    { "id": "oth_040", "pl": "na przykład", "uk": "наприклад", "pos": "other" },
+    { "id": "oth_041", "pl": "np.", "uk": "напр. (скор.)", "pos": "other" },
+    { "id": "oth_042", "pl": "to znaczy", "uk": "тобто", "pos": "other" },
+    { "id": "oth_043", "pl": "czyli", "uk": "тобто", "pos": "other" },
+    { "id": "oth_044", "pl": "mianowicie", "uk": "а саме", "pos": "other" },
+
+    {
+      "id": "oth_045",
+      "pl": "na pewno",
+      "uk": "напевно / точно",
+      "pos": "other"
+    },
+    { "id": "oth_046", "pl": "chyba", "uk": "мабуть", "pos": "other" },
+    { "id": "oth_047", "pl": "raczej", "uk": "скоріше", "pos": "other" },
+    { "id": "oth_048", "pl": "może", "uk": "може", "pos": "other" },
+    { "id": "oth_049", "pl": "właśnie", "uk": "саме / якраз", "pos": "other" },
+    { "id": "oth_050", "pl": "nawet", "uk": "навіть", "pos": "other" },
+    { "id": "oth_051", "pl": "też", "uk": "теж", "pos": "other" },
+    { "id": "oth_052", "pl": "także", "uk": "також", "pos": "other" },
+    { "id": "oth_053", "pl": "już", "uk": "вже", "pos": "other" },
+    { "id": "oth_054", "pl": "jeszcze", "uk": "ще", "pos": "other" },
+
+    { "id": "oth_055", "pl": "zawsze", "uk": "завжди", "pos": "other" },
+    { "id": "oth_056", "pl": "czasem", "uk": "іноді", "pos": "other" },
+    { "id": "oth_057", "pl": "często", "uk": "часто", "pos": "other" },
+    { "id": "oth_058", "pl": "rzadko", "uk": "рідко", "pos": "other" },
+    { "id": "oth_059", "pl": "nigdy", "uk": "ніколи", "pos": "other" },
+
+    { "id": "oth_060", "pl": "tu", "uk": "тут", "pos": "other" },
+    { "id": "oth_061", "pl": "tam", "uk": "там", "pos": "other" },
+    { "id": "oth_062", "pl": "teraz", "uk": "зараз", "pos": "other" },
+    { "id": "oth_063", "pl": "potem", "uk": "потім", "pos": "other" },
+    { "id": "oth_064", "pl": "najpierw", "uk": "спочатку", "pos": "other" },
+    { "id": "oth_065", "pl": "później", "uk": "пізніше", "pos": "other" },
+    { "id": "oth_066", "pl": "w końcu", "uk": "врешті", "pos": "other" },
+
+    { "id": "oth_067", "pl": "naprawdę", "uk": "справді", "pos": "other" },
+    { "id": "oth_068", "pl": "oczywiście", "uk": "звісно", "pos": "other" },
+    { "id": "oth_069", "pl": "w sumie", "uk": "загалом", "pos": "other" },
+    { "id": "oth_070", "pl": "po prostu", "uk": "просто", "pos": "other" },
+    { "id": "oth_071", "pl": "w ogóle", "uk": "взагалі", "pos": "other" },
+
+    { "id": "oth_072", "pl": "niestety", "uk": "на жаль", "pos": "other" },
+    { "id": "oth_073", "pl": "na szczęście", "uk": "на щастя", "pos": "other" },
+    { "id": "oth_074", "pl": "nareszcie", "uk": "нарешті", "pos": "other" },
+
+    { "id": "oth_075", "pl": "tak", "uk": "так", "pos": "other" },
+    { "id": "oth_076", "pl": "nie", "uk": "ні", "pos": "other" },
+    { "id": "oth_077", "pl": "tak czy nie", "uk": "так чи ні", "pos": "other" },
+    { "id": "oth_078", "pl": "ani trochę", "uk": "ані трохи", "pos": "other" },
+    { "id": "oth_079", "pl": "wcale", "uk": "зовсім / аж ніяк", "pos": "other" }
+  ]
+}

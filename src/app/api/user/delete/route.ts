@@ -26,7 +26,6 @@ export async function DELETE() {
     db.collection("comprehension_sessions").deleteMany({ userId }),
     db.collection("data_requests").deleteMany({ userId }),
     db.collection("ai_usage_logs").deleteMany({ userId }),
-    db.collection("admin_bootstrap_tokens").deleteMany({ reservedBy: userId, usedAt: { $exists: false } }),
     db.collection("exercise_submissions").deleteMany({ userId: userIdStr }),
     db.collection("describe_attempts").deleteMany({ userId: userIdStr }),
     db.collection("story_attempts").deleteMany({ userId: userIdStr }),

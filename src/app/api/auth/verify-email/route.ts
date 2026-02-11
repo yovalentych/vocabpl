@@ -3,7 +3,6 @@ import crypto from "crypto";
 import { getCookieOptions, getJwtSecret, getUserByEmail, signToken } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { checkRateLimit, getRequestIp } from "@/lib/rate-limit";
-import { consumeAdminBootstrapToken } from "@/lib/admin-bootstrap";
 
 function hashCode(code: string) {
   return crypto.createHash("sha256").update(`${code}:${getJwtSecret()}`).digest("hex");
@@ -59,11 +58,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid code" }, { status: 400 });
   }
 
-  let postVerifyRole = user.role || "user";
-  if (postVerifyRole !== "admin") {
-    const bootstrapped = await consumeAdminBootstrapToken(user._id);
-    if (bootstrapped) postVerifyRole = "admin";
-  }
+  const postVerifyRole = user.role || "user";
   await db.collection("users").updateOne(
     { _id: user._id },
     {

@@ -1,0 +1,681 @@
+{
+  "version": "1.0.0",
+  "title": "KPK A1 (lekcja 8–9) — Test",
+  "source": "kpk-a1-lekcja-8-9-3667766.pdf",
+  "items": [
+    {
+      "id": "kpk_a1_l8_9_q001",
+      "number": 1,
+      "prompt": "Śniadanie, obiad, kolacja to......",
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "posiłki"
+        },
+        {
+          "id": "b",
+          "text": "produkty"
+        },
+        {
+          "id": "c",
+          "text": "Nabiał"
+        }
+      ],
+      "answer": "a"
+    },
+    {
+      "id": "kpk_a1_l8_9_q002",
+      "number": 2,
+      "prompt": "Na śniadanie jemy......",
+      "type": "multi",
+      "options": [
+        {
+          "id": "a",
+          "text": "jogurt"
+        },
+        {
+          "id": "b",
+          "text": "płatki śniadaniowe"
+        },
+        {
+          "id": "c",
+          "text": "barszcz"
+        },
+        {
+          "id": "d",
+          "text": "zupę"
+        },
+        {
+          "id": "e",
+          "text": "kanapkę"
+        },
+        {
+          "id": "f",
+          "text": "jajko"
+        },
+        {
+          "id": "g",
+          "text": "herbatę"
+        },
+        {
+          "id": "h",
+          "text": "sok pomarańczowy"
+        }
+      ],
+      "answer": [
+        "a",
+        "b",
+        "e",
+        "f"
+      ]
+    },
+    {
+      "id": "kpk_a1_l8_9_q003",
+      "number": 3,
+      "prompt": "Na śniadanie pijemy ......",
+      "type": "multi",
+      "options": [
+        {
+          "id": "a",
+          "text": "kawę"
+        },
+        {
+          "id": "b",
+          "text": "cytrynę"
+        },
+        {
+          "id": "c",
+          "text": "herbatę z cytryną"
+        },
+        {
+          "id": "d",
+          "text": "płatki śniadaniowe"
+        },
+        {
+          "id": "e",
+          "text": "miód"
+        },
+        {
+          "id": "f",
+          "text": "kanapkę"
+        },
+        {
+          "id": "g",
+          "text": "sok pomarańczowy"
+        }
+      ],
+      "answer": [
+        "a",
+        "c",
+        "g"
+      ]
+    },
+    {
+      "id": "kpk_a1_l8_9_q004",
+      "number": 4,
+      "prompt": "Wolę (kawa) niż (herbata)",
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "Wolę kawy niż herbaty"
+        },
+        {
+          "id": "b",
+          "text": "Wolę kawę niż herbatę"
+        },
+        {
+          "id": "c",
+          "text": "Wolę kawę niż herbaty"
+        }
+      ],
+      "answer": "b"
+    },
+    {
+      "id": "kpk_a1_l8_9_q005",
+      "number": 5,
+      "prompt": "Woli (czarny chleb) niż (bułka)",
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "Woli czarnego chleba niż bułki"
+        },
+        {
+          "id": "b",
+          "text": "Woli czarny chleb niż bułkę"
+        },
+        {
+          "id": "c",
+          "text": "Woli czarną chleb niż bułkę."
+        }
+      ],
+      "answer": "b"
+    },
+    {
+      "id": "kpk_a1_l8_9_q006",
+      "number": 6,
+      "prompt": "Rodzice (jeść) ziemniaki z kurczakiem.",
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "Rodzice jecie ziemniaki z kurczakiem."
+        },
+        {
+          "id": "b",
+          "text": "Rodzice je ziemniaki z kurczakiem."
+        },
+        {
+          "id": "c",
+          "text": "Rodzice jedzą ziemniaki z kurczakiem"
+        }
+      ],
+      "answer": "c"
+    },
+    {
+      "id": "kpk_a1_l8_9_q007",
+      "number": 7,
+      "prompt": "Karol i Mami (pić) kawę z mlekiem.",
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "pijemy"
+        },
+        {
+          "id": "b",
+          "text": "pijecie"
+        },
+        {
+          "id": "c",
+          "text": "piją"
+        }
+      ],
+      "answer": "c"
+    },
+    {
+      "id": "kpk_a1_l8_9_q008",
+      "number": 8,
+      "prompt": "Proszę wybrać potrawy:",
+      "type": "multi",
+      "options": [
+        {
+          "id": "a",
+          "text": "jajecznica"
+        },
+        {
+          "id": "b",
+          "text": "chleb"
+        },
+        {
+          "id": "c",
+          "text": "frytki"
+        },
+        {
+          "id": "d",
+          "text": "ser"
+        },
+        {
+          "id": "e",
+          "text": "pierogi"
+        },
+        {
+          "id": "f",
+          "text": "szynka"
+        }
+      ],
+      "answer": [
+        "a",
+        "c",
+        "e"
+      ]
+    },
+    {
+      "id": "kpk_a1_l8_9_q009",
+      "number": 9,
+      "prompt": "Lubię jeść вареники",
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "warenyky"
+        },
+        {
+          "id": "b",
+          "text": "pierogi"
+        },
+        {
+          "id": "c",
+          "text": "ciasto"
+        },
+        {
+          "id": "d",
+          "text": "drożdżówki"
+        }
+      ],
+      "answer": "b"
+    },
+    {
+      "id": "kpk_a1_l8_9_q010",
+      "number": 10,
+      "prompt": "Proszę wybrać owoce:",
+      "type": "multi",
+      "options": [
+        {
+          "id": "a",
+          "text": "brzoskwinie"
+        },
+        {
+          "id": "b",
+          "text": "brokuły"
+        },
+        {
+          "id": "c",
+          "text": "pomarańcza"
+        },
+        {
+          "id": "d",
+          "text": "arbuz"
+        },
+        {
+          "id": "e",
+          "text": "ziemniaki"
+        },
+        {
+          "id": "f",
+          "text": "groszek"
+        },
+        {
+          "id": "g",
+          "text": "jabłka"
+        }
+      ],
+      "answer": [
+        "a",
+        "c",
+        "d",
+        "g"
+      ]
+    },
+    {
+      "id": "kpk_a1_l8_9_q011",
+      "number": 11,
+      "prompt": "Proszę wybrać warzywa:",
+      "type": "multi",
+      "options": [
+        {
+          "id": "a",
+          "text": "kapusta"
+        },
+        {
+          "id": "b",
+          "text": "truskawki"
+        },
+        {
+          "id": "c",
+          "text": "kalafior"
+        },
+        {
+          "id": "d",
+          "text": "cebula"
+        },
+        {
+          "id": "e",
+          "text": "winogrona"
+        },
+        {
+          "id": "f",
+          "text": "gruszki"
+        }
+      ],
+      "answer": [
+        "a",
+        "c",
+        "d"
+      ]
+    },
+    {
+      "id": "kpk_a1_l8_9_q012",
+      "number": 12,
+      "prompt": "Cytryna jest.....",
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "kwaśna"
+        },
+        {
+          "id": "b",
+          "text": "gorzka"
+        },
+        {
+          "id": "c",
+          "text": "słodka"
+        },
+        {
+          "id": "d",
+          "text": "delikatna"
+        }
+      ],
+      "answer": "a"
+    },
+    {
+      "id": "kpk_a1_l8_9_q013",
+      "number": 13,
+      "prompt": "Jabłko jest.....",
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "okrągłe i słodkie"
+        },
+        {
+          "id": "b",
+          "text": "okrągłe i ostre"
+        },
+        {
+          "id": "c",
+          "text": "podłużne i słodkie"
+        }
+      ],
+      "answer": "a"
+    },
+    {
+      "id": "kpk_a1_l8_9_q014",
+      "number": 14,
+      "prompt": "Зелені яблука",
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "Zieloni jabłki"
+        },
+        {
+          "id": "b",
+          "text": "Zielone jabłka"
+        },
+        {
+          "id": "c",
+          "text": "Zieloni jabłkach"
+        }
+      ],
+      "answer": "b"
+    },
+    {
+      "id": "kpk_a1_l8_9_q015",
+      "number": 15,
+      "prompt": "Смачні фрукти",
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "Smaczni owocy"
+        },
+        {
+          "id": "b",
+          "text": "Smaczne owoce"
+        },
+        {
+          "id": "c",
+          "text": "Smaczne owoci"
+        }
+      ],
+      "answer": "b"
+    },
+    {
+      "id": "kpk_a1_l8_9_q016",
+      "number": 16,
+      "prompt": "Мінеральні води",
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "Wody mineralne"
+        },
+        {
+          "id": "b",
+          "text": "wody mineralni"
+        },
+        {
+          "id": "c",
+          "text": "Woda mineralna"
+        }
+      ],
+      "answer": "a"
+    },
+    {
+      "id": "kpk_a1_l8_9_q017",
+      "number": 17,
+      "prompt": "Proszę wybrać nabiał:",
+      "type": "multi",
+      "options": [
+        {
+          "id": "a",
+          "text": "szynka"
+        },
+        {
+          "id": "b",
+          "text": "jogurt"
+        },
+        {
+          "id": "c",
+          "text": "mleko"
+        },
+        {
+          "id": "d",
+          "text": "czekolada"
+        },
+        {
+          "id": "e",
+          "text": "chipsy"
+        },
+        {
+          "id": "f",
+          "text": "ser biały"
+        }
+      ],
+      "answer": [
+        "b",
+        "c",
+        "f"
+      ]
+    },
+    {
+      "id": "kpk_a1_l8_9_q018",
+      "number": 18,
+      "prompt": "Proszę wybrać produkty zbożowe:",
+      "type": "multi",
+      "options": [
+        {
+          "id": "a",
+          "text": "makaron"
+        },
+        {
+          "id": "b",
+          "text": "chleb"
+        },
+        {
+          "id": "c",
+          "text": "kasza"
+        },
+        {
+          "id": "d",
+          "text": "spaghetti"
+        },
+        {
+          "id": "e",
+          "text": "kurczak"
+        }
+      ],
+      "answer": [
+        "a",
+        "c",
+        "d"
+      ]
+    },
+    {
+      "id": "kpk_a1_l8_9_q019",
+      "number": 19,
+      "prompt": "Dżem....",
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "ananasowy"
+        },
+        {
+          "id": "b",
+          "text": "ananasowa"
+        },
+        {
+          "id": "c",
+          "text": "ananasowe"
+        }
+      ],
+      "answer": "a"
+    },
+    {
+      "id": "kpk_a1_l8_9_q020",
+      "number": 20,
+      "prompt": "Mleko....",
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "waniliowa"
+        },
+        {
+          "id": "b",
+          "text": "waniliowy"
+        },
+        {
+          "id": "c",
+          "text": "waniliowe"
+        }
+      ],
+      "answer": "c"
+    },
+    {
+      "id": "kpk_a1_l8_9_q021",
+      "number": 21,
+      "prompt": "Zupa....",
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "pomidorowa"
+        },
+        {
+          "id": "b",
+          "text": "pomidorowe"
+        },
+        {
+          "id": "c",
+          "text": "pomidorowy"
+        }
+      ],
+      "answer": "a"
+    },
+    {
+      "id": "kpk_a1_l8_9_q022",
+      "number": 22,
+      "prompt": "Proszę wybrać sztućce:",
+      "type": "multi",
+      "options": [
+        {
+          "id": "a",
+          "text": "łyżka"
+        },
+        {
+          "id": "b",
+          "text": "serwetka"
+        },
+        {
+          "id": "c",
+          "text": "nóż"
+        },
+        {
+          "id": "d",
+          "text": "widelec"
+        },
+        {
+          "id": "e",
+          "text": "kubek"
+        },
+        {
+          "id": "f",
+          "text": "czajnik"
+        }
+      ],
+      "answer": [
+        "a",
+        "c",
+        "d"
+      ]
+    },
+    {
+      "id": "kpk_a1_l8_9_q023",
+      "number": 23,
+      "prompt": "Proszę wybrać naczynia:",
+      "type": "multi",
+      "options": [
+        {
+          "id": "a",
+          "text": "łyżeczka"
+        },
+        {
+          "id": "b",
+          "text": "talerz"
+        },
+        {
+          "id": "c",
+          "text": "szklanka"
+        },
+        {
+          "id": "d",
+          "text": "garnek"
+        },
+        {
+          "id": "e",
+          "text": "nóż"
+        },
+        {
+          "id": "f",
+          "text": "widelec"
+        }
+      ],
+      "answer": [
+        "b",
+        "c",
+        "d"
+      ]
+    },
+    {
+      "id": "kpk_a1_l8_9_q024",
+      "number": 24,
+      "prompt": "Co nie pasuje? Chipsy - czekolada - drożdżówka - arbuz",
+      "type": "single",
+      "options": [
+        {
+          "id": "a",
+          "text": "chipsy"
+        },
+        {
+          "id": "b",
+          "text": "czekolada"
+        },
+        {
+          "id": "c",
+          "text": "drożdżówka"
+        },
+        {
+          "id": "d",
+          "text": "arbuz"
+        }
+      ],
+      "answer": "d"
+    }
+  ]
+}

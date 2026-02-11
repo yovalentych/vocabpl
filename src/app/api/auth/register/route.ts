@@ -6,7 +6,6 @@ import { getExpiryDate, PromoDuration } from "@/lib/promo";
 import { ObjectId } from "mongodb";
 import { sendVerificationEmail } from "@/lib/mailer";
 import { checkRateLimit, getRequestIp } from "@/lib/rate-limit";
-import { precheckAdminBootstrapToken, reserveAdminBootstrapToken } from "@/lib/admin-bootstrap";
 import { DEFAULT_PLAN_ID } from "@/lib/plans";
 
 const CODE_TTL_MINUTES = 15;
@@ -30,7 +29,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Rate limit" }, { status: 429 });
   }
 
-  const { username, password, confirmPassword, name, promoCode, email, acceptTerms, marketingOptIn, adminToken } = await request.json();
+  const { username, password, confirmPassword, name, promoCode, email, acceptTerms, marketingOptIn } = await request.json();
 
   if (!username || !password || !confirmPassword || !name || !email) {
     return NextResponse.json({ error: "Missing credentials" }, { status: 400 });
@@ -47,27 +46,6 @@ export async function POST(request: Request) {
 
   const normalizedUsername = String(username).trim();
   const normalizedEmail = String(email).trim().toLowerCase();
-
-  if (adminToken) {
-    const precheck = await precheckAdminBootstrapToken(String(adminToken));
-    if (!precheck.ok) {
-      const status = precheck.error === "invalid" ? 401 : 409;
-      return NextResponse.json(
-        {
-          error: "Admin token not available",
-          code:
-            precheck.error === "disabled"
-              ? "ADMIN_TOKEN_DISABLED"
-              : precheck.error === "invalid"
-                ? "ADMIN_TOKEN_INVALID"
-                : precheck.error === "used"
-                  ? "ADMIN_TOKEN_USED"
-                  : "ADMIN_TOKEN_RESERVED"
-        },
-        { status }
-      );
-    }
-  }
 
   const existing = await getUserByUsername(normalizedUsername);
   if (existing) {
@@ -129,27 +107,6 @@ export async function POST(request: Request) {
   const expiresAt = new Date(Date.now() + CODE_TTL_MINUTES * 60 * 1000);
 
   const db = await getDb();
-
-  if (adminToken) {
-    const reserved = await reserveAdminBootstrapToken(user.id, String(adminToken));
-    if (!reserved.ok) {
-      await db.collection("users").deleteOne({ _id: new ObjectId(user.id) });
-      return NextResponse.json(
-        {
-          error: "Admin token not available",
-          code:
-            reserved.error === "disabled"
-              ? "ADMIN_TOKEN_DISABLED"
-              : reserved.error === "invalid"
-                ? "ADMIN_TOKEN_INVALID"
-                : reserved.error === "used"
-                  ? "ADMIN_TOKEN_USED"
-                  : "ADMIN_TOKEN_RESERVED"
-        },
-        { status: 409 }
-      );
-    }
-  }
 
   await db.collection("email_verifications").updateOne(
     { userId: new ObjectId(user.id) },
