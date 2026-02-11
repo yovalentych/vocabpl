@@ -88,7 +88,7 @@ export async function createUser({
 }) {
   const db = await getDb();
   const passwordHash = await hashPassword(password);
-  const role = "user";
+  const role: "admin" | "user" = "user";
   const emailLower = email.toLowerCase();
   const userDoc = {
     username,
@@ -127,5 +127,5 @@ export async function createUser({
     createdAt: new Date()
   };
   const result = await db.collection("users").insertOne(userDoc);
-  return { id: result.insertedId.toString(), username, role, isAdmin: role === "admin" };
+  return { id: result.insertedId.toString(), username, role, isAdmin: false };
 }
