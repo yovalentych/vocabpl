@@ -80,7 +80,7 @@ export async function reserveAdminBootstrapToken(userId: string, token: string):
       { upsert: true, returnDocument: "after" }
     );
 
-    if (!result.value || result.value.reservedBy?.toString?.() !== String(userId)) {
+    if (!result || !result.value || result.value.reservedBy?.toString?.() !== String(userId)) {
       return { ok: false, error: "reserved" };
     }
     return { ok: true };
