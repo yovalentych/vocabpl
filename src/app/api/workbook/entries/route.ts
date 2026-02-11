@@ -54,12 +54,24 @@ export async function GET() {
   if (!auth) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const db = await getDb();
-  const entries = await db
-    .collection("workbook_entries")
-    .find({ userId: new ObjectId(auth.id) }, { projection: { _id: 0 } })
+
+  // Get exercise attempts (new system)
+  const attempts = await db
+    .collection("exercise_attempts")
+    .find({ userId: new ObjectId(auth.id) })
     .sort({ createdAt: -1 })
     .limit(50)
     .toArray();
+
+  // Transform to match expected format
+  const entries = attempts.map((attempt: any) => ({
+    id: attempt._id.toString(),
+    type: attempt.type,
+    createdAt: attempt.createdAt,
+    score: attempt.score,
+    points: attempt.points,
+    details: attempt.details || {}
+  }));
 
   return NextResponse.json({ entries });
 }

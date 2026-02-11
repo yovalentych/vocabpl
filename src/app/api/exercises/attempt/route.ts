@@ -16,6 +16,7 @@ export async function POST(request: Request) {
   const score = Number(payload?.score || 0);
   const providedPoints = Number(payload?.points || 0);
   const firstOnly = Boolean(payload?.firstOnly);
+  const details = payload?.details || {}; // Accept details object
 
   if (!type) {
     return NextResponse.json({ error: "Missing type" }, { status: 400 });
@@ -43,6 +44,7 @@ export async function POST(request: Request) {
     materialIdRaw: materialId,
     score,
     points,
+    details, // Store details
     createdAt: new Date()
   });
   await db.collection("users").updateOne(

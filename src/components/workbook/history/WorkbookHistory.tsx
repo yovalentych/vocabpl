@@ -63,22 +63,30 @@ export default function WorkbookHistory() {
       </div>
 
       {/* Filters */}
-      <div className="rounded-3xl border border-ink/10 bg-paper/80 p-4 shadow-soft">
+      <div className="rounded-3xl border border-ink/10 bg-paper/80 p-4 md:p-6 shadow-soft">
+        <p className="text-xs uppercase tracking-[0.3em] text-ink/40 mb-3">
+          Фільтр за типом
+        </p>
         <div className="flex flex-wrap gap-2">
           {exerciseTypes.map((type) => (
             <button
               key={type.id}
               onClick={() => setFilter(type.id)}
-              className={`rounded-full border px-4 py-2 text-xs font-semibold transition ${
+              className={`rounded-full border px-4 py-2.5 md:py-2 text-xs font-semibold transition-all active:scale-95 ${
                 filter === type.id
-                  ? "border-ink bg-ink/5 text-ink"
-                  : "border-ink/10 bg-paper text-ink/60 hover:border-ink/30"
+                  ? "border-ink bg-ink text-paper shadow-md"
+                  : "border-ink/20 bg-paper text-ink/70 hover:border-ink/40 hover:bg-ink/5"
               }`}
             >
               {type.label}
             </button>
           ))}
         </div>
+        {filteredEntries.length > 0 && (
+          <p className="mt-4 text-xs text-ink/50">
+            Знайдено записів: <span className="font-semibold text-ink/70">{filteredEntries.length}</span>
+          </p>
+        )}
       </div>
 
       {/* Entries List */}
