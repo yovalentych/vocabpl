@@ -48,7 +48,7 @@ export default function RootLayout({
                   <Footer />
                 </div>
               </FooterObserver>
-              <div className="fixed bottom-20 right-6 z-40 flex flex-col gap-3">
+              <div className="fixed bottom-24 left-4 right-4 z-40 flex items-stretch gap-3 sm:bottom-20 sm:left-auto sm:right-6 sm:flex-col sm:items-end">
                 <FloatingNotesButton />
                 <FloatingAddWordButton />
               </div>
