@@ -60,7 +60,8 @@ MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/
 MONGODB_DB=polish_vocab
 PVS_OPENAI_API_KEY=sk-...
 JWT_SECRET=your-random-secret-min-32-chars
-ADMIN_USERNAME=youradminname
+ADMIN_BOOTSTRAP_TOKEN=one-time-admin-token
+ADMIN_BOOTSTRAP_TTL_HOURS=2
 PORT=3000
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=465
@@ -72,7 +73,8 @@ SMTP_FROM="Polish Vocab Studio <your-email@gmail.com>"
 
 **Важливо:**
 - `JWT_SECRET` - згенеруйте випадковий string (мін. 32 символа)
-- `ADMIN_USERNAME` - username першого адміна (буде автоматично admin при реєстрації)
+- `ADMIN_BOOTSTRAP_TOKEN` - одноразовий токен для bootstrap адміна (використати при реєстрації)
+- `ADMIN_BOOTSTRAP_TTL_HOURS` - TTL для резерву токена (за замовчуванням 2 години)
 
 ### 3. Deploy
 1. Railway автоматично почне build
@@ -87,7 +89,7 @@ SMTP_FROM="Polish Vocab Studio <your-email@gmail.com>"
 
 ### 2. Створіть першого адміна
 1. Відкрийте додаток
-2. Register → використайте username = `ADMIN_USERNAME` з env
+2. Register → передайте `adminToken` = `ADMIN_BOOTSTRAP_TOKEN` при реєстрації
 3. Підтвердіть email
 4. Зайдіть → перевірте доступ до `/admin`
 

@@ -2,12 +2,19 @@ import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { getJwtSecret, getUserByEmail, hashPassword } from "@/lib/auth";
 import { getDb } from "@/lib/db";
+import { checkRateLimit, getRequestIp } from "@/lib/rate-limit";
 
 function hashCode(code: string) {
   return crypto.createHash("sha256").update(`${code}:${getJwtSecret()}`).digest("hex");
 }
 
 export async function POST(request: Request) {
+  const ip = getRequestIp(request);
+  const rate = await checkRateLimit(`auth:password-confirm:${ip}`, 10, 60_000);
+  if (!rate.ok) {
+    return NextResponse.json({ error: "Rate limit" }, { status: 429 });
+  }
+
   const { email, code, newPassword, confirmPassword } = await request.json();
   const normalizedEmail = String(email || "").trim().toLowerCase();
   if (!normalizedEmail || !code || !newPassword || !confirmPassword) {

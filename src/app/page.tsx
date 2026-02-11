@@ -19,6 +19,8 @@ import {
 import { getDb } from "@/lib/db";
 import { getDictionary } from "@/lib/i18n-server";
 
+export const dynamic = "force-dynamic";
+
 async function getStats() {
   const db = await getDb();
   const [verbs, adverbs, adjectives, tests] = await Promise.all([

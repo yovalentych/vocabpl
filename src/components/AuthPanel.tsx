@@ -1,13 +1,15 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useLocale } from "@/components/LocaleProvider";
 import Link from "next/link";
 
 export default function AuthPanel({ initialMode = "login" }: { initialMode?: "login" | "register" }) {
   const { t } = useLocale();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const adminMode = searchParams?.get("admin") === "1";
   const [mode, setMode] = useState<"login" | "register">(initialMode);
   const [stage, setStage] = useState<"auth" | "verify" | "recover">("auth");
   const [username, setUsername] = useState("");
@@ -16,6 +18,7 @@ export default function AuthPanel({ initialMode = "login" }: { initialMode?: "lo
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [promoCode, setPromoCode] = useState("");
+  const [adminToken, setAdminToken] = useState("");
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [marketingOptIn, setMarketingOptIn] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
@@ -24,6 +27,7 @@ export default function AuthPanel({ initialMode = "login" }: { initialMode?: "lo
   const [recoverPassword, setRecoverPassword] = useState("");
   const [recoverConfirm, setRecoverConfirm] = useState("");
   const [resendCooldown, setResendCooldown] = useState(0);
+  const [showAdvanced, setShowAdvanced] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -68,7 +72,8 @@ export default function AuthPanel({ initialMode = "login" }: { initialMode?: "lo
             promoCode: promoCode.trim() || null,
             email,
             acceptTerms: agreeTerms,
-            marketingOptIn
+            marketingOptIn,
+            adminToken: adminToken.trim() || null
           }
         : { identifier: username, password };
 
@@ -282,6 +287,32 @@ export default function AuthPanel({ initialMode = "login" }: { initialMode?: "lo
                         />
                       </label>
                     </div>
+                    {adminMode && (
+                      <>
+                        <div className="rounded-2xl border border-ink/10 bg-paper/60 px-4 py-3 text-xs text-ink/60">
+                          {t.auth.adminAdvancedHint}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setShowAdvanced((prev) => !prev)}
+                          className="text-left text-sm font-semibold text-ink/60 underline underline-offset-4 hover:text-ink"
+                        >
+                          {showAdvanced ? t.auth.hideAdvanced : t.auth.showAdvanced}
+                        </button>
+                        {showAdvanced && (
+                          <label className="block text-base sm:text-sm text-ink/70 font-medium sm:font-normal">
+                            {t.auth.adminToken}
+                            <input
+                              value={adminToken}
+                              onChange={(event) => setAdminToken(event.target.value)}
+                              className="mt-3 sm:mt-2 w-full rounded-2xl border-2 border-ink/20 bg-paper px-5 py-4 sm:px-4 sm:py-3 text-base focus:border-ink/40 focus:outline-none transition"
+                              placeholder={t.auth.adminTokenPlaceholder}
+                            />
+                            <span className="mt-2 block text-xs text-ink/50">{t.auth.adminTokenHint}</span>
+                          </label>
+                        )}
+                      </>
+                    )}
                     <div className="grid gap-5 sm:gap-4 sm:grid-cols-2">
                       <label className="block text-base sm:text-sm text-ink/70 font-medium sm:font-normal">
                         {t.auth.password}

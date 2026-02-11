@@ -50,7 +50,11 @@
       "Bash(git push:*)",
       "Bash(git rebase:*)",
       "Bash(npm install:*)",
-      "Bash(npm audit:*)"
+      "Bash(npm audit:*)",
+      "Bash(regardless of the language used in the topic/request\"\n\n✅ paraphrase_generate:\n   \"CRITICAL: sourcePl and instructionPl MUST be in POLISH,)",
+      "Bash(regardless of the language used in the topic/request\"\n\n✅ sentences_generate:\n   \"CRITICAL: The 'pl' field MUST contain POLISH words,)",
+      "Bash(regardless of the language used in the topic/request\"\n\n✅ story_generate:\n   \"CRITICAL: The 'text' field MUST contain a story in POLISH,)",
+      "Bash(regardless of the language used in the topic/request\"\n   + Додаткові підкреслення: \"ЗАВЖДИ ПОЛЬСЬКОЮ!\", \"ОБОВ 'ЯЗКОВО польською мовою\"\n\nТепер можна писати тему українською/англійською, а контент завжди польський! 🇵🇱\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
     ]
   }
 }

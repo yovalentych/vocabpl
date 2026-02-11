@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { checkRateLimit } from "@/lib/byokStore";
+import { checkRateLimit } from "@/lib/rate-limit";
 import { getAuthUser } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { isSubscriptionActive } from "@/lib/subscription";
@@ -1174,7 +1174,7 @@ export async function POST(request: Request) {
   }
 
   const rateKey = `pvs:${auth.id}`;
-  const rate = checkRateLimit(rateKey, 20, 60_000);
+  const rate = await checkRateLimit(rateKey, 20, 60_000);
   if (!rate.ok) {
     return NextResponse.json({ error: "Rate limit" }, { status: 429 });
   }
@@ -1187,6 +1187,29 @@ export async function POST(request: Request) {
   // Check credits limit (skip for admins - they have Infinity)
   if (usedCredits + creditsCost > creditsLimit) {
     return NextResponse.json({ error: "AI quota exceeded", code: "ai_quota" }, { status: 402 });
+  }
+
+  const modeLimits: Record<string, { limit: number; windowMs: number }> = {
+    reading_text_generate: { limit: 2, windowMs: 60_000 },
+    test_generate: { limit: 3, windowMs: 60_000 },
+    story_generate: { limit: 3, windowMs: 60_000 },
+    reading_questions_generate: { limit: 4, windowMs: 60_000 },
+    sentences_generate: { limit: 6, windowMs: 60_000 },
+    cloze_generate: { limit: 6, windowMs: 60_000 },
+    match_generate: { limit: 6, windowMs: 60_000 },
+    paraphrase_generate: { limit: 6, windowMs: 60_000 },
+    translate_generate: { limit: 8, windowMs: 60_000 },
+    mini_dialog_generate: { limit: 8, windowMs: 60_000 },
+    mini_dialog_continue: { limit: 10, windowMs: 60_000 },
+    mini_dialog_roleplay: { limit: 10, windowMs: 60_000 }
+  };
+
+  const perModeLimit = modeLimits[mode];
+  if (perModeLimit) {
+    const extraRate = await checkRateLimit(`ai:mode:${mode}:${auth.id}`, perModeLimit.limit, perModeLimit.windowMs);
+    if (!extraRate.ok) {
+      return NextResponse.json({ error: "Rate limit" }, { status: 429 });
+    }
   }
 
   const messages = buildPrompt(mode, userInput, context);

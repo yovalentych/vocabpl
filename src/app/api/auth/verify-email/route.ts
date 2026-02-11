@@ -1,13 +1,21 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
-import { getCookieOptions, getJwtSecret, getUserByEmail, isAdminUsername, signToken } from "@/lib/auth";
+import { getCookieOptions, getJwtSecret, getUserByEmail, signToken } from "@/lib/auth";
 import { getDb } from "@/lib/db";
+import { checkRateLimit, getRequestIp } from "@/lib/rate-limit";
+import { consumeAdminBootstrapToken } from "@/lib/admin-bootstrap";
 
 function hashCode(code: string) {
   return crypto.createHash("sha256").update(`${code}:${getJwtSecret()}`).digest("hex");
 }
 
 export async function POST(request: Request) {
+  const ip = getRequestIp(request);
+  const rate = await checkRateLimit(`auth:verify-email:${ip}`, 10, 60_000);
+  if (!rate.ok) {
+    return NextResponse.json({ error: "Rate limit" }, { status: 429 });
+  }
+
   const { email, code } = await request.json();
   if (!email || !code) {
     return NextResponse.json({ error: "Missing data" }, { status: 400 });
@@ -20,7 +28,7 @@ export async function POST(request: Request) {
   }
 
   if (user.emailVerified) {
-    const role = user.role || (isAdminUsername(user.username) ? "admin" : "user");
+    const role = user.role || "user";
     const token = signToken({ id: user._id.toString(), username: user.username, role, isAdmin: role === "admin" });
     const response = NextResponse.json({
       user: { id: user._id.toString(), username: user.username, role, isAdmin: role === "admin" }
@@ -51,18 +59,24 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid code" }, { status: 400 });
   }
 
+  let postVerifyRole = user.role || "user";
+  if (postVerifyRole !== "admin") {
+    const bootstrapped = await consumeAdminBootstrapToken(user._id);
+    if (bootstrapped) postVerifyRole = "admin";
+  }
   await db.collection("users").updateOne(
     { _id: user._id },
     {
       $set: {
         emailVerified: true,
-        emailVerifiedAt: new Date()
+        emailVerifiedAt: new Date(),
+        role: postVerifyRole
       }
     }
   );
   await db.collection("email_verifications").deleteOne({ userId: user._id });
 
-  const role = user.role || (isAdminUsername(user.username) ? "admin" : "user");
+  const role = postVerifyRole;
   const token = signToken({ id: user._id.toString(), username: user.username, role, isAdmin: role === "admin" });
   const response = NextResponse.json({
     user: { id: user._id.toString(), username: user.username, role, isAdmin: role === "admin" }

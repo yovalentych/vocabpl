@@ -3,6 +3,7 @@ import crypto from "crypto";
 import { getJwtSecret, getUserByEmail } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { sendPasswordResetEmail } from "@/lib/mailer";
+import { checkRateLimit, getRequestIp } from "@/lib/rate-limit";
 
 const CODE_TTL_MINUTES = 15;
 const RESEND_COOLDOWN_MS = 60 * 1000;
@@ -20,6 +21,12 @@ function hashCode(code: string) {
 }
 
 export async function POST(request: Request) {
+  const ip = getRequestIp(request);
+  const rate = await checkRateLimit(`auth:password-request:${ip}`, 5, 60_000);
+  if (!rate.ok) {
+    return NextResponse.json({ error: "Rate limit" }, { status: 429 });
+  }
+
   const { email } = await request.json();
   const normalizedEmail = String(email || "").trim().toLowerCase();
   if (!normalizedEmail || !isValidEmail(normalizedEmail)) {

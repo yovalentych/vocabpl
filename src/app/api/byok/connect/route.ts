@@ -43,7 +43,7 @@ export async function POST(request: Request) {
   }
 
   const sessionId = randomUUID();
-  setByokSession(sessionId, apiKey, SESSION_TTL_MS);
+  await setByokSession(sessionId, apiKey, SESSION_TTL_MS);
   setByokCookie(sessionId, SESSION_TTL_SECONDS);
 
   return NextResponse.json({

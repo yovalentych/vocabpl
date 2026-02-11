@@ -10,8 +10,6 @@ export type AuthUser = {
   isAdmin: boolean;
 };
 
-const ADMIN_USERNAME = "yovalentych";
-
 const TOKEN_NAME = "auth_token";
 
 export function getJwtSecret() {
@@ -69,10 +67,6 @@ export async function getUserByEmail(email: string) {
   return db.collection("users").findOne({ emailLower: email.toLowerCase() });
 }
 
-export function isAdminUsername(username: string) {
-  return username.trim().toLowerCase() === ADMIN_USERNAME.toLowerCase();
-}
-
 export async function createUser({
   username,
   password,
@@ -94,7 +88,7 @@ export async function createUser({
 }) {
   const db = await getDb();
   const passwordHash = await hashPassword(password);
-  const role = isAdminUsername(username) ? "admin" : "user";
+  const role = "user";
   const emailLower = email.toLowerCase();
   const userDoc = {
     username,

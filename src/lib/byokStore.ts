@@ -1,46 +1,66 @@
+import { getDb } from "@/lib/db";
+
 type ByokEntry = {
   apiKey: string;
   expiresAt: number;
 };
 
-const store = new Map<string, ByokEntry>();
-
-export function setByokSession(sessionId: string, apiKey: string, ttlMs: number) {
-  store.set(sessionId, { apiKey, expiresAt: Date.now() + ttlMs });
-}
-
-export function getByokSession(sessionId: string) {
-  const entry = store.get(sessionId);
-  if (!entry) return null;
-  if (Date.now() > entry.expiresAt) {
-    store.delete(sessionId);
-    return null;
-  }
-  return entry;
-}
-
-export function clearByokSession(sessionId: string) {
-  store.delete(sessionId);
-}
-
-type RateState = {
-  count: number;
-  resetAt: number;
+const globalForByok = globalThis as unknown as {
+  byokIndexesReady?: boolean;
 };
 
-const rateMap = new Map<string, RateState>();
+async function ensureIndexes() {
+  if (globalForByok.byokIndexesReady) return;
+  try {
+    const db = await getDb();
+    const coll = db.collection("byok_sessions");
+    await coll.createIndex({ sessionId: 1 }, { unique: true });
+    await coll.createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+    globalForByok.byokIndexesReady = true;
+  } catch {
+    // Ignore index creation errors to avoid blocking requests.
+  }
+}
 
-export function checkRateLimit(key: string, limit = 20, windowMs = 60_000) {
-  const now = Date.now();
-  const current = rateMap.get(key);
-  if (!current || now > current.resetAt) {
-    rateMap.set(key, { count: 1, resetAt: now + windowMs });
-    return { ok: true, remaining: limit - 1, resetAt: now + windowMs };
+export async function setByokSession(sessionId: string, apiKey: string, ttlMs: number) {
+  await ensureIndexes();
+  const db = await getDb();
+  const expiresAt = new Date(Date.now() + ttlMs);
+  await db.collection("byok_sessions").updateOne(
+    { sessionId },
+    {
+      $set: {
+        sessionId,
+        apiKey,
+        expiresAt,
+        updatedAt: new Date()
+      },
+      $setOnInsert: {
+        createdAt: new Date()
+      }
+    },
+    { upsert: true }
+  );
+}
+
+export async function getByokSession(sessionId: string): Promise<ByokEntry | null> {
+  await ensureIndexes();
+  const db = await getDb();
+  const record = await db.collection("byok_sessions").findOne({ sessionId });
+  if (!record) return null;
+  const expiresAt = record.expiresAt ? new Date(record.expiresAt).getTime() : 0;
+  if (expiresAt && Date.now() > expiresAt) {
+    await db.collection("byok_sessions").deleteOne({ sessionId });
+    return null;
   }
-  if (current.count >= limit) {
-    return { ok: false, remaining: 0, resetAt: current.resetAt };
-  }
-  current.count += 1;
-  rateMap.set(key, current);
-  return { ok: true, remaining: limit - current.count, resetAt: current.resetAt };
+  return {
+    apiKey: String(record.apiKey || ""),
+    expiresAt
+  };
+}
+
+export async function clearByokSession(sessionId: string) {
+  await ensureIndexes();
+  const db = await getDb();
+  await db.collection("byok_sessions").deleteOne({ sessionId });
 }

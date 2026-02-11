@@ -9,7 +9,7 @@ export async function GET() {
   if (!sessionId) {
     return NextResponse.json({ connected: false });
   }
-  const entry = getByokSession(sessionId);
+  const entry = await getByokSession(sessionId);
   if (!entry) {
     return NextResponse.json({ connected: false });
   }

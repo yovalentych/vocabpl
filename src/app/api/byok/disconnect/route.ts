@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 export async function POST() {
   const sessionId = getByokCookie();
   if (sessionId) {
-    clearByokSession(sessionId);
+    await clearByokSession(sessionId);
   }
   clearByokCookie();
   return NextResponse.json({ ok: true });

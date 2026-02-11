@@ -5,6 +5,8 @@ import { getDb } from "@/lib/db";
 import { getExpiryDate, PromoDuration } from "@/lib/promo";
 import { ObjectId } from "mongodb";
 import { sendVerificationEmail } from "@/lib/mailer";
+import { checkRateLimit, getRequestIp } from "@/lib/rate-limit";
+import { precheckAdminBootstrapToken, reserveAdminBootstrapToken } from "@/lib/admin-bootstrap";
 
 const CODE_TTL_MINUTES = 15;
 
@@ -21,7 +23,13 @@ function hashCode(code: string) {
 }
 
 export async function POST(request: Request) {
-  const { username, password, confirmPassword, name, promoCode, email, acceptTerms, marketingOptIn } = await request.json();
+  const ip = getRequestIp(request);
+  const rate = await checkRateLimit(`auth:register:${ip}`, 5, 60_000);
+  if (!rate.ok) {
+    return NextResponse.json({ error: "Rate limit" }, { status: 429 });
+  }
+
+  const { username, password, confirmPassword, name, promoCode, email, acceptTerms, marketingOptIn, adminToken } = await request.json();
 
   if (!username || !password || !confirmPassword || !name || !email) {
     return NextResponse.json({ error: "Missing credentials" }, { status: 400 });
@@ -38,6 +46,14 @@ export async function POST(request: Request) {
 
   const normalizedUsername = String(username).trim();
   const normalizedEmail = String(email).trim().toLowerCase();
+
+  if (adminToken) {
+    const precheck = await precheckAdminBootstrapToken(String(adminToken));
+    if (!precheck.ok) {
+      const status = precheck.error === "invalid" ? 401 : 409;
+      return NextResponse.json({ error: "Admin token not available" }, { status });
+    }
+  }
 
   const existing = await getUserByUsername(normalizedUsername);
   if (existing) {
@@ -98,6 +114,15 @@ export async function POST(request: Request) {
   const expiresAt = new Date(Date.now() + CODE_TTL_MINUTES * 60 * 1000);
 
   const db = await getDb();
+
+  if (adminToken) {
+    const reserved = await reserveAdminBootstrapToken(user.id, String(adminToken));
+    if (!reserved.ok) {
+      await db.collection("users").deleteOne({ _id: new ObjectId(user.id) });
+      return NextResponse.json({ error: "Admin token not available" }, { status: 409 });
+    }
+  }
+
   await db.collection("email_verifications").updateOne(
     { userId: new ObjectId(user.id) },
     {
