@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
-import { getCookieOptions, getJwtSecret, getUserByEmail, signToken } from "@/lib/auth";
+import { getCookieOptions, getJwtSecret, getUserByEmail, isAdminUsername, signToken } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { checkRateLimit, getRequestIp } from "@/lib/rate-limit";
 
@@ -58,7 +58,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid code" }, { status: 400 });
   }
 
-  const postVerifyRole = user.role || "user";
+  const postVerifyRole = isAdminUsername(user.username) ? "admin" : user.role || "user";
   await db.collection("users").updateOne(
     { _id: user._id },
     {

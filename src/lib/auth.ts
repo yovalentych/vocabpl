@@ -11,6 +11,9 @@ export type AuthUser = {
 };
 
 const TOKEN_NAME = "auth_token";
+const globalForAuth = globalThis as unknown as {
+  userIndexesReady?: boolean;
+};
 
 export function getJwtSecret() {
   const secret = process.env.JWT_SECRET;
@@ -27,6 +30,24 @@ export function getCookieOptions() {
     secure: process.env.NODE_ENV === "production",
     path: "/"
   };
+}
+
+export function isAdminUsername(username: string) {
+  const adminUsername = (process.env.ADMIN_USERNAME || "jovalentych").trim().toLowerCase();
+  return username.trim().toLowerCase() === adminUsername;
+}
+
+async function ensureUserIndexes() {
+  if (globalForAuth.userIndexesReady) return;
+  try {
+    const db = await getDb();
+    const users = db.collection("users");
+    await users.createIndex({ username: 1 }, { unique: true });
+    await users.createIndex({ emailLower: 1 }, { unique: true });
+    globalForAuth.userIndexesReady = true;
+  } catch {
+    // Ignore index creation errors to avoid blocking requests.
+  }
 }
 
 export function signToken(user: AuthUser) {
@@ -58,11 +79,13 @@ export async function getAuthUser() {
 }
 
 export async function getUserByUsername(username: string) {
+  await ensureUserIndexes();
   const db = await getDb();
   return db.collection("users").findOne({ username });
 }
 
 export async function getUserByEmail(email: string) {
+  await ensureUserIndexes();
   const db = await getDb();
   return db.collection("users").findOne({ emailLower: email.toLowerCase() });
 }
@@ -86,10 +109,10 @@ export async function createUser({
     userAgent?: string | null;
   };
 }) {
+  await ensureUserIndexes();
   const db = await getDb();
   const passwordHash = await hashPassword(password);
-  const adminUsername = (process.env.ADMIN_USERNAME || "jovalentych").trim().toLowerCase();
-  const role: "admin" | "user" = username.trim().toLowerCase() === adminUsername ? "admin" : "user";
+  const role: "admin" | "user" = isAdminUsername(username) ? "admin" : "user";
   const emailLower = email.toLowerCase();
   const userDoc = {
     username,

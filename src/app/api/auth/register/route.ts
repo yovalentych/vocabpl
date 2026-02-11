@@ -125,6 +125,10 @@ export async function POST(request: Request) {
   try {
     await sendVerificationEmail(normalizedEmail, code);
   } catch (error) {
+    await Promise.all([
+      db.collection("email_verifications").deleteOne({ userId: new ObjectId(user.id) }),
+      db.collection("users").deleteOne({ _id: new ObjectId(user.id) })
+    ]);
     return NextResponse.json({ error: "Failed to send verification email" }, { status: 500 });
   }
 

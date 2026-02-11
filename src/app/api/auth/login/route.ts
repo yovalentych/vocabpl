@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
-import { getCookieOptions, getUserByEmail, getUserByUsername, signToken, verifyPassword } from "@/lib/auth";
+import { getCookieOptions, getUserByEmail, getUserByUsername, isAdminUsername, signToken, verifyPassword } from "@/lib/auth";
 import { checkRateLimit, getRequestIp } from "@/lib/rate-limit";
 
 export async function POST(request: Request) {
@@ -31,8 +31,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
   }
 
-  const role = user.role || "user";
-  if (!user.role) {
+  let role = user.role || "user";
+  if (isAdminUsername(user.username) && role !== "admin") {
+    role = "admin";
+  }
+  if (!user.role || user.role !== role) {
     const db = await getDb();
     await db.collection("users").updateOne({ _id: user._id }, { $set: { role } });
   }

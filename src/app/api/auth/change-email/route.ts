@@ -45,6 +45,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Email already exists" }, { status: 409 });
   }
 
+  const code = generateCode();
+  const codeHash = hashCode(code);
+  const expiresAt = new Date(Date.now() + CODE_TTL_MINUTES * 60 * 1000);
+
   const db = await getDb();
   await db.collection("users").updateOne(
     { _id: user._id },
@@ -56,10 +60,6 @@ export async function POST(request: Request) {
       }
     }
   );
-
-  const code = generateCode();
-  const codeHash = hashCode(code);
-  const expiresAt = new Date(Date.now() + CODE_TTL_MINUTES * 60 * 1000);
 
   await db.collection("email_verifications").updateOne(
     { userId: user._id },
@@ -78,6 +78,13 @@ export async function POST(request: Request) {
   try {
     await sendVerificationEmail(normalizedNew, code);
   } catch (error) {
+    await Promise.all([
+      db.collection("users").updateOne(
+        { _id: user._id },
+        { $set: { email: normalizedOld, emailLower: normalizedOld, emailVerified: false } }
+      ),
+      db.collection("email_verifications").deleteOne({ userId: user._id })
+    ]);
     return NextResponse.json({ error: "Failed to send verification email" }, { status: 500 });
   }
 
