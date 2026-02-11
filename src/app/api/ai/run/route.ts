@@ -158,51 +158,103 @@ function buildPrompt(mode: string, userInput: string, context: string) {
     ];
   }
   if (mode === "mini_dialog_generate") {
-    // Parse input to get level and topic
+    // Parse input to get level and situation
     let parsed: any = {};
     try {
       parsed = JSON.parse(userInput);
     } catch (e) {
-      parsed = { level: "A2", topic: userInput };
+      parsed = { level: "A2", situation: userInput };
     }
 
     const level = parsed.level || "A2";
-    const topic = parsed.topic || "conversation";
-
-    // Generate difficulty-aware prompt
-    const difficultyPrompt = generateDifficultyAwarePrompt({
-      level: level as any,
-      exerciseType: "dialogue",
-      topic,
-      additionalConstraints: `
-**ФОРМАТ ВІДПОВІДІ (JSON):**
-{
-  "packId": string,
-  "level": string,
-  "topic": string,
-  "dialogs": [
-    {
-      "id": string,
-      "titlePl": string,
-      "titleUk": string,
-      "participants": [{"id": string, "name": string}],
-      "turns": [{"who": string, "pl": string, "vocabIds": string[]}],
-      "usedVocabIds": string[]
-    }
-  ],
-  "uiHintsUk": string[]
-}
-
-**ДОДАТКОВІ ВИМОГИ:**
-- Діалог має звучати ПРИРОДНО та РЕАЛІСТИЧНО
-- Використовуй vocabPool якщо надано
-- Кожна репліка має відповідати рівню ${level}
-      `
-    });
+    const situation = parsed.situation || "casual conversation";
 
     return [
-      { role: "system", content: difficultyPrompt },
-      { role: "user", content: `Request:\n${userInput}\nContext:\n${context}` }
+      {
+        role: "system",
+        content: `You are a Polish language tutor creating a conversation practice dialogue.
+
+SITUATION: ${situation}
+LEVEL: ${level}
+
+Your task: Start a natural dialogue by providing the FIRST AI turn (greeting or opening line).
+
+REQUIREMENTS:
+- Opening line should be appropriate for the situation: "${situation}"
+- Use vocabulary and grammar suitable for ${level} learners
+- Keep it SHORT (1-2 sentences)
+- Sound NATURAL and conversational
+- This will be the AI's first line in the conversation
+
+RETURN STRICT JSON ONLY:
+{
+  "firstTurn": string (AI's opening line in Polish)
+}
+
+IMPORTANT:
+- firstTurn must be in POLISH
+- Keep it SHORT and conversational
+- Match the ${level} difficulty level
+- Make it appropriate for the situation`
+      },
+      {
+        role: "user",
+        content: `Start a dialogue for situation: "${situation}" at ${level} level`
+      }
+    ];
+  }
+  if (mode === "mini_dialog_continue") {
+    // Parse input to get conversation context
+    let parsed: any = {};
+    try {
+      parsed = JSON.parse(userInput);
+    } catch (e) {
+      parsed = { situation: "", level: "A2", conversationHistory: [] };
+    }
+
+    const situation = parsed.situation || "casual conversation";
+    const level = parsed.level || "A2";
+    const history = parsed.conversationHistory || [];
+
+    // Build conversation history for context
+    const conversationContext = history.map((turn: any) =>
+      `${turn.speaker === "ai" ? "AI співрозмовник" : "Користувач"}: ${turn.text}`
+    ).join("\n");
+
+    return [
+      {
+        role: "system",
+        content: `You are a Polish language tutor acting as a conversation partner in a mini dialogue practice.
+
+SITUATION: ${situation}
+LEVEL: ${level}
+CONVERSATION SO FAR:
+${conversationContext}
+
+Your task: Continue the dialogue by providing the NEXT AI turn (response).
+
+REQUIREMENTS:
+- Keep response natural and appropriate for ${level} level
+- Stay in context of the situation: "${situation}"
+- Response should be 1-2 short sentences max
+- Use vocabulary and grammar appropriate for ${level} learners
+- Make it conversational and realistic
+
+RETURN STRICT JSON ONLY:
+{
+  "nextTurn": string (AI's next line in the dialogue, in Polish)
+}
+
+IMPORTANT:
+- nextTurn must be in POLISH
+- Keep it SHORT (1-2 sentences)
+- Sound NATURAL and conversational
+- Match the ${level} difficulty level`
+      },
+      {
+        role: "user",
+        content: `Continue the dialogue. The user just said: "${history[history.length - 1]?.text || ""}"`
+      }
     ];
   }
   if (mode === "mini_dialog_roleplay") {
