@@ -15,7 +15,6 @@ interface DialogueAIPracticeProps {
   config: {
     situation: string;
     level: "A1" | "A2" | "B1" | "B2";
-    turns: number;
   };
   onComplete: () => void;
 }
@@ -44,8 +43,7 @@ export default function DialogueAIPractice({ config, onComplete }: DialogueAIPra
             mode: "mini_dialog_generate",
             userInput: JSON.stringify({
               situation: config.situation,
-              level: config.level,
-              turns: config.turns
+              level: config.level
             }),
             context: JSON.stringify({ uiLanguage: locale })
           })
@@ -89,14 +87,8 @@ export default function DialogueAIPractice({ config, onComplete }: DialogueAIPra
     setCurrentInput("");
 
     // Add user's message
-    setTurns(prev => [...prev, { speaker: "user", text: userMessage }]);
-
-    // Check if this was the last turn
-    const userTurnCount = turns.filter(t => t.speaker === "user").length + 1;
-    if (userTurnCount >= config.turns) {
-      setIsComplete(true);
-      return;
-    }
+    const newTurns = [...turns, { speaker: "user", text: userMessage }];
+    setTurns(newTurns);
 
     // Get AI response
     setIsWaitingForAI(true);
@@ -111,8 +103,7 @@ export default function DialogueAIPractice({ config, onComplete }: DialogueAIPra
           userInput: JSON.stringify({
             situation: config.situation,
             level: config.level,
-            conversationHistory: [...turns, { speaker: "user", text: userMessage }],
-            remainingTurns: config.turns - userTurnCount
+            conversationHistory: newTurns
           }),
           context: JSON.stringify({ uiLanguage: locale })
         })
@@ -184,14 +175,15 @@ export default function DialogueAIPractice({ config, onComplete }: DialogueAIPra
 
       // Save points
       if (result?.qualityScore !== undefined) {
+        const userTurnsCount = turns.filter(t => t.speaker === "user").length;
         try {
           await fetch("/api/exercises/attempt", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               exercise: "dialogue",
-              points: result.qualityScore * config.turns,
-              xp: Math.round(result.qualityScore * config.turns * 10)
+              points: result.qualityScore * userTurnsCount,
+              xp: Math.round(result.qualityScore * userTurnsCount * 10)
             })
           });
         } catch (error) {
@@ -239,7 +231,6 @@ export default function DialogueAIPractice({ config, onComplete }: DialogueAIPra
   }
 
   const userTurnCount = turns.filter(t => t.speaker === "user").length;
-  const progress = (userTurnCount / config.turns) * 100;
 
   return (
     <>
@@ -258,23 +249,17 @@ export default function DialogueAIPractice({ config, onComplete }: DialogueAIPra
                 {config.situation}
               </h2>
               <p className="mt-1 text-sm text-ink/60">
-                Рівень: {config.level}
+                Рівень: {config.level} · Обмінів: {userTurnCount}
               </p>
             </div>
-            <div className="rounded-2xl border border-ink/10 bg-paper p-3 text-center">
-              <div className="text-lg font-bold text-moss">{userTurnCount}/{config.turns}</div>
-              <div className="text-[10px] text-ink/60">обмінів</div>
-            </div>
-          </div>
-
-          {/* Progress bar */}
-          <div className="mt-4">
-            <div className="h-2 rounded-full bg-ink/10 overflow-hidden">
-              <div
-                className="h-full bg-moss transition-all duration-300"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
+            {!isComplete && userTurnCount > 0 && (
+              <button
+                onClick={() => setIsComplete(true)}
+                className="rounded-full border border-ink/20 px-4 py-2 text-xs font-semibold text-ink transition hover:bg-ink/5"
+              >
+                Завершити
+              </button>
+            )}
           </div>
         </div>
 
@@ -399,7 +384,7 @@ export default function DialogueAIPractice({ config, onComplete }: DialogueAIPra
             mode: "ai",
             situation: config.situation,
             level: config.level,
-            totalTurns: config.turns,
+            totalTurns: userTurnCount,
             filledTurns: userTurnCount,
             qualityScore: checkResult.qualityScore || 0,
             aiFeedback: checkResult

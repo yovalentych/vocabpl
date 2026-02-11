@@ -8,7 +8,6 @@ interface DialogueAIConfigProps {
   onStart: (config: {
     situation: string;
     level: "A1" | "A2" | "B1" | "B2";
-    turns: number;
   }) => void;
 }
 
@@ -16,7 +15,6 @@ export default function DialogueAIConfig({ onStart }: DialogueAIConfigProps) {
   const { t } = useLocale();
   const [situation, setSituation] = useState("");
   const [level, setLevel] = useState<"A1" | "A2" | "B1" | "B2">("A2");
-  const [turns, setTurns] = useState(4);
 
   const situationSuggestions = [
     "Замовлення каві в кав&apos;ярні",
@@ -33,7 +31,7 @@ export default function DialogueAIConfig({ onStart }: DialogueAIConfigProps) {
     if (!situation.trim()) {
       return;
     }
-    onStart({ situation: situation.trim(), level, turns });
+    onStart({ situation: situation.trim(), level });
   };
 
   return (
@@ -108,38 +106,6 @@ export default function DialogueAIConfig({ onStart }: DialogueAIConfigProps) {
             </button>
           ))}
         </div>
-      </div>
-
-      {/* Number of turns */}
-      <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
-        <p className="text-xs uppercase tracking-[0.3em] text-ink/40 mb-4">
-          Кількість обмінів репліками
-        </p>
-
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <span className="text-2xl font-bold text-ink">{turns}</span>
-            <span className="text-xs text-ink/50">обмінів</span>
-          </div>
-
-          <input
-            type="range"
-            min={3}
-            max={6}
-            value={turns}
-            onChange={(e) => setTurns(Number(e.target.value))}
-            className="w-full accent-moss"
-          />
-
-          <div className="flex justify-between text-xs text-ink/40">
-            <span>3</span>
-            <span>6</span>
-          </div>
-        </div>
-
-        <p className="mt-3 text-xs text-ink/50">
-          Один обмін = питання AI та ваша відповідь
-        </p>
       </div>
 
       {/* AI info */}
