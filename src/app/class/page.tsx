@@ -23,19 +23,21 @@ import {
   Shuffle
 } from "@phosphor-icons/react/dist/ssr";
 import { getDb } from "@/lib/db";
+import { ObjectId } from "mongodb";
 
 async function getUserStats(userId: string) {
   const db = await getDb();
+  const userObjectId = new ObjectId(userId);
 
   try {
     const [attemptsCount, totalPoints, aiAttemptsCount, recentAttempts, activityDays] = await Promise.all([
       // Total attempts
-      db.collection("exercise_attempts").countDocuments({ userId }),
+      db.collection("exercise_attempts").countDocuments({ userId: userObjectId }),
 
       // Total points
       db.collection("exercise_attempts")
         .aggregate([
-          { $match: { userId } },
+          { $match: { userId: userObjectId } },
           { $group: { _id: null, total: { $sum: "$points" } } }
         ])
         .toArray()
@@ -43,14 +45,14 @@ async function getUserStats(userId: string) {
 
       // AI attempts count (exercises that used AI)
       db.collection("exercise_attempts").countDocuments({
-        userId,
+        userId: userObjectId,
         type: { $in: ["sentences", "cloze", "match", "translate", "dialogue", "paraphrase", "story", "describe"] }
       }),
 
       // Recent attempts
       db.collection("exercise_attempts")
-        .find({ userId })
-        .sort({ timestamp: -1 })
+        .find({ userId: userObjectId })
+        .sort({ createdAt: -1 })
         .limit(5)
         .toArray(),
 
@@ -59,14 +61,14 @@ async function getUserStats(userId: string) {
         .aggregate([
           {
             $match: {
-              userId,
-              timestamp: { $gte: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000) }
+              userId: userObjectId,
+              createdAt: { $gte: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000) }
             }
           },
           {
             $group: {
               _id: {
-                $dateToString: { format: "%Y-%m-%d", date: "$timestamp" }
+                $dateToString: { format: "%Y-%m-%d", date: "$createdAt" }
               },
               count: { $sum: 1 }
             }

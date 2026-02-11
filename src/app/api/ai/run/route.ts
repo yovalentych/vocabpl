@@ -3,7 +3,7 @@ import { checkRateLimit } from "@/lib/rate-limit";
 import { getAuthUser } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { isSubscriptionActive } from "@/lib/subscription";
-import { getPlanById } from "@/lib/plans";
+import { getPlanById, DEFAULT_PLAN_ID } from "@/lib/plans";
 import { ObjectId } from "mongodb";
 import { selectModel, getMaxTokensForModel, validateModelSelection } from "@/lib/ai-models";
 import { generateDifficultyAwarePrompt, getDifficultySpec } from "@/lib/difficulty";
@@ -1135,11 +1135,52 @@ export async function POST(request: Request) {
   const user = await db.collection("users").findOne({ _id: new ObjectId(auth.id) });
   const isAdmin = Boolean(user?.role === "admin" || user?.isAdmin);
   const isActive = isSubscriptionActive(user?.subscription, isAdmin);
-  const planId = user?.subscription?.planId || "basic";
+  const planId = user?.subscription?.planId || DEFAULT_PLAN_ID;
   const plan = getPlanById(planId);
 
   // IMPORTANT: Адміни НЕ мають лімітів на AI credits
   const creditsLimit = isAdmin ? Infinity : (plan?.aiCreditsMonthly || 0);
+
+  const generateModes = new Set([
+    "sentences_generate",
+    "cloze_generate",
+    "match_generate",
+    "translate_generate",
+    "mini_dialog_generate",
+    "mini_dialog_continue",
+    "mini_dialog_roleplay",
+    "paraphrase_generate",
+    "story_generate",
+    "reading_text_generate",
+    "reading_questions_generate",
+    "word_examples",
+    "word_grammar",
+    "word_recommendations",
+    "test_generate"
+  ]);
+
+  const checkModes = new Set([
+    "sentences_check",
+    "cloze_check",
+    "match_check",
+    "translate_check",
+    "mini_dialog_check",
+    "dialogue_check",
+    "paraphrase_check",
+    "story_check",
+    "story_hints",
+    "describe_check",
+    "reading_comprehension_check",
+    "reading_explain",
+    "test_check"
+  ]);
+
+  if (!isAdmin && generateModes.has(mode) && !plan?.allowAIGenerate) {
+    return NextResponse.json({ error: "AI mode not available for plan", code: "ai_mode_locked" }, { status: 402 });
+  }
+  if (!isAdmin && checkModes.has(mode) && !plan?.allowAICheck) {
+    return NextResponse.json({ error: "AI check not available for plan", code: "ai_check_locked" }, { status: 402 });
+  }
 
   // Select optimal AI model
   const model = selectModel({

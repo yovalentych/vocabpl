@@ -112,7 +112,12 @@ export async function createUser({
       status: "free",
       expiresAt: null,
       promoCode: null,
-      planId: null
+      planId: null,
+      autoRenew: false,
+      cancelAtPeriodEnd: false,
+      cardToken: null,
+      cardMask: null,
+      walletId: null
     },
     aiUsage: {
       month: null,

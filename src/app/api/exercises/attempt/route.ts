@@ -11,7 +11,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   const payload = await request.json().catch(() => ({}));
-  const type = String(payload?.type || "");
+  const type = String(payload?.type || payload?.exercise || "");
   const materialId = String(payload?.materialId || `${type}-${Date.now()}`);
   const score = Number(payload?.score || 0);
   const providedPoints = Number(payload?.points || 0);

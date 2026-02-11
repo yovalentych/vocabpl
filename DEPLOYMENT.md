@@ -62,6 +62,12 @@ PVS_OPENAI_API_KEY=sk-...
 JWT_SECRET=your-random-secret-min-32-chars
 ADMIN_BOOTSTRAP_TOKEN=one-time-admin-token
 ADMIN_BOOTSTRAP_TTL_HOURS=2
+MONO_ACQUIRING_TOKEN=your-monobank-merchant-token
+MONO_PUBKEY_BASE64=your-monobank-pubkey-base64
+MONO_WEBHOOK_URL=https://your-domain/api/payments/mono/webhook
+MONO_WALLET_SECRET=random-secret
+CRON_SECRET=random-secret
+APP_PUBLIC_URL=https://your-domain
 PORT=3000
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=465
@@ -75,6 +81,12 @@ SMTP_FROM="Polish Vocab Studio <your-email@gmail.com>"
 - `JWT_SECRET` - згенеруйте випадковий string (мін. 32 символа)
 - `ADMIN_BOOTSTRAP_TOKEN` - одноразовий токен для bootstrap адміна (використати при реєстрації)
 - `ADMIN_BOOTSTRAP_TTL_HOURS` - TTL для резерву токена (за замовчуванням 2 години)
+- `MONO_ACQUIRING_TOKEN` - токен монобанк еквайрингу
+- `MONO_PUBKEY_BASE64` - публічний ключ для перевірки webhook підпису
+- `MONO_WEBHOOK_URL` - URL для webhook від monobank
+- `MONO_WALLET_SECRET` - секрет для стабільного walletId (автопродовження)
+- `CRON_SECRET` - секрет для виклику cron-ендпоінту
+- `APP_PUBLIC_URL` - базовий URL сайту (для redirect/webhook)
 
 ### 3. Deploy
 1. Railway автоматично почне build

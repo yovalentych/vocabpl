@@ -7,6 +7,7 @@ import { ObjectId } from "mongodb";
 import { sendVerificationEmail } from "@/lib/mailer";
 import { checkRateLimit, getRequestIp } from "@/lib/rate-limit";
 import { precheckAdminBootstrapToken, reserveAdminBootstrapToken } from "@/lib/admin-bootstrap";
+import { DEFAULT_PLAN_ID } from "@/lib/plans";
 
 const CODE_TTL_MINUTES = 15;
 
@@ -101,7 +102,8 @@ export async function POST(request: Request) {
             subscription: {
               status: "active",
               expiresAt,
-              promoCode: promo.code
+              promoCode: promo.code,
+              planId: DEFAULT_PLAN_ID
             }
           }
         }

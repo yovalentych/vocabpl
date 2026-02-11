@@ -75,7 +75,9 @@ export default function AdminBillingPanel() {
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         {settings.plans.map((plan) => (
           <div key={plan.id} className="rounded-2xl border border-ink/10 bg-paper/80 p-4">
-            <p className="text-xs uppercase tracking-[0.2em] text-ink/50">{t.cabinet.planLabels[plan.id]}</p>
+            <p className="text-xs uppercase tracking-[0.2em] text-ink/50">
+              {t.cabinet.planLabels[plan.id as keyof typeof t.cabinet.planLabels] || plan.id}
+            </p>
             <label className="mt-3 flex items-center gap-2 text-sm text-ink/70">
               <input
                 type="number"

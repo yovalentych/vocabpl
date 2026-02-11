@@ -3,6 +3,7 @@ import { ObjectId } from "mongodb";
 import { getAuthUser } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { getExpiryDate, PromoDuration } from "@/lib/promo";
+import { DEFAULT_PLAN_ID } from "@/lib/plans";
 
 export async function POST(request: Request) {
   const auth = await getAuthUser();
@@ -56,7 +57,7 @@ export async function POST(request: Request) {
       status: "active",
       expiresAt: expiresAt,
       promoCode: advancedPromo.code,
-      planId: advancedPromo.planId || "basic",
+      planId: advancedPromo.planId || DEFAULT_PLAN_ID,
       benefits: advancedPromo.benefits || []
     };
 
@@ -98,7 +99,7 @@ export async function POST(request: Request) {
           status: "active",
           expiresAt: expiresAt,
           promoCode: promo.code,
-          planId: "basic"
+          planId: DEFAULT_PLAN_ID
         }
       }
     }

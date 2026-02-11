@@ -32,6 +32,8 @@ type UserProfile = {
     expiresAt: string | null;
     promoCode: string | null;
     planId?: string | null;
+    autoRenew?: boolean;
+    cancelAtPeriodEnd?: boolean;
   };
   aiUsage?: {
     month: string | null;
@@ -62,6 +64,8 @@ export default function CabinetClient({ username }: { username: string }) {
   const hasPromoAccess = Boolean(profile?.subscription?.promoCode);
   const [billingPlans, setBillingPlans] = useState<Plan[]>(defaultPlans);
   const [blurPlans, setBlurPlans] = useState(false);
+  const [autoRenew, setAutoRenew] = useState(true);
+  const [billingMessage, setBillingMessage] = useState<{ text: string; tone: "error" | "success" } | null>(null);
   const [showAllHistory, setShowAllHistory] = useState(false);
   const [showPasswordForm, setShowPasswordForm] = useState(false);
   const [showPromoForm, setShowPromoForm] = useState(false);
@@ -88,6 +92,9 @@ export default function CabinetClient({ username }: { username: string }) {
       const data = await res.json();
       setProfile(data.user);
       setMarketingConsent(Boolean(data.user?.consent?.marketingAt));
+      if (typeof data.user?.subscription?.autoRenew === "boolean") {
+        setAutoRenew(Boolean(data.user.subscription.autoRenew));
+      }
     }
   }
 
@@ -120,6 +127,49 @@ export default function CabinetClient({ username }: { username: string }) {
     }
     loadBilling();
   }, []);
+
+  async function startPayment(planId: string) {
+    setBillingMessage(null);
+    const res = await fetch("/api/payments/mono/create", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ planId, autoRenew })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      setBillingMessage({ tone: "error", text: data?.error || "Не вдалося створити оплату" });
+      return;
+    }
+    if (data?.pageUrl) {
+      window.location.href = data.pageUrl;
+      return;
+    }
+    setBillingMessage({ tone: "error", text: "Не отримано посилання на оплату" });
+  }
+
+  async function cancelSubscription() {
+    setBillingMessage(null);
+    const res = await fetch("/api/subscription/cancel", { method: "POST" });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      setBillingMessage({ tone: "error", text: data?.error || "Не вдалося скасувати" });
+      return;
+    }
+    setBillingMessage({ tone: "success", text: t.cabinet.billingCancelInfo });
+    loadProfile();
+  }
+
+  async function resumeSubscription() {
+    setBillingMessage(null);
+    const res = await fetch("/api/subscription/resume", { method: "POST" });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      setBillingMessage({ tone: "error", text: data?.error || "Не вдалося відновити" });
+      return;
+    }
+    setBillingMessage({ tone: "success", text: t.cabinet.billingAutoRenew });
+    loadProfile();
+  }
 
   async function requestPasswordCode() {
     setPasswordMessage(null);
@@ -673,8 +723,48 @@ export default function CabinetClient({ username }: { username: string }) {
             </div>
           )}
 
+          <div className="mt-4 flex flex-wrap items-start justify-between gap-4">
+            <div className="flex flex-wrap items-center gap-3">
+              <label className="flex items-center gap-2 rounded-full border border-ink/10 bg-paper/70 px-4 py-2 text-xs font-semibold text-ink/70">
+                <input
+                  type="checkbox"
+                  checked={autoRenew}
+                  onChange={(event) => setAutoRenew(event.target.checked)}
+                  className="accent-ink"
+                />
+                {t.cabinet.billingAutoRenew}
+              </label>
+              <p className="text-xs text-ink/50">{t.cabinet.billingAutoRenewHint}</p>
+            </div>
+            {isActive && (
+              <div className="flex flex-wrap items-center gap-3">
+                {profile?.subscription?.autoRenew ? (
+                  <button
+                    onClick={cancelSubscription}
+                    className="rounded-full border border-terracotta/30 bg-terracotta/5 px-4 py-2 text-xs font-semibold text-terracotta transition hover:bg-terracotta/10"
+                  >
+                    {t.cabinet.billingCancel}
+                  </button>
+                ) : (
+                  <button
+                    onClick={resumeSubscription}
+                    className="rounded-full border border-moss/30 bg-moss/5 px-4 py-2 text-xs font-semibold text-moss transition hover:bg-moss/10"
+                  >
+                    {t.cabinet.billingResume}
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+
+          {billingMessage && (
+            <div className={`mt-3 rounded-2xl border px-4 py-3 text-sm ${billingMessage.tone === "error" ? "border-terracotta/20 bg-terracotta/5 text-terracotta" : "border-moss/20 bg-moss/5 text-moss"}`}>
+              {billingMessage.text}
+            </div>
+          )}
+
           <div
-            className={`mt-6 grid gap-4 sm:grid-cols-2 ${
+            className={`mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 ${
               hasPromoAccess || blurPlans ? "pointer-events-none select-none blur-[8px] opacity-40" : ""
             }`}
           >
@@ -683,7 +773,12 @@ export default function CabinetClient({ username }: { username: string }) {
               const planInfo = getPlanById(plan.id);
               const remaining =
                 usage?.month ? Math.max(0, planInfo.aiCreditsMonthly - (usage.usedCredits || 0)) : planInfo.aiCreditsMonthly;
-              const isCurrentPlan = isActive && (profile.subscription?.planId || "basic") === plan.id;
+              const isCurrentPlan = isActive && (profile.subscription?.planId || "basik_m") === plan.id;
+              const periodLabel =
+                plan.periodDays >= 365 ? t.cabinet.periodLabels.year : plan.periodDays >= 90 ? t.cabinet.periodLabels.quarter : t.cabinet.periodLabels.month;
+              const tierLabel = t.cabinet.planTiers[plan.tier];
+              const badge =
+                plan.periodDays >= 365 ? t.cabinet.planBestValue : plan.tier === "pro" ? t.cabinet.planMostPopular : "";
 
               return (
                 <div
@@ -694,25 +789,28 @@ export default function CabinetClient({ username }: { username: string }) {
                       : "border-ink/10 bg-paper/80"
                   }`}
                 >
-                  <div className="flex items-start justify-between">
+                  <div className="flex items-start justify-between gap-3">
                     <div>
                       <p className="text-xs font-semibold uppercase tracking-[0.2em] text-ink/60">
-                        {t.cabinet.planLabels[plan.id]}
+                        {tierLabel}
                       </p>
                       <p className="mt-2 text-3xl font-semibold">{plan.priceUah} ₴</p>
+                      <p className="mt-1 text-xs text-ink/50">{periodLabel}</p>
                     </div>
-                    {isCurrentPlan && (
-                      <div className="inline-flex items-center gap-1 rounded-full border border-moss/20 bg-moss/10 px-3 py-1">
-                        <CheckCircle size={14} weight="fill" className="text-moss" />
-                        <span className="text-xs font-semibold text-moss">Active</span>
-                      </div>
-                    )}
+                    {badge ? (
+                      <span className="rounded-full border border-gold/30 bg-gold/10 px-3 py-1 text-[10px] font-semibold text-gold">
+                        {badge}
+                      </span>
+                    ) : null}
                   </div>
 
                   <div className="mt-4 space-y-2">
                     <div className="flex items-center gap-2 text-sm">
                       <Lightning size={16} weight="fill" className="text-gold" />
-                      <span className="text-ink/70">{planInfo.aiCreditsMonthly} AI credits/місяць</span>
+                      <span className="text-ink/70">{planInfo.aiCreditsMonthly} {t.cabinet.creditsLabel}</span>
+                    </div>
+                    <div className="text-xs text-ink/50">
+                      {plan.allowAIGenerate ? t.cabinet.planAiGenerate : t.cabinet.planAiCheckOnly}
                     </div>
                     {isCurrentPlan && (
                       <div className="rounded-xl border border-moss/10 bg-moss/5 px-3 py-2 text-xs">
@@ -725,10 +823,13 @@ export default function CabinetClient({ username }: { username: string }) {
                   <p className="mt-3 text-xs text-ink/50">{t.cabinet.aiPvsIncluded}</p>
 
                   <button
-                    className="mt-4 w-full rounded-full border border-ink/20 px-4 py-2 text-xs font-semibold text-ink transition hover:bg-ink/5"
-                    disabled
+                    onClick={() => startPayment(plan.id)}
+                    className={`mt-4 w-full rounded-full border px-4 py-2 text-xs font-semibold transition ${
+                      isCurrentPlan ? "border-moss/30 bg-moss/10 text-moss" : "border-ink/20 text-ink hover:bg-ink/5"
+                    }`}
+                    disabled={isCurrentPlan}
                   >
-                    {t.cabinet.billingMonoSoon}
+                    {isCurrentPlan ? "Active" : t.cabinet.billingPayMono}
                   </button>
                 </div>
               );

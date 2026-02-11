@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { ObjectId } from "mongodb";
-import { getPlanById } from "@/lib/plans";
+import { getPlanById, DEFAULT_PLAN_ID } from "@/lib/plans";
 
 export async function GET() {
   const auth = await getAuthUser();
@@ -17,7 +17,7 @@ export async function GET() {
     .toArray();
 
   const rows = users.map((user) => {
-    const planId = user.subscription?.planId || "basic";
+    const planId = user.subscription?.planId || DEFAULT_PLAN_ID;
     const plan = getPlanById(planId);
     const used = user.aiUsage?.month === monthKey ? Number(user.aiUsage?.usedCredits || 0) : 0;
     return {
