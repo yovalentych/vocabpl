@@ -220,87 +220,87 @@ export default function AuthPanel({ initialMode = "login" }: { initialMode?: "lo
   }
 
   return (
-    <div className="relative">
-      <div className="relative p-4 sm:p-10">
-        <div className="mx-auto max-w-lg rounded-3xl border border-ink/10 bg-paper/90 p-6 sm:p-8 shadow-soft">
+    <div className="relative pb-8">
+      <div className="relative p-6 sm:p-10">
+        <div className="mx-auto max-w-lg rounded-3xl border-2 border-ink/10 bg-paper/90 p-8 sm:p-8 shadow-soft">
           {stage === "auth" && (
             <>
               <div className="flex items-center justify-between gap-4">
                 <div>
-                  <p className="text-xs uppercase tracking-[0.4em] text-ink/50">{t.auth.welcome}</p>
-                  <h1 className="mt-3 text-2xl sm:text-3xl font-semibold">
+                  <p className="text-xs uppercase tracking-[0.4em] text-ink/50 font-bold">{t.auth.welcome}</p>
+                  <h1 className="mt-4 sm:mt-3 text-3xl sm:text-3xl font-bold sm:font-semibold leading-tight">
                     {mode === "login" ? t.auth.loginTab : t.auth.registerTab}
                   </h1>
-                  <p className="mt-2 text-sm text-ink/60">{t.auth.subtitle}</p>
+                  <p className="mt-3 sm:mt-2 text-base sm:text-sm text-ink/60 leading-relaxed">{t.auth.subtitle}</p>
                 </div>
               </div>
 
-              <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+              <form onSubmit={handleSubmit} className="mt-10 sm:mt-8 space-y-6">
                 {mode === "register" ? (
                   <>
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <label className="block text-sm text-ink/70">
+                    <div className="grid gap-5 sm:gap-4 sm:grid-cols-2">
+                      <label className="block text-base sm:text-sm text-ink/70 font-medium sm:font-normal">
                         {t.auth.name}
                         <input
                           value={name}
                           onChange={(event) => setName(event.target.value)}
-                          className="mt-2 w-full rounded-2xl border border-ink/20 bg-paper px-4 py-3 text-base"
+                          className="mt-3 sm:mt-2 w-full rounded-2xl border-2 border-ink/20 bg-paper px-5 py-4 sm:px-4 sm:py-3 text-base focus:border-ink/40 focus:outline-none transition"
                           placeholder="Imię"
                           required
                         />
                       </label>
-                      <label className="block text-sm text-ink/70">
+                      <label className="block text-base sm:text-sm text-ink/70 font-medium sm:font-normal">
                         {t.auth.email}
                         <input
                           type="email"
                           value={email}
                           onChange={(event) => setEmail(event.target.value)}
-                          className="mt-2 w-full rounded-2xl border border-ink/20 bg-paper px-4 py-3 text-base"
+                          className="mt-3 sm:mt-2 w-full rounded-2xl border-2 border-ink/20 bg-paper px-5 py-4 sm:px-4 sm:py-3 text-base focus:border-ink/40 focus:outline-none transition"
                           placeholder={t.auth.emailPlaceholder}
                           required
                         />
                       </label>
                     </div>
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <label className="block text-sm text-ink/70">
+                    <div className="grid gap-5 sm:gap-4 sm:grid-cols-2">
+                      <label className="block text-base sm:text-sm text-ink/70 font-medium sm:font-normal">
                         {t.auth.username}
                         <input
                           value={username}
                           onChange={(event) => setUsername(event.target.value)}
-                          className="mt-2 w-full rounded-2xl border border-ink/20 bg-paper px-4 py-3 text-base"
+                          className="mt-3 sm:mt-2 w-full rounded-2xl border-2 border-ink/20 bg-paper px-5 py-4 sm:px-4 sm:py-3 text-base focus:border-ink/40 focus:outline-none transition"
                           placeholder="username"
                           required
                         />
                       </label>
-                      <label className="block text-sm text-ink/70">
+                      <label className="block text-base sm:text-sm text-ink/70 font-medium sm:font-normal">
                         {t.auth.promoCode}
                         <input
                           value={promoCode}
                           onChange={(event) => setPromoCode(event.target.value.toUpperCase())}
-                          className="mt-2 w-full rounded-2xl border border-ink/20 bg-paper px-4 py-3 text-base"
+                          className="mt-3 sm:mt-2 w-full rounded-2xl border-2 border-ink/20 bg-paper px-5 py-4 sm:px-4 sm:py-3 text-base focus:border-ink/40 focus:outline-none transition"
                           placeholder="OPTIONAL"
                         />
                       </label>
                     </div>
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <label className="block text-sm text-ink/70">
+                    <div className="grid gap-5 sm:gap-4 sm:grid-cols-2">
+                      <label className="block text-base sm:text-sm text-ink/70 font-medium sm:font-normal">
                         {t.auth.password}
                         <input
                           type="password"
                           value={password}
                           onChange={(event) => setPassword(event.target.value)}
-                          className="mt-2 w-full rounded-2xl border border-ink/20 bg-paper px-4 py-3 text-base"
+                          className="mt-3 sm:mt-2 w-full rounded-2xl border-2 border-ink/20 bg-paper px-5 py-4 sm:px-4 sm:py-3 text-base focus:border-ink/40 focus:outline-none transition"
                           placeholder="••••••••"
                           required
                         />
                       </label>
-                      <label className="block text-sm text-ink/70">
+                      <label className="block text-base sm:text-sm text-ink/70 font-medium sm:font-normal">
                         {t.auth.confirmPassword}
                         <input
                           type="password"
                           value={confirmPassword}
                           onChange={(event) => setConfirmPassword(event.target.value)}
-                          className="mt-2 w-full rounded-2xl border border-ink/20 bg-paper px-4 py-3 text-base"
+                          className="mt-3 sm:mt-2 w-full rounded-2xl border-2 border-ink/20 bg-paper px-5 py-4 sm:px-4 sm:py-3 text-base focus:border-ink/40 focus:outline-none transition"
                           placeholder="••••••••"
                           required
                         />
@@ -309,12 +309,12 @@ export default function AuthPanel({ initialMode = "login" }: { initialMode?: "lo
                   </>
                 ) : (
                   <>
-                    <label className="block text-sm text-ink/70">
+                    <label className="block text-base sm:text-sm text-ink/70 font-medium sm:font-normal">
                       {identifierLabel}
                       <input
                         value={username}
                         onChange={(event) => setUsername(event.target.value)}
-                        className="mt-2 w-full rounded-2xl border border-ink/20 bg-paper px-4 py-3 text-base"
+                        className="mt-3 sm:mt-2 w-full rounded-2xl border-2 border-ink/20 bg-paper px-5 py-4 sm:px-4 sm:py-3 text-base focus:border-ink/40 focus:outline-none transition"
                         placeholder={t.auth.identifierPlaceholder}
                         required
                       />
@@ -377,7 +377,7 @@ export default function AuthPanel({ initialMode = "login" }: { initialMode?: "lo
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-full bg-ink px-6 py-3.5 text-sm font-semibold text-paper disabled:opacity-60"
+              className="w-full rounded-full bg-ink px-8 py-4 sm:px-6 sm:py-3.5 text-base sm:text-sm font-bold sm:font-semibold text-paper disabled:opacity-60 transition-all active:scale-95 shadow-soft"
             >
               {mode === "login" ? t.auth.login : t.auth.register}
             </button>
@@ -438,7 +438,7 @@ export default function AuthPanel({ initialMode = "login" }: { initialMode?: "lo
               <button
                 type="submit"
                 disabled={loading}
-                className="rounded-full bg-ink px-6 py-3 text-sm font-semibold text-paper disabled:opacity-60"
+                className="rounded-full bg-ink px-8 py-4 sm:px-6 sm:py-3 text-base sm:text-sm font-bold sm:font-semibold text-paper disabled:opacity-60 transition-all active:scale-95 shadow-soft"
               >
                 {t.auth.verifyButton}
               </button>
@@ -483,7 +483,7 @@ export default function AuthPanel({ initialMode = "login" }: { initialMode?: "lo
               <button
                 type="submit"
                 disabled={loading || resendCooldown > 0}
-                className="rounded-full bg-ink px-6 py-3 text-sm font-semibold text-paper disabled:opacity-60"
+                className="rounded-full bg-ink px-8 py-4 sm:px-6 sm:py-3 text-base sm:text-sm font-bold sm:font-semibold text-paper disabled:opacity-60 transition-all active:scale-95 shadow-soft"
               >
                 {resendCooldown > 0
                   ? `${t.auth.recoverSend} (${Math.floor(resendCooldown / 60)}:${String(

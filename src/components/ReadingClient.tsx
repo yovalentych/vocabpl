@@ -117,49 +117,49 @@ export default function ReadingClient() {
   }
 
   return (
-    <div className="space-y-4 sm:space-y-6">
+    <div className="space-y-6 sm:space-y-6 pb-8">
       {locked && (
-        <div className="rounded-3xl border border-ink/10 bg-paper/80 p-4 sm:p-6 shadow-soft">
-          <h2 className="text-xl sm:text-2xl font-semibold">{t.paywall.title}</h2>
-          <p className="mt-2 text-sm text-ink/60">{t.paywall.reading}</p>
+        <div className="rounded-3xl border-2 border-ink/10 bg-paper/80 p-6 sm:p-6 shadow-soft">
+          <h2 className="text-2xl sm:text-2xl font-bold sm:font-semibold">{t.paywall.title}</h2>
+          <p className="mt-3 sm:mt-2 text-base sm:text-sm text-ink/60 leading-relaxed">{t.paywall.reading}</p>
         </div>
       )}
 
       {/* Tabs */}
-      <div className="flex flex-wrap gap-2 sm:gap-2">
+      <div className="flex flex-wrap gap-3 sm:gap-2">
         <button
           onClick={() => setActiveTab("static")}
-          className={`flex items-center gap-1.5 sm:gap-2 rounded-full px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold transition ${
+          className={`flex items-center gap-2 sm:gap-2 rounded-full px-5 sm:px-4 py-3 sm:py-2 text-sm sm:text-sm font-bold sm:font-semibold transition-all active:scale-95 ${
             activeTab === "static"
-              ? "bg-ink text-paper"
-              : "border border-ink/20 text-ink hover:bg-ink/5"
+              ? "bg-ink text-paper shadow-soft"
+              : "border-2 border-ink/20 text-ink active:bg-ink/5"
           }`}
         >
-          <BookOpenText size={16} weight={activeTab === "static" ? "fill" : "regular"} className="sm:w-[18px] sm:h-[18px]" />
+          <BookOpenText size={18} weight={activeTab === "static" ? "fill" : "regular"} className="sm:w-[18px] sm:h-[18px]" />
           <span className="hidden sm:inline">{t.reading.tabs.static}</span>
           <span className="sm:hidden">Тексти</span>
         </button>
         <button
           onClick={() => setActiveTab("ai")}
-          className={`flex items-center gap-1.5 sm:gap-2 rounded-full px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold transition ${
+          className={`flex items-center gap-2 sm:gap-2 rounded-full px-5 sm:px-4 py-3 sm:py-2 text-sm sm:text-sm font-bold sm:font-semibold transition-all active:scale-95 ${
             activeTab === "ai"
-              ? "bg-ink text-paper"
-              : "border border-ink/20 text-ink hover:bg-ink/5"
+              ? "bg-ink text-paper shadow-soft"
+              : "border-2 border-ink/20 text-ink active:bg-ink/5"
           }`}
         >
-          <Sparkle size={16} weight={activeTab === "ai" ? "fill" : "regular"} className="sm:w-[18px] sm:h-[18px]" />
+          <Sparkle size={18} weight={activeTab === "ai" ? "fill" : "regular"} className="sm:w-[18px] sm:h-[18px]" />
           <span className="hidden sm:inline">{t.reading.tabs.aiGenerator}</span>
           <span className="sm:hidden">AI</span>
         </button>
         <button
           onClick={() => setActiveTab("saved")}
-          className={`flex items-center gap-1.5 sm:gap-2 rounded-full px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold transition ${
+          className={`flex items-center gap-2 sm:gap-2 rounded-full px-5 sm:px-4 py-3 sm:py-2 text-sm sm:text-sm font-bold sm:font-semibold transition-all active:scale-95 ${
             activeTab === "saved"
-              ? "bg-ink text-paper"
-              : "border border-ink/20 text-ink hover:bg-ink/5"
+              ? "bg-ink text-paper shadow-soft"
+              : "border-2 border-ink/20 text-ink active:bg-ink/5"
           }`}
         >
-          <ClockCounterClockwise size={16} weight={activeTab === "saved" ? "fill" : "regular"} className="sm:w-[18px] sm:h-[18px]" />
+          <ClockCounterClockwise size={18} weight={activeTab === "saved" ? "fill" : "regular"} className="sm:w-[18px] sm:h-[18px]" />
           <span className="hidden sm:inline">Історія результатів</span>
           <span className="sm:hidden">Історія</span>
         </button>
