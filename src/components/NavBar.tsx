@@ -35,15 +35,16 @@ export default function NavBar() {
   if (!auth.isAuthenticated) {
     return (
       <header className="sticky top-0 z-50 border-b border-ink/10 bg-paper/80 backdrop-blur">
-        <div className="mx-auto w-full max-w-6xl px-6 py-4">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <Link href="/" className="flex items-center gap-2 text-lg font-semibold tracking-wide">
-              Polish Vocab Studio
+        <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 py-3 sm:py-4">
+          <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4">
+            <Link href="/" className="flex items-center gap-2 text-base sm:text-lg font-semibold tracking-wide">
+              <span className="hidden sm:inline">Polish Vocab Studio</span>
+              <span className="sm:hidden">PVS</span>
               <span className="animate-shimmer bg-gradient-to-r from-gray-400 via-gray-300 to-gray-400 bg-[length:200%_100%] bg-clip-text text-sm font-bold text-transparent">
                 β
               </span>
             </Link>
-            <div className="flex flex-wrap items-center gap-2 text-sm">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-2 text-sm">
               <Link
                 href="/login"
                 className={`rounded-full px-3 py-1 transition ${
@@ -70,14 +71,15 @@ export default function NavBar() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-ink/10 bg-paper/80 backdrop-blur">
-      <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-4">
-        <Link href="/" className="flex items-center gap-2 text-lg font-semibold tracking-wide">
-          Polish Vocab Studio
+      <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3 sm:gap-4 px-4 sm:px-6 py-3 sm:py-4">
+        <Link href="/" className="flex items-center gap-2 text-base sm:text-lg font-semibold tracking-wide">
+          <span className="hidden sm:inline">Polish Vocab Studio</span>
+          <span className="sm:hidden">PVS</span>
           <span className="animate-shimmer bg-gradient-to-r from-gray-400 via-gray-300 to-gray-400 bg-[length:200%_100%] bg-clip-text text-sm font-bold text-transparent">
             β
           </span>
         </Link>
-        <div className="flex flex-wrap items-center gap-2 text-sm">
+        <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm">
           <Link
             href="/class"
             className="rounded-full border border-ink/20 px-3 py-1 text-ink/70 transition hover:bg-ink/10"

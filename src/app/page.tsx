@@ -36,7 +36,7 @@ export default async function HomePage() {
   const stats = await getStats();
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-6 py-14">
+    <main className="mx-auto w-full max-w-6xl px-4 sm:px-6 py-8 sm:py-14">
       {/* Hero Section */}
       <section className="relative">
         <div className="absolute -left-8 -top-8 h-32 w-32 rounded-full bg-gold/10 blur-3xl" />
@@ -50,25 +50,25 @@ export default async function HomePage() {
             </span>
           </div>
 
-          <h1 className="mx-auto max-w-4xl text-5xl font-semibold leading-tight md:text-6xl">
+          <h1 className="mx-auto max-w-4xl text-3xl font-semibold leading-tight sm:text-4xl md:text-5xl lg:text-6xl">
             {t.home.aiTitle}
           </h1>
 
-          <p className="mx-auto max-w-2xl text-lg text-ink/70">
+          <p className="mx-auto max-w-2xl text-base sm:text-lg text-ink/70">
             {t.home.aiSubtitle}
           </p>
 
-          <div className="flex flex-wrap items-center justify-center gap-4">
+          <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center justify-center gap-3 sm:gap-4 max-w-md sm:max-w-none mx-auto">
             <Link
               href="/register"
-              className="inline-flex items-center gap-2 rounded-full bg-ink px-8 py-3 text-sm font-semibold text-paper shadow-soft transition hover:bg-ink/90"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-ink px-8 py-3 text-sm font-semibold text-paper shadow-soft transition hover:bg-ink/90"
             >
               <Lightning size={18} weight="fill" />
               {t.home.start}
             </Link>
             <Link
               href="/class/dict"
-              className="rounded-full border border-ink/20 px-8 py-3 text-sm font-semibold text-ink transition hover:bg-ink/5"
+              className="inline-flex items-center justify-center rounded-full border border-ink/20 px-8 py-3 text-sm font-semibold text-ink transition hover:bg-ink/5"
             >
               {t.home.explore}
             </Link>
@@ -283,13 +283,13 @@ export default async function HomePage() {
       </section>
 
       {/* Final CTA */}
-      <section className="mt-24 rounded-[32px] border border-ink/10 bg-gradient-to-br from-moss/5 to-terracotta/5 p-12 text-center shadow-soft">
-        <Sparkle size={48} weight="fill" className="mx-auto text-gold" />
-        <h2 className="mt-4 text-3xl font-semibold">Готовий почати?</h2>
-        <p className="mt-2 text-ink/70">Приєднуйся до тисяч студентів, які вже вчаться з AI</p>
+      <section className="mt-16 sm:mt-24 rounded-3xl sm:rounded-[32px] border border-ink/10 bg-gradient-to-br from-moss/5 to-terracotta/5 p-6 sm:p-10 md:p-12 text-center shadow-soft">
+        <Sparkle size={40} weight="fill" className="mx-auto text-gold sm:w-12 sm:h-12" />
+        <h2 className="mt-4 text-2xl sm:text-3xl font-semibold">Готовий почати?</h2>
+        <p className="mt-2 text-sm sm:text-base text-ink/70">Приєднуйся до тисяч студентів, які вже вчаться з AI</p>
         <Link
           href="/register"
-          className="mt-6 inline-flex items-center gap-2 rounded-full bg-ink px-8 py-3 text-sm font-semibold text-paper shadow-soft transition hover:bg-ink/90"
+          className="mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-ink px-8 py-3 text-sm font-semibold text-paper shadow-soft transition hover:bg-ink/90 w-full sm:w-auto max-w-xs mx-auto"
         >
           <Lightning size={18} weight="fill" />
           {t.home.start}

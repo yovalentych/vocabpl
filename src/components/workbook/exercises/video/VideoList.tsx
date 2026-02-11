@@ -66,15 +66,15 @@ export default function VideoList({ categoryId, onSelectVideo }: VideoListProps)
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
-        <h2 className="text-2xl font-semibold text-ink">{categoryName}</h2>
+      <div className="rounded-3xl border border-ink/10 bg-paper/80 p-4 sm:p-6 shadow-soft">
+        <h2 className="text-xl sm:text-2xl font-semibold text-ink">{categoryName}</h2>
         <p className="mt-2 text-sm text-ink/60">{videos.length} відео доступно</p>
       </div>
 
       {/* Videos Grid */}
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {videos.map((video) => (
           <button
             key={video.id}
@@ -145,8 +145,8 @@ export default function VideoList({ categoryId, onSelectVideo }: VideoListProps)
       </div>
 
       {videos.length === 0 && (
-        <div className="rounded-3xl border border-ink/10 bg-paper/80 p-12 text-center shadow-soft">
-          <Video size={48} weight="fill" className="mx-auto text-ink/20" />
+        <div className="rounded-3xl border border-ink/10 bg-paper/80 p-8 sm:p-12 text-center shadow-soft">
+          <Video size={40} weight="fill" className="mx-auto text-ink/20 sm:w-12 sm:h-12" />
           <p className="mt-4 text-sm text-ink/60">
             Поки що немає відео в цій категорії
           </p>

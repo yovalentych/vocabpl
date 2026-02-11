@@ -221,14 +221,14 @@ export default function AuthPanel({ initialMode = "login" }: { initialMode?: "lo
 
   return (
     <div className="relative">
-      <div className="relative p-10">
-        <div className="mx-auto max-w-lg rounded-3xl border border-ink/10 bg-paper/90 p-8 shadow-soft">
+      <div className="relative p-4 sm:p-10">
+        <div className="mx-auto max-w-lg rounded-3xl border border-ink/10 bg-paper/90 p-6 sm:p-8 shadow-soft">
           {stage === "auth" && (
             <>
               <div className="flex items-center justify-between gap-4">
                 <div>
                   <p className="text-xs uppercase tracking-[0.4em] text-ink/50">{t.auth.welcome}</p>
-                  <h1 className="mt-3 text-3xl font-semibold">
+                  <h1 className="mt-3 text-2xl sm:text-3xl font-semibold">
                     {mode === "login" ? t.auth.loginTab : t.auth.registerTab}
                   </h1>
                   <p className="mt-2 text-sm text-ink/60">{t.auth.subtitle}</p>
@@ -334,15 +334,15 @@ export default function AuthPanel({ initialMode = "login" }: { initialMode?: "lo
                 )}
                 {mode === "register" && (
                   <>
-                  <label className="flex items-start gap-3 rounded-2xl border border-ink/10 bg-paper/60 px-4 py-3 text-xs text-ink/70">
+                  <label className="flex items-start gap-3 rounded-2xl border border-ink/10 bg-paper/60 px-4 py-3 text-xs sm:text-xs text-ink/70">
                     <input
                       type="checkbox"
                       checked={agreeTerms}
                       onChange={(event) => setAgreeTerms(event.target.checked)}
-                      className="mt-0.5 h-4 w-4 rounded border-ink/30 accent-ink"
+                      className="mt-0.5 h-4 w-4 flex-shrink-0 rounded border-ink/30 accent-ink"
                       required
                     />
-                    <span className="leading-relaxed">
+                    <span className="leading-relaxed text-xs sm:text-xs">
                       {t.auth.termsLabelStart}{" "}
                       <Link className="underline underline-offset-4" href="/terms">
                         {t.auth.termsLink}
@@ -377,7 +377,7 @@ export default function AuthPanel({ initialMode = "login" }: { initialMode?: "lo
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-full bg-ink px-6 py-3 text-sm font-semibold text-paper disabled:opacity-60"
+              className="w-full rounded-full bg-ink px-6 py-3.5 text-sm font-semibold text-paper disabled:opacity-60"
             >
               {mode === "login" ? t.auth.login : t.auth.register}
             </button>
@@ -390,12 +390,12 @@ export default function AuthPanel({ initialMode = "login" }: { initialMode?: "lo
                   setRecoverEmail("");
                   setRecoverCode("");
                 }}
-                className="text-left text-xs font-semibold text-ink/60 underline underline-offset-4 hover:text-ink"
+                className="text-left text-sm font-semibold text-ink/60 underline underline-offset-4 hover:text-ink"
               >
                 {t.auth.forgotPassword}
               </button>
             )}
-            <div className="text-center text-xs text-ink/50">
+            <div className="text-center text-sm text-ink/50">
               {mode === "login" ? t.auth.noAccount : t.auth.haveAccount}{" "}
               <button
                 type="button"
@@ -434,7 +434,7 @@ export default function AuthPanel({ initialMode = "login" }: { initialMode?: "lo
                 required
               />
             </label>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-3">
               <button
                 type="submit"
                 disabled={loading}
@@ -446,7 +446,7 @@ export default function AuthPanel({ initialMode = "login" }: { initialMode?: "lo
                 type="button"
                 onClick={handleResend}
                 disabled={loading || resendCooldown > 0}
-                className="rounded-full border border-ink/20 px-6 py-3 text-sm font-semibold text-ink"
+                className="rounded-full border border-ink/20 px-6 py-3 text-sm font-semibold text-ink disabled:opacity-60"
               >
                 {resendLabel}
               </button>
@@ -479,7 +479,7 @@ export default function AuthPanel({ initialMode = "login" }: { initialMode?: "lo
                 required
               />
             </label>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-3">
               <button
                 type="submit"
                 disabled={loading || resendCooldown > 0}
