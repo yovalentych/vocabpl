@@ -51,7 +51,12 @@ export async function sendVerificationEmail(to: string, code: string) {
     </div>
   `;
 
-  await transporter.sendMail({ from, to, subject, html });
+  try {
+    await transporter.sendMail({ from, to, subject, html });
+  } catch (error) {
+    console.error("[smtp] verification email failed", error);
+    throw error;
+  }
 }
 
 export async function sendPasswordResetEmail(to: string, code: string) {
@@ -83,7 +88,12 @@ export async function sendPasswordResetEmail(to: string, code: string) {
     </div>
   `;
 
-  await transporter.sendMail({ from, to, subject, html });
+  try {
+    await transporter.sendMail({ from, to, subject, html });
+  } catch (error) {
+    console.error("[smtp] password reset email failed", error);
+    throw error;
+  }
 }
 
 export async function sendFeedbackEmail({
@@ -127,5 +137,8 @@ export async function sendFeedbackEmail({
     subject: mailSubject,
     replyTo: fromEmail,
     html
+  }).catch((error) => {
+    console.error("[smtp] feedback email failed", error);
+    throw error;
   });
 }
