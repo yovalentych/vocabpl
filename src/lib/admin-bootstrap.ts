@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import { ObjectId } from "mongodb";
+import { ObjectId, type Db } from "mongodb";
 import { getDb } from "@/lib/db";
 import { getJwtSecret } from "@/lib/auth";
 
@@ -35,6 +35,15 @@ function hashAdminToken(token: string) {
   return crypto.createHash("sha256").update(`${token}:${getJwtSecret()}`).digest("hex");
 }
 
+async function clearIfReservedByMissing(db: Db, tokenHash: string, reservedBy: ObjectId) {
+  const existingUser = await db.collection("users").findOne({ _id: reservedBy }, { projection: { _id: 1 } });
+  if (!existingUser) {
+    await db.collection("admin_bootstrap_tokens").deleteOne({ tokenHash });
+    return true;
+  }
+  return false;
+}
+
 export async function precheckAdminBootstrapToken(token: string): Promise<ReserveResult> {
   await ensureIndexes();
   const envToken = getAdminBootstrapToken();
@@ -48,12 +57,16 @@ export async function precheckAdminBootstrapToken(token: string): Promise<Reserv
     await db.collection("admin_bootstrap_tokens").deleteOne({ tokenHash });
     return { ok: true };
   }
+  if (existing?.reservedBy) {
+    const cleared = await clearIfReservedByMissing(db, tokenHash, existing.reservedBy);
+    if (cleared) return { ok: true };
+  }
   if (existing?.usedAt) return { ok: false, error: "used" };
   if (existing?.reservedBy) return { ok: false, error: "reserved" };
   return { ok: true };
 }
 
-export async function reserveAdminBootstrapToken(userId: string, token: string): Promise<ReserveResult> {
+export async function reserveAdminBootstrapToken(userId: string, token: string, allowRetry = true): Promise<ReserveResult> {
   await ensureIndexes();
   const envToken = getAdminBootstrapToken();
   if (!envToken) return { ok: false, error: "disabled" };
@@ -81,6 +94,15 @@ export async function reserveAdminBootstrapToken(userId: string, token: string):
     );
 
     if (!result || !result.value || result.value.reservedBy?.toString?.() !== String(userId)) {
+      if (allowRetry) {
+        const existing = await db.collection("admin_bootstrap_tokens").findOne({ tokenHash });
+        if (existing?.reservedBy) {
+          const cleared = await clearIfReservedByMissing(db, tokenHash, existing.reservedBy);
+          if (cleared) {
+            return reserveAdminBootstrapToken(userId, token, false);
+          }
+        }
+      }
       return { ok: false, error: "reserved" };
     }
     return { ok: true };
