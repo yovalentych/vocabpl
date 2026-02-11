@@ -18,6 +18,8 @@ import {
 } from "@phosphor-icons/react/dist/ssr";
 import { getDb } from "@/lib/db";
 import { getDictionary } from "@/lib/i18n-server";
+import { getAuthUser } from "@/lib/auth";
+import { ObjectId } from "mongodb";
 
 export const dynamic = "force-dynamic";
 
@@ -33,9 +35,28 @@ async function getStats() {
   return { verbs, adverbs, adjectives, tests };
 }
 
+async function getUserSnapshot() {
+  const auth = await getAuthUser();
+  if (!auth) return null;
+  const db = await getDb();
+  const user = await db.collection("users").findOne({ _id: new ObjectId(auth.id) });
+  if (!user) return null;
+  return {
+    username: user.username || "",
+    name: user.name || "",
+    stats: {
+      wordsStudied: Number(user.stats?.wordsStudied || 0),
+      sessions: Number(user.stats?.sessions || 0),
+      testsTaken: Number(user.stats?.testsTaken || 0),
+      points: Number(user.stats?.points || 0)
+    }
+  };
+}
+
 export default async function HomePage() {
   const { t } = getDictionary();
   const stats = await getStats();
+  const user = await getUserSnapshot();
 
   return (
     <main className="mx-auto w-full max-w-6xl px-5 sm:px-6 py-12 sm:py-14 pb-24 sm:pb-14">
@@ -48,33 +69,82 @@ export default async function HomePage() {
           <div className="inline-flex items-center gap-2 sm:gap-2.5 rounded-full border border-ink/10 bg-paper/80 px-5 py-2.5 sm:px-4 sm:py-2 shadow-soft">
             <Sparkle size={18} weight="fill" className="text-gold sm:w-4 sm:h-4" />
             <span className="text-xs sm:text-xs font-semibold uppercase tracking-[0.3em] text-ink/70">
-              {t.home.aiPowered}
+              {user ? t.home.snapshot : t.home.aiPowered}
             </span>
           </div>
 
           <h1 className="mx-auto max-w-4xl text-4xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.15] sm:leading-tight px-2">
-            {t.home.aiTitle}
+            {user ? `Привіт, ${user.name || user.username || "друже"}!` : t.home.aiTitle}
           </h1>
 
           <p className="mx-auto max-w-2xl text-lg sm:text-lg leading-relaxed text-ink/70 px-4 sm:px-0">
-            {t.home.aiSubtitle}
+            {user
+              ? "Повертаємось до навчання: твій прогрес збережено, а AI вправи готові."
+              : t.home.aiSubtitle}
           </p>
 
           <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center justify-center gap-4 max-w-sm sm:max-w-none mx-auto pt-2">
-            <Link
-              href="/register"
-              className="inline-flex items-center justify-center gap-2.5 rounded-full bg-ink px-10 py-4 sm:px-8 sm:py-3 text-base sm:text-sm font-bold sm:font-semibold text-paper shadow-soft transition active:scale-95 hover:bg-ink/90"
-            >
-              <Lightning size={20} weight="fill" className="sm:w-[18px] sm:h-[18px]" />
-              {t.home.start}
-            </Link>
-            <Link
-              href="/class/dict"
-              className="inline-flex items-center justify-center rounded-full border-2 border-ink/20 px-10 py-4 sm:px-8 sm:py-3 text-base sm:text-sm font-bold sm:font-semibold text-ink transition active:scale-95 hover:bg-ink/5"
-            >
-              {t.home.explore}
-            </Link>
+            {user ? (
+              <>
+                <Link
+                  href="/class"
+                  className="inline-flex items-center justify-center gap-2.5 rounded-full bg-ink px-10 py-4 sm:px-8 sm:py-3 text-base sm:text-sm font-bold sm:font-semibold text-paper shadow-soft transition active:scale-95 hover:bg-ink/90"
+                >
+                  <Lightning size={20} weight="fill" className="sm:w-[18px] sm:h-[18px]" />
+                  Продовжити навчання
+                </Link>
+                <Link
+                  href="/cabinet"
+                  className="inline-flex items-center justify-center rounded-full border-2 border-ink/20 px-10 py-4 sm:px-8 sm:py-3 text-base sm:text-sm font-bold sm:font-semibold text-ink transition active:scale-95 hover:bg-ink/5"
+                >
+                  Мій кабінет
+                </Link>
+                <Link
+                  href="/class/workbook"
+                  className="inline-flex items-center justify-center rounded-full border-2 border-ink/10 px-10 py-4 sm:px-8 sm:py-3 text-base sm:text-sm font-semibold text-ink/70 transition active:scale-95 hover:bg-ink/5"
+                >
+                  Вправи та зошит
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/register"
+                  className="inline-flex items-center justify-center gap-2.5 rounded-full bg-ink px-10 py-4 sm:px-8 sm:py-3 text-base sm:text-sm font-bold sm:font-semibold text-paper shadow-soft transition active:scale-95 hover:bg-ink/90"
+                >
+                  <Lightning size={20} weight="fill" className="sm:w-[18px] sm:h-[18px]" />
+                  {t.home.start}
+                </Link>
+                <Link
+                  href="/class/dict"
+                  className="inline-flex items-center justify-center rounded-full border-2 border-ink/20 px-10 py-4 sm:px-8 sm:py-3 text-base sm:text-sm font-bold sm:font-semibold text-ink transition active:scale-95 hover:bg-ink/5"
+                >
+                  {t.home.explore}
+                </Link>
+              </>
+            )}
           </div>
+
+          {user && (
+            <div className="mx-auto mt-6 grid w-full max-w-3xl gap-4 sm:grid-cols-4">
+              {[
+                { label: "Слова", value: user.stats.wordsStudied },
+                { label: "Сесії", value: user.stats.sessions },
+                { label: "Тести", value: user.stats.testsTaken },
+                { label: "Балів", value: user.stats.points }
+              ].map((item) => (
+                <div
+                  key={item.label}
+                  className="rounded-2xl border border-ink/10 bg-paper/80 px-4 py-3 text-center shadow-soft"
+                >
+                  <div className="text-xs uppercase tracking-[0.3em] text-ink/40 font-semibold">
+                    {item.label}
+                  </div>
+                  <div className="mt-2 text-2xl font-bold text-ink">{item.value}</div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
