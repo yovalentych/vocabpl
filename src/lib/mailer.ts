@@ -28,7 +28,8 @@ export async function sendVerificationEmail(to: string, code: string) {
     host,
     port,
     secure,
-    auth: { user, pass }
+    auth: { user, pass },
+    family: 4
   });
 
   const subject = "Polish Vocab Studio — підтвердження пошти / Email verification";
@@ -65,7 +66,8 @@ export async function sendPasswordResetEmail(to: string, code: string) {
     host,
     port,
     secure,
-    auth: { user, pass }
+    auth: { user, pass },
+    family: 4
   });
 
   const subject = "Polish Vocab Studio — зміна пароля / Password reset";
@@ -112,7 +114,8 @@ export async function sendFeedbackEmail({
     host,
     port,
     secure,
-    auth: { user, pass }
+    auth: { user, pass },
+    family: 4
   });
 
   const mailSubject = subject?.trim()
