@@ -27,6 +27,16 @@ export default function AuthPanel({ initialMode = "login" }: { initialMode?: "lo
   const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    const storedEmail = window.localStorage.getItem("pendingVerificationEmail");
+    if (storedEmail) {
+      setEmail(storedEmail);
+      setStage("verify");
+      setMessage(t.auth.verifySent);
+      startCooldown(60);
+    }
+  }, [t]);
+
   const identifierLabel = useMemo(() => t.auth.identifier, [t]);
   const resendLabel = useMemo(() => {
     if (resendCooldown <= 0) return t.auth.verifyResend;
@@ -86,6 +96,7 @@ export default function AuthPanel({ initialMode = "login" }: { initialMode?: "lo
         setStage("verify");
         setMessage(t.auth.verifySent);
         startCooldown(60);
+        window.localStorage.setItem("pendingVerificationEmail", data.email);
       } else if (data?.code === "USERNAME_EXISTS") {
         setMessage(t.auth.usernameExists);
       } else if (data?.code === "EMAIL_EXISTS") {
@@ -102,6 +113,7 @@ export default function AuthPanel({ initialMode = "login" }: { initialMode?: "lo
       setStage("verify");
       setMessage(t.auth.verifySent);
       startCooldown(60);
+      window.localStorage.setItem("pendingVerificationEmail", data.email || email);
       setLoading(false);
       return;
     }
@@ -128,6 +140,7 @@ export default function AuthPanel({ initialMode = "login" }: { initialMode?: "lo
       return;
     }
 
+    window.localStorage.removeItem("pendingVerificationEmail");
     window.dispatchEvent(new Event("auth-changed"));
     router.push("/cabinet");
   }
@@ -169,9 +182,11 @@ export default function AuthPanel({ initialMode = "login" }: { initialMode?: "lo
       setLoading(false);
       return;
     }
-    setEmail(data.email || newEmail);
+    const nextEmail = data.email || newEmail;
+    setEmail(nextEmail);
     setMessage(t.auth.verifySent);
     startCooldown(60);
+    window.localStorage.setItem("pendingVerificationEmail", nextEmail);
     setLoading(false);
   }
 
