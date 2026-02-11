@@ -55,7 +55,7 @@ export default function WorkbookHistory() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
+      <div className="rounded-3xl border border-ink/10 bg-paper p-6 shadow-lg">
         <h2 className="text-2xl font-semibold">{t.workbook.historyTitle}</h2>
         <p className="mt-2 text-sm text-ink/60">
           {t.workbook.historySubtitle}
@@ -63,7 +63,7 @@ export default function WorkbookHistory() {
       </div>
 
       {/* Filters */}
-      <div className="rounded-3xl border border-ink/10 bg-paper/80 p-4 md:p-6 shadow-soft">
+      <div className="rounded-3xl border border-ink/10 bg-paper p-4 md:p-6 shadow-lg">
         <p className="text-xs uppercase tracking-[0.3em] text-ink/40 mb-3">
           Фільтр за типом
         </p>
@@ -92,11 +92,11 @@ export default function WorkbookHistory() {
       {/* Entries List */}
       <div className="space-y-4">
         {loading ? (
-          <div className="rounded-3xl border border-ink/10 bg-paper/80 p-8 text-center shadow-soft">
+          <div className="rounded-3xl border border-ink/10 bg-paper p-8 text-center shadow-lg">
             <Loader label={t.common.loading} className="justify-center" />
           </div>
         ) : filteredEntries.length === 0 ? (
-          <div className="rounded-3xl border border-ink/10 bg-paper/80 p-8 text-center shadow-soft">
+          <div className="rounded-3xl border border-ink/10 bg-paper p-8 text-center shadow-lg">
             <p className="text-sm text-ink/60">
               {t.workbook.historyEmpty || "Ще немає записів"}
             </p>

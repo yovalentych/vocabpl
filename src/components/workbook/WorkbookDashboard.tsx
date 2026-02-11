@@ -182,12 +182,12 @@ export default function WorkbookDashboard() {
 
       {/* History Modal */}
       {showHistory && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-ink/60 px-4 py-8">
+        <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-ink/90 backdrop-blur-md px-4 py-8">
           <div className="w-full max-w-4xl">
             <div className="sticky top-0 z-10 mb-6 flex justify-end">
               <button
                 onClick={() => setShowHistory(false)}
-                className="rounded-full bg-paper p-3 shadow-lg transition hover:bg-ink/5"
+                className="rounded-full bg-paper p-3 shadow-xl transition hover:bg-fog active:scale-95"
               >
                 <ClockClockwise size={20} weight="bold" className="text-ink" />
               </button>

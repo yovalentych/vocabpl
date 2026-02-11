@@ -38,13 +38,13 @@ const exerciseIcons = {
 
 // Color schemes for exercise types
 const exerciseColors = {
-  sentences: { bg: "bg-moss/5", border: "border-moss/20", icon: "text-moss" },
-  cloze: { bg: "bg-gold/5", border: "border-gold/20", icon: "text-gold" },
-  match: { bg: "bg-terracotta/5", border: "border-terracotta/20", icon: "text-terracotta" },
-  translate: { bg: "bg-ink/5", border: "border-ink/20", icon: "text-ink" },
-  dialogue: { bg: "bg-moss/5", border: "border-moss/20", icon: "text-moss" },
-  paraphrase: { bg: "bg-gold/5", border: "border-gold/20", icon: "text-gold" },
-  story: { bg: "bg-terracotta/5", border: "border-terracotta/20", icon: "text-terracotta" },
+  sentences: { bg: "bg-moss/10", border: "border-moss/30", icon: "text-moss", cardBg: "bg-paper" },
+  cloze: { bg: "bg-gold/10", border: "border-gold/30", icon: "text-gold", cardBg: "bg-paper" },
+  match: { bg: "bg-terracotta/10", border: "border-terracotta/30", icon: "text-terracotta", cardBg: "bg-paper" },
+  translate: { bg: "bg-ink/10", border: "border-ink/30", icon: "text-ink", cardBg: "bg-paper" },
+  dialogue: { bg: "bg-moss/10", border: "border-moss/30", icon: "text-moss", cardBg: "bg-paper" },
+  paraphrase: { bg: "bg-gold/10", border: "border-gold/30", icon: "text-gold", cardBg: "bg-paper" },
+  story: { bg: "bg-terracotta/10", border: "border-terracotta/30", icon: "text-terracotta", cardBg: "bg-paper" },
 } as const;
 
 export default function HistoryEntryCard({ entry }: HistoryEntryCardProps) {
@@ -98,7 +98,7 @@ export default function HistoryEntryCard({ entry }: HistoryEntryCardProps) {
   }
 
   return (
-    <div className={`group rounded-3xl border ${colors.border} ${colors.bg} p-6 shadow-soft transition-all hover:shadow-md hover:scale-[1.01] cursor-pointer`}>
+    <div className={`group rounded-3xl border ${colors.border} ${colors.cardBg} p-6 shadow-lg transition-all hover:shadow-xl hover:scale-[1.01] cursor-pointer`}>
       <div className="flex items-start gap-4">
         {/* Icon */}
         <div className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl ${colors.bg} ${colors.border} border-2 transition-transform group-hover:scale-110`}>
