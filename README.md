@@ -53,6 +53,27 @@ SMTP_FROM="Polish Vocab Studio <your-email>"
 ### 3. Deploy
 Railway автоматично виконає build і запустить додаток.
 
+## 🌱 Ініціалізація бази (seed)
+
+У репозиторії є готовий скрипт `scripts/seed.js`, який засіває базу словами, тестами, читанням та парами дієслів із папки `data/`.
+
+### Як запустити локально
+1. Переконайся, що в тебе є `.env.local` або `.env` з параметрами:
+```
+MONGODB_URI=<your-mongodb-uri>
+MONGODB_DB=polish_vocab
+```
+2. Запусти seed:
+```
+npm run seed
+```
+
+### Що робить seed
+- очищує колекції: `words`, `tests`, `reading`, `verb_pairs`
+- імпортує JSON з `data/`
+
+Якщо треба засіяти інший набір даних — просто заміни файли в `data/`.
+
 ## 📧 Contact
 jovalentych@gmail.com
 
