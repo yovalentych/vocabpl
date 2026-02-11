@@ -359,15 +359,93 @@ IMPORTANT:
     ];
   }
   if (mode === "dialogue_check") {
+    // Parse input to get dialogue details
+    let parsed: any = {};
+    try {
+      parsed = JSON.parse(userInput);
+    } catch (e) {
+      parsed = { situation: "", level: "A2", turns: [] };
+    }
+
+    const situation = parsed.situation || "conversation";
+    const level = parsed.level || "A2";
+    const turns = parsed.turns || [];
+
+    // Extract only user turns for evaluation
+    const userTurns = turns
+      .filter((turn: any) => turn.speaker === "user")
+      .map((turn: any, idx: number) => `[Репліка ${idx + 1}]: ${turn.text}`)
+      .join("\n");
+
+    // Full conversation for context
+    const fullConversation = turns
+      .map((turn: any) => `${turn.speaker === "ai" ? "AI" : "Користувач"}: ${turn.text}`)
+      .join("\n");
+
     return [
       {
         role: "system",
-        content:
-          "You are a Polish language tutor. Return STRICT JSON with fields: score (0-100), corrections (array), suggestions (array), rewritten (string)."
+        content: `You are a Polish language tutor evaluating a student's performance in an AI dialogue practice.
+
+DIALOGUE SITUATION: ${situation}
+LEVEL: ${level}
+
+FULL CONVERSATION:
+${fullConversation}
+
+USER'S TURNS TO EVALUATE:
+${userTurns}
+
+Your task: Provide detailed feedback on the USER's turns ONLY (not AI's turns).
+
+EVALUATION CRITERIA:
+1. **Naturalness** (0-1 scale): How natural and conversational are the responses? Do they fit the situation?
+2. **Grammar** (0-1 scale): Grammatical correctness, proper word forms, sentence structure
+3. **Vocabulary**: Appropriate word choice, spelling
+4. **Context appropriateness**: Do responses make sense in the conversation flow?
+
+IMPORTANT EVALUATION RULES:
+- If user writes in Ukrainian/English instead of Polish → BIG penalty to naturalness (max 0.3) and grammar (0.2)
+- Minor grammar mistakes → naturalness 0.7-0.8, grammar 0.6-0.8 (still conversational)
+- Good attempts with small errors → naturalness 0.8-0.9, grammar 0.7-0.9
+- Perfect or near-perfect → naturalness 0.9-1.0, grammar 0.9-1.0
+- qualityScore = (naturalness + grammar) / 2 * 10 (0-10 scale)
+
+RETURN STRICT JSON ONLY:
+{
+  "qualityScore": number (0-10, calculated as (naturalness + grammar) / 2 * 10),
+  "overallFeedback": string (загальна оцінка українською, 2-3 речення),
+  "naturalness": number (0-1),
+  "naturalnessNote": string (коментар українською),
+  "grammar": number (0-1),
+  "grammarNote": string (коментар українською),
+  "turns": [
+    {
+      "userText": string (репліка користувача),
+      "feedback": string (фідбек українською),
+      "corrections": string[] (що виправити),
+      "improved": string (покращена версія польською, якщо потрібні виправлення)
+    }
+  ],
+  "suggestedPhrases": [
+    {
+      "pl": string (корисна фраза польською),
+      "uk": string (переклад українською),
+      "usage": string (пояснення використання українською)
+    }
+  ]
+}
+
+CRITICAL REQUIREMENTS:
+- ALL text feedback must be in UKRAINIAN (except Polish text in improved/suggestedPhrases.pl)
+- Be constructive and encouraging, but honest about mistakes
+- If user mixed languages, explicitly mention it in corrections
+- Suggest 3-5 useful phrases from the dialogue context
+- For good performance, be generous with scores (don't give 0% unless it's really terrible)`
       },
       {
         role: "user",
-        content: `Context:\n${context}\n\nUser:\n${userInput}`
+        content: `Evaluate this dialogue practice for situation "${situation}" at ${level} level. The user had ${turns.filter((t: any) => t.speaker === "user").length} turns.`
       }
     ];
   }
