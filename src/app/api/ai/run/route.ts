@@ -304,7 +304,7 @@ IMPORTANT:
       {
         role: "system",
         content:
-          "You are a Polish language tutor. Return STRICT JSON ONLY. Schema: {\"task\":{\"id\":string,\"type\":\"paraphrase\",\"level\":string,\"items\":[{\"id\":string,\"sourcePl\":string,\"instructionUk\":string,\"instructionPl\":string,\"constraints\":{\"forbiddenWords\":string[],\"requireAtLeastOneOf\":string[],\"minWords\":number},\"targetVocabIds\":string[]}]}}. Keep A1-A2 sentences short. Use vocabPool if provided."
+          "You are a Polish language tutor. Return STRICT JSON ONLY. Schema: {\"task\":{\"id\":string,\"type\":\"paraphrase\",\"level\":string,\"items\":[{\"id\":string,\"sourcePl\":string,\"instructionUk\":string,\"instructionPl\":string,\"constraints\":{\"forbiddenWords\":string[],\"requireAtLeastOneOf\":string[],\"minWords\":number},\"targetVocabIds\":string[]}]}}. CRITICAL: sourcePl and instructionPl MUST be in POLISH, regardless of the language used in the topic/request. Keep A1-A2 sentences short. Use vocabPool if provided."
       },
       { role: "user", content: `Request:\n${userInput}\nContext:\n${context}` }
     ];
@@ -466,7 +466,7 @@ CRITICAL REQUIREMENTS:
       {
         role: "system",
         content:
-          `You are a Polish language tutor. Generate ${count} Polish words related to the topic "${topic}" at ${level} level for a sentence writing exercise. Return STRICT JSON ONLY. Schema: {\"words\":[{\"pl\":string,\"uk\":string,\"type\":string}]}. The 'type' field should be the part of speech in English (e.g., "noun", "verb", "adjective", "adverb"). Select words that: 1) are appropriate for ${level} learners, 2) are thematically related to "${topic}", 3) are useful for writing varied sentences, 4) cover different parts of speech. IMPORTANT: Provide Ukrainian translations in the 'uk' field.`
+          `You are a Polish language tutor. Generate ${count} Polish words related to the topic "${topic}" at ${level} level for a sentence writing exercise. Return STRICT JSON ONLY. Schema: {\"words\":[{\"pl\":string,\"uk\":string,\"type\":string}]}. CRITICAL: The 'pl' field MUST contain POLISH words, regardless of the language used in the topic/request. The 'type' field should be the part of speech in English (e.g., "noun", "verb", "adjective", "adverb"). Select words that: 1) are appropriate for ${level} learners, 2) are thematically related to "${topic}", 3) are useful for writing varied sentences, 4) cover different parts of speech. IMPORTANT: Provide Ukrainian translations in the 'uk' field.`
       },
       {
         role: "user",
@@ -492,7 +492,7 @@ CRITICAL REQUIREMENTS:
       {
         role: "system",
         content:
-          "You are a Polish language tutor. Return STRICT JSON ONLY. Schema: {\"task\":{\"id\":string,\"title\":string,\"level\":string,\"topic\":string,\"items\":[{\"id\":string,\"text\":string,\"gaps\":[{\"answers\":string[],\"hint\":string,\"hintType\":\"word\"|\"translation\"|\"context\"}]}]}}. Create 5-8 Polish sentences with gaps (use ___ for gaps). Each gap should have: answers array (accept variations), hint (based on hintType), and hintType. hintType=word: hint is the word in brackets; hintType=translation: hint is Ukrainian translation; hintType=context: hint is a contextual clue in Ukrainian. Use vocabPool if provided. Keep A1-A2 level simple. Use the UI language from context (uiLanguage) for title."
+          "You are a Polish language tutor. Return STRICT JSON ONLY. Schema: {\"task\":{\"id\":string,\"title\":string,\"level\":string,\"topic\":string,\"items\":[{\"id\":string,\"text\":string,\"gaps\":[{\"answers\":string[],\"hint\":string,\"hintType\":\"word\"|\"translation\"|\"context\"}]}]}}. CRITICAL: ALL sentences in the 'text' field MUST be in POLISH, regardless of the language used in the topic/request. Even if the user provides a topic in Ukrainian or English, generate Polish sentences. Create 5-8 Polish sentences with gaps (use ___ for gaps) about the given topic. Each gap should have: answers array (accept variations), hint (based on hintType), and hintType. hintType=word: hint is the Polish word in brackets; hintType=translation: hint is Ukrainian translation; hintType=context: hint is a contextual clue in Ukrainian. Use vocabPool if provided. Keep A1-A2 level simple. Use the UI language from context (uiLanguage) for title."
       },
       {
         role: "user",
@@ -543,6 +543,8 @@ CRITICAL REQUIREMENTS:
 
     const storyPrompt = `You are a Polish language tutor and creative writing coach.
 
+**CRITICAL: The "text" field MUST contain a story in POLISH, regardless of the language used in the topic/request.**
+
 **РІВЕНЬ: ${level} - ${spec.name}**
 
 ${generateDifficultyAwarePrompt({
@@ -553,14 +555,15 @@ ${generateDifficultyAwarePrompt({
 **ФОРМАТ ВІДПОВІДІ (JSON):**
 {
   "prompt": string (Ukrainian),
-  "text": string (Polish example story)
+  "text": string (Polish example story - ЗАВЖДИ ПОЛЬСЬКОЮ!)
 }
 
 **ЗАВДАННЯ:**
 1. Створи writing prompt (українською), який направляє студента написати коротку історію польською
-2. Створи example story (польською), яка демонструє хороше письмо для рівня ${level}
+2. Створи example story (ПОЛЬСЬКОЮ), яка демонструє хороше письмо для рівня ${level}
 
 **ВИМОГИ ДО EXAMPLE STORY:**
+- Текст історії ОБОВ'ЯЗКОВО польською мовою, навіть якщо topic українською
 - Довжина: ${spec.format.reading?.totalWords.min || 100}-${spec.format.reading?.totalWords.max || 200} слів
 - Всі речення мають відповідати обмеженням рівня ${level}
 - Історія має бути ЦІКАВОЮ та ЗАЛУЧАЮЧОЮ
