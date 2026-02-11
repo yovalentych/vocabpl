@@ -68,20 +68,24 @@ export default function NavBar() {
             {/* Mobile hamburger */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="sm:hidden rounded-full border border-ink/20 p-2 text-ink/70 hover:bg-ink/10"
+              className="sm:hidden rounded-full border border-ink/20 p-3 text-ink/70 active:bg-ink/10 transition-transform active:scale-95"
               aria-label="Menu"
             >
-              {mobileMenuOpen ? <X size={20} weight="bold" /> : <List size={20} weight="bold" />}
+              {mobileMenuOpen ? <X size={22} weight="bold" /> : <List size={22} weight="bold" />}
             </button>
           </div>
           {/* Mobile menu */}
-          {mobileMenuOpen && (
-            <div className="sm:hidden mt-3 pt-3 border-t border-ink/10 flex flex-col gap-2">
+          <div
+            className={`sm:hidden overflow-hidden transition-all duration-300 ease-out ${
+              mobileMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+            }`}
+          >
+            <div className="mt-4 pt-4 pb-3 border-t border-ink/10 flex flex-col gap-3 px-1">
               <Link
                 href="/login"
                 onClick={() => setMobileMenuOpen(false)}
-                className={`rounded-full px-4 py-2 text-sm transition ${
-                  pathname === "/login" ? "bg-ink text-paper" : "border border-ink/20 text-ink/70 hover:bg-ink/10"
+                className={`rounded-full px-6 py-3.5 text-base font-medium transition-all active:scale-95 ${
+                  pathname === "/login" ? "bg-ink text-paper shadow-soft" : "border-2 border-ink/20 text-ink/70 active:bg-ink/10"
                 }`}
               >
                 {t.nav.login}
@@ -89,17 +93,17 @@ export default function NavBar() {
               <Link
                 href="/register"
                 onClick={() => setMobileMenuOpen(false)}
-                className={`rounded-full px-4 py-2 text-sm transition ${
-                  pathname === "/register" ? "bg-ink text-paper" : "border border-ink/20 text-ink/70 hover:bg-ink/10"
+                className={`rounded-full px-6 py-3.5 text-base font-medium transition-all active:scale-95 ${
+                  pathname === "/register" ? "bg-ink text-paper shadow-soft" : "border-2 border-ink/20 text-ink/70 active:bg-ink/10"
                 }`}
               >
                 {t.nav.register}
               </Link>
-              <div className="flex justify-center pt-2">
+              <div className="flex justify-center pt-3">
                 <LocaleSwitcher />
               </div>
             </div>
-          )}
+          </div>
         </div>
       </header>
     );
@@ -168,31 +172,35 @@ export default function NavBar() {
           {/* Mobile hamburger */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="sm:hidden rounded-full border border-ink/20 p-2 text-ink/70 hover:bg-ink/10"
+            className="sm:hidden rounded-full border border-ink/20 p-3 text-ink/70 active:bg-ink/10 transition-transform active:scale-95"
             aria-label="Menu"
           >
-            {mobileMenuOpen ? <X size={20} weight="bold" /> : <List size={20} weight="bold" />}
+            {mobileMenuOpen ? <X size={22} weight="bold" /> : <List size={22} weight="bold" />}
           </button>
         </div>
         {/* Mobile menu */}
-        {mobileMenuOpen && (
-          <div className="sm:hidden mt-3 pt-3 border-t border-ink/10 flex flex-col gap-2">
+        <div
+          className={`sm:hidden overflow-hidden transition-all duration-300 ease-out ${
+            mobileMenuOpen ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"
+          }`}
+        >
+          <div className="mt-4 pt-4 pb-3 border-t border-ink/10 flex flex-col gap-3 px-1">
             <Link
               href="/class"
               onClick={() => setMobileMenuOpen(false)}
-              className="rounded-full border border-ink/20 px-4 py-2 text-sm text-ink/70 transition hover:bg-ink/10"
+              className="rounded-full border-2 border-ink/20 px-6 py-3.5 text-base font-medium text-ink/70 transition-all active:scale-95 active:bg-ink/10"
             >
               {t.nav.class}
             </Link>
             <Link
               href={auth.isAdmin ? "/admin/reviews" : "/messages"}
               onClick={() => setMobileMenuOpen(false)}
-              className="relative rounded-full border border-ink/20 px-4 py-2 text-sm text-ink/70 hover:bg-ink/10 flex items-center justify-center gap-2"
+              className="relative rounded-full border-2 border-ink/20 px-6 py-3.5 text-base font-medium text-ink/70 transition-all active:scale-95 active:bg-ink/10 flex items-center justify-center gap-2.5"
             >
-              <EnvelopeSimple size={18} weight="bold" />
+              <EnvelopeSimple size={20} weight="bold" />
               <span>{auth.isAdmin ? t.nav.admin + " Reviews" : "Messages"}</span>
               {auth.isAdmin && pendingCount > 0 && (
-                <span className="rounded-full bg-terracotta px-2 py-0.5 text-[10px] font-semibold text-paper">
+                <span className="rounded-full bg-terracotta px-2.5 py-1 text-xs font-semibold text-paper">
                   {pendingCount}
                 </span>
               )}
@@ -200,7 +208,7 @@ export default function NavBar() {
             <Link
               href="/cabinet"
               onClick={() => setMobileMenuOpen(false)}
-              className="rounded-full border border-ink/10 bg-paper/90 px-4 py-2 text-sm text-ink/60 hover:bg-ink/5"
+              className="rounded-full border-2 border-ink/10 bg-paper/90 px-6 py-3.5 text-base font-medium text-ink/60 transition-all active:scale-95 active:bg-ink/5"
             >
               {auth.username ? `@${auth.username}` : t.nav.cabinet}
             </Link>
@@ -208,7 +216,7 @@ export default function NavBar() {
               <Link
                 href="/admin"
                 onClick={() => setMobileMenuOpen(false)}
-                className="rounded-full border border-terracotta/40 bg-terracotta/10 px-4 py-2 text-sm text-terracotta hover:bg-terracotta/20"
+                className="rounded-full border-2 border-terracotta/40 bg-terracotta/10 px-6 py-3.5 text-base font-medium text-terracotta transition-all active:scale-95 active:bg-terracotta/20"
               >
                 {t.nav.admin}
               </Link>
@@ -219,16 +227,16 @@ export default function NavBar() {
                 window.dispatchEvent(new Event("auth-changed"));
                 window.location.href = "/login";
               }}
-              className="rounded-full border border-ink/20 px-4 py-2 text-sm text-ink/70 transition hover:border-terracotta/40 hover:bg-terracotta/10 hover:text-terracotta flex items-center justify-center gap-2"
+              className="rounded-full border-2 border-ink/20 px-6 py-3.5 text-base font-medium text-ink/70 transition-all active:scale-95 active:border-terracotta/40 active:bg-terracotta/10 active:text-terracotta flex items-center justify-center gap-2.5"
             >
-              <SignOut size={18} weight="bold" />
+              <SignOut size={20} weight="bold" />
               <span>{t.nav.logout}</span>
             </button>
-            <div className="flex justify-center pt-2">
+            <div className="flex justify-center pt-3">
               <LocaleSwitcher />
             </div>
           </div>
-        )}
+        </div>
       </div>
     </header>
   );

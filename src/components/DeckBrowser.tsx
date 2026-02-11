@@ -65,15 +65,15 @@ export default function DeckBrowser() {
       {loading ? (
         <Loader label={t.common.loading} />
       ) : (
-        <div className="grid gap-3 sm:gap-4">
+        <div className="grid gap-4 sm:gap-4 pb-8">
           {items.map((word) => (
-            <div key={word.id} className="rounded-2xl border border-ink/10 bg-paper/80 p-3 sm:p-4">
-              <div className="flex items-start sm:items-center justify-between gap-3">
+            <div key={word.id} className="rounded-3xl border-2 border-ink/10 bg-paper/80 p-5 sm:p-4 shadow-soft transition-all active:scale-[0.98] hover:border-ink/15 hover:shadow-md">
+              <div className="flex items-start sm:items-center justify-between gap-4 sm:gap-3">
                 <div className="min-w-0 flex-1">
-                  <p className="text-base sm:text-lg font-semibold truncate">{word.pl}</p>
-                  <p className="text-sm text-ink/60">{word.uk}</p>
+                  <p className="text-xl sm:text-lg font-bold sm:font-semibold truncate leading-tight">{word.pl}</p>
+                  <p className="text-base sm:text-sm text-ink/60 mt-1.5 sm:mt-0.5 font-medium sm:font-normal">{word.uk}</p>
                 </div>
-                <span className="flex-shrink-0 rounded-full border border-ink/20 px-2 sm:px-3 py-1 text-[10px] sm:text-xs uppercase tracking-[0.2em] text-ink/50">
+                <span className="flex-shrink-0 rounded-full border-2 border-ink/20 px-3 sm:px-3 py-1.5 sm:py-1 text-xs sm:text-xs uppercase tracking-[0.2em] text-ink/50 font-bold sm:font-semibold">
                   {word.type}
                 </span>
               </div>

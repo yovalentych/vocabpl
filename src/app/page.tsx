@@ -36,39 +36,39 @@ export default async function HomePage() {
   const stats = await getStats();
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-4 sm:px-6 py-8 sm:py-14">
+    <main className="mx-auto w-full max-w-6xl px-5 sm:px-6 py-12 sm:py-14 pb-24 sm:pb-14">
       {/* Hero Section */}
       <section className="relative">
-        <div className="absolute -left-8 -top-8 h-32 w-32 rounded-full bg-gold/10 blur-3xl" />
-        <div className="absolute -right-12 top-12 h-40 w-40 rounded-full bg-moss/10 blur-3xl" />
+        <div className="absolute -left-8 -top-8 h-32 w-32 sm:h-40 sm:w-40 rounded-full bg-gold/10 blur-3xl" />
+        <div className="absolute -right-12 top-12 h-40 w-40 sm:h-48 sm:w-48 rounded-full bg-moss/10 blur-3xl" />
 
-        <div className="relative space-y-8 text-center fade-in">
-          <div className="inline-flex items-center gap-2 rounded-full border border-ink/10 bg-paper/80 px-4 py-2 shadow-soft">
-            <Sparkle size={16} weight="fill" className="text-gold" />
-            <span className="text-xs font-semibold uppercase tracking-[0.3em] text-ink/70">
+        <div className="relative space-y-6 sm:space-y-8 text-center fade-in">
+          <div className="inline-flex items-center gap-2 sm:gap-2.5 rounded-full border border-ink/10 bg-paper/80 px-5 py-2.5 sm:px-4 sm:py-2 shadow-soft">
+            <Sparkle size={18} weight="fill" className="text-gold sm:w-4 sm:h-4" />
+            <span className="text-xs sm:text-xs font-semibold uppercase tracking-[0.3em] text-ink/70">
               {t.home.aiPowered}
             </span>
           </div>
 
-          <h1 className="mx-auto max-w-4xl text-3xl font-semibold leading-tight sm:text-4xl md:text-5xl lg:text-6xl">
+          <h1 className="mx-auto max-w-4xl text-4xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.15] sm:leading-tight px-2">
             {t.home.aiTitle}
           </h1>
 
-          <p className="mx-auto max-w-2xl text-base sm:text-lg text-ink/70">
+          <p className="mx-auto max-w-2xl text-lg sm:text-lg leading-relaxed text-ink/70 px-4 sm:px-0">
             {t.home.aiSubtitle}
           </p>
 
-          <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center justify-center gap-3 sm:gap-4 max-w-md sm:max-w-none mx-auto">
+          <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center justify-center gap-4 max-w-sm sm:max-w-none mx-auto pt-2">
             <Link
               href="/register"
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-ink px-8 py-3 text-sm font-semibold text-paper shadow-soft transition hover:bg-ink/90"
+              className="inline-flex items-center justify-center gap-2.5 rounded-full bg-ink px-10 py-4 sm:px-8 sm:py-3 text-base sm:text-sm font-bold sm:font-semibold text-paper shadow-soft transition active:scale-95 hover:bg-ink/90"
             >
-              <Lightning size={18} weight="fill" />
+              <Lightning size={20} weight="fill" className="sm:w-[18px] sm:h-[18px]" />
               {t.home.start}
             </Link>
             <Link
               href="/class/dict"
-              className="inline-flex items-center justify-center rounded-full border border-ink/20 px-8 py-3 text-sm font-semibold text-ink transition hover:bg-ink/5"
+              className="inline-flex items-center justify-center rounded-full border-2 border-ink/20 px-10 py-4 sm:px-8 sm:py-3 text-base sm:text-sm font-bold sm:font-semibold text-ink transition active:scale-95 hover:bg-ink/5"
             >
               {t.home.explore}
             </Link>
@@ -77,13 +77,13 @@ export default async function HomePage() {
       </section>
 
       {/* AI Features Grid */}
-      <section className="mt-24">
-        <div className="mb-8 text-center">
-          <p className="text-xs uppercase tracking-[0.3em] text-ink/50">{t.home.aiFeatures}</p>
-          <h2 className="mt-2 text-3xl font-semibold">{t.home.aiExercises}</h2>
+      <section className="mt-20 sm:mt-24">
+        <div className="mb-10 sm:mb-8 text-center px-4">
+          <p className="text-xs sm:text-xs uppercase tracking-[0.3em] text-ink/50 font-bold">{t.home.aiFeatures}</p>
+          <h2 className="mt-3 text-3xl sm:text-3xl font-bold">{t.home.aiExercises}</h2>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-5 sm:gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {[
             {
               title: t.home.aiCards.sentences,
@@ -136,86 +136,86 @@ export default async function HomePage() {
           ].map((card, idx) => (
             <div
               key={idx}
-              className="group rounded-3xl border border-ink/10 bg-paper/70 p-6 shadow-soft transition hover:border-ink/20 hover:shadow-md"
+              className="group rounded-3xl sm:rounded-3xl border border-ink/10 bg-paper/70 p-7 sm:p-6 shadow-soft transition active:scale-[0.98] hover:border-ink/20 hover:shadow-md"
             >
-              <div className={`inline-flex h-12 w-12 items-center justify-center rounded-2xl ${card.tone} transition group-hover:scale-110`}>
-                <card.icon size={24} weight="bold" />
+              <div className={`inline-flex h-14 w-14 sm:h-12 sm:w-12 items-center justify-center rounded-2xl ${card.tone} transition group-hover:scale-110`}>
+                <card.icon size={28} weight="bold" className="sm:w-6 sm:h-6" />
               </div>
-              <h3 className="mt-4 text-lg font-semibold">{card.title}</h3>
-              <p className="mt-2 text-sm text-ink/60">{card.text}</p>
+              <h3 className="mt-5 sm:mt-4 text-xl sm:text-lg font-bold sm:font-semibold leading-snug">{card.title}</h3>
+              <p className="mt-3 sm:mt-2 text-base sm:text-sm text-ink/60 leading-relaxed">{card.text}</p>
             </div>
           ))}
         </div>
       </section>
 
       {/* Stats & CTA Section */}
-      <section className="mt-24 grid gap-8 lg:grid-cols-2">
+      <section className="mt-20 sm:mt-24 grid gap-6 sm:gap-8 lg:grid-cols-2">
         {/* Stats Panel */}
-        <div className="rounded-[32px] border border-ink/10 bg-paper/80 p-8 shadow-soft">
-          <div className="pattern-grid rounded-2xl border border-ink/5 p-6">
-            <p className="text-xs uppercase tracking-[0.3em] text-ink/40">{t.home.snapshot}</p>
-            <div className="mt-6 grid gap-4">
+        <div className="rounded-[32px] border border-ink/10 bg-paper/80 p-6 sm:p-8 shadow-soft">
+          <div className="pattern-grid rounded-2xl border border-ink/5 p-6 sm:p-6">
+            <p className="text-xs uppercase tracking-[0.3em] text-ink/40 font-bold">{t.home.snapshot}</p>
+            <div className="mt-8 sm:mt-6 grid gap-5 sm:gap-4">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-ink/60">{t.home.verbs}</span>
-                <span className="text-2xl font-semibold">{stats.verbs}</span>
+                <span className="text-base sm:text-sm text-ink/60 font-medium">{t.home.verbs}</span>
+                <span className="text-3xl sm:text-2xl font-bold">{stats.verbs}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-ink/60">{t.home.adverbs}</span>
-                <span className="text-2xl font-semibold">{stats.adverbs}</span>
+                <span className="text-base sm:text-sm text-ink/60 font-medium">{t.home.adverbs}</span>
+                <span className="text-3xl sm:text-2xl font-bold">{stats.adverbs}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-ink/60">{t.home.adjectives}</span>
-                <span className="text-2xl font-semibold">{stats.adjectives}</span>
+                <span className="text-base sm:text-sm text-ink/60 font-medium">{t.home.adjectives}</span>
+                <span className="text-3xl sm:text-2xl font-bold">{stats.adjectives}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-ink/60">{t.home.tests}</span>
-                <span className="text-2xl font-semibold">{stats.tests}</span>
+                <span className="text-base sm:text-sm text-ink/60 font-medium">{t.home.tests}</span>
+                <span className="text-3xl sm:text-2xl font-bold">{stats.tests}</span>
               </div>
             </div>
-            <div className="mt-6 rounded-2xl bg-fog/70 p-4 text-xs text-ink/70">
+            <div className="mt-6 rounded-2xl bg-fog/70 p-5 sm:p-4 text-sm sm:text-xs text-ink/70 leading-relaxed">
               {t.home.snapshotHint}
             </div>
           </div>
         </div>
 
         {/* AI Features Highlights */}
-        <div className="space-y-4">
-          <div className="rounded-3xl border border-moss/20 bg-moss/5 p-6 shadow-soft">
-            <div className="flex items-start gap-4">
-              <div className="inline-flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-moss/20 text-moss">
-                <Brain size={24} weight="fill" />
+        <div className="space-y-5 sm:space-y-4">
+          <div className="rounded-3xl border border-moss/20 bg-moss/5 p-7 sm:p-6 shadow-soft">
+            <div className="flex items-start gap-5 sm:gap-4">
+              <div className="inline-flex h-14 w-14 sm:h-12 sm:w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-moss/20 text-moss">
+                <Brain size={28} weight="fill" className="sm:w-6 sm:h-6" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-moss">{t.home.aiPersonalized}</h3>
-                <p className="mt-1 text-sm text-ink/70">
+                <h3 className="text-xl sm:text-lg font-bold sm:font-semibold text-moss leading-snug">{t.home.aiPersonalized}</h3>
+                <p className="mt-2 sm:mt-1 text-base sm:text-sm text-ink/70 leading-relaxed">
                   AI аналізує твій рівень і пропонує вправи, які підходять саме тобі
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="rounded-3xl border border-terracotta/20 bg-terracotta/5 p-6 shadow-soft">
-            <div className="flex items-start gap-4">
-              <div className="inline-flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-terracotta/20 text-terracotta">
-                <Lightning size={24} weight="fill" />
+          <div className="rounded-3xl border border-terracotta/20 bg-terracotta/5 p-7 sm:p-6 shadow-soft">
+            <div className="flex items-start gap-5 sm:gap-4">
+              <div className="inline-flex h-14 w-14 sm:h-12 sm:w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-terracotta/20 text-terracotta">
+                <Lightning size={28} weight="fill" className="sm:w-6 sm:h-6" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-terracotta">{t.home.aiRealtime}</h3>
-                <p className="mt-1 text-sm text-ink/70">
+                <h3 className="text-xl sm:text-lg font-bold sm:font-semibold text-terracotta leading-snug">{t.home.aiRealtime}</h3>
+                <p className="mt-2 sm:mt-1 text-base sm:text-sm text-ink/70 leading-relaxed">
                   Миттєва перевірка відповідей та детальний feedback від AI
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="rounded-3xl border border-gold/30 bg-gold/5 p-6 shadow-soft">
-            <div className="flex items-start gap-4">
-              <div className="inline-flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-gold/30 text-terracotta">
-                <Target size={24} weight="fill" />
+          <div className="rounded-3xl border border-gold/30 bg-gold/5 p-7 sm:p-6 shadow-soft">
+            <div className="flex items-start gap-5 sm:gap-4">
+              <div className="inline-flex h-14 w-14 sm:h-12 sm:w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-gold/30 text-terracotta">
+                <Target size={28} weight="fill" className="sm:w-6 sm:h-6" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-ink">{t.home.aiChecking}</h3>
-                <p className="mt-1 text-sm text-ink/70">
+                <h3 className="text-xl sm:text-lg font-bold sm:font-semibold text-ink leading-snug">{t.home.aiChecking}</h3>
+                <p className="mt-2 sm:mt-1 text-base sm:text-sm text-ink/70 leading-relaxed">
                   AI перевіряє граматику, вокабуляр та стиль твоїх відповідей
                 </p>
               </div>
@@ -225,9 +225,9 @@ export default async function HomePage() {
       </section>
 
       {/* Traditional Features */}
-      <section className="mt-24">
-        <div className="mb-8 text-center">
-          <h2 className="text-3xl font-semibold">Додаткові можливості</h2>
+      <section className="mt-20 sm:mt-24">
+        <div className="mb-10 sm:mb-8 text-center px-4">
+          <h2 className="text-3xl sm:text-3xl font-bold">Додаткові можливості</h2>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -259,18 +259,18 @@ export default async function HomePage() {
           ].map((card) => (
             <div
               key={card.title}
-              className="rounded-3xl border border-ink/10 bg-paper/70 p-6 shadow-soft"
+              className="rounded-3xl border border-ink/10 bg-paper/70 p-7 sm:p-6 shadow-soft transition active:scale-[0.98]"
             >
-              <div className="flex items-center gap-3">
-                <span className={`inline-flex h-10 w-10 items-center justify-center rounded-2xl ${card.tone}`}>
-                  <card.icon size={20} weight="bold" />
+              <div className="flex items-center gap-4 sm:gap-3">
+                <span className={`inline-flex h-12 w-12 sm:h-10 sm:w-10 items-center justify-center rounded-2xl ${card.tone}`}>
+                  <card.icon size={24} weight="bold" className="sm:w-5 sm:h-5" />
                 </span>
-                <h3 className="text-xl font-semibold">{card.title}</h3>
+                <h3 className="text-2xl sm:text-xl font-bold sm:font-semibold leading-tight">{card.title}</h3>
               </div>
-              <p className="mt-2 text-sm text-ink/60">{card.text}</p>
+              <p className="mt-4 sm:mt-2 text-base sm:text-sm text-ink/60 leading-relaxed">{card.text}</p>
               <Link
                 href={card.href as Route}
-                className="mt-4 inline-flex rounded-full border border-ink/20 px-4 py-2 text-xs font-semibold text-ink hover:bg-ink/5"
+                className="mt-5 sm:mt-4 inline-flex rounded-full border-2 border-ink/20 px-6 py-3 sm:px-4 sm:py-2 text-sm sm:text-xs font-bold sm:font-semibold text-ink transition active:scale-95 hover:bg-ink/5"
               >
                 <span className="flex items-center gap-2">
                   {card.cta}
@@ -283,15 +283,15 @@ export default async function HomePage() {
       </section>
 
       {/* Final CTA */}
-      <section className="mt-16 sm:mt-24 rounded-3xl sm:rounded-[32px] border border-ink/10 bg-gradient-to-br from-moss/5 to-terracotta/5 p-6 sm:p-10 md:p-12 text-center shadow-soft">
-        <Sparkle size={40} weight="fill" className="mx-auto text-gold sm:w-12 sm:h-12" />
-        <h2 className="mt-4 text-2xl sm:text-3xl font-semibold">Готовий почати?</h2>
-        <p className="mt-2 text-sm sm:text-base text-ink/70">Приєднуйся до тисяч студентів, які вже вчаться з AI</p>
+      <section className="mt-20 sm:mt-24 rounded-3xl sm:rounded-[32px] border border-ink/10 bg-gradient-to-br from-moss/5 to-terracotta/5 p-10 sm:p-10 md:p-12 text-center shadow-soft">
+        <Sparkle size={48} weight="fill" className="mx-auto text-gold sm:w-12 sm:h-12" />
+        <h2 className="mt-6 sm:mt-4 text-3xl sm:text-3xl font-bold leading-tight">Готовий почати?</h2>
+        <p className="mt-3 sm:mt-2 text-base sm:text-base text-ink/70 leading-relaxed px-4">Приєднуйся до тисяч студентів, які вже вчаться з AI</p>
         <Link
           href="/register"
-          className="mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-ink px-8 py-3 text-sm font-semibold text-paper shadow-soft transition hover:bg-ink/90 w-full sm:w-auto max-w-xs mx-auto"
+          className="mt-8 sm:mt-6 inline-flex items-center justify-center gap-2.5 rounded-full bg-ink px-10 py-4 sm:px-8 sm:py-3 text-base sm:text-sm font-bold sm:font-semibold text-paper shadow-soft transition active:scale-95 hover:bg-ink/90 w-full sm:w-auto max-w-xs mx-auto"
         >
-          <Lightning size={18} weight="fill" />
+          <Lightning size={20} weight="fill" className="sm:w-[18px] sm:h-[18px]" />
           {t.home.start}
         </Link>
       </section>

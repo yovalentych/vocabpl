@@ -60,10 +60,10 @@ export default function ClassFloatingNav() {
 
       {/* Mobile bottom nav */}
       <div
-        className="fixed left-0 right-0 z-50 md:hidden border-t border-ink/10 bg-paper/95 backdrop-blur-sm shadow-[0_-4px_12px_rgba(0,0,0,0.08)]"
+        className="fixed left-0 right-0 z-50 md:hidden border-t-2 border-ink/10 bg-paper/98 backdrop-blur-md shadow-[0_-8px_24px_rgba(0,0,0,0.08)]"
         style={{ bottom: "var(--footer-height, 96px)" }}
       >
-        <div className="flex items-center justify-around px-2 py-3">
+        <div className="flex items-center justify-around px-1 py-2 safe-area-inset-bottom">
           {items.map((item) => {
             const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
             const Icon = item.icon;
@@ -71,17 +71,21 @@ export default function ClassFloatingNav() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="flex flex-col items-center gap-1 min-w-0 flex-1"
+                className="flex flex-col items-center gap-1.5 min-w-0 flex-1 py-2 px-1 rounded-2xl transition-all active:scale-95"
                 aria-label={item.label}
               >
                 <span
-                  className={`inline-flex h-9 w-9 items-center justify-center rounded-full transition ${
-                    isActive ? "bg-ink text-paper" : `${item.tone} bg-opacity-90`
+                  className={`inline-flex h-11 w-11 items-center justify-center rounded-2xl transition-all ${
+                    isActive
+                      ? "bg-ink text-paper shadow-md scale-105"
+                      : `${item.tone} bg-opacity-90`
                   }`}
                 >
-                  <Icon size={16} weight="bold" />
+                  <Icon size={20} weight="bold" />
                 </span>
-                <span className={`text-[9px] font-semibold truncate max-w-full px-1 ${isActive ? "text-ink" : "text-ink/60"}`}>
+                <span className={`text-[10px] font-bold truncate max-w-full px-1 transition-colors ${
+                  isActive ? "text-ink" : "text-ink/50"
+                }`}>
                   {item.label}
                 </span>
               </Link>
