@@ -33,6 +33,13 @@ export function AuthStatusProvider({ children }: { children: React.ReactNode }) 
       }
       const data = await res.json().catch(() => null);
       const user = data?.user;
+      if (!user) {
+        setIsAuthenticated(false);
+        setIsActive(false);
+        setIsAdmin(false);
+        setUsername("");
+        return;
+      }
       const active = isSubscriptionActive(user?.subscription, Boolean(user?.isAdmin));
       setIsAuthenticated(true);
       setIsActive(active);

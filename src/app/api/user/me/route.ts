@@ -5,7 +5,9 @@ import { ObjectId } from "mongodb";
 
 export async function GET() {
   const auth = await getAuthUser();
-  if (!auth) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!auth) {
+    return NextResponse.json({ user: null });
+  }
 
   const db = await getDb();
   const user = await db.collection("users").findOne({ _id: new ObjectId(auth.id) });
