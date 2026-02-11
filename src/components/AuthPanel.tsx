@@ -453,6 +453,7 @@ export default function AuthPanel({ initialMode = "login" }: { initialMode?: "lo
                 required
               />
             </label>
+            <p className="text-xs text-ink/50">{t.auth.verifyHelp}</p>
             <div className="flex flex-col sm:flex-row flex-wrap gap-3">
               <button
                 type="submit"

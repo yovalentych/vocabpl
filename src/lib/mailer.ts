@@ -13,6 +13,15 @@ function getSmtpConfig() {
   return { host, port, secure, user, pass, from };
 }
 
+export function hasSmtpConfig() {
+  const host = process.env.SMTP_HOST;
+  const port = Number(process.env.SMTP_PORT || 0);
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASS;
+  const from = process.env.SMTP_FROM || user;
+  return Boolean(host && port && user && pass && from);
+}
+
 export async function sendVerificationEmail(to: string, code: string) {
   const { host, port, secure, user, pass, from } = getSmtpConfig();
   const transporter = nodemailer.createTransport({
