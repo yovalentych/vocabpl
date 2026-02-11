@@ -95,21 +95,32 @@ export default function DialogueAIPractice({ config, onComplete }: DialogueAIPra
     setError(null);
 
     try {
+      const requestBody = {
+        mode: "mini_dialog_continue",
+        userInput: JSON.stringify({
+          situation: config.situation,
+          level: config.level,
+          conversationHistory: newTurns
+        }),
+        context: JSON.stringify({ uiLanguage: locale })
+      };
+
+      console.log("=== Sending AI Request ===");
+      console.log("Request body:", requestBody);
+      console.log("Conversation history:", newTurns);
+
       const res = await fetch("/api/ai/run", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          mode: "mini_dialog_continue",
-          userInput: JSON.stringify({
-            situation: config.situation,
-            level: config.level,
-            conversationHistory: newTurns
-          }),
-          context: JSON.stringify({ uiLanguage: locale })
-        })
+        body: JSON.stringify(requestBody)
       });
 
-      const data = await res.json().catch(() => ({}));
+      console.log("Response status:", res.status, res.statusText);
+
+      const data = await res.json().catch((err) => {
+        console.error("JSON parse error:", err);
+        return {};
+      });
 
       if (!res.ok) {
         const errorCode = data?.code;
@@ -124,14 +135,31 @@ export default function DialogueAIPractice({ config, onComplete }: DialogueAIPra
         return;
       }
 
-      const result = JSON.parse(String(data?.text || ""));
-      if (result.nextTurn) {
-        setTurns(prev => [...prev, { speaker: "ai", text: result.nextTurn }]);
+      console.log("=== AI Response Debug ===");
+      console.log("Full data:", data);
+      console.log("data.text:", data?.text);
+
+      const result = JSON.parse(String(data?.text || "{}"));
+      console.log("Parsed result:", result);
+      console.log("result.nextTurn:", result.nextTurn);
+
+      if (result.nextTurn && result.nextTurn.trim()) {
+        console.log("Adding AI turn to state:", result.nextTurn);
+        setTurns(prev => {
+          const newTurns = [...prev, { speaker: "ai", text: result.nextTurn }];
+          console.log("New turns state:", newTurns);
+          return newTurns;
+        });
+      } else {
+        console.error("Empty or missing AI response! Result:", result);
+        setError("AI не надав відповіді. Спробуйте ще раз.");
       }
     } catch (error) {
       console.error("Failed to get AI response:", error);
-      setError("Помилка мережі");
+      console.error("Error details:", error.message, error.stack);
+      setError("Помилка мережі: " + error.message);
     } finally {
+      console.log("Setting isWaitingForAI to false");
       setIsWaitingForAI(false);
     }
   };
