@@ -95,6 +95,14 @@ export default function AuthPanel({ initialMode = "login" }: { initialMode?: "lo
         setMessage(t.auth.usernameExists);
       } else if (data?.code === "EMAIL_EXISTS") {
         setMessage(t.auth.emailExists);
+      } else if (data?.code === "ADMIN_TOKEN_DISABLED") {
+        setMessage(t.auth.adminTokenDisabled);
+      } else if (data?.code === "ADMIN_TOKEN_INVALID") {
+        setMessage(t.auth.adminTokenInvalid);
+      } else if (data?.code === "ADMIN_TOKEN_USED") {
+        setMessage(t.auth.adminTokenUsed);
+      } else if (data?.code === "ADMIN_TOKEN_RESERVED") {
+        setMessage(t.auth.adminTokenReserved);
       } else {
         setMessage(data?.error || t.auth.error);
       }

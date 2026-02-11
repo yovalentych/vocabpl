@@ -52,7 +52,20 @@ export async function POST(request: Request) {
     const precheck = await precheckAdminBootstrapToken(String(adminToken));
     if (!precheck.ok) {
       const status = precheck.error === "invalid" ? 401 : 409;
-      return NextResponse.json({ error: "Admin token not available" }, { status });
+      return NextResponse.json(
+        {
+          error: "Admin token not available",
+          code:
+            precheck.error === "disabled"
+              ? "ADMIN_TOKEN_DISABLED"
+              : precheck.error === "invalid"
+                ? "ADMIN_TOKEN_INVALID"
+                : precheck.error === "used"
+                  ? "ADMIN_TOKEN_USED"
+                  : "ADMIN_TOKEN_RESERVED"
+        },
+        { status }
+      );
     }
   }
 
@@ -121,7 +134,20 @@ export async function POST(request: Request) {
     const reserved = await reserveAdminBootstrapToken(user.id, String(adminToken));
     if (!reserved.ok) {
       await db.collection("users").deleteOne({ _id: new ObjectId(user.id) });
-      return NextResponse.json({ error: "Admin token not available" }, { status: 409 });
+      return NextResponse.json(
+        {
+          error: "Admin token not available",
+          code:
+            reserved.error === "disabled"
+              ? "ADMIN_TOKEN_DISABLED"
+              : reserved.error === "invalid"
+                ? "ADMIN_TOKEN_INVALID"
+                : reserved.error === "used"
+                  ? "ADMIN_TOKEN_USED"
+                  : "ADMIN_TOKEN_RESERVED"
+        },
+        { status: 409 }
+      );
     }
   }
 
