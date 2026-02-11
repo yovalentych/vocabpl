@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import dns from "dns";
 import type SMTPTransport from "nodemailer/lib/smtp-transport";
 
 function getSmtpConfig() {
@@ -23,15 +24,20 @@ export function hasSmtpConfig() {
   return Boolean(host && port && user && pass && from);
 }
 
+const lookupIPv4 = (hostname: any, options: any, callback: any) => {
+  (dns.lookup as any)(hostname, { ...options, family: 4 }, callback);
+};
+
 export async function sendVerificationEmail(to: string, code: string) {
   const { host, port, secure, user, pass, from } = getSmtpConfig();
-  const transporter = nodemailer.createTransport({
+  const transportOptions: any = {
     host,
     port,
     secure,
     auth: { user, pass },
-    family: 4
-  } satisfies SMTPTransport.Options);
+    lookup: lookupIPv4
+  } as unknown as SMTPTransport.Options;
+  const transporter = nodemailer.createTransport(transportOptions);
 
   const subject = "Polish Vocab Studio — підтвердження пошти / Email verification";
   const preheader = "Ваш код підтвердження / Your verification code";
@@ -63,13 +69,14 @@ export async function sendVerificationEmail(to: string, code: string) {
 
 export async function sendPasswordResetEmail(to: string, code: string) {
   const { host, port, secure, user, pass, from } = getSmtpConfig();
-  const transporter = nodemailer.createTransport({
+  const transportOptions: any = {
     host,
     port,
     secure,
     auth: { user, pass },
-    family: 4
-  } satisfies SMTPTransport.Options);
+    lookup: lookupIPv4
+  } as unknown as SMTPTransport.Options;
+  const transporter = nodemailer.createTransport(transportOptions);
 
   const subject = "Polish Vocab Studio — зміна пароля / Password reset";
   const preheader = "Код для зміни пароля / Password reset code";
@@ -111,13 +118,14 @@ export async function sendFeedbackEmail({
   message: string;
 }) {
   const { host, port, secure, user, pass, from } = getSmtpConfig();
-  const transporter = nodemailer.createTransport({
+  const transportOptions: any = {
     host,
     port,
     secure,
     auth: { user, pass },
-    family: 4
-  } satisfies SMTPTransport.Options);
+    lookup: lookupIPv4
+  } as unknown as SMTPTransport.Options;
+  const transporter = nodemailer.createTransport(transportOptions);
 
   const mailSubject = subject?.trim()
     ? `Feedback: ${subject.trim()}`
