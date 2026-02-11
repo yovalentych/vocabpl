@@ -23,8 +23,8 @@ function hashCode(code: string) {
 }
 
 export async function POST(request: Request) {
-  const ip = getRequestIp(request);
-  const rate = await checkRateLimit(`auth:register:${ip}`, 5, 60_000);
+  const requestIp = getRequestIp(request);
+  const rate = await checkRateLimit(`auth:register:${requestIp}`, 5, 60_000);
   if (!rate.ok) {
     return NextResponse.json({ error: "Rate limit" }, { status: 429 });
   }
@@ -66,7 +66,7 @@ export async function POST(request: Request) {
   }
 
   const forwardedFor = request.headers.get("x-forwarded-for");
-  const ip = forwardedFor ? forwardedFor.split(",")[0]?.trim() : null;
+  const ip = forwardedFor ? forwardedFor.split(",")[0]?.trim() : requestIp || null;
   const userAgent = request.headers.get("user-agent");
   const consentAt = new Date();
 
