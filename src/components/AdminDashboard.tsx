@@ -100,20 +100,20 @@ export default function AdminDashboard({ summary }: { summary: Summary }) {
   ];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {/* Admin Header with Gradient */}
-      <section className="relative overflow-hidden rounded-[32px] border border-ink/10 bg-gradient-to-br from-moss/10 via-paper/80 to-terracotta/10 p-8 shadow-soft">
+      <section className="relative overflow-hidden rounded-3xl sm:rounded-[32px] border border-ink/10 bg-gradient-to-br from-moss/10 via-paper/80 to-terracotta/10 p-6 sm:p-8 shadow-soft">
         <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gold/20 blur-3xl" />
         <div className="absolute -left-8 bottom-0 h-24 w-24 rounded-full bg-moss/20 blur-3xl" />
         <div className="relative">
           <div className="flex items-center gap-2">
-            <ShieldCheck size={28} weight="fill" className="text-moss" />
+            <ShieldCheck size={24} weight="fill" className="text-moss sm:w-7 sm:h-7" />
             <p className="text-xs uppercase tracking-[0.3em] text-ink/60">{t.admin.title}</p>
           </div>
-          <h1 className="mt-2 text-4xl font-semibold">Панель адміністратора</h1>
-          <p className="mt-2 text-ink/70">Управління всіма функціями платформи</p>
+          <h1 className="mt-2 text-2xl sm:text-3xl md:text-4xl font-semibold">Панель адміністратора</h1>
+          <p className="mt-2 text-sm sm:text-base text-ink/70">Управління всіма функціями платформи</p>
 
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          <div className="mt-6 grid gap-3 sm:gap-4 grid-cols-2 sm:grid-cols-2 lg:grid-cols-5">
             <div className="rounded-2xl border border-moss/20 bg-moss/5 p-4">
               <div className="flex items-center gap-2">
                 <Brain size={20} weight="fill" className="text-moss" />
@@ -159,36 +159,37 @@ export default function AdminDashboard({ summary }: { summary: Summary }) {
         </div>
       </section>
 
-      <div className="grid gap-6 lg:grid-cols-[240px_1fr]">
-        <aside className="rounded-3xl border border-ink/10 bg-paper/80 p-4 shadow-soft">
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-[240px_1fr]">
+        <aside className="rounded-3xl border border-ink/10 bg-paper/80 p-3 sm:p-4 shadow-soft">
           <p className="px-2 pb-3 text-xs uppercase tracking-[0.3em] text-ink/40">Навігація</p>
-          <div className="space-y-2">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-1 sm:space-y-0 sm:flex sm:flex-col">
             {tabItems.map((item) => (
               <button
                 key={item.id}
                 onClick={() => setTab(item.id as typeof tab)}
-                className={`flex w-full items-center gap-3 rounded-2xl px-3 py-2 text-sm font-semibold transition ${
+                className={`flex w-full items-center justify-center sm:justify-start gap-2 sm:gap-3 rounded-2xl px-3 py-2 text-xs sm:text-sm font-semibold transition ${
                   tab === item.id
                     ? "bg-ink text-paper"
                     : "border border-ink/10 bg-paper/60 text-ink/70 hover:border-ink/30 hover:bg-paper"
                 }`}
               >
-                <item.icon size={18} weight="bold" />
-                <span className="flex-1 text-left">{item.label}</span>
+                <item.icon size={16} weight="bold" className="sm:w-[18px] sm:h-[18px]" />
+                <span className="flex-1 text-left hidden sm:inline">{item.label}</span>
+                <span className="sm:hidden text-[10px]">{item.label}</span>
               </button>
             ))}
           </div>
         </aside>
 
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {tab === "overview" && (
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               {/* Content Stats - Word Types Charts */}
-              <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
-                <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+              <div className="rounded-3xl border border-ink/10 bg-paper/80 p-4 sm:p-6 shadow-soft">
+                <div className="mb-4 sm:mb-6 flex flex-wrap items-center justify-between gap-3">
                   <div className="flex items-center gap-2">
-                    <BookBookmark size={24} weight="bold" className="text-ink" />
-                    <h2 className="text-xl font-semibold">Слова по типах</h2>
+                    <BookBookmark size={20} weight="bold" className="text-ink sm:w-6 sm:h-6" />
+                    <h2 className="text-lg sm:text-xl font-semibold">Слова по типах</h2>
                   </div>
                   <div className="flex gap-2">
                     <button
