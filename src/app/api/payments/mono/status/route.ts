@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/auth";
-import { monoInvoiceStatus } from "@/lib/monobank";
+import { isMonoConfigured, monoInvoiceStatus } from "@/lib/monobank";
 import { getDb } from "@/lib/db";
 import { ObjectId } from "mongodb";
 
@@ -9,6 +9,9 @@ export const dynamic = "force-dynamic";
 export async function GET(request: Request) {
   const auth = await getAuthUser();
   if (!auth) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!isMonoConfigured()) {
+    return NextResponse.json({ error: "Monobank not configured" }, { status: 503 });
+  }
 
   const { searchParams } = new URL(request.url);
   const invoiceId = searchParams.get("invoiceId");

@@ -10,6 +10,10 @@ function getMonoToken() {
   return token;
 }
 
+export function isMonoConfigured() {
+  return Boolean(process.env.MONO_ACQUIRING_TOKEN);
+}
+
 export function toMinor(amountUah: number) {
   return Math.round(amountUah * 100);
 }

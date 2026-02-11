@@ -3,7 +3,7 @@ import { ObjectId } from "mongodb";
 import { getAuthUser } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { getPlanById } from "@/lib/plans";
-import { buildWalletId, monoCreateInvoice, toMinor } from "@/lib/monobank";
+import { buildWalletId, isMonoConfigured, monoCreateInvoice, toMinor } from "@/lib/monobank";
 
 export const dynamic = "force-dynamic";
 
@@ -18,6 +18,9 @@ function getBaseUrl(request: Request) {
 export async function POST(request: Request) {
   const auth = await getAuthUser();
   if (!auth) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!isMonoConfigured()) {
+    return NextResponse.json({ error: "Monobank not configured" }, { status: 503 });
+  }
 
   const payload = await request.json().catch(() => ({}));
   const planId = String(payload?.planId || "").trim();

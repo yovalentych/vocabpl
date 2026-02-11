@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 import { getDb } from "@/lib/db";
 import { getPlanById } from "@/lib/plans";
-import { verifyMonoSignature } from "@/lib/monobank";
+import { isMonoConfigured, verifyMonoSignature } from "@/lib/monobank";
 
 export const dynamic = "force-dynamic";
 
@@ -14,6 +14,9 @@ function parseDate(value?: string | number | null) {
 
 export async function POST(request: Request) {
   const rawBody = await request.text();
+  if (!isMonoConfigured()) {
+    return NextResponse.json({ error: "Monobank not configured" }, { status: 503 });
+  }
   const signature = request.headers.get("x-sign") || request.headers.get("x-signature");
   const valid = await verifyMonoSignature(rawBody, signature);
   if (!valid) {

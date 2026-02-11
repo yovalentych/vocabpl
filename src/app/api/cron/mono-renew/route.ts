@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
 import { getPlanById } from "@/lib/plans";
-import { monoWalletPayment, toMinor } from "@/lib/monobank";
+import { isMonoConfigured, monoWalletPayment, toMinor } from "@/lib/monobank";
 import { ObjectId } from "mongodb";
 
 function getBaseUrl(request: Request) {
@@ -16,6 +16,9 @@ export async function POST(request: Request) {
   const secret = request.headers.get("x-cron-secret");
   if (!secret || secret !== process.env.CRON_SECRET) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  if (!isMonoConfigured()) {
+    return NextResponse.json({ error: "Monobank not configured" }, { status: 503 });
   }
 
   const db = await getDb();
