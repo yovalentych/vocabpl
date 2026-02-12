@@ -37,12 +37,21 @@ export const metadata: Metadata = {
     title: "Polish Vocab Studio",
     description: "Learn Polish vocabulary with focused study decks.",
     siteName: "Polish Vocab Studio",
-    url: "/"
+    url: "/",
+    images: [
+      {
+        url: "/og.svg",
+        width: 1200,
+        height: 630,
+        alt: "Polish Vocab Studio"
+      }
+    ]
   },
   twitter: {
     card: "summary",
     title: "Polish Vocab Studio",
-    description: "Learn Polish vocabulary with focused study decks."
+    description: "Learn Polish vocabulary with focused study decks.",
+    images: ["/og.svg"]
   },
   icons: {
     icon: "/favicon.ico"
