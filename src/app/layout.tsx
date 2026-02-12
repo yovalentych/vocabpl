@@ -14,9 +14,43 @@ import { AuthStatusProvider } from "@/components/useAuthStatus";
 import ClassFloatingNav from "@/components/ClassFloatingNav";
 import ByokPanel from "@/components/ByokPanel";
 
+const DEFAULT_SITE_URL = "https://www.vocabpl.uno";
+
+function getSiteUrl() {
+  const envUrl =
+    process.env.APP_PUBLIC_URL ||
+    process.env.NEXT_PUBLIC_BASE_URL ||
+    DEFAULT_SITE_URL;
+  return envUrl.replace(/\/+$/, "");
+}
+
 export const metadata: Metadata = {
+  metadataBase: new URL(getSiteUrl()),
   title: "Polish Vocab Studio",
-  description: "Learn Polish vocabulary with focused study decks."
+  description: "Learn Polish vocabulary with focused study decks.",
+  applicationName: "Polish Vocab Studio",
+  alternates: {
+    canonical: "/"
+  },
+  openGraph: {
+    type: "website",
+    title: "Polish Vocab Studio",
+    description: "Learn Polish vocabulary with focused study decks.",
+    siteName: "Polish Vocab Studio",
+    url: "/"
+  },
+  twitter: {
+    card: "summary",
+    title: "Polish Vocab Studio",
+    description: "Learn Polish vocabulary with focused study decks."
+  },
+  icons: {
+    icon: "/favicon.ico"
+  },
+  robots: {
+    index: true,
+    follow: true
+  }
 };
 
 export default function RootLayout({
