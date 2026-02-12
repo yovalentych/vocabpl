@@ -75,10 +75,16 @@ export default function MatchAIPractice({ config, onComplete }: MatchAIPracticeP
         // Parse AI response
         const result = JSON.parse(String(data?.text || ""));
 
+        const normalizedPairs = (result.task.pairs || []).map((p: any, idx: number) => ({
+          ...p,
+          id: p.id ? String(p.id) : `pair_${idx + 1}`
+        }));
+
         // Shuffle right items for display
         const shuffledTask = {
           ...result.task,
-          rightItemsShuffled: shuffleArray(result.task.pairs.map((p: any) => ({
+          pairs: normalizedPairs,
+          rightItemsShuffled: shuffleArray(normalizedPairs.map((p: any) => ({
             id: p.id,
             text: p.right
           })))
