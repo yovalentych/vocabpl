@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { plans } from "@/lib/plans";
-import { hasSmtpConfig } from "@/lib/mailer";
+import { hasMailConfig } from "@/lib/mailer";
 
 export const dynamic = "force-dynamic";
 
@@ -12,7 +12,7 @@ export async function GET() {
 
   const mongoPresent = Boolean(process.env.MONGODB_URI);
   const pvsPresent = Boolean(process.env.PVS_OPENAI_API_KEY || process.env.OPENAI_API_KEY);
-  const smtpPresent = hasSmtpConfig();
+  const smtpPresent = hasMailConfig();
   let dbOk = false;
   try {
     const db = await getDb();

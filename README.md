@@ -49,6 +49,15 @@ SMTP_PASS=<app-password>
 SMTP_FROM="Polish Vocab Studio <your-email>"
 ```
 
+If SMTP is blocked (e.g. Railway), you can use Brevo API instead:
+```
+BREVO_API_KEY=<your-brevo-api-key>
+BREVO_SENDER_EMAIL=<verified-sender@your-domain>
+BREVO_SENDER_NAME="Polish Vocab Studio"
+BREVO_INBOX_EMAIL=<optional-inbox@your-domain>
+BREVO_SANDBOX=false
+```
+
 ### 3. Deploy
 Railway автоматично виконає build і запустить додаток.
 
