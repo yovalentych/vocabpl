@@ -54,7 +54,8 @@ export const metadata: Metadata = {
     images: ["/og.svg"]
   },
   icons: {
-    icon: "/favicon.ico"
+    icon: "/favicon.ico",
+    apple: "/favicon-pvs-C-ai-apple-touch-icon.png"
   },
   robots: {
     index: true,
