@@ -2,6 +2,8 @@ import nodemailer from "nodemailer";
 import dns from "dns";
 import type SMTPTransport from "nodemailer/lib/smtp-transport";
 
+dns.setDefaultResultOrder("ipv4first");
+
 function getSmtpConfig() {
   const host = process.env.SMTP_HOST;
   const port = Number(process.env.SMTP_PORT || 0);
@@ -24,18 +26,13 @@ export function hasSmtpConfig() {
   return Boolean(host && port && user && pass && from);
 }
 
-const lookupIPv4 = (hostname: any, options: any, callback: any) => {
-  (dns.lookup as any)(hostname, { ...options, family: 4 }, callback);
-};
-
 export async function sendVerificationEmail(to: string, code: string) {
   const { host, port, secure, user, pass, from } = getSmtpConfig();
   const transportOptions: any = {
     host,
     port,
     secure,
-    auth: { user, pass },
-    lookup: lookupIPv4
+    auth: { user, pass }
   } as unknown as SMTPTransport.Options;
   const transporter = nodemailer.createTransport(transportOptions);
 
@@ -73,8 +70,7 @@ export async function sendPasswordResetEmail(to: string, code: string) {
     host,
     port,
     secure,
-    auth: { user, pass },
-    lookup: lookupIPv4
+    auth: { user, pass }
   } as unknown as SMTPTransport.Options;
   const transporter = nodemailer.createTransport(transportOptions);
 
@@ -122,8 +118,7 @@ export async function sendFeedbackEmail({
     host,
     port,
     secure,
-    auth: { user, pass },
-    lookup: lookupIPv4
+    auth: { user, pass }
   } as unknown as SMTPTransport.Options;
   const transporter = nodemailer.createTransport(transportOptions);
 
