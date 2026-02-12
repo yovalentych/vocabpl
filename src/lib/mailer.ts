@@ -4,6 +4,10 @@ import type SMTPTransport from "nodemailer/lib/smtp-transport";
 
 dns.setDefaultResultOrder("ipv4first");
 
+const globalForMailer = globalThis as unknown as {
+  smtpSelfTestStarted?: boolean;
+};
+
 function getSmtpConfig() {
   const host = process.env.SMTP_HOST;
   const port = Number(process.env.SMTP_PORT || 0);
@@ -26,15 +30,48 @@ export function hasSmtpConfig() {
   return Boolean(host && port && user && pass && from);
 }
 
-export async function sendVerificationEmail(to: string, code: string) {
-  const { host, port, secure, user, pass, from } = getSmtpConfig();
-  const transportOptions: any = {
+function buildTransportOptions() {
+  const { host, port, secure, user, pass } = getSmtpConfig();
+  return {
     host,
     port,
     secure,
     auth: { user, pass }
-  } as unknown as SMTPTransport.Options;
-  const transporter = nodemailer.createTransport(transportOptions);
+  } as SMTPTransport.Options;
+}
+
+function createTransporter() {
+  const transportOptions: any = buildTransportOptions();
+  return nodemailer.createTransport(transportOptions);
+}
+
+function runSmtpSelfTestOnce() {
+  if (globalForMailer.smtpSelfTestStarted) return;
+  globalForMailer.smtpSelfTestStarted = true;
+
+  if (!hasSmtpConfig()) {
+    console.warn("[smtp] self-test skipped: missing SMTP config");
+    return;
+  }
+
+  const transporter = createTransporter();
+  transporter
+    .verify()
+    .then(() => {
+      console.info("[smtp] self-test ok");
+    })
+    .catch((error) => {
+      console.error("[smtp] self-test failed", error);
+    });
+}
+
+if (String(process.env.SMTP_SELFTEST || "").toLowerCase() === "true") {
+  runSmtpSelfTestOnce();
+}
+
+export async function sendVerificationEmail(to: string, code: string) {
+  const { host, port, secure, user, pass, from } = getSmtpConfig();
+  const transporter = createTransporter();
 
   const subject = "Polish Vocab Studio — підтвердження пошти / Email verification";
   const preheader = "Ваш код підтвердження / Your verification code";
@@ -66,13 +103,7 @@ export async function sendVerificationEmail(to: string, code: string) {
 
 export async function sendPasswordResetEmail(to: string, code: string) {
   const { host, port, secure, user, pass, from } = getSmtpConfig();
-  const transportOptions: any = {
-    host,
-    port,
-    secure,
-    auth: { user, pass }
-  } as unknown as SMTPTransport.Options;
-  const transporter = nodemailer.createTransport(transportOptions);
+  const transporter = createTransporter();
 
   const subject = "Polish Vocab Studio — зміна пароля / Password reset";
   const preheader = "Код для зміни пароля / Password reset code";
@@ -114,13 +145,7 @@ export async function sendFeedbackEmail({
   message: string;
 }) {
   const { host, port, secure, user, pass, from } = getSmtpConfig();
-  const transportOptions: any = {
-    host,
-    port,
-    secure,
-    auth: { user, pass }
-  } as unknown as SMTPTransport.Options;
-  const transporter = nodemailer.createTransport(transportOptions);
+  const transporter = createTransporter();
 
   const mailSubject = subject?.trim()
     ? `Feedback: ${subject.trim()}`
