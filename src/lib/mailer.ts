@@ -8,10 +8,23 @@ const globalForMailer = globalThis as unknown as {
   smtpSelfTestStarted?: boolean;
 };
 
+function parseBool(value: string | undefined, fallback: boolean) {
+  if (value == null) return fallback;
+  const normalized = String(value).trim().toLowerCase();
+  if (["1", "true", "yes", "on"].includes(normalized)) return true;
+  if (["0", "false", "no", "off"].includes(normalized)) return false;
+  return fallback;
+}
+
+function parseNumber(value: string | undefined, fallback: number) {
+  const parsed = Number(String(value ?? "").trim());
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+}
+
 function getSmtpConfig() {
   const host = process.env.SMTP_HOST;
-  const port = Number(process.env.SMTP_PORT || 0);
-  const secure = String(process.env.SMTP_SECURE || "").toLowerCase() === "true";
+  const port = parseNumber(process.env.SMTP_PORT, 0);
+  const secure = parseBool(process.env.SMTP_SECURE, port === 465);
   const user = process.env.SMTP_USER;
   const pass = process.env.SMTP_PASS;
   const from = process.env.SMTP_FROM || user;
@@ -23,7 +36,7 @@ function getSmtpConfig() {
 
 export function hasSmtpConfig() {
   const host = process.env.SMTP_HOST;
-  const port = Number(process.env.SMTP_PORT || 0);
+  const port = parseNumber(process.env.SMTP_PORT, 0);
   const user = process.env.SMTP_USER;
   const pass = process.env.SMTP_PASS;
   const from = process.env.SMTP_FROM || user;
@@ -32,11 +45,23 @@ export function hasSmtpConfig() {
 
 function buildTransportOptions() {
   const { host, port, secure, user, pass } = getSmtpConfig();
+  const connectionTimeout = parseNumber(process.env.SMTP_CONNECTION_TIMEOUT_MS, 20_000);
+  const greetingTimeout = parseNumber(process.env.SMTP_GREETING_TIMEOUT_MS, 20_000);
+  const socketTimeout = parseNumber(process.env.SMTP_SOCKET_TIMEOUT_MS, 20_000);
+  const requireTLS = parseBool(process.env.SMTP_REQUIRE_TLS, false);
+  const ignoreTLS = parseBool(process.env.SMTP_IGNORE_TLS, false);
+  const tlsRejectUnauthorized = parseBool(process.env.SMTP_TLS_REJECT_UNAUTHORIZED, true);
   return {
     host,
     port,
     secure,
-    auth: { user, pass }
+    auth: { user, pass },
+    connectionTimeout,
+    greetingTimeout,
+    socketTimeout,
+    requireTLS,
+    ignoreTLS,
+    tls: { rejectUnauthorized: tlsRejectUnauthorized }
   } as SMTPTransport.Options;
 }
 
@@ -70,7 +95,7 @@ if (String(process.env.SMTP_SELFTEST || "").toLowerCase() === "true") {
 }
 
 export async function sendVerificationEmail(to: string, code: string) {
-  const { host, port, secure, user, pass, from } = getSmtpConfig();
+  const { from } = getSmtpConfig();
   const transporter = createTransporter();
 
   const subject = "Polish Vocab Studio — підтвердження пошти / Email verification";
@@ -102,7 +127,7 @@ export async function sendVerificationEmail(to: string, code: string) {
 }
 
 export async function sendPasswordResetEmail(to: string, code: string) {
-  const { host, port, secure, user, pass, from } = getSmtpConfig();
+  const { from } = getSmtpConfig();
   const transporter = createTransporter();
 
   const subject = "Polish Vocab Studio — зміна пароля / Password reset";
@@ -144,7 +169,7 @@ export async function sendFeedbackEmail({
   subject?: string;
   message: string;
 }) {
-  const { host, port, secure, user, pass, from } = getSmtpConfig();
+  const { user, from } = getSmtpConfig();
   const transporter = createTransporter();
 
   const mailSubject = subject?.trim()
