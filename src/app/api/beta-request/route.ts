@@ -10,7 +10,7 @@ function isValidEmail(email: string) {
 export async function POST(request: Request) {
   const ip = getRequestIp(request);
   const rate = await checkRateLimit(`beta-request:${ip}`, 5, 60_000);
-  if (!rate.allowed) {
+  if (!rate.ok) {
     return NextResponse.json({ error: "Забагато запитів. Спробуйте пізніше." }, { status: 429 });
   }
 
