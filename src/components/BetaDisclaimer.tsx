@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useAuthStatus } from "@/components/useAuthStatus";
 
 const DISMISS_KEY = "pvs_beta_dismissed";
 const PROMO_KEY = "pvs_beta_promo";
@@ -9,6 +10,7 @@ const PROMO_KEY = "pvs_beta_promo";
 type Status = "idle" | "sending" | "sent" | "error";
 
 export default function BetaDisclaimer() {
+  const auth = useAuthStatus();
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -19,12 +21,14 @@ export default function BetaDisclaimer() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    if (auth.loading) return;
+    if (auth.isAdmin || auth.hasPromo) return;
     if (window.localStorage.getItem(DISMISS_KEY)) return;
     const storedPromo = window.localStorage.getItem(PROMO_KEY);
     if (storedPromo) setPromoCode(storedPromo);
     const timer = window.setTimeout(() => setOpen(true), 400);
     return () => window.clearTimeout(timer);
-  }, []);
+  }, [auth.hasPromo, auth.isAdmin, auth.loading]);
 
   const close = () => {
     if (typeof window !== "undefined") {

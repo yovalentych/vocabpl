@@ -8,6 +8,7 @@ type AuthStatus = {
   isAuthenticated: boolean;
   isActive: boolean;
   isAdmin: boolean;
+  hasPromo: boolean;
   username: string;
   refresh: () => void;
 };
@@ -19,6 +20,7 @@ export function AuthStatusProvider({ children }: { children: React.ReactNode }) 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isActive, setIsActive] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [hasPromo, setHasPromo] = useState(false);
   const [username, setUsername] = useState("");
 
   async function load() {
@@ -28,6 +30,7 @@ export function AuthStatusProvider({ children }: { children: React.ReactNode }) 
         setIsAuthenticated(false);
         setIsActive(false);
         setIsAdmin(false);
+        setHasPromo(false);
         setUsername("");
         return;
       }
@@ -37,6 +40,7 @@ export function AuthStatusProvider({ children }: { children: React.ReactNode }) 
         setIsAuthenticated(false);
         setIsActive(false);
         setIsAdmin(false);
+        setHasPromo(false);
         setUsername("");
         return;
       }
@@ -44,11 +48,13 @@ export function AuthStatusProvider({ children }: { children: React.ReactNode }) 
       setIsAuthenticated(true);
       setIsActive(active);
       setIsAdmin(Boolean(user?.isAdmin));
+      setHasPromo(Boolean(user?.subscription?.promoCode));
       setUsername(user?.username || "");
     } catch {
       setIsAuthenticated(false);
       setIsActive(false);
       setIsAdmin(false);
+      setHasPromo(false);
       setUsername("");
     } finally {
       setLoading(false);
@@ -73,8 +79,8 @@ export function AuthStatusProvider({ children }: { children: React.ReactNode }) 
   }, []);
 
   const value = useMemo<AuthStatus>(
-    () => ({ loading, isAuthenticated, isActive, isAdmin, username, refresh: load }),
-    [loading, isAuthenticated, isActive, isAdmin, username]
+    () => ({ loading, isAuthenticated, isActive, isAdmin, hasPromo, username, refresh: load }),
+    [loading, isAuthenticated, isActive, isAdmin, hasPromo, username]
   );
 
   return <AuthStatusContext.Provider value={value}>{children}</AuthStatusContext.Provider>;
@@ -88,6 +94,7 @@ export function useAuthStatus() {
     isAuthenticated: false,
     isActive: false,
     isAdmin: false,
+    hasPromo: false,
     username: "",
     refresh: () => {}
   };
