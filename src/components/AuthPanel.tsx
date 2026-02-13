@@ -37,6 +37,13 @@ export default function AuthPanel({ initialMode = "login" }: { initialMode?: "lo
     }
   }, [t]);
 
+  useEffect(() => {
+    const storedPromo = window.localStorage.getItem("pvs_beta_promo");
+    if (storedPromo && !promoCode) {
+      setPromoCode(storedPromo);
+    }
+  }, [promoCode]);
+
   const identifierLabel = useMemo(() => t.auth.identifier, [t]);
   const resendLabel = useMemo(() => {
     if (resendCooldown <= 0) return t.auth.verifyResend;

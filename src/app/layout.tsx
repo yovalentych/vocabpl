@@ -13,6 +13,7 @@ import { getServerLocale } from "@/lib/i18n-server";
 import { AuthStatusProvider } from "@/components/useAuthStatus";
 import ClassFloatingNav from "@/components/ClassFloatingNav";
 import ByokPanel from "@/components/ByokPanel";
+import BetaDisclaimer from "@/components/BetaDisclaimer";
 
 const DEFAULT_SITE_URL = "https://www.vocabpl.uno";
 
@@ -97,6 +98,7 @@ export default function RootLayout({
                 <FloatingAddWordButton />
               </div>
               <ByokPanel />
+              <BetaDisclaimer />
               <CookieConsent />
             </div>
           </AuthStatusProvider>
