@@ -21,7 +21,9 @@ export default function LocaleSwitcher() {
         }`}
         aria-label={t.common.polish}
       >
-        <span className="text-base">🇵🇱</span>
+        <span className="inline-flex h-4 w-4 items-center justify-center overflow-hidden rounded-full border border-ink/10 bg-white">
+          <img src="/flags/pl.svg" alt="" className="h-full w-full object-cover" />
+        </span>
         <span>PL</span>
       </button>
       <button
@@ -36,7 +38,9 @@ export default function LocaleSwitcher() {
         }`}
         aria-label={t.common.ukrainian}
       >
-        <span className="text-base">🇺🇦</span>
+        <span className="inline-flex h-4 w-4 items-center justify-center overflow-hidden rounded-full border border-ink/10 bg-white">
+          <img src="/flags/uk.svg" alt="" className="h-full w-full object-cover" />
+        </span>
         <span>UK</span>
       </button>
     </div>
