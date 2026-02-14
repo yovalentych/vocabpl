@@ -4,6 +4,7 @@ import { Word } from "@/lib/types";
 import { useLocale } from "@/components/LocaleProvider";
 import { getPolishConjugationUrl, getPolishAdjectiveDeclensionUrl } from "@/lib/links";
 import { Sparkle } from "@phosphor-icons/react";
+import SpeakButton from "@/components/ui/SpeakButton";
 
 interface DictWordCardProps {
   word: Word & { duplicate?: boolean };
@@ -125,6 +126,7 @@ export default function DictWordCard({
               <p className="text-lg font-semibold text-ink">
                 {sortField === "uk" ? word.uk : word.pl}
               </p>
+              <SpeakButton text={word.pl} label="Озвучити польське слово" />
               <span className="text-xs text-ink/30">·</span>
               <p className="text-sm text-ink/60">
                 {hideTranslations && !revealedMap[word.id]

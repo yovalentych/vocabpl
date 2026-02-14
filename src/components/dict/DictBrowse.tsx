@@ -13,6 +13,7 @@ import DictFilters from "./DictFilters";
 import DictAlphabetNav from "./DictAlphabetNav";
 import DictWordGrid from "./DictWordGrid";
 import WordAIModal from "./WordAIModal";
+import SpeakButton from "@/components/ui/SpeakButton";
 
 export default function DictBrowse() {
   const { t } = useLocale();
@@ -690,9 +691,15 @@ export default function DictBrowse() {
                   <p className="text-xs uppercase tracking-[0.3em] text-ink/40">
                     {t.deck.trainerStep} {trainerIndex + 1} / {trainerQueue.length}
                   </p>
-                  <h3 className="mt-3 text-3xl font-semibold">
-                    {getFront(trainerQueue[trainerIndex], getDirectionForIndex(trainerIndex))}
-                  </h3>
+                  <div className="mt-3 flex flex-wrap items-center gap-3">
+                    <h3 className="text-3xl font-semibold">
+                      {getFront(trainerQueue[trainerIndex], getDirectionForIndex(trainerIndex))}
+                    </h3>
+                    <SpeakButton
+                      text={trainerQueue[trainerIndex].pl}
+                      label="Озвучити польське слово"
+                    />
+                  </div>
                   {trainerMode === "typing" && (
                     <div className="mt-6 space-y-4">
                       <label className="block text-sm text-ink/70">
