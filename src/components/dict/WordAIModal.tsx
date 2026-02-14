@@ -10,12 +10,14 @@ interface Example {
   difficulty: "easy" | "medium" | "hard";
 }
 
+type GrammarExample = string | { pl?: string; uk?: string };
+
 interface GrammarExplanation {
   type: string;
   usage: string;
   notes: string;
   forms: string[];
-  examples: string[];
+  examples: GrammarExample[];
 }
 
 interface WordAIModalProps {
@@ -361,12 +363,25 @@ export default function WordAIModal({ word, isOpen, onClose }: WordAIModalProps)
                         ПРИКЛАДИ
                       </p>
                       <ul className="space-y-2">
-                        {grammar.examples.map((example, idx) => (
-                          <li key={idx} className="flex gap-2 text-sm text-ink/80">
-                            <span className="text-moss">•</span>
-                            <span className="flex-1">{example}</span>
-                          </li>
-                        ))}
+                        {grammar.examples.map((example, idx) => {
+                          const sentence =
+                            typeof example === "string" ? example : example?.pl || "";
+                          const translation =
+                            typeof example === "object" ? example?.uk || "" : "";
+                          return (
+                            <li key={idx} className="flex gap-2 text-sm text-ink/80">
+                              <span className="text-moss">•</span>
+                              <span className="flex-1">
+                                <span className="block">{sentence}</span>
+                                {translation && (
+                                  <span className="mt-1 block text-xs text-ink/50">
+                                    {translation}
+                                  </span>
+                                )}
+                              </span>
+                            </li>
+                          );
+                        })}
                       </ul>
                     </div>
                   )}
