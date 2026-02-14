@@ -3,6 +3,7 @@ import { ObjectId } from "mongodb";
 import { getDb } from "@/lib/db";
 import { getPlanById } from "@/lib/plans";
 import { isMonoConfigured, verifyMonoSignature } from "@/lib/monobank";
+import { sendPaymentReceiptEmail } from "@/lib/mailer";
 
 export const dynamic = "force-dynamic";
 
@@ -107,6 +108,33 @@ export async function POST(request: Request) {
       }
     }
   );
+
+  const receiptAlready = Boolean(existing?.receiptSentAt);
+  const userEmail = typeof user.email === "string" ? user.email : "";
+  if (!receiptAlready && userEmail) {
+    const amountMinor = Number(payload?.amount ?? payload?.finalAmount ?? existing?.amount ?? plan.priceUah * 100);
+    const amountUah = Number.isFinite(amountMinor) ? amountMinor / 100 : plan.priceUah;
+    const planLabel = String(plan.tier || "plan");
+    const paidAt = modifiedDate || new Date();
+
+    try {
+      await sendPaymentReceiptEmail({
+        to: userEmail,
+        name: user.name || user.username,
+        amountUah,
+        planLabel,
+        periodDays: plan.periodDays,
+        invoiceId,
+        paidAt
+      });
+      await db.collection("payments").updateOne(
+        { invoiceId },
+        { $set: { receiptSentAt: new Date(), receiptEmail: userEmail } }
+      );
+    } catch (error) {
+      console.error("[smtp] payment receipt email failed", error);
+    }
+  }
 
   return NextResponse.json({ ok: true });
 }

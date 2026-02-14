@@ -252,6 +252,62 @@ export async function sendVerificationEmail(to: string, code: string) {
   }
 }
 
+export async function sendPaymentReceiptEmail({
+  to,
+  name,
+  amountUah,
+  planLabel,
+  periodDays,
+  invoiceId,
+  paidAt
+}: {
+  to: string;
+  name?: string;
+  amountUah: number;
+  planLabel: string;
+  periodDays: number;
+  invoiceId: string;
+  paidAt: Date;
+}) {
+  const subject = "Polish Vocab Studio — підтвердження оплати / Payment confirmation";
+  const preheader = "Дякуємо за оплату · Thank you for your payment";
+  const periodLabel = periodDays >= 365 ? "рік / year" : periodDays >= 90 ? "квартал / quarter" : "місяць / month";
+  const paidAtText = paidAt.toLocaleString("uk-UA", { dateStyle: "medium", timeStyle: "short" });
+  const safeName = name ? `, ${name}` : "";
+  const amountText = `${amountUah.toFixed(2)} ₴`;
+
+  const html = `
+    <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent">${preheader}</div>
+    <div style="background:#f6ede3;padding:32px 18px;font-family:'Segoe UI',Arial,sans-serif;color:#2b2118;line-height:1.6">
+      <div style="max-width:560px;margin:0 auto;background:#fff7ef;border:1px solid #eadbcc;border-radius:18px;padding:24px">
+        <h2 style="margin:0 0 8px;font-size:20px">Polish Vocab Studio</h2>
+        <p style="margin:0 0 16px;font-size:14px;color:#6b5a4a">Підтвердження оплати · Payment confirmation</p>
+        <p style="margin:0 0 10px">Дякуємо за оплату${safeName}!</p>
+        <p style="margin:0 0 10px">Thank you for your payment${safeName}!</p>
+        <div style="margin:16px 0;padding:14px 16px;border-radius:12px;background:#f1e6da">
+          <div style="font-size:14px;margin:0 0 6px">Сума / Amount: <strong>${amountText}</strong></div>
+          <div style="font-size:14px;margin:0 0 6px">План / Plan: <strong>${planLabel}</strong></div>
+          <div style="font-size:14px;margin:0 0 6px">Період / Period: <strong>${periodLabel}</strong></div>
+          <div style="font-size:12px;color:#6b5a4a">Дата / Date: ${paidAtText}</div>
+          <div style="font-size:12px;color:#6b5a4a">Invoice ID: ${invoiceId}</div>
+        </div>
+        <p style="margin:0;font-size:12px;color:#7a6a5a">
+          Квитанцію monobank можна переглянути у вашому банкінгу. If you need help, reply to this email.
+        </p>
+      </div>
+    </div>
+  `;
+
+  if (shouldUseBrevo()) {
+    await sendBrevoEmail({ to, subject, html });
+    return;
+  }
+
+  const { from } = getSmtpConfig();
+  const transporter = createTransporter();
+  await transporter.sendMail({ from, to, subject, html });
+}
+
 export async function sendPasswordResetEmail(to: string, code: string) {
   if (shouldUseBrevo()) {
     const subject = "Polish Vocab Studio — зміна пароля / Password reset";
