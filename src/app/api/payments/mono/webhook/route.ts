@@ -116,6 +116,12 @@ export async function POST(request: Request) {
     const amountUah = Number.isFinite(amountMinor) ? amountMinor / 100 : plan.priceUah;
     const planLabel = String(plan.tier || "plan");
     const paidAt = modifiedDate || new Date();
+    const receiptUrl =
+      (payload?.receiptUrl as string | undefined) ||
+      (payload?.paymentInfo?.receiptUrl as string | undefined) ||
+      (payload?.merchantPaymInfo?.receiptUrl as string | undefined) ||
+      (payload?.invoice?.receiptUrl as string | undefined) ||
+      null;
 
     try {
       await sendPaymentReceiptEmail({
@@ -125,11 +131,12 @@ export async function POST(request: Request) {
         planLabel,
         periodDays: plan.periodDays,
         invoiceId,
-        paidAt
+        paidAt,
+        receiptUrl
       });
       await db.collection("payments").updateOne(
         { invoiceId },
-        { $set: { receiptSentAt: new Date(), receiptEmail: userEmail } }
+        { $set: { receiptSentAt: new Date(), receiptEmail: userEmail, receiptUrl } }
       );
     } catch (error) {
       console.error("[smtp] payment receipt email failed", error);

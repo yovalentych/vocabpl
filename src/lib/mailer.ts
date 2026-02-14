@@ -259,7 +259,8 @@ export async function sendPaymentReceiptEmail({
   planLabel,
   periodDays,
   invoiceId,
-  paidAt
+  paidAt,
+  receiptUrl
 }: {
   to: string;
   name?: string;
@@ -268,6 +269,7 @@ export async function sendPaymentReceiptEmail({
   periodDays: number;
   invoiceId: string;
   paidAt: Date;
+  receiptUrl?: string | null;
 }) {
   const subject = "Polish Vocab Studio — підтвердження оплати / Payment confirmation";
   const preheader = "Дякуємо за оплату · Thank you for your payment";
@@ -275,6 +277,16 @@ export async function sendPaymentReceiptEmail({
   const paidAtText = paidAt.toLocaleString("uk-UA", { dateStyle: "medium", timeStyle: "short" });
   const safeName = name ? `, ${name}` : "";
   const amountText = `${amountUah.toFixed(2)} ₴`;
+
+  const receiptBlock = receiptUrl
+    ? `
+        <div style="margin-top:16px">
+          <a href="${receiptUrl}" style="display:inline-block;background:#2b2118;color:#fff;text-decoration:none;padding:10px 16px;border-radius:999px;font-size:12px;font-weight:600">
+            Переглянути чек / View receipt
+          </a>
+        </div>
+      `
+    : "";
 
   const html = `
     <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent">${preheader}</div>
@@ -291,6 +303,7 @@ export async function sendPaymentReceiptEmail({
           <div style="font-size:12px;color:#6b5a4a">Дата / Date: ${paidAtText}</div>
           <div style="font-size:12px;color:#6b5a4a">Invoice ID: ${invoiceId}</div>
         </div>
+        ${receiptBlock}
         <p style="margin:0;font-size:12px;color:#7a6a5a">
           Квитанцію monobank можна переглянути у вашому банкінгу. If you need help, reply to this email.
         </p>
