@@ -53,6 +53,7 @@ export default function NotesModal({ open, onClose }: { open: boolean; onClose: 
   const [editorRef, setEditorRef] = useState<any>(null);
   const [search, setSearch] = useState("");
   const [zIndex, setZIndex] = useState(60);
+  const [mobilePane, setMobilePane] = useState<"list" | "edit">("list");
 
   const [dirty, setDirty] = useState(false);
   function updateDirty(next?: string) {
@@ -120,6 +121,7 @@ export default function NotesModal({ open, onClose }: { open: boolean; onClose: 
       }
       setDirty(false);
       setLoadingNote(false);
+      setMobilePane("edit");
     }
     loadNote();
     return () => {
@@ -185,11 +187,14 @@ export default function NotesModal({ open, onClose }: { open: boolean; onClose: 
 
   if (!open) return null;
 
+  const showList = mobilePane === "list";
+  const showEditor = mobilePane === "edit";
+
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-ink/30 px-4" style={{ zIndex }}>
-      <div className="h-[88vh] w-full max-w-6xl overflow-hidden rounded-[18px] border border-ink/10 bg-[#f7f6f3] shadow-soft">
+    <div className="fixed inset-0 flex items-center justify-center bg-ink/30 px-2 sm:px-4" style={{ zIndex }}>
+      <div className="h-[92svh] w-full max-w-6xl overflow-hidden rounded-[18px] border border-ink/10 bg-[#f7f6f3] shadow-soft md:h-[88vh]">
         <div className="flex h-full">
-          <aside className="flex h-full w-[300px] flex-col border-r border-ink/10 bg-[#f5f5f4]">
+          <aside className={`flex h-full w-full flex-col border-r border-ink/10 bg-[#f5f5f4] md:w-[300px] ${showList ? "flex" : "hidden"} md:flex`}>
             <div className="px-5 py-4">
               <p className="text-[11px] uppercase tracking-[0.3em] text-ink/40">{t.notes.title}</p>
               <p className="mt-1 text-[11px] text-ink/45">{t.notes.subtitle}</p>
@@ -229,7 +234,10 @@ export default function NotesModal({ open, onClose }: { open: boolean; onClose: 
                 return (
                   <button
                     key={note.id}
-                    onClick={() => setActiveId(note.id)}
+                    onClick={() => {
+                      setActiveId(note.id);
+                      setMobilePane("edit");
+                    }}
                     className={`w-full rounded-lg px-3 py-2 text-left text-xs transition ${
                       active ? "bg-white shadow-soft" : "hover:bg-white/70"
                     }`}
@@ -259,11 +267,19 @@ export default function NotesModal({ open, onClose }: { open: boolean; onClose: 
             </div>
           </aside>
 
-          <section className="flex h-full flex-1 flex-col bg-white">
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-ink/10 bg-white px-6 py-4">
-              <div>
-                <p className="text-[11px] uppercase tracking-[0.3em] text-ink/40">{t.notes.title}</p>
-                <p className="text-[11px] text-ink/45">{t.notes.subtitle}</p>
+          <section className={`flex h-full flex-1 flex-col bg-white ${showEditor ? "flex" : "hidden"} md:flex`}>
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-ink/10 bg-white px-4 py-3 sm:px-6 sm:py-4">
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setMobilePane("list")}
+                  className="rounded-full border border-ink/20 px-3 py-2 text-[11px] font-semibold md:hidden"
+                >
+                  Назад
+                </button>
+                <div>
+                  <p className="text-[11px] uppercase tracking-[0.3em] text-ink/40">{t.notes.title}</p>
+                  <p className="text-[11px] text-ink/45">{t.notes.subtitle}</p>
+                </div>
               </div>
               <div className="flex items-center gap-2">
                 <button
@@ -282,7 +298,7 @@ export default function NotesModal({ open, onClose }: { open: boolean; onClose: 
               </div>
             </div>
 
-            <div className="flex min-h-0 flex-1 flex-col px-10 py-6">
+            <div className="flex min-h-0 flex-1 flex-col px-4 py-4 sm:px-10 sm:py-6">
               {loadingNote ? (
                 <Loader label={t.common.loading} />
               ) : activeNote ? (
