@@ -3,6 +3,7 @@ import { getAuthUser } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { plans } from "@/lib/plans";
 import { hasMailConfig } from "@/lib/mailer";
+import { getMonoPubKey, isMonoConfigured } from "@/lib/monobank";
 
 export const dynamic = "force-dynamic";
 
@@ -13,6 +14,16 @@ export async function GET() {
   const mongoPresent = Boolean(process.env.MONGODB_URI);
   const pvsPresent = Boolean(process.env.PVS_OPENAI_API_KEY || process.env.OPENAI_API_KEY);
   const smtpPresent = hasMailConfig();
+  const monoPresent = isMonoConfigured();
+  let monoPubkeyOk = false;
+  if (monoPresent) {
+    try {
+      const key = await getMonoPubKey();
+      monoPubkeyOk = Boolean(key);
+    } catch {
+      monoPubkeyOk = false;
+    }
+  }
   let dbOk = false;
   try {
     const db = await getDb();
@@ -27,7 +38,9 @@ export async function GET() {
     env: {
       mongo: mongoPresent,
       pvsKey: pvsPresent,
-      smtp: smtpPresent
+      smtp: smtpPresent,
+      mono: monoPresent,
+      monoPubkey: monoPubkeyOk
     },
     db: {
       ok: dbOk

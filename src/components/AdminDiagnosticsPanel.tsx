@@ -7,7 +7,7 @@ import { ShieldCheck, Database, Brain, Lightning, CheckCircle, XCircle } from "@
 
 type Diagnostics = {
   time: string;
-  env: { mongo: boolean; pvsKey: boolean };
+  env: { mongo: boolean; pvsKey: boolean; mono?: boolean; monoPubkey?: boolean };
   db: { ok: boolean };
   ai: { model: string; maxTokens: number };
   plans: { id: string; priceUah: number; credits: number }[];
@@ -100,6 +100,22 @@ export default function AdminDiagnosticsPanel() {
                     <XCircle size={16} weight="fill" className="text-terracotta" />
                   )}
                   <span>{t.admin.diagnosticsPvs}</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  {data.env.mono ? (
+                    <CheckCircle size={16} weight="fill" className="text-moss" />
+                  ) : (
+                    <XCircle size={16} weight="fill" className="text-terracotta" />
+                  )}
+                  <span>Monobank token</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  {data.env.monoPubkey ? (
+                    <CheckCircle size={16} weight="fill" className="text-moss" />
+                  ) : (
+                    <XCircle size={16} weight="fill" className="text-terracotta" />
+                  )}
+                  <span>Monobank pubkey</span>
                 </div>
               </div>
             </div>
