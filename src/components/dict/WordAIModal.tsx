@@ -35,6 +35,16 @@ export default function WordAIModal({ word, isOpen, onClose }: WordAIModalProps)
   const [errorExamples, setErrorExamples] = useState<string | null>(null);
   const [errorGrammar, setErrorGrammar] = useState<string | null>(null);
 
+  const parseAiJson = (raw: string) => {
+    const cleaned = String(raw || "")
+      .trim()
+      .replace(/^```json\s*/i, "")
+      .replace(/^```\s*/i, "")
+      .replace(/```$/i, "")
+      .trim();
+    return JSON.parse(cleaned || "{}");
+  };
+
   async function generateExamples() {
     if (examples.length > 0) return; // Already generated
 
@@ -70,7 +80,7 @@ export default function WordAIModal({ word, isOpen, onClose }: WordAIModalProps)
         return;
       }
 
-      const result = JSON.parse(data.text || "{}");
+      const result = parseAiJson(data.text);
       setExamples(result.examples || []);
     } catch (err) {
       console.error("Failed to generate examples:", err);
@@ -114,7 +124,7 @@ export default function WordAIModal({ word, isOpen, onClose }: WordAIModalProps)
         return;
       }
 
-      const result = JSON.parse(data.text || "{}");
+      const result = parseAiJson(data.text);
       setGrammar(result.explanation || null);
     } catch (err) {
       console.error("Failed to generate grammar:", err);
