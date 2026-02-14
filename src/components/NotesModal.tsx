@@ -7,6 +7,7 @@ import { BlockNoteView } from "@blocknote/mantine";
 import { useCreateBlockNote } from "@blocknote/react";
 import "@blocknote/mantine/style.css";
 import Loader from "@/components/ui/Loader";
+import { ArrowLeft, FloppyDisk, X } from "@phosphor-icons/react";
 
 function normalizeContent(content: PartialBlock[] | null) {
   if (!Array.isArray(content) || content.length === 0) return undefined;
@@ -269,14 +270,15 @@ export default function NotesModal({ open, onClose }: { open: boolean; onClose: 
 
           <section className={`flex h-full flex-1 flex-col bg-white ${showEditor ? "flex" : "hidden"} md:flex`}>
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-ink/10 bg-white px-4 py-3 sm:px-6 sm:py-4">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
                 <button
                   onClick={() => setMobilePane("list")}
-                  className="rounded-full border border-ink/20 px-3 py-2 text-[11px] font-semibold md:hidden"
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-ink/20 text-ink md:hidden"
+                  aria-label="Назад"
                 >
-                  Назад
+                  <ArrowLeft size={16} />
                 </button>
-                <div>
+                <div className="leading-tight">
                   <p className="text-[11px] uppercase tracking-[0.3em] text-ink/40">{t.notes.title}</p>
                   <p className="text-[11px] text-ink/45">{t.notes.subtitle}</p>
                 </div>
@@ -284,14 +286,30 @@ export default function NotesModal({ open, onClose }: { open: boolean; onClose: 
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => save(false)}
-                  className="rounded-full border border-ink/20 px-4 py-2 text-xs font-semibold"
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-ink/20 text-ink md:hidden"
+                  disabled={saving || !activeNote}
+                  aria-label={t.notes.save}
+                >
+                  <FloppyDisk size={16} />
+                </button>
+                <button
+                  onClick={handleClose}
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-ink/20 text-ink md:hidden"
+                  aria-label={t.notes.close}
+                >
+                  <X size={16} />
+                </button>
+
+                <button
+                  onClick={() => save(false)}
+                  className="hidden rounded-full border border-ink/20 px-4 py-2 text-xs font-semibold md:inline-flex"
                   disabled={saving || !activeNote}
                 >
                   {saving ? t.common.loading : t.notes.save}
                 </button>
                 <button
                   onClick={handleClose}
-                  className="rounded-full border border-ink/20 px-4 py-2 text-xs font-semibold"
+                  className="hidden rounded-full border border-ink/20 px-4 py-2 text-xs font-semibold md:inline-flex"
                 >
                   {t.notes.close}
                 </button>
