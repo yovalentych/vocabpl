@@ -61,6 +61,7 @@ export default function CabinetClient({ username }: { username: string }) {
   const [ackReset, setAckReset] = useState(false);
   const [ackDelete, setAckDelete] = useState(false);
   const [dangerStatus, setDangerStatus] = useState<"idle" | "saving" | "error" | "done">("idle");
+  const isActive = profile?.subscription?.status === "active";
   const hasPromoAccess = Boolean(profile?.subscription?.promoCode);
   const [billingPlans, setBillingPlans] = useState<Plan[]>(defaultPlans);
   const [blurPlans, setBlurPlans] = useState(false);
@@ -77,6 +78,7 @@ export default function CabinetClient({ username }: { username: string }) {
   const [dataRequestType, setDataRequestType] = useState<"access" | "delete">("access");
   const [dataRequestMessage, setDataRequestMessage] = useState("");
   const [dataRequestStatus, setDataRequestStatus] = useState<"idle" | "saving" | "done" | "error">("idle");
+  const hasAiAccess = Boolean(isActive || hasPromoAccess);
 
   useEffect(() => {
     if (resendCooldown <= 0) return;
@@ -248,7 +250,6 @@ export default function CabinetClient({ username }: { username: string }) {
     await loadProfile();
   }
 
-  const isActive = profile?.subscription?.status === "active";
 
   async function saveCookiePreferences() {
     setPrefsStatus("saving");
@@ -356,20 +357,20 @@ export default function CabinetClient({ username }: { username: string }) {
           {/* AI Status Card */}
           <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
             <div className="flex items-start gap-3">
-              <div className={`inline-flex h-12 w-12 items-center justify-center rounded-2xl ${isActive ? "bg-moss/10 text-moss" : "bg-ink/5 text-ink/40"}`}>
+              <div className={`inline-flex h-12 w-12 items-center justify-center rounded-2xl ${hasAiAccess ? "bg-moss/10 text-moss" : "bg-ink/5 text-ink/40"}`}>
                 <Brain size={24} weight="fill" />
               </div>
               <div className="flex-1">
                 <p className="text-xs uppercase tracking-[0.2em] text-ink/50">AI Status</p>
                 <p className="mt-1 text-lg font-semibold">
-                  {isActive ? t.cabinet.aiStatusConnected : t.cabinet.aiStatusDisconnected}
+                  {hasAiAccess ? t.cabinet.aiStatusConnected : t.cabinet.aiStatusDisconnected}
                 </p>
               </div>
             </div>
           </div>
 
           {/* AI Credits Card */}
-          {aiUsageSummary && (
+          {hasAiAccess && aiUsageSummary && (
             <div className="rounded-3xl border border-terracotta/20 bg-terracotta/5 p-6 shadow-soft">
               <div className="flex items-start gap-3">
                 <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-terracotta/10 text-terracotta">
@@ -387,103 +388,126 @@ export default function CabinetClient({ username }: { username: string }) {
           )}
 
           {/* AI Usage Count */}
-          <div className="rounded-3xl border border-gold/30 bg-gold/5 p-6 shadow-soft">
-            <div className="flex items-start gap-3">
-              <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gold/20 text-terracotta">
-                <ChartLineUp size={24} weight="fill" />
+          {hasAiAccess ? (
+            <div className="rounded-3xl border border-gold/30 bg-gold/5 p-6 shadow-soft">
+              <div className="flex items-start gap-3">
+                <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gold/20 text-terracotta">
+                  <ChartLineUp size={24} weight="fill" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-xs uppercase tracking-[0.2em] text-ink/50">Використано</p>
+                  <p className="mt-1 text-2xl font-semibold text-ink">{aiUsageHistory.length}</p>
+                  <p className="text-xs text-ink/60">AI запитів</p>
+                </div>
               </div>
-              <div className="flex-1">
-                <p className="text-xs uppercase tracking-[0.2em] text-ink/50">Використано</p>
-                <p className="mt-1 text-2xl font-semibold text-ink">{aiUsageHistory.length}</p>
-                <p className="text-xs text-ink/60">AI запитів</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* AI Usage Chart */}
-        <div className="mt-6 rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs uppercase tracking-[0.2em] text-ink/50">{t.cabinet.aiUsageTitle}</p>
-              <p className="mt-1 text-sm text-ink/60">Топ-10 найбільш використаних AI функцій</p>
-            </div>
-            <div className="text-right">
-              <p className="text-2xl font-semibold text-ink">{aiUsageHistory.length}</p>
-              <p className="text-xs text-ink/50">всього запитів</p>
-            </div>
-          </div>
-
-          {aiUsageHistory.length === 0 ? (
-            <div className="mt-6 py-8 text-center">
-              <Sparkle size={48} className="mx-auto text-ink/20" weight="fill" />
-              <p className="mt-2 text-sm text-ink/60">{t.cabinet.aiUsageEmpty}</p>
             </div>
           ) : (
-            <div className="mt-6 space-y-3">
-              {aiUsageChartData.map((item, idx) => {
-                const percentage = (item.count / maxCount) * 100;
-                return (
-                  <div key={item.mode} className="group">
-                    <div className="mb-1 flex items-center justify-between text-sm">
-                      <div className="flex items-center gap-2">
-                        <span className="flex h-5 w-5 items-center justify-center rounded text-xs font-semibold text-ink/40">
-                          {idx + 1}
-                        </span>
-                        <span className="font-medium text-ink">{item.label}</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <span className="text-xs text-ink/60">{item.count} раз{item.count > 1 ? "ів" : ""}</span>
-                        <span className="text-xs font-semibold text-terracotta">-{item.credits}</span>
-                      </div>
-                    </div>
-                    <div className="relative h-8 overflow-hidden rounded-xl bg-fog">
-                      <div
-                        className="absolute inset-y-0 left-0 rounded-xl bg-gradient-to-r from-moss/80 to-moss transition-all duration-500 group-hover:from-moss group-hover:to-moss/90"
-                        style={{ width: `${percentage}%` }}
-                      >
-                        <div className="flex h-full items-center justify-end px-3">
-                          <span className="text-xs font-semibold text-paper">
-                            {percentage.toFixed(0)}%
+            <div className="rounded-3xl border border-ink/10 bg-fog/60 p-6 shadow-soft lg:col-span-2">
+              <div className="flex items-start gap-3">
+                <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-ink/10 text-ink/50">
+                  <Warning size={24} weight="fill" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-xs uppercase tracking-[0.2em] text-ink/50">AI доступ</p>
+                  <p className="mt-1 text-sm text-ink/70">
+                    AI‑кредити та історія доступні після оплати або активації промокоду.
+                  </p>
+                  <a
+                    href="#billing"
+                    className="mt-3 inline-flex items-center gap-2 rounded-full border border-ink/20 bg-paper px-4 py-2 text-xs font-semibold text-ink/70 hover:bg-ink/5"
+                  >
+                    Перейти до оплати
+                  </a>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {hasAiAccess && (
+          <div className="mt-6 rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs uppercase tracking-[0.2em] text-ink/50">{t.cabinet.aiUsageTitle}</p>
+                <p className="mt-1 text-sm text-ink/60">Топ-10 найбільш використаних AI функцій</p>
+              </div>
+              <div className="text-right">
+                <p className="text-2xl font-semibold text-ink">{aiUsageHistory.length}</p>
+                <p className="text-xs text-ink/50">всього запитів</p>
+              </div>
+            </div>
+
+            {aiUsageHistory.length === 0 ? (
+              <div className="mt-6 py-8 text-center">
+                <Sparkle size={48} className="mx-auto text-ink/20" weight="fill" />
+                <p className="mt-2 text-sm text-ink/60">{t.cabinet.aiUsageEmpty}</p>
+              </div>
+            ) : (
+              <div className="mt-6 space-y-3">
+                {aiUsageChartData.map((item, idx) => {
+                  const percentage = (item.count / maxCount) * 100;
+                  return (
+                    <div key={item.mode} className="group">
+                      <div className="mb-1 flex items-center justify-between text-sm">
+                        <div className="flex items-center gap-2">
+                          <span className="flex h-5 w-5 items-center justify-center rounded text-xs font-semibold text-ink/40">
+                            {idx + 1}
                           </span>
+                          <span className="font-medium text-ink">{item.label}</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span className="text-xs text-ink/60">{item.count} раз{item.count > 1 ? "ів" : ""}</span>
+                          <span className="text-xs font-semibold text-terracotta">-{item.credits}</span>
+                        </div>
+                      </div>
+                      <div className="relative h-8 overflow-hidden rounded-xl bg-fog">
+                        <div
+                          className="absolute inset-y-0 left-0 rounded-xl bg-gradient-to-r from-moss/80 to-moss transition-all duration-500 group-hover:from-moss group-hover:to-moss/90"
+                          style={{ width: `${percentage}%` }}
+                        >
+                          <div className="flex h-full items-center justify-end px-3">
+                            <span className="text-xs font-semibold text-paper">
+                              {percentage.toFixed(0)}%
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
+                  );
+                })}
+              </div>
+            )}
 
-          {aiUsageHistory.length > 0 && (
-            <div className="mt-6 grid grid-cols-3 gap-4 rounded-2xl border border-ink/5 bg-fog/50 p-4">
-              <div className="text-center">
-                <p className="text-xs text-ink/50">Всього кредитів</p>
-                <p className="mt-1 text-lg font-semibold text-terracotta">
-                  {aiUsageHistory.reduce((sum, log) => sum + log.credits, 0)}
-                </p>
+            {aiUsageHistory.length > 0 && (
+              <div className="mt-6 grid grid-cols-3 gap-4 rounded-2xl border border-ink/5 bg-fog/50 p-4">
+                <div className="text-center">
+                  <p className="text-xs text-ink/50">Всього кредитів</p>
+                  <p className="mt-1 text-lg font-semibold text-terracotta">
+                    {aiUsageHistory.reduce((sum, log) => sum + log.credits, 0)}
+                  </p>
+                </div>
+                <div className="text-center">
+                  <p className="text-xs text-ink/50">Середня вартість</p>
+                  <p className="mt-1 text-lg font-semibold text-ink">
+                    {(aiUsageHistory.reduce((sum, log) => sum + log.credits, 0) / aiUsageHistory.length).toFixed(1)}
+                  </p>
+                </div>
+                <div className="text-center">
+                  <p className="text-xs text-ink/50">Типів вправ</p>
+                  <p className="mt-1 text-lg font-semibold text-moss">
+                    {Object.keys(aiUsageByMode).length}
+                  </p>
+                </div>
               </div>
-              <div className="text-center">
-                <p className="text-xs text-ink/50">Середня вартість</p>
-                <p className="mt-1 text-lg font-semibold text-ink">
-                  {(aiUsageHistory.reduce((sum, log) => sum + log.credits, 0) / aiUsageHistory.length).toFixed(1)}
-                </p>
-              </div>
-              <div className="text-center">
-                <p className="text-xs text-ink/50">Типів вправ</p>
-                <p className="mt-1 text-lg font-semibold text-moss">
-                  {Object.keys(aiUsageByMode).length}
-                </p>
-              </div>
-            </div>
-          )}
+            )}
 
-          <p className="mt-4 text-xs text-ink/50">{t.cabinet.aiExtra}</p>
-        </div>
+            <p className="mt-4 text-xs text-ink/50">{t.cabinet.aiExtra}</p>
+          </div>
+        )}
       </section>
 
       {/* Account Settings */}
-      <section>
+      <section id="billing">
         <div className="mb-6 flex items-center gap-3">
           <Lock size={24} weight="fill" className="text-ink" />
           <h2 className="text-2xl font-semibold">Налаштування акаунту</h2>
@@ -773,7 +797,9 @@ export default function CabinetClient({ username }: { username: string }) {
               const planInfo = getPlanById(plan.id);
               const remaining =
                 usage?.month ? Math.max(0, planInfo.aiCreditsMonthly - (usage.usedCredits || 0)) : planInfo.aiCreditsMonthly;
-              const activePlanId = getPlanById(profile?.subscription?.planId).id;
+              const activePlanId = profile?.subscription?.planId
+                ? getPlanById(profile.subscription.planId).id
+                : null;
               const isCurrentPlan = isActive && activePlanId === plan.id;
               const periodLabel =
                 plan.periodDays >= 365 ? t.cabinet.periodLabels.year : plan.periodDays >= 90 ? t.cabinet.periodLabels.quarter : t.cabinet.periodLabels.month;
