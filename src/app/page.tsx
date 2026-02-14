@@ -54,8 +54,7 @@ async function getUserSnapshot() {
 }
 
 export default async function HomePage() {
-  const { t } = getDictionary();
-  const locale = t.locale || "uk";
+  const { t, locale } = getDictionary();
   const stats = await getStats();
   const user = await getUserSnapshot();
 
