@@ -55,6 +55,7 @@ async function getUserSnapshot() {
 
 export default async function HomePage() {
   const { t } = getDictionary();
+  const locale = t.locale || "uk";
   const stats = await getStats();
   const user = await getUserSnapshot();
 
@@ -219,6 +220,133 @@ export default async function HomePage() {
           ))}
         </div>
       </section>
+
+      {!user && (
+        <section className="mt-20 sm:mt-24 rounded-[32px] border border-ink/10 bg-paper/80 p-8 sm:p-10 shadow-soft">
+          {locale === "pl" ? (
+            <>
+              <h2 className="text-2xl sm:text-3xl font-bold text-ink">
+                Nauka języka polskiego online — Polish Vocab Studio
+              </h2>
+              <p className="mt-4 text-base sm:text-lg text-ink/70 leading-relaxed">
+                Polish Vocab Studio to nowoczesny trening słownictwa i ćwiczeń z języka polskiego.
+                Ucz się polskich słówek z tłumaczeniem, rozwiązuj testy i praktykuj A1–A2 w jednym miejscu.
+              </p>
+              <div className="mt-6 grid gap-6 sm:grid-cols-2">
+                <div>
+                  <h3 className="text-sm font-semibold uppercase tracking-[0.3em] text-ink/50">
+                    Najczęstsze frazy
+                  </h3>
+                  <ul className="mt-3 grid gap-2 text-sm text-ink/70 sm:grid-cols-2">
+                    {[
+                      "nauka języka polskiego online",
+                      "słownictwo polskie",
+                      "polskie słówka z tłumaczeniem",
+                      "ćwiczenia z polskiego",
+                      "testy z języka polskiego",
+                      "język polski dla początkujących",
+                      "nauka polskich słówek",
+                      "fiszki polski",
+                      "poziom A1 A2 polski",
+                      "polski online"
+                    ].map((item) => (
+                      <li key={item} className="rounded-full border border-ink/10 bg-white/70 px-3 py-1">
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="space-y-3 text-sm text-ink/70">
+                  <p>
+                    Zacznij od rejestracji, aby odblokować ćwiczenia i testy.
+                    Możesz też przeglądać słownictwo bez logowania.
+                  </p>
+                  <div className="flex flex-wrap gap-3">
+                    <Link
+                      href="/register"
+                      className="rounded-full bg-ink px-5 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-paper"
+                    >
+                      Załóż konto
+                    </Link>
+                    <Link
+                      href="/class/dict"
+                      className="rounded-full border border-ink/20 px-5 py-2 text-xs font-semibold text-ink"
+                    >
+                      Słownik
+                    </Link>
+                    <Link
+                      href="/class/tests"
+                      className="rounded-full border border-ink/20 px-5 py-2 text-xs font-semibold text-ink"
+                    >
+                      Testy
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <h2 className="text-2xl sm:text-3xl font-bold text-ink">
+                Вивчення польської мови онлайн — Polish Vocab Studio
+              </h2>
+              <p className="mt-4 text-base sm:text-lg text-ink/70 leading-relaxed">
+                Polish Vocab Studio — це тренажер польської лексики, вправ і тестів.
+                Вивчайте польські слова з перекладом, тренуйтеся на рівнях A1–A2 і перевіряйте знання.
+              </p>
+              <div className="mt-6 grid gap-6 sm:grid-cols-2">
+                <div>
+                  <h3 className="text-sm font-semibold uppercase tracking-[0.3em] text-ink/50">
+                    Ключові фрази
+                  </h3>
+                  <ul className="mt-3 grid gap-2 text-sm text-ink/70 sm:grid-cols-2">
+                    {[
+                      "польська мова онлайн",
+                      "вивчення польської мови",
+                      "польська лексика",
+                      "польські слова з перекладом",
+                      "тренажер польських слів",
+                      "польська мова для початківців",
+                      "вправи з польської мови",
+                      "тести з польської мови",
+                      "вивчити польські слова",
+                      "польська мова A1 A2"
+                    ].map((item) => (
+                      <li key={item} className="rounded-full border border-ink/10 bg-white/70 px-3 py-1">
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="space-y-3 text-sm text-ink/70">
+                  <p>
+                    Реєстрація відкриває доступ до вправ і статистики, але словник можна переглянути без логіну.
+                  </p>
+                  <div className="flex flex-wrap gap-3">
+                    <Link
+                      href="/register"
+                      className="rounded-full bg-ink px-5 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-paper"
+                    >
+                      Почати
+                    </Link>
+                    <Link
+                      href="/class/dict"
+                      className="rounded-full border border-ink/20 px-5 py-2 text-xs font-semibold text-ink"
+                    >
+                      Словник
+                    </Link>
+                    <Link
+                      href="/class/tests"
+                      className="rounded-full border border-ink/20 px-5 py-2 text-xs font-semibold text-ink"
+                    >
+                      Тести
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </section>
+      )}
 
       {/* Stats & CTA Section */}
       <section className="mt-20 sm:mt-24 grid gap-6 sm:gap-8 lg:grid-cols-2">
