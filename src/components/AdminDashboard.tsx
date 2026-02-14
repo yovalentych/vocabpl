@@ -11,6 +11,7 @@ import AdminAiUsagePanel from "@/components/AdminAiUsagePanel";
 import AdminDiagnosticsPanel from "@/components/AdminDiagnosticsPanel";
 import AdminAiModelsPanel from "@/components/AdminAiModelsPanel";
 import AdminVideoPanel from "@/components/AdminVideoPanel";
+import AdminAboutPanel from "@/components/AdminAboutPanel";
 import { useLocale } from "@/components/LocaleProvider";
 import {
   ChartBar,
@@ -407,6 +408,7 @@ export default function AdminDashboard({ summary }: { summary: Summary }) {
               <AdminWorkbookContentPanel />
               <AdminExerciseMaterialsPanel />
               <AdminVideoPanel />
+              <AdminAboutPanel />
             </div>
           )}
 

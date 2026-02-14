@@ -29,6 +29,10 @@ export default function Footer() {
               {locale === "uk" ? "Оплата" : "Płatności"}
             </Link>
             <span className="hidden sm:inline">·</span>
+            <Link className="underline underline-offset-4" href="/pvs">
+              {locale === "uk" ? "Про PVS" : "O PVS"}
+            </Link>
+            <span className="hidden sm:inline">·</span>
             <Link className="underline underline-offset-4" href="/legal?tab=cookies">
               Cookies
             </Link>

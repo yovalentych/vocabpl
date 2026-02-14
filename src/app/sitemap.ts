@@ -22,6 +22,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/terms",
     "/cookies",
     "/subscription",
+    "/pvs",
     "/legal"
   ];
 
