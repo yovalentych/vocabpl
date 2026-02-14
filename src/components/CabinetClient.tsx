@@ -773,7 +773,8 @@ export default function CabinetClient({ username }: { username: string }) {
               const planInfo = getPlanById(plan.id);
               const remaining =
                 usage?.month ? Math.max(0, planInfo.aiCreditsMonthly - (usage.usedCredits || 0)) : planInfo.aiCreditsMonthly;
-              const isCurrentPlan = isActive && (profile.subscription?.planId || "basik_m") === plan.id;
+              const activePlanId = getPlanById(profile.subscription?.planId).id;
+              const isCurrentPlan = isActive && activePlanId === plan.id;
               const periodLabel =
                 plan.periodDays >= 365 ? t.cabinet.periodLabels.year : plan.periodDays >= 90 ? t.cabinet.periodLabels.quarter : t.cabinet.periodLabels.month;
               const tierLabel = t.cabinet.planTiers[plan.tier];
