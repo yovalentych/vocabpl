@@ -71,13 +71,16 @@ export default function AchievementBadge({
       className={`relative flex items-center justify-center rounded-2xl border bg-gradient-to-br ${styles.bg} ${styles.ring}`}
       style={{ width: size, height: size }}
     >
-      <svg
-        className={`absolute -top-2 -right-2 h-6 w-6 rounded-full blur-sm ${styles.glow}`}
-        viewBox="0 0 24 24"
+      <div
+        className={`pointer-events-none absolute -top-2 -right-2 h-6 w-6 rounded-full ${styles.glow}`}
+        style={{ opacity: 0.25, filter: "blur(4px)" }}
         aria-hidden="true"
-      >
-        <circle cx="12" cy="12" r="10" />
-      </svg>
+      />
+      <div
+        className="pointer-events-none absolute inset-0 rounded-2xl"
+        style={{ boxShadow: "inset 0 1px 0 rgba(255,255,255,0.6)" }}
+        aria-hidden="true"
+      />
       <Icon size={22} weight="fill" className={`${styles.icon} relative z-10`} />
     </div>
   );
