@@ -10,5 +10,6 @@ export async function POST() {
 
   const error = new Error("Sentry test: server error");
   Sentry.captureException(error);
+  await Sentry.flush(2000);
   return NextResponse.json({ ok: true });
 }
