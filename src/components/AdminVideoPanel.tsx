@@ -614,7 +614,7 @@ function FormModal({ tab, editingId, categories, videos, channels, onSave, onClo
                 rows={4}
               />
               <textarea
-                placeholder="Слова (JSON): [{\"word\":\"...\",\"translation\":\"...\",\"timestamp\":0}]"
+                placeholder={'Слова (JSON): [{"word":"...","translation":"...","timestamp":0}]'}
                 value={
                   typeof formData.vocabulary === "string"
                     ? formData.vocabulary
@@ -625,7 +625,7 @@ function FormModal({ tab, editingId, categories, videos, channels, onSave, onClo
                 rows={4}
               />
               <textarea
-                placeholder="Flashcards (JSON): [{\"front\":\"\",\"back\":\"\",\"hint\":\"\"}]"
+                placeholder={'Flashcards (JSON): [{"front":"","back":"","hint":""}]'}
                 value={
                   typeof formData.flashcards === "string"
                     ? formData.flashcards
@@ -636,7 +636,7 @@ function FormModal({ tab, editingId, categories, videos, channels, onSave, onClo
                 rows={4}
               />
               <textarea
-                placeholder="Prawda czy Mit (JSON): [{\"statement\":\"\",\"isTrue\":true,\"explanation\":\"\"}]"
+                placeholder={'Prawda czy Mit (JSON): [{"statement":"","isTrue":true,"explanation":""}]'}
                 value={
                   typeof formData.mythFacts === "string"
                     ? formData.mythFacts
@@ -647,7 +647,7 @@ function FormModal({ tab, editingId, categories, videos, channels, onSave, onClo
                 rows={4}
               />
               <textarea
-                placeholder="Відкриті питання (JSON): [{\"question\":\"\",\"sampleAnswer\":\"\",\"keywords\":[\"...\"]}]"
+                placeholder={'Відкриті питання (JSON): [{"question":"","sampleAnswer":"","keywords":["..."]}]'}
                 value={
                   typeof formData.openQuestions === "string"
                     ? formData.openQuestions
