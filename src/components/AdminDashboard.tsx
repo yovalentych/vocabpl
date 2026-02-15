@@ -70,6 +70,18 @@ type Summary = {
   workbookContent: number;
 };
 
+type NavItem = {
+  id: "overview" | "users" | "content" | "ai" | "monetization" | "monitoring";
+  label: string;
+  icon: typeof ChartBar;
+  badge?: number;
+};
+
+type NavGroup = {
+  label: string;
+  items: NavItem[];
+};
+
 export default function AdminDashboard({ summary }: { summary: Summary }) {
   const { t } = useLocale();
   const [tab, setTab] = useState<"overview" | "users" | "content" | "ai" | "monetization" | "monitoring">("overview");
@@ -94,7 +106,7 @@ export default function AdminDashboard({ summary }: { summary: Summary }) {
   }, [summary.wordTypeStats, chartColors, wordTypeLabels]);
 
 
-  const navGroups = [
+  const navGroups: NavGroup[] = [
     {
       label: t.admin.navGroups.core,
       items: [
