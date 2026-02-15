@@ -172,7 +172,7 @@ export default function LeaderboardClient() {
           )}
 
           {tab === "achievements" && (
-            <div className="mt-5 grid gap-4 md:grid-cols-2">
+            <div className="mt-5 w-full">
               <AchievementsGrid achievements={achievements} />
             </div>
           )}

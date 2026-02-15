@@ -9,7 +9,7 @@ export default function AchievementsGrid({
   achievements: AchievementProgress[];
 }) {
   return (
-    <div className="grid gap-4 md:grid-cols-2">
+    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
       {achievements.map((achievement) => {
         const percent = achievement.target > 0
           ? Math.round((achievement.progress / achievement.target) * 100)
