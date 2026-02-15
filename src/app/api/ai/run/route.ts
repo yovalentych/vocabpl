@@ -279,6 +279,54 @@ IMPORTANT:
       }
     ];
   }
+  if (mode === "video_open_check") {
+    let parsed: any = {};
+    let ctx: any = {};
+    try {
+      parsed = JSON.parse(userInput);
+    } catch {
+      parsed = { question: "", answer: userInput };
+    }
+    try {
+      ctx = JSON.parse(context);
+    } catch {
+      ctx = {};
+    }
+    const question = parsed.question || "";
+    const answer = parsed.answer || "";
+    const transcript = String(ctx.transcript || "").slice(0, 6000);
+    const locale = ctx.locale === "uk" ? "uk" : "pl";
+    const sampleAnswer = ctx.sampleAnswer || "";
+    const languageInstruction =
+      locale === "uk"
+        ? "Відповідай українською."
+        : "Odpowiadaj po polsku.";
+
+    return [
+      {
+        role: "system",
+        content: `You are a Polish language tutor evaluating a student's open answer about a video.
+
+Context:
+- Video title: ${ctx.title || "video"}
+- Level: ${ctx.level || "A2"}
+- Transcript (if provided): ${transcript || "not provided"}
+
+Task:
+1) Judge if the answer matches the question and video content.
+2) Give a score 0-100.
+3) Provide brief, constructive feedback (2-4 sentences).
+4) If needed, suggest 1-2 improvements or corrections.
+
+${languageInstruction}
+Return plain text (no JSON).`
+      },
+      {
+        role: "user",
+        content: `Question: ${question}\nStudent answer: ${answer}\nSample answer (optional): ${sampleAnswer}`
+      }
+    ];
+  }
   if (mode === "mini_dialog_roleplay") {
     return [
       {
@@ -1172,7 +1220,8 @@ export async function POST(request: Request) {
     "describe_check",
     "reading_comprehension_check",
     "reading_explain",
-    "test_check"
+    "test_check",
+    "video_open_check"
   ]);
 
   if (!isAdmin && generateModes.has(mode) && !plan?.allowAIGenerate) {
@@ -1242,7 +1291,8 @@ export async function POST(request: Request) {
     translate_generate: { limit: 8, windowMs: 60_000 },
     mini_dialog_generate: { limit: 8, windowMs: 60_000 },
     mini_dialog_continue: { limit: 10, windowMs: 60_000 },
-    mini_dialog_roleplay: { limit: 10, windowMs: 60_000 }
+    mini_dialog_roleplay: { limit: 10, windowMs: 60_000 },
+    video_open_check: { limit: 10, windowMs: 60_000 }
   };
 
   const perModeLimit = modeLimits[mode];

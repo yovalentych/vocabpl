@@ -31,7 +31,11 @@ interface VideoItem {
   tags: string[];
   transcript: string;
   transcriptUk: string;
+  transcriptSource?: string;
   vocabulary: Array<{ word: string; translation: string; timestamp: number }>;
+  flashcards?: Array<{ front: string; back: string; hint?: string }>;
+  mythFacts?: Array<{ statement: string; isTrue: boolean; explanation?: string }>;
+  openQuestions?: Array<{ question: string; sampleAnswer?: string; keywords?: string[] }>;
   order: number;
   active: boolean;
   views: number;
@@ -329,6 +333,7 @@ interface FormModalProps {
 
 function FormModal({ tab, editingId, categories, videos, channels, onSave, onClose }: FormModalProps) {
   const [formData, setFormData] = useState<any>({});
+  const [transcriptStatus, setTranscriptStatus] = useState<string | null>(null);
 
   useEffect(() => {
     if (editingId) {
@@ -347,7 +352,60 @@ function FormModal({ tab, editingId, categories, videos, channels, onSave, onClo
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(formData);
+    const payload = { ...formData };
+    if (typeof payload.vocabulary === "string") {
+      try {
+        payload.vocabulary = JSON.parse(payload.vocabulary || "[]");
+      } catch {
+        payload.vocabulary = [];
+      }
+    }
+    if (typeof payload.flashcards === "string") {
+      try {
+        payload.flashcards = JSON.parse(payload.flashcards || "[]");
+      } catch {
+        payload.flashcards = [];
+      }
+    }
+    if (typeof payload.mythFacts === "string") {
+      try {
+        payload.mythFacts = JSON.parse(payload.mythFacts || "[]");
+      } catch {
+        payload.mythFacts = [];
+      }
+    }
+    if (typeof payload.openQuestions === "string") {
+      try {
+        payload.openQuestions = JSON.parse(payload.openQuestions || "[]");
+      } catch {
+        payload.openQuestions = [];
+      }
+    }
+    onSave(payload);
+  };
+
+  const handleFetchTranscript = async (lang: "pl" | "uk") => {
+    setTranscriptStatus("Завантаження...");
+    try {
+      const res = await fetch("/api/admin/video/transcript", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ videoUrl: formData.videoUrl, lang })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setTranscriptStatus(data?.error || "Не вдалося отримати транскрипт");
+        return;
+      }
+      if (lang === "uk") {
+        setFormData({ ...formData, transcriptUk: data.transcript, transcriptSource: "youtube" });
+      } else {
+        setFormData({ ...formData, transcript: data.transcript, transcriptSource: "youtube" });
+      }
+      setTranscriptStatus("Готово");
+    } catch (error) {
+      setTranscriptStatus("Помилка з'єднання");
+    }
   };
 
   return (
@@ -516,6 +574,31 @@ function FormModal({ tab, editingId, categories, videos, channels, onSave, onClo
                 }
                 className="w-full rounded-2xl border border-ink/20 bg-paper px-4 py-2 text-sm"
               />
+              <div className="rounded-2xl border border-ink/10 bg-paper/60 p-4">
+                <p className="text-xs uppercase tracking-[0.3em] text-ink/40">Транскрипт</p>
+                <p className="mt-1 text-xs text-ink/50">
+                  Можна вручну вставити або спробувати отримати з YouTube (якщо доступно).
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleFetchTranscript("pl")}
+                    className="rounded-full border border-ink/20 px-3 py-1 text-xs font-semibold text-ink/60 transition hover:bg-ink/5"
+                  >
+                    Авто транскрипт PL
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleFetchTranscript("uk")}
+                    className="rounded-full border border-ink/20 px-3 py-1 text-xs font-semibold text-ink/60 transition hover:bg-ink/5"
+                  >
+                    Авто транскрипт UK
+                  </button>
+                  {transcriptStatus && (
+                    <span className="text-xs text-ink/50">{transcriptStatus}</span>
+                  )}
+                </div>
+              </div>
               <textarea
                 placeholder="Транскрипт (EN)"
                 value={formData.transcript || ""}
@@ -527,6 +610,50 @@ function FormModal({ tab, editingId, categories, videos, channels, onSave, onClo
                 placeholder="Транскрипт (UK)"
                 value={formData.transcriptUk || ""}
                 onChange={(e) => setFormData({ ...formData, transcriptUk: e.target.value })}
+                className="w-full rounded-2xl border border-ink/20 bg-paper px-4 py-2 text-sm"
+                rows={4}
+              />
+              <textarea
+                placeholder="Слова (JSON): [{\"word\":\"...\",\"translation\":\"...\",\"timestamp\":0}]"
+                value={
+                  typeof formData.vocabulary === "string"
+                    ? formData.vocabulary
+                    : JSON.stringify(formData.vocabulary || [], null, 2)
+                }
+                onChange={(e) => setFormData({ ...formData, vocabulary: e.target.value })}
+                className="w-full rounded-2xl border border-ink/20 bg-paper px-4 py-2 text-sm"
+                rows={4}
+              />
+              <textarea
+                placeholder="Flashcards (JSON): [{\"front\":\"\",\"back\":\"\",\"hint\":\"\"}]"
+                value={
+                  typeof formData.flashcards === "string"
+                    ? formData.flashcards
+                    : JSON.stringify(formData.flashcards || [], null, 2)
+                }
+                onChange={(e) => setFormData({ ...formData, flashcards: e.target.value })}
+                className="w-full rounded-2xl border border-ink/20 bg-paper px-4 py-2 text-sm"
+                rows={4}
+              />
+              <textarea
+                placeholder="Prawda czy Mit (JSON): [{\"statement\":\"\",\"isTrue\":true,\"explanation\":\"\"}]"
+                value={
+                  typeof formData.mythFacts === "string"
+                    ? formData.mythFacts
+                    : JSON.stringify(formData.mythFacts || [], null, 2)
+                }
+                onChange={(e) => setFormData({ ...formData, mythFacts: e.target.value })}
+                className="w-full rounded-2xl border border-ink/20 bg-paper px-4 py-2 text-sm"
+                rows={4}
+              />
+              <textarea
+                placeholder="Відкриті питання (JSON): [{\"question\":\"\",\"sampleAnswer\":\"\",\"keywords\":[\"...\"]}]"
+                value={
+                  typeof formData.openQuestions === "string"
+                    ? formData.openQuestions
+                    : JSON.stringify(formData.openQuestions || [], null, 2)
+                }
+                onChange={(e) => setFormData({ ...formData, openQuestions: e.target.value })}
                 className="w-full rounded-2xl border border-ink/20 bg-paper px-4 py-2 text-sm"
                 rows={4}
               />

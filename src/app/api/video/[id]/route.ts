@@ -37,7 +37,11 @@ export async function GET(request: Request, { params }: { params: { id: string }
     tags: video.tags || [],
     transcript: video.transcript,
     transcriptUk: video.transcriptUk,
+    transcriptSource: video.transcriptSource || "manual",
     vocabulary: video.vocabulary || [],
+    flashcards: video.flashcards || [],
+    mythFacts: video.mythFacts || [],
+    openQuestions: video.openQuestions || [],
     isWatched: watchedVideos.includes(id),
     isFavorite: favoriteVideos.includes(id)
   };

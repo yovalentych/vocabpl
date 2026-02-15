@@ -42,7 +42,11 @@ export async function POST(request: Request) {
     tags,
     transcript,
     transcriptUk,
+    transcriptSource,
     vocabulary,
+    flashcards,
+    mythFacts,
+    openQuestions,
     order,
     active
   } = body;
@@ -69,7 +73,11 @@ export async function POST(request: Request) {
     tags: tags || [],
     transcript: transcript || "",
     transcriptUk: transcriptUk || "",
+    transcriptSource: transcriptSource || "manual",
     vocabulary: vocabulary || [],
+    flashcards: flashcards || [],
+    mythFacts: mythFacts || [],
+    openQuestions: openQuestions || [],
     order: order || 0,
     active: active !== false,
     views: 0,
@@ -103,7 +111,11 @@ export async function PUT(request: Request) {
     tags,
     transcript,
     transcriptUk,
+    transcriptSource,
     vocabulary,
+    flashcards,
+    mythFacts,
+    openQuestions,
     order,
     active
   } = body;
@@ -130,7 +142,11 @@ export async function PUT(request: Request) {
         tags,
         transcript,
         transcriptUk,
+        transcriptSource,
         vocabulary,
+        flashcards,
+        mythFacts,
+        openQuestions,
         order,
         active,
         updatedAt: new Date()

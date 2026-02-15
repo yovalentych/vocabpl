@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useLocale } from "@/components/LocaleProvider";
-import { Star, Eye, Clock, BookOpen, Download } from "@phosphor-icons/react";
+import { Star, Eye, Clock, BookOpen, Download, Sparkle, CheckCircle, XCircle } from "@phosphor-icons/react";
 
 interface VideoPlayerProps {
   videoId: string;
@@ -22,11 +22,15 @@ interface VideoData {
   tags: string[];
   transcript?: string;
   transcriptUk?: string;
+  transcriptSource?: string;
   vocabulary?: Array<{
     word: string;
     translation: string;
     timestamp: number;
   }>;
+  flashcards?: Array<{ front: string; back: string; hint?: string }>;
+  mythFacts?: Array<{ statement: string; isTrue: boolean; explanation?: string }>;
+  openQuestions?: Array<{ question: string; sampleAnswer?: string; keywords?: string[] }>;
   isFavorite?: boolean;
   isWatched?: boolean;
 }
@@ -37,6 +41,11 @@ export default function VideoPlayer({ videoId, onBack }: VideoPlayerProps) {
   const [loading, setLoading] = useState(true);
   const [showTranscript, setShowTranscript] = useState(false);
   const [showVocabulary, setShowVocabulary] = useState(false);
+  const [flippedCards, setFlippedCards] = useState<Set<number>>(new Set());
+  const [truthAnswers, setTruthAnswers] = useState<Record<number, boolean>>({});
+  const [openAnswers, setOpenAnswers] = useState<Record<number, string>>({});
+  const [openFeedback, setOpenFeedback] = useState<Record<number, string>>({});
+  const [openLoading, setOpenLoading] = useState<Record<number, boolean>>({});
 
   useEffect(() => {
     async function loadVideo() {
@@ -91,6 +100,74 @@ export default function VideoPlayer({ videoId, onBack }: VideoPlayerProps) {
       }
     }
     return url;
+  };
+
+  const toggleCard = (idx: number) => {
+    setFlippedCards((prev) => {
+      const next = new Set(prev);
+      if (next.has(idx)) {
+        next.delete(idx);
+      } else {
+        next.add(idx);
+      }
+      return next;
+    });
+  };
+
+  const handleTruthAnswer = (idx: number, value: boolean) => {
+    setTruthAnswers((prev) => ({ ...prev, [idx]: value }));
+  };
+
+  const handleOpenCheck = async (idx: number) => {
+    if (!video) return;
+    const answer = openAnswers[idx] || "";
+    if (!answer.trim()) {
+      setOpenFeedback((prev) => ({ ...prev, [idx]: locale === "uk" ? "Напишіть відповідь." : "Napisz odpowiedź." }));
+      return;
+    }
+    setOpenLoading((prev) => ({ ...prev, [idx]: true }));
+    setOpenFeedback((prev) => ({ ...prev, [idx]: "" }));
+    try {
+      const question = video.openQuestions?.[idx]?.question || "";
+      const res = await fetch("/api/ai/run", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          mode: "video_open_check",
+          userInput: JSON.stringify({
+            question,
+            answer
+          }),
+          context: JSON.stringify({
+            title: video.title,
+            level: video.level,
+            transcript: video.transcript || "",
+            locale,
+            sampleAnswer: video.openQuestions?.[idx]?.sampleAnswer || ""
+          }),
+          provider: "pvs"
+        })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        const message =
+          data?.code === "ai_quota"
+            ? locale === "uk"
+              ? "Ліміт AI вичерпано."
+              : "Limit AI został wyczerpany."
+            : data?.error || "AI error";
+        setOpenFeedback((prev) => ({ ...prev, [idx]: message }));
+      } else {
+        setOpenFeedback((prev) => ({ ...prev, [idx]: data?.text || "" }));
+      }
+    } catch {
+      setOpenFeedback((prev) => ({
+        ...prev,
+        [idx]: locale === "uk" ? "Помилка з'єднання." : "Błąd połączenia."
+      }));
+    } finally {
+      setOpenLoading((prev) => ({ ...prev, [idx]: false }));
+    }
   };
 
   if (loading) {
@@ -205,6 +282,146 @@ export default function VideoPlayer({ videoId, onBack }: VideoPlayerProps) {
               </p>
             </div>
           )}
+        </div>
+      )}
+
+      {/* Flashcards */}
+      {video.flashcards && video.flashcards.length > 0 && (
+        <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
+          <div className="flex items-center gap-2">
+            <Sparkle size={20} weight="bold" className="text-terracotta" />
+            <h3 className="text-lg font-semibold text-ink">
+              {locale === "uk" ? "Картки для запам'ятовування" : "Fiszki do zapamiętywania"}
+            </h3>
+          </div>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {video.flashcards.map((card, idx) => {
+              const flipped = flippedCards.has(idx);
+              return (
+                <button
+                  key={idx}
+                  onClick={() => toggleCard(idx)}
+                  className="group relative min-h-[120px] rounded-2xl border border-ink/10 bg-fog p-4 text-left transition hover:border-ink/30"
+                >
+                  <p className="text-xs uppercase tracking-[0.3em] text-ink/40">
+                    {flipped ? (locale === "uk" ? "Відповідь" : "Odpowiedź") : (locale === "uk" ? "Запитання" : "Pytanie")}
+                  </p>
+                  <p className="mt-2 text-base font-semibold text-ink">
+                    {flipped ? card.back : card.front}
+                  </p>
+                  {card.hint && !flipped && (
+                    <p className="mt-2 text-xs text-ink/50">{card.hint}</p>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Truth or Myth */}
+      {video.mythFacts && video.mythFacts.length > 0 && (
+        <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
+          <div className="flex items-center gap-2">
+            <BookOpen size={20} weight="bold" className="text-moss" />
+            <h3 className="text-lg font-semibold text-ink">
+              {locale === "uk" ? "Вправа: Правда чи Міф?" : "Ćwiczenie: Prawda czy mit?"}
+            </h3>
+          </div>
+          <div className="mt-4 space-y-3">
+            {video.mythFacts.map((item, idx) => {
+              const answer = truthAnswers[idx];
+              const isAnswered = typeof answer === "boolean";
+              const isCorrect = isAnswered ? answer === item.isTrue : false;
+              return (
+                <div key={idx} className="rounded-2xl border border-ink/10 bg-fog p-4">
+                  <p className="text-sm text-ink/80">{item.statement}</p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <button
+                      onClick={() => handleTruthAnswer(idx, true)}
+                      className={`rounded-full px-3 py-1 text-xs font-semibold transition ${
+                        answer === true ? "bg-ink text-paper" : "border border-ink/20 text-ink/60"
+                      }`}
+                    >
+                      {locale === "uk" ? "Правда" : "Prawda"}
+                    </button>
+                    <button
+                      onClick={() => handleTruthAnswer(idx, false)}
+                      className={`rounded-full px-3 py-1 text-xs font-semibold transition ${
+                        answer === false ? "bg-ink text-paper" : "border border-ink/20 text-ink/60"
+                      }`}
+                    >
+                      {locale === "uk" ? "Міф" : "Mit"}
+                    </button>
+                    {isAnswered && (
+                      <span
+                        className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold ${
+                          isCorrect ? "bg-moss/20 text-moss" : "bg-terracotta/20 text-terracotta"
+                        }`}
+                      >
+                        {isCorrect ? <CheckCircle size={14} weight="fill" /> : <XCircle size={14} weight="fill" />}
+                        {isCorrect ? (locale === "uk" ? "Правильно" : "Dobrze") : (locale === "uk" ? "Помилка" : "Błąd")}
+                      </span>
+                    )}
+                  </div>
+                  {isAnswered && item.explanation && (
+                    <p className="mt-2 text-xs text-ink/60">{item.explanation}</p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Open Questions */}
+      {video.openQuestions && video.openQuestions.length > 0 && (
+        <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
+          <div className="flex items-center gap-2">
+            <Sparkle size={20} weight="bold" className="text-gold" />
+            <h3 className="text-lg font-semibold text-ink">
+              {locale === "uk" ? "Відкриті відповіді" : "Odpowiedzi otwarte"}
+            </h3>
+          </div>
+          <div className="mt-4 space-y-4">
+            {video.openQuestions.map((item, idx) => (
+              <div key={idx} className="rounded-2xl border border-ink/10 bg-fog p-4">
+                <p className="text-sm font-semibold text-ink">{item.question}</p>
+                <textarea
+                  value={openAnswers[idx] || ""}
+                  onChange={(event) => setOpenAnswers((prev) => ({ ...prev, [idx]: event.target.value }))}
+                  className="mt-3 w-full rounded-2xl border border-ink/20 bg-paper px-3 py-2 text-sm"
+                  rows={3}
+                  placeholder={locale === "uk" ? "Відповідь..." : "Odpowiedź..."}
+                />
+                <div className="mt-3 flex items-center gap-2">
+                  <button
+                    onClick={() => handleOpenCheck(idx)}
+                    disabled={openLoading[idx]}
+                    className="rounded-full bg-ink px-4 py-2 text-xs font-semibold text-paper transition hover:bg-ink/90 disabled:opacity-60"
+                  >
+                    {openLoading[idx]
+                      ? locale === "uk"
+                        ? "AI перевіряє..."
+                        : "AI sprawdza..."
+                      : locale === "uk"
+                        ? "Перевірити з AI"
+                        : "Sprawdź z AI"}
+                  </button>
+                  {item.sampleAnswer && (
+                    <span className="text-xs text-ink/50">
+                      {locale === "uk" ? "Є приклад відповіді" : "Jest przykładowa odpowiedź"}
+                    </span>
+                  )}
+                </div>
+                {openFeedback[idx] && (
+                  <div className="mt-3 rounded-2xl border border-ink/10 bg-paper/70 p-3 text-xs text-ink/70 whitespace-pre-line">
+                    {openFeedback[idx]}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
