@@ -3,12 +3,16 @@ import crypto from "crypto";
 import { getCookieOptions, getJwtSecret, getUserByEmail, isAdminUsername, signToken } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { checkRateLimit, getRequestIp } from "@/lib/rate-limit";
+import { isCsrfValid } from "@/lib/csrf";
 
 function hashCode(code: string) {
   return crypto.createHash("sha256").update(`${code}:${getJwtSecret()}`).digest("hex");
 }
 
 export async function POST(request: Request) {
+  if (!isCsrfValid(request)) {
+    return NextResponse.json({ error: "Invalid CSRF token" }, { status: 403 });
+  }
   const ip = getRequestIp(request);
   const rate = await checkRateLimit(`auth:verify-email:${ip}`, 10, 60_000);
   if (!rate.ok) {

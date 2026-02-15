@@ -2,8 +2,12 @@ import { NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
 import { getCookieOptions, getUserByEmail, getUserByUsername, isAdminUsername, signToken, verifyPassword } from "@/lib/auth";
 import { checkRateLimit, getRequestIp } from "@/lib/rate-limit";
+import { isCsrfValid } from "@/lib/csrf";
 
 export async function POST(request: Request) {
+  if (!isCsrfValid(request)) {
+    return NextResponse.json({ error: "Invalid CSRF token" }, { status: 403 });
+  }
   const ip = getRequestIp(request);
   const rate = await checkRateLimit(`auth:login:${ip}`, 10, 60_000);
   if (!rate.ok) {

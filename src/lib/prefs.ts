@@ -8,7 +8,9 @@ export function getCookie(name: string) {
 
 export function setCookie(name: string, value: string, maxAgeSeconds: number) {
   if (typeof document === "undefined") return;
-  document.cookie = `${name}=${value}; max-age=${maxAgeSeconds}; path=/; samesite=lax`;
+  const isSecure = typeof window !== "undefined" && window.location.protocol === "https:";
+  const secureAttr = isSecure || process.env.NODE_ENV === "production" ? "; secure" : "";
+  document.cookie = `${name}=${value}; max-age=${maxAgeSeconds}; path=/; samesite=lax${secureAttr}`;
 }
 
 export function hasConsent() {

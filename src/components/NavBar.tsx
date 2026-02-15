@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useLocale } from "@/components/LocaleProvider";
+import { csrfFetch } from "@/lib/csrf-client";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
 import { useAuthStatus } from "@/components/useAuthStatus";
 import { EnvelopeSimple, SignOut, List, X } from "@phosphor-icons/react";
@@ -157,7 +158,7 @@ export default function NavBar() {
             )}
             <button
               onClick={async () => {
-                await fetch("/api/auth/logout", { method: "POST" });
+                await csrfFetch("/api/auth/logout", { method: "POST" });
                 window.dispatchEvent(new Event("auth-changed"));
                 window.location.href = "/login";
               }}
@@ -223,7 +224,7 @@ export default function NavBar() {
             )}
             <button
               onClick={async () => {
-                await fetch("/api/auth/logout", { method: "POST" });
+                await csrfFetch("/api/auth/logout", { method: "POST" });
                 window.dispatchEvent(new Event("auth-changed"));
                 window.location.href = "/login";
               }}

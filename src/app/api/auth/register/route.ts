@@ -7,6 +7,7 @@ import { ObjectId } from "mongodb";
 import { sendVerificationEmail } from "@/lib/mailer";
 import { checkRateLimit, getRequestIp } from "@/lib/rate-limit";
 import { DEFAULT_PLAN_ID } from "@/lib/plans";
+import { isCsrfValid } from "@/lib/csrf";
 
 const CODE_TTL_MINUTES = 15;
 
@@ -23,6 +24,9 @@ function hashCode(code: string) {
 }
 
 export async function POST(request: Request) {
+  if (!isCsrfValid(request)) {
+    return NextResponse.json({ error: "Invalid CSRF token" }, { status: 403 });
+  }
   const requestIp = getRequestIp(request);
   const rate = await checkRateLimit(`auth:register:${requestIp}`, 5, 60_000);
   if (!rate.ok) {

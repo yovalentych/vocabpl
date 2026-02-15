@@ -4,8 +4,12 @@ import { getAuthUser } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { getExpiryDate, PromoDuration } from "@/lib/promo";
 import { DEFAULT_PLAN_ID } from "@/lib/plans";
+import { isCsrfValid } from "@/lib/csrf";
 
 export async function POST(request: Request) {
+  if (!isCsrfValid(request)) {
+    return NextResponse.json({ error: "Invalid CSRF token" }, { status: 403 });
+  }
   const auth = await getAuthUser();
   if (!auth) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 

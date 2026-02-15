@@ -3,6 +3,7 @@ import crypto from "crypto";
 import { getJwtSecret, getUserByEmail } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { sendVerificationEmail } from "@/lib/mailer";
+import { isCsrfValid } from "@/lib/csrf";
 
 const CODE_TTL_MINUTES = 15;
 
@@ -19,6 +20,9 @@ function hashCode(code: string) {
 }
 
 export async function POST(request: Request) {
+  if (!isCsrfValid(request)) {
+    return NextResponse.json({ error: "Invalid CSRF token" }, { status: 403 });
+  }
   const { oldEmail, newEmail } = await request.json();
   if (!oldEmail || !newEmail) {
     return NextResponse.json({ error: "Missing email" }, { status: 400 });

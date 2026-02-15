@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { plans as defaultPlans, Plan, getPlanById } from "@/lib/plans";
 import { readPrefs, setCookie, writePrefs } from "@/lib/prefs";
+import { csrfFetch } from "@/lib/csrf-client";
 import {
   User,
   Lock,
@@ -132,7 +133,7 @@ export default function CabinetClient({ username }: { username: string }) {
 
   async function startPayment(planId: string) {
     setBillingMessage(null);
-    const res = await fetch("/api/payments/mono/create", {
+    const res = await csrfFetch("/api/payments/mono/create", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ planId, autoRenew })
@@ -151,7 +152,7 @@ export default function CabinetClient({ username }: { username: string }) {
 
   async function cancelSubscription() {
     setBillingMessage(null);
-    const res = await fetch("/api/subscription/cancel", { method: "POST" });
+    const res = await csrfFetch("/api/subscription/cancel", { method: "POST" });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) {
       setBillingMessage({ tone: "error", text: data?.error || "Не вдалося скасувати" });
@@ -163,7 +164,7 @@ export default function CabinetClient({ username }: { username: string }) {
 
   async function resumeSubscription() {
     setBillingMessage(null);
-    const res = await fetch("/api/subscription/resume", { method: "POST" });
+    const res = await csrfFetch("/api/subscription/resume", { method: "POST" });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) {
       setBillingMessage({ tone: "error", text: data?.error || "Не вдалося відновити" });
@@ -175,7 +176,7 @@ export default function CabinetClient({ username }: { username: string }) {
 
   async function requestPasswordCode() {
     setPasswordMessage(null);
-    const res = await fetch("/api/user/password/request", { method: "POST" });
+    const res = await csrfFetch("/api/user/password/request", { method: "POST" });
     if (!res.ok) {
       const data = await res.json().catch(() => null);
       setPasswordTone("error");
@@ -190,7 +191,7 @@ export default function CabinetClient({ username }: { username: string }) {
   async function changePassword(event: React.FormEvent) {
     event.preventDefault();
     setPasswordMessage(null);
-    const res = await fetch("/api/user/password/confirm", {
+    const res = await csrfFetch("/api/user/password/confirm", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ code: emailCode, newPassword, confirmPassword })
@@ -210,7 +211,7 @@ export default function CabinetClient({ username }: { username: string }) {
 
   async function resetProgress() {
     setDangerStatus("saving");
-    const res = await fetch("/api/user/reset", { method: "POST" });
+    const res = await csrfFetch("/api/user/reset", { method: "POST" });
     if (!res.ok) {
       setDangerStatus("error");
       return;
@@ -223,19 +224,19 @@ export default function CabinetClient({ username }: { username: string }) {
 
   async function deleteAccount() {
     setDangerStatus("saving");
-    const res = await fetch("/api/user/delete", { method: "DELETE" });
+    const res = await csrfFetch("/api/user/delete", { method: "DELETE" });
     if (!res.ok) {
       setDangerStatus("error");
       return;
     }
-    await fetch("/api/auth/logout", { method: "POST" });
+    await csrfFetch("/api/auth/logout", { method: "POST" });
     window.location.href = "/register";
   }
 
   async function applyPromo(event: React.FormEvent) {
     event.preventDefault();
     setPromoMessage(null);
-    const res = await fetch("/api/user/promo", {
+    const res = await csrfFetch("/api/user/promo", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ code: promoCode })
@@ -265,7 +266,7 @@ export default function CabinetClient({ username }: { username: string }) {
 
   async function updateMarketingConsent(next: boolean) {
     setMarketingStatus("saving");
-    const res = await fetch("/api/user/consent", {
+    const res = await csrfFetch("/api/user/consent", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ marketingOptIn: next })
@@ -282,7 +283,7 @@ export default function CabinetClient({ username }: { username: string }) {
   async function submitDataRequest(event: React.FormEvent) {
     event.preventDefault();
     setDataRequestStatus("saving");
-    const res = await fetch("/api/user/data-request", {
+    const res = await csrfFetch("/api/user/data-request", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

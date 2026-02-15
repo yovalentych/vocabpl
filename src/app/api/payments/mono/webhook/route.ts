@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 import { ObjectId } from "mongodb";
 import { getDb } from "@/lib/db";
 import { getPlanById } from "@/lib/plans";
@@ -42,6 +43,12 @@ export async function POST(request: Request) {
   }
 
   const status = String(payload?.status || "unknown");
+  if (["failure", "expired", "reversed"].includes(status)) {
+    Sentry.captureMessage("Monobank payment failed", {
+      level: "warning",
+      extra: { invoiceId, status, reference: payload?.reference }
+    });
+  }
   const update: Record<string, unknown> = {
     status,
     updatedAt: new Date(),
@@ -140,6 +147,7 @@ export async function POST(request: Request) {
       );
     } catch (error) {
       console.error("[smtp] payment receipt email failed", error);
+      Sentry.captureException(error, { extra: { invoiceId, userEmail } });
     }
   }
 

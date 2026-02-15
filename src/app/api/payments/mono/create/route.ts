@@ -4,6 +4,7 @@ import { getAuthUser } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { getPlanById } from "@/lib/plans";
 import { buildWalletId, isMonoConfigured, monoCreateInvoice, toMinor } from "@/lib/monobank";
+import { isCsrfValid } from "@/lib/csrf";
 
 export const dynamic = "force-dynamic";
 
@@ -16,6 +17,9 @@ function getBaseUrl(request: Request) {
 }
 
 export async function POST(request: Request) {
+  if (!isCsrfValid(request)) {
+    return NextResponse.json({ error: "Invalid CSRF token" }, { status: 403 });
+  }
   const auth = await getAuthUser();
   if (!auth) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   if (!isMonoConfigured()) {

@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale } from "@/components/LocaleProvider";
 import Link from "next/link";
+import { csrfFetch } from "@/lib/csrf-client";
 
 export default function AuthPanel({ initialMode = "login" }: { initialMode?: "login" | "register" }) {
   const { t } = useLocale();
@@ -89,7 +90,7 @@ export default function AuthPanel({ initialMode = "login" }: { initialMode?: "lo
           }
         : { identifier: username, password };
 
-    const res = await fetch(`/api/auth/${mode}`, {
+    const res = await csrfFetch(`/api/auth/${mode}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body)
@@ -134,7 +135,7 @@ export default function AuthPanel({ initialMode = "login" }: { initialMode?: "lo
     setLoading(true);
     setMessage(null);
 
-    const res = await fetch("/api/auth/verify-email", {
+    const res = await csrfFetch("/api/auth/verify-email", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, code: verificationCode })
@@ -156,7 +157,7 @@ export default function AuthPanel({ initialMode = "login" }: { initialMode?: "lo
     setLoading(true);
     setMessage(null);
 
-    const res = await fetch("/api/auth/resend-code", {
+    const res = await csrfFetch("/api/auth/resend-code", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email })
@@ -178,7 +179,7 @@ export default function AuthPanel({ initialMode = "login" }: { initialMode?: "lo
     if (!newEmail) return;
     setLoading(true);
     setMessage(null);
-    const res = await fetch("/api/auth/change-email", {
+    const res = await csrfFetch("/api/auth/change-email", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ oldEmail: email, newEmail })
@@ -201,7 +202,7 @@ export default function AuthPanel({ initialMode = "login" }: { initialMode?: "lo
     event.preventDefault();
     setLoading(true);
     setMessage(null);
-    const res = await fetch("/api/auth/password/request", {
+    const res = await csrfFetch("/api/auth/password/request", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email: recoverEmail })
@@ -221,7 +222,7 @@ export default function AuthPanel({ initialMode = "login" }: { initialMode?: "lo
     event.preventDefault();
     setLoading(true);
     setMessage(null);
-    const res = await fetch("/api/auth/password/confirm", {
+    const res = await csrfFetch("/api/auth/password/confirm", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

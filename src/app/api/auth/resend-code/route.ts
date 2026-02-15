@@ -4,6 +4,7 @@ import { getJwtSecret, getUserByEmail } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { sendVerificationEmail } from "@/lib/mailer";
 import { checkRateLimit, getRequestIp } from "@/lib/rate-limit";
+import { isCsrfValid } from "@/lib/csrf";
 
 const CODE_TTL_MINUTES = 15;
 const RESEND_COOLDOWN_MS = 60 * 1000;
@@ -17,6 +18,9 @@ function hashCode(code: string) {
 }
 
 export async function POST(request: Request) {
+  if (!isCsrfValid(request)) {
+    return NextResponse.json({ error: "Invalid CSRF token" }, { status: 403 });
+  }
   const ip = getRequestIp(request);
   const rate = await checkRateLimit(`auth:resend-code:${ip}`, 5, 60_000);
   if (!rate.ok) {

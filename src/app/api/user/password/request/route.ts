@@ -4,6 +4,7 @@ import { getAuthUser, getJwtSecret } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { ObjectId } from "mongodb";
 import { sendPasswordResetEmail } from "@/lib/mailer";
+import { isCsrfValid } from "@/lib/csrf";
 
 const CODE_TTL_MINUTES = 15;
 const RESEND_COOLDOWN_MS = 60 * 1000;
@@ -16,7 +17,10 @@ function hashCode(code: string) {
   return crypto.createHash("sha256").update(`${code}:${getJwtSecret()}`).digest("hex");
 }
 
-export async function POST() {
+export async function POST(request: Request) {
+  if (!isCsrfValid(request)) {
+    return NextResponse.json({ error: "Invalid CSRF token" }, { status: 403 });
+  }
   const auth = await getAuthUser();
   if (!auth) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
