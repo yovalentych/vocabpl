@@ -16,7 +16,7 @@ type Row = {
 };
 
 export default function LeaderboardClient() {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<"ranking" | "achievements">("ranking");
