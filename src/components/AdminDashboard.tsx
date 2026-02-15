@@ -2,16 +2,12 @@
 
 import { useState, useMemo } from "react";
 import AdminUsersPanel from "@/components/AdminUsersPanel";
-import AdminImportPanel from "@/components/AdminImportPanel";
 import PromoCodesAdvancedPanel from "@/components/PromoCodesAdvancedPanel";
 import AdminBillingPanel from "@/components/AdminBillingPanel";
-import AdminWorkbookContentPanel from "@/components/AdminWorkbookContentPanel";
-import AdminExerciseMaterialsPanel from "@/components/AdminExerciseMaterialsPanel";
 import AdminAiUsagePanel from "@/components/AdminAiUsagePanel";
 import AdminDiagnosticsPanel from "@/components/AdminDiagnosticsPanel";
 import AdminAiModelsPanel from "@/components/AdminAiModelsPanel";
-import AdminVideoPanel from "@/components/AdminVideoPanel";
-import AdminAboutPanel from "@/components/AdminAboutPanel";
+import AdminContentPanel from "@/components/AdminContentPanel";
 import { useLocale } from "@/components/LocaleProvider";
 import {
   ChartBar,
@@ -516,27 +512,7 @@ export default function AdminDashboard({ summary }: { summary: Summary }) {
 
           {tab === "users" && <AdminUsersPanel />}
 
-          {tab === "content" && (
-            <div className="space-y-6">
-              <div className="grid gap-6 lg:grid-cols-[0.6fr_0.4fr]">
-                <AdminImportPanel />
-                <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
-                  <h2 className="text-2xl font-semibold">{t.admin.availableTests}</h2>
-                  <ul className="mt-4 space-y-3 text-sm text-ink/70">
-                    {summary.tests.map((test) => (
-                      <li key={test.id} className="rounded-2xl border border-ink/10 bg-paper/60 px-4 py-3">
-                        {test.title}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-              <AdminWorkbookContentPanel />
-              <AdminExerciseMaterialsPanel />
-              <AdminVideoPanel />
-              <AdminAboutPanel />
-            </div>
-          )}
+          {tab === "content" && <AdminContentPanel />}
 
           {tab === "ai" && (
             <div className="space-y-6">

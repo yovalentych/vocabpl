@@ -1,19 +1,30 @@
 import { getServerLocale } from "@/lib/i18n-server";
 import { legalContent } from "@/lib/legal-content";
+import { getDb } from "@/lib/db";
+import InfoPageLayout from "@/components/InfoPageLayout";
 
-export default function SubscriptionPage() {
+export const dynamic = "force-dynamic";
+
+export default async function SubscriptionPage() {
   const locale = getServerLocale();
-  const t = locale === "uk" ? legalContent.uk.subscription : legalContent.pl.subscription;
+  const db = await getDb();
+  const doc = await db.collection("settings").findOne({ key: "legal_content" });
+  const content = doc?.value || legalContent;
+  const t = locale === "uk" ? content.uk.subscription : content.pl.subscription;
 
   return (
-    <main className="mx-auto w-full max-w-3xl px-6 py-12">
-      <h1 className="text-3xl font-semibold">{t.title}</h1>
-      <p className="mt-2 text-sm text-ink/60">{t.updated}</p>
-      <div className="mt-6 space-y-4 text-sm text-ink/80">
-        {t.body.map((item, index) => (
-          <p key={index}>{item}</p>
-        ))}
-      </div>
-    </main>
+    <InfoPageLayout
+      label="Polish Vocab Studio"
+      title={t.title}
+      subtitle={locale === "uk" ? "Умови оплати та підписки" : "Zasady płatności i subskrypcji"}
+      updated={t.updated}
+      body={
+        <div className="space-y-4 text-sm sm:text-base text-ink/80">
+          {t.body.map((item: string, index: number) => (
+            <p key={index}>{item}</p>
+          ))}
+        </div>
+      }
+    />
   );
 }

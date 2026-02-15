@@ -17,15 +17,15 @@ export default function Footer() {
             <span className="text-ink/40">v2.0.0</span>
             <span>© {year}</span>
             <span className="hidden sm:inline">·</span>
-            <Link className="underline underline-offset-4" href="/legal?tab=terms">
+            <Link className="underline underline-offset-4" href="/terms">
               {locale === "uk" ? "Умови" : "Regulamin"}
             </Link>
             <span className="hidden sm:inline">·</span>
-            <Link className="underline underline-offset-4" href="/legal?tab=privacy">
+            <Link className="underline underline-offset-4" href="/privacy">
               {locale === "uk" ? "Політика" : "Polityka prywatności"}
             </Link>
             <span className="hidden sm:inline">·</span>
-            <Link className="underline underline-offset-4" href="/legal?tab=subscription">
+            <Link className="underline underline-offset-4" href="/subscription">
               {locale === "uk" ? "Оплата" : "Płatności"}
             </Link>
             <span className="hidden sm:inline">·</span>
@@ -33,13 +33,13 @@ export default function Footer() {
               {locale === "uk" ? "Про PVS" : "O PVS"}
             </Link>
             <span className="hidden sm:inline">·</span>
-            <Link className="underline underline-offset-4" href="/legal?tab=cookies">
+            <Link className="underline underline-offset-4" href="/cookies">
               Cookies
             </Link>
             <span className="hidden sm:inline">·</span>
-            <a className="underline underline-offset-4" href="mailto:jovalentych@gmail.com">
+            <Link className="underline underline-offset-4" href="/contacts">
               {locale === "uk" ? "Контакти" : "Kontakt"}
-            </a>
+            </Link>
           </div>
           <FeedbackModal />
         </div>

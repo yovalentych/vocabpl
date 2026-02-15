@@ -23,7 +23,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/cookies",
     "/subscription",
     "/pvs",
-    "/legal"
+    "/legal",
+    "/contacts"
   ];
 
   return staticRoutes.map((path) => ({
