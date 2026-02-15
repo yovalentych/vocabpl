@@ -20,10 +20,16 @@ export default function NavBar() {
     if (!auth.isAdmin) return;
     let mounted = true;
     async function loadCount() {
-      const res = await fetch("/api/admin/reviews-count");
-      const data = await res.json().catch(() => null);
-      if (!mounted) return;
-      setPendingCount(Number(data?.count || 0));
+      try {
+        const res = await fetch("/api/admin/reviews-count");
+        if (!res.ok) return;
+        const data = await res.json().catch(() => null);
+        if (!mounted) return;
+        setPendingCount(Number(data?.count || 0));
+      } catch (error) {
+        if (!mounted) return;
+        setPendingCount(0);
+      }
     }
     loadCount();
     const timer = window.setInterval(loadCount, 30000);
