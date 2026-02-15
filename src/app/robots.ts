@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const DEFAULT_SITE_URL = "https://www.vocabpl.uno";
+const DEFAULT_SITE_URL = "https://vocabpl.uno";
 
 function getSiteUrl() {
   const envUrl =

@@ -3,11 +3,12 @@
 import { useEffect, useState } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import Loader from "@/components/ui/Loader";
-import { ShieldCheck, Database, Brain, Lightning, CheckCircle, XCircle } from "@phosphor-icons/react/dist/ssr";
+import { ShieldCheck, Database, Brain, Lightning, CheckCircle, XCircle, Bug } from "@phosphor-icons/react/dist/ssr";
+import { csrfFetch } from "@/lib/csrf-client";
 
 type Diagnostics = {
   time: string;
-  env: { mongo: boolean; pvsKey: boolean; mono?: boolean; monoPubkey?: boolean };
+  env: { mongo: boolean; pvsKey: boolean; mono?: boolean; monoPubkey?: boolean; smtp?: boolean; sentry?: boolean };
   db: { ok: boolean };
   ai: { model: string; maxTokens: number };
   plans: { id: string; priceUah: number; credits: number }[];
@@ -18,6 +19,9 @@ export default function AdminDiagnosticsPanel() {
   const [data, setData] = useState<Diagnostics | null>(null);
   const [loading, setLoading] = useState(true);
   const [aiTest, setAiTest] = useState<{ status: "idle" | "loading" | "ok" | "error"; message?: string }>({
+    status: "idle"
+  });
+  const [sentryTest, setSentryTest] = useState<{ status: "idle" | "loading" | "ok" | "error"; message?: string }>({
     status: "idle"
   });
 
@@ -54,6 +58,17 @@ export default function AdminDiagnosticsPanel() {
       return;
     }
     setAiTest({ status: "ok", message: t.admin.aiTestOk });
+  }
+
+  async function runSentryTest() {
+    setSentryTest({ status: "loading" });
+    const res = await csrfFetch("/api/admin/sentry-test", { method: "POST" });
+    const payload = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      setSentryTest({ status: "error", message: payload?.error || "Sentry error" });
+      return;
+    }
+    setSentryTest({ status: "ok", message: t.admin.sentryTestOk });
   }
 
   return (
@@ -117,6 +132,22 @@ export default function AdminDiagnosticsPanel() {
                   )}
                   <span>Monobank pubkey</span>
                 </div>
+                <div className="flex items-center gap-2 text-sm">
+                  {data.env.smtp ? (
+                    <CheckCircle size={16} weight="fill" className="text-moss" />
+                  ) : (
+                    <XCircle size={16} weight="fill" className="text-terracotta" />
+                  )}
+                  <span>{t.admin.diagnosticsSmtp}</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  {data.env.sentry ? (
+                    <CheckCircle size={16} weight="fill" className="text-moss" />
+                  ) : (
+                    <XCircle size={16} weight="fill" className="text-terracotta" />
+                  )}
+                  <span>{t.admin.diagnosticsSentry}</span>
+                </div>
               </div>
             </div>
             <div className="rounded-2xl border border-ink/10 bg-paper/70 p-4">
@@ -179,6 +210,41 @@ export default function AdminDiagnosticsPanel() {
               </span>
             )}
             <span className="text-xs text-ink/50">{t.admin.aiTestHint}</span>
+          </div>
+
+          <div className="rounded-2xl border border-ink/10 bg-paper/70 p-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <Bug size={18} weight="bold" className="text-ink/70" />
+                <p className="text-xs uppercase tracking-[0.2em] text-ink/50">{t.admin.sentryTitle}</p>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  onClick={runSentryTest}
+                  className="flex items-center gap-2 rounded-full bg-ink px-4 py-2 text-xs font-semibold text-paper transition hover:bg-ink/90 disabled:opacity-50"
+                  disabled={sentryTest.status === "loading"}
+                >
+                  {sentryTest.status === "loading" ? t.common.loading : t.admin.sentryTestAction}
+                </button>
+                {sentryTest.status === "ok" && (
+                  <span className="flex items-center gap-1 text-xs font-semibold text-moss">
+                    <CheckCircle size={14} weight="fill" />
+                    {sentryTest.message}
+                  </span>
+                )}
+                {sentryTest.status === "error" && (
+                  <span className="flex items-center gap-1 text-xs font-semibold text-terracotta">
+                    <XCircle size={14} weight="fill" />
+                    {sentryTest.message}
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="mt-3 grid gap-2 text-xs text-ink/60">
+              <p>{t.admin.sentryGuideIntro}</p>
+              <p>{t.admin.sentryGuideSteps}</p>
+              <p>{t.admin.sentryGuideAlerts}</p>
+            </div>
           </div>
         </div>
       ) : (

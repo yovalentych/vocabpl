@@ -16,7 +16,7 @@ import ClassFloatingNav from "@/components/ClassFloatingNav";
 import ByokPanel from "@/components/ByokPanel";
 import BetaDisclaimer from "@/components/BetaDisclaimer";
 
-const DEFAULT_SITE_URL = "https://www.vocabpl.uno";
+const DEFAULT_SITE_URL = "https://vocabpl.uno";
 
 function getSiteUrl() {
   const envUrl =

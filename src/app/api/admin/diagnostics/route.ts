@@ -15,6 +15,7 @@ export async function GET() {
   const pvsPresent = Boolean(process.env.PVS_OPENAI_API_KEY || process.env.OPENAI_API_KEY);
   const smtpPresent = hasMailConfig();
   const monoPresent = isMonoConfigured();
+  const sentryPresent = Boolean(process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN);
   let monoPubkeyOk = false;
   if (monoPresent) {
     try {
@@ -40,7 +41,8 @@ export async function GET() {
       pvsKey: pvsPresent,
       smtp: smtpPresent,
       mono: monoPresent,
-      monoPubkey: monoPubkeyOk
+      monoPubkey: monoPubkeyOk,
+      sentry: sentryPresent
     },
     db: {
       ok: dbOk
