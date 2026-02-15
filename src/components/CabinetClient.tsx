@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { plans as defaultPlans, Plan, getPlanById } from "@/lib/plans";
 import { readPrefs, setCookie, writePrefs } from "@/lib/prefs";
 import { csrfFetch } from "@/lib/csrf-client";
+import AchievementsSection from "@/components/AchievementsSection";
 import {
   User,
   Lock,
@@ -28,6 +29,12 @@ type UserProfile = {
   consent?: {
     marketingAt?: string | null;
   };
+  stats?: {
+    wordsStudied?: number;
+    testsTaken?: number;
+    sessions?: number;
+    points?: number;
+  };
   subscription?: {
     status: string;
     expiresAt: string | null;
@@ -43,7 +50,7 @@ type UserProfile = {
 };
 
 export default function CabinetClient({ username }: { username: string }) {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [emailCode, setEmailCode] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -322,6 +329,12 @@ export default function CabinetClient({ username }: { username: string }) {
     .slice(0, 10); // Top 10
 
   const maxCount = Math.max(...aiUsageChartData.map((d) => d.count), 1);
+  const statsSnapshot = useMemo(() => ({
+    wordsStudied: Number(profile?.stats?.wordsStudied || 0),
+    testsTaken: Number(profile?.stats?.testsTaken || 0),
+    sessions: Number(profile?.stats?.sessions || 0),
+    points: Number(profile?.stats?.points || 0)
+  }), [profile?.stats]);
 
   return (
     <div className="space-y-10">
@@ -338,14 +351,32 @@ export default function CabinetClient({ username }: { username: string }) {
             <p className="mt-1 text-sm text-ink/60">{profile?.email || ""}</p>
           </div>
 
-          {isActive && (
-            <div className="inline-flex items-center gap-2 rounded-full border border-moss/20 bg-moss/10 px-4 py-2">
-              <CheckCircle size={16} weight="fill" className="text-moss" />
-              <span className="text-xs font-semibold text-moss">Premium Active</span>
-            </div>
-          )}
+          <div className="flex flex-col items-end gap-3">
+            <a
+              href="/cabinet/achievements"
+              className="inline-flex items-center gap-2 rounded-full border border-ink/20 bg-paper px-4 py-2 text-xs font-semibold text-ink/70 hover:bg-ink/5"
+            >
+              <Trophy size={16} weight="fill" className="text-terracotta" />
+              Мої ачівки
+            </a>
+            {isActive && (
+              <div className="inline-flex items-center gap-2 rounded-full border border-moss/20 bg-moss/10 px-4 py-2">
+                <CheckCircle size={16} weight="fill" className="text-moss" />
+                <span className="text-xs font-semibold text-moss">Premium Active</span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
+
+      <AchievementsSection
+        username={profile?.username || username}
+        name={profile?.name || username}
+        stats={statsSnapshot}
+        locale={locale}
+        title="Мої ачівки"
+        subtitle="Збирай нагороди за навчальний прогрес"
+      />
 
       {/* AI Usage Stats */}
       <section>
