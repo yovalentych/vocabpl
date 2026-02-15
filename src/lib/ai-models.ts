@@ -19,7 +19,7 @@ export const AI_MODELS: Record<string, AIModel> = {
     id: "gpt-4.1-mini",
     name: "GPT-4.1 Mini",
     provider: "openai",
-    maxTokens: 2500,
+    maxTokens: 4096,
     supportsVision: false,
     costPer1kTokens: 0.001,
     defaultFor: ["text", "generation", "checking", "translation"],
@@ -101,7 +101,6 @@ export function getMaxTokensForModel(modelId: string, mode?: string): number {
   const modeOverrides: Record<string, number> = {
     translate_word: 900,
     translate_sentence: 900,
-    test_generate: 2500,
     test_check: 1500,
     describe_check: model.supportsVision ? 1500 : 1000,
     unsplash_translate: 50

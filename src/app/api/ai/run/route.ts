@@ -870,7 +870,7 @@ IMPORTANT: Return ONLY valid JSON, no explanations, no markdown formatting.`
 
     const level = parsed.level || "A2";
     const topics = parsed.topics || parsed.grammarTopics || [];
-    const count = parsed.count || 12;
+    const count = parsed.questionCount || parsed.count || 12;
 
     // Generate difficulty-aware base prompt
     const difficultyPrompt = generateDifficultyAwarePrompt({
