@@ -611,6 +611,7 @@ export const dictionary = {
       aspectImperfective: "Niedokonany",
       aspectPerfective: "Dokonany",
       typeLabel: "Typ",
+      filterCategories: "Kategorie",
       sortLabel: "Sortowanie",
       sortOptions: {
         plAsc: "A → Z (PL)",
@@ -1769,6 +1770,7 @@ export const dictionary = {
       aspectImperfective: "Недоконаний",
       aspectPerfective: "Доконаний",
       typeLabel: "Тип",
+      filterCategories: "Категорії",
       sortLabel: "Сортування",
       sortOptions: {
         plAsc: "A → Z (PL)",
