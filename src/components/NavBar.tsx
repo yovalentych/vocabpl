@@ -7,7 +7,7 @@ import { useLocale } from "@/components/LocaleProvider";
 import { csrfFetch } from "@/lib/csrf-client";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
 import { useAuthStatus } from "@/components/useAuthStatus";
-import { EnvelopeSimple, SignOut, List, X } from "@phosphor-icons/react";
+import { EnvelopeSimple, SignOut, List, X, CreditCard } from "@phosphor-icons/react";
 
 export default function NavBar() {
   const pathname = usePathname();
@@ -149,6 +149,15 @@ export default function NavBar() {
               )}
             </Link>
             <Link
+              href="/cabinet#billing"
+              className="flex items-center gap-2 rounded-full border border-terracotta/30 bg-terracotta/10 px-3 py-1 text-terracotta transition hover:bg-terracotta/20"
+              aria-label={t.nav.plan}
+              title={t.nav.plan}
+            >
+              <CreditCard size={16} weight="bold" />
+              <span className="text-xs font-semibold">{t.nav.plan}</span>
+            </Link>
+            <Link
               href="/cabinet"
               className="rounded-full border border-ink/10 bg-paper/90 px-3 py-1 text-ink/60 hover:bg-ink/5"
             >
@@ -211,6 +220,14 @@ export default function NavBar() {
                   {pendingCount}
                 </span>
               )}
+            </Link>
+            <Link
+              href="/cabinet#billing"
+              onClick={() => setMobileMenuOpen(false)}
+              className="rounded-full border-2 border-terracotta/30 bg-terracotta/10 px-6 py-3.5 text-base font-medium text-terracotta transition-all active:scale-95 active:bg-terracotta/20 flex items-center justify-center gap-2.5"
+            >
+              <CreditCard size={20} weight="bold" />
+              <span>{t.nav.plan}</span>
             </Link>
             <Link
               href="/cabinet"

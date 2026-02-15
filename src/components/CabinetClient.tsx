@@ -732,55 +732,74 @@ export default function CabinetClient({ username }: { username: string }) {
       </section>
 
       {/* Billing Plans */}
-      <section>
+      <section id="billing">
         <div className="mb-6 flex items-center gap-3">
           <CreditCard size={24} weight="fill" className="text-ink" />
           <h2 className="text-2xl font-semibold">{t.cabinet.billingTitle}</h2>
         </div>
 
-        <div className={`rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft ${isActive ? "border-moss/20" : ""}`}>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-ink/60">{t.cabinet.billingSubtitle}</p>
-              <p className="mt-1 text-lg font-semibold">
-                {isActive ? (
-                  <>
-                    {t.cabinet.billingActive}{" "}
-                    <span className="text-moss">
-                      {profile.subscription?.expiresAt
-                        ? `${Math.max(
-                            0,
-                            Math.ceil(
-                              (new Date(profile.subscription.expiresAt).getTime() - Date.now()) /
-                                (1000 * 60 * 60 * 24)
-                            )
-                          )} ${t.cabinet.billingDays}`
-                        : t.cabinet.promoUnlimited}
-                    </span>
-                  </>
-                ) : (
-                  t.cabinet.billingInactive
-                )}
-              </p>
-            </div>
-            {isActive && (
-              <Trophy size={32} weight="fill" className="text-gold" />
-            )}
-          </div>
-
-          {(hasPromoAccess || blurPlans) && (
-            <div className="mt-4 rounded-2xl border border-gold/30 bg-gold/5 px-4 py-3">
-              <div className="flex items-start gap-2">
-                <Sparkle size={18} weight="fill" className="mt-0.5 text-gold" />
-                <p className="text-sm text-ink/70">
-                  {hasPromoAccess ? t.cabinet.billingPromoNotice : t.cabinet.billingSoonNotice}
+        <div
+          className={`relative overflow-hidden rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft ${
+            isActive ? "border-moss/20" : ""
+          }`}
+        >
+          <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-terracotta/15 blur-3xl" />
+          <div className="pointer-events-none absolute -left-20 -bottom-20 h-64 w-64 rounded-full bg-moss/10 blur-3xl" />
+          <div className="relative">
+            <div className="flex flex-wrap items-start justify-between gap-6">
+              <div>
+                <p className="text-xs uppercase tracking-[0.3em] text-ink/50">{t.cabinet.billingSubtitle}</p>
+                <p className="mt-3 text-2xl font-semibold">
+                  {isActive ? (
+                    <>
+                      {t.cabinet.billingActive}{" "}
+                      <span className="text-moss">
+                        {profile.subscription?.expiresAt
+                          ? `${Math.max(
+                              0,
+                              Math.ceil(
+                                (new Date(profile.subscription.expiresAt).getTime() - Date.now()) /
+                                  (1000 * 60 * 60 * 24)
+                              )
+                            )} ${t.cabinet.billingDays}`
+                          : t.cabinet.promoUnlimited}
+                      </span>
+                    </>
+                  ) : (
+                    t.cabinet.billingInactive
+                  )}
+                </p>
+                <p className="mt-2 text-sm text-ink/60">
+                  {isActive ? t.cabinet.billingAutoRenewHint : t.cabinet.billingSubtitle}
                 </p>
               </div>
+              <div className="flex flex-col items-end gap-2">
+                {isActive ? (
+                  <span className="inline-flex items-center gap-2 rounded-full border border-moss/30 bg-moss/10 px-4 py-2 text-xs font-semibold text-moss">
+                    <Trophy size={16} weight="fill" />
+                    Активний план
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-2 rounded-full border border-ink/20 bg-paper/70 px-4 py-2 text-xs font-semibold text-ink/60">
+                    Free
+                  </span>
+                )}
+                <span className="text-xs text-ink/40">Monobank · Visa/Mastercard</span>
+              </div>
             </div>
-          )}
 
-          <div className="mt-4 flex flex-wrap items-start justify-between gap-4">
-            <div className="flex flex-wrap items-center gap-3">
+            {(hasPromoAccess || blurPlans) && (
+              <div className="mt-4 rounded-2xl border border-gold/30 bg-gold/5 px-4 py-3">
+                <div className="flex items-start gap-2">
+                  <Sparkle size={18} weight="fill" className="mt-0.5 text-gold" />
+                  <p className="text-sm text-ink/70">
+                    {hasPromoAccess ? t.cabinet.billingPromoNotice : t.cabinet.billingSoonNotice}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            <div className="mt-4 flex flex-wrap items-start justify-between gap-4">
               <label className="flex items-center gap-2 rounded-full border border-ink/10 bg-paper/70 px-4 py-2 text-xs font-semibold text-ink/70">
                 <input
                   type="checkbox"
@@ -790,109 +809,125 @@ export default function CabinetClient({ username }: { username: string }) {
                 />
                 {t.cabinet.billingAutoRenew}
               </label>
-              <p className="text-xs text-ink/50">{t.cabinet.billingAutoRenewHint}</p>
+              {isActive && (
+                <div className="flex flex-wrap items-center gap-3">
+                  {profile?.subscription?.autoRenew ? (
+                    <button
+                      onClick={cancelSubscription}
+                      className="rounded-full border border-terracotta/30 bg-terracotta/5 px-4 py-2 text-xs font-semibold text-terracotta transition hover:bg-terracotta/10"
+                    >
+                      {t.cabinet.billingCancel}
+                    </button>
+                  ) : (
+                    <button
+                      onClick={resumeSubscription}
+                      className="rounded-full border border-moss/30 bg-moss/5 px-4 py-2 text-xs font-semibold text-moss transition hover:bg-moss/10"
+                    >
+                      {t.cabinet.billingResume}
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
-            {isActive && (
-              <div className="flex flex-wrap items-center gap-3">
-                {profile?.subscription?.autoRenew ? (
-                  <button
-                    onClick={cancelSubscription}
-                    className="rounded-full border border-terracotta/30 bg-terracotta/5 px-4 py-2 text-xs font-semibold text-terracotta transition hover:bg-terracotta/10"
-                  >
-                    {t.cabinet.billingCancel}
-                  </button>
-                ) : (
-                  <button
-                    onClick={resumeSubscription}
-                    className="rounded-full border border-moss/30 bg-moss/5 px-4 py-2 text-xs font-semibold text-moss transition hover:bg-moss/10"
-                  >
-                    {t.cabinet.billingResume}
-                  </button>
-                )}
+
+            {billingMessage && (
+              <div
+                className={`mt-3 rounded-2xl border px-4 py-3 text-sm ${
+                  billingMessage.tone === "error"
+                    ? "border-terracotta/20 bg-terracotta/5 text-terracotta"
+                    : "border-moss/20 bg-moss/5 text-moss"
+                }`}
+              >
+                {billingMessage.text}
               </div>
             )}
-          </div>
 
-          {billingMessage && (
-            <div className={`mt-3 rounded-2xl border px-4 py-3 text-sm ${billingMessage.tone === "error" ? "border-terracotta/20 bg-terracotta/5 text-terracotta" : "border-moss/20 bg-moss/5 text-moss"}`}>
-              {billingMessage.text}
-            </div>
-          )}
+            <div
+              className={`mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 ${
+                hasPromoAccess || blurPlans ? "pointer-events-none select-none blur-[8px] opacity-40" : ""
+              }`}
+            >
+              {billingPlans.map((plan) => {
+                const usage = profile?.aiUsage;
+                const planInfo = getPlanById(plan.id);
+                const remaining =
+                  usage?.month ? Math.max(0, planInfo.aiCreditsMonthly - (usage.usedCredits || 0)) : planInfo.aiCreditsMonthly;
+                const activePlanId = profile?.subscription?.planId
+                  ? getPlanById(profile.subscription.planId).id
+                  : null;
+                const isCurrentPlan = isActive && activePlanId === plan.id;
+                const periodLabel =
+                  plan.periodDays >= 365 ? t.cabinet.periodLabels.year : plan.periodDays >= 90 ? t.cabinet.periodLabels.quarter : t.cabinet.periodLabels.month;
+                const tierLabel = t.cabinet.planTiers[plan.tier];
+                const badge =
+                  plan.periodDays >= 365 ? t.cabinet.planBestValue : plan.tier === "pro" ? t.cabinet.planMostPopular : "";
 
-          <div
-            className={`mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 ${
-              hasPromoAccess || blurPlans ? "pointer-events-none select-none blur-[8px] opacity-40" : ""
-            }`}
-          >
-            {billingPlans.map((plan) => {
-              const usage = profile?.aiUsage;
-              const planInfo = getPlanById(plan.id);
-              const remaining =
-                usage?.month ? Math.max(0, planInfo.aiCreditsMonthly - (usage.usedCredits || 0)) : planInfo.aiCreditsMonthly;
-              const activePlanId = profile?.subscription?.planId
-                ? getPlanById(profile.subscription.planId).id
-                : null;
-              const isCurrentPlan = isActive && activePlanId === plan.id;
-              const periodLabel =
-                plan.periodDays >= 365 ? t.cabinet.periodLabels.year : plan.periodDays >= 90 ? t.cabinet.periodLabels.quarter : t.cabinet.periodLabels.month;
-              const tierLabel = t.cabinet.planTiers[plan.tier];
-              const badge =
-                plan.periodDays >= 365 ? t.cabinet.planBestValue : plan.tier === "pro" ? t.cabinet.planMostPopular : "";
-
-              return (
-                <div
-                  key={plan.id}
-                  className={`rounded-2xl border p-6 transition ${
-                    isCurrentPlan
-                      ? "border-moss/30 bg-moss/5 ring-2 ring-moss/20"
-                      : "border-ink/10 bg-paper/80"
-                  }`}
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-ink/60">
-                        {tierLabel}
-                      </p>
-                      <p className="mt-2 text-3xl font-semibold">{plan.priceUah} ₴</p>
-                      <p className="mt-1 text-xs text-ink/50">{periodLabel}</p>
+                return (
+                  <div
+                    key={plan.id}
+                    className={`group relative rounded-3xl border p-6 transition duration-200 hover:-translate-y-1 hover:shadow-soft ${
+                      isCurrentPlan
+                        ? "border-moss/30 bg-moss/5 ring-2 ring-moss/20"
+                        : "border-ink/10 bg-paper/90"
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-ink/60">
+                          {tierLabel}
+                        </p>
+                        <div className="mt-3 flex items-end gap-2">
+                          <span className="text-3xl font-semibold">{plan.priceUah} ₴</span>
+                          <span className="pb-1 text-xs text-ink/50">/ {periodLabel}</span>
+                        </div>
+                        <p className="mt-2 text-xs text-ink/50">
+                          {planInfo.aiCreditsMonthly} {t.cabinet.creditsLabel}
+                        </p>
+                      </div>
+                      {badge ? (
+                        <span className="rounded-full border border-gold/30 bg-gold/10 px-3 py-1 text-[10px] font-semibold text-gold">
+                          {badge}
+                        </span>
+                      ) : null}
                     </div>
-                    {badge ? (
-                      <span className="rounded-full border border-gold/30 bg-gold/10 px-3 py-1 text-[10px] font-semibold text-gold">
-                        {badge}
-                      </span>
-                    ) : null}
-                  </div>
 
-                  <div className="mt-4 space-y-2">
-                    <div className="flex items-center gap-2 text-sm">
-                      <Lightning size={16} weight="fill" className="text-gold" />
-                      <span className="text-ink/70">{planInfo.aiCreditsMonthly} {t.cabinet.creditsLabel}</span>
+                    <div className="mt-4 space-y-2 text-xs text-ink/70">
+                      <div className="flex items-center gap-2">
+                        <CheckCircle size={14} weight="fill" className="text-moss" />
+                        <span>{plan.allowAIGenerate ? t.cabinet.planAiGenerate : t.cabinet.planAiCheckOnly}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Lightning size={14} weight="fill" className="text-gold" />
+                        <span>{planInfo.aiCreditsMonthly} {t.cabinet.creditsLabel}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Brain size={14} weight="fill" className="text-ink/50" />
+                        <span>{t.cabinet.aiPvsIncluded}</span>
+                      </div>
                     </div>
-                    <div className="text-xs text-ink/50">
-                      {plan.allowAIGenerate ? t.cabinet.planAiGenerate : t.cabinet.planAiCheckOnly}
-                    </div>
+
                     {isCurrentPlan && (
-                      <div className="rounded-xl border border-moss/10 bg-moss/5 px-3 py-2 text-xs">
+                      <div className="mt-4 rounded-2xl border border-moss/10 bg-moss/5 px-3 py-2 text-xs">
                         <span className="font-semibold text-moss">{remaining}</span>
                         <span className="text-ink/60"> / {planInfo.aiCreditsMonthly} залишилось</span>
                       </div>
                     )}
+
+                    <button
+                      onClick={() => startPayment(plan.id)}
+                      className={`mt-5 w-full rounded-full border px-4 py-2 text-xs font-semibold transition ${
+                        isCurrentPlan
+                          ? "border-moss/30 bg-moss/10 text-moss"
+                          : "border-ink/20 text-ink hover:bg-ink/5"
+                      }`}
+                      disabled={isCurrentPlan}
+                    >
+                      {isCurrentPlan ? "Active" : t.cabinet.billingPayMono}
+                    </button>
                   </div>
-
-                  <p className="mt-3 text-xs text-ink/50">{t.cabinet.aiPvsIncluded}</p>
-
-                  <button
-                    onClick={() => startPayment(plan.id)}
-                    className={`mt-4 w-full rounded-full border px-4 py-2 text-xs font-semibold transition ${
-                      isCurrentPlan ? "border-moss/30 bg-moss/10 text-moss" : "border-ink/20 text-ink hover:bg-ink/5"
-                    }`}
-                    disabled={isCurrentPlan}
-                  >
-                    {isCurrentPlan ? "Active" : t.cabinet.billingPayMono}
-                  </button>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
       </section>
