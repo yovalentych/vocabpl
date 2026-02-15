@@ -21,10 +21,11 @@ import {
   Sparkle,
   ShieldCheck,
   Brain,
-  Lightning,
   Article,
   ChartPie,
-  ListChecks
+  ListChecks,
+  Bug,
+  Lightning
 } from "@phosphor-icons/react/dist/ssr";
 
 const WORD_TYPE_LABELS: Record<string, string> = {
@@ -71,7 +72,7 @@ type Summary = {
 
 export default function AdminDashboard({ summary }: { summary: Summary }) {
   const { t } = useLocale();
-  const [tab, setTab] = useState<"overview" | "users" | "content" | "monetization">("overview");
+  const [tab, setTab] = useState<"overview" | "users" | "content" | "ai" | "monetization" | "monitoring">("overview");
   const [chartType, setChartType] = useState<"bar" | "pie">("pie");
 
   const wordTypeLabels = WORD_TYPE_LABELS;
@@ -93,11 +94,38 @@ export default function AdminDashboard({ summary }: { summary: Summary }) {
   }, [summary.wordTypeStats, chartColors, wordTypeLabels]);
 
 
-  const tabItems = [
-    { id: "overview", label: t.admin.tabs.overview, icon: ChartBar },
-    { id: "users", label: t.admin.tabs.users, icon: Users },
-    { id: "content", label: t.admin.tabs.content, icon: BookBookmark },
-    { id: "monetization", label: t.admin.tabs.monetization, icon: CurrencyDollar }
+  const navGroups = [
+    {
+      label: t.admin.navGroups.core,
+      items: [
+        { id: "overview", label: t.admin.tabs.overview, icon: ChartBar },
+        { id: "users", label: t.admin.tabs.users, icon: Users, badge: summary.users }
+      ]
+    },
+    {
+      label: t.admin.navGroups.content,
+      items: [
+        { id: "content", label: t.admin.tabs.content, icon: BookBookmark, badge: summary.tests.length + summary.materials }
+      ]
+    },
+    {
+      label: t.admin.navGroups.ai,
+      items: [
+        { id: "ai", label: t.admin.tabs.ai, icon: Brain }
+      ]
+    },
+    {
+      label: t.admin.navGroups.commerce,
+      items: [
+        { id: "monetization", label: t.admin.tabs.monetization, icon: CurrencyDollar }
+      ]
+    },
+    {
+      label: t.admin.navGroups.monitoring,
+      items: [
+        { id: "monitoring", label: t.admin.tabs.monitoring, icon: Bug }
+      ]
+    }
   ];
 
   return (
@@ -161,23 +189,75 @@ export default function AdminDashboard({ summary }: { summary: Summary }) {
       </section>
 
       <div className="grid gap-4 sm:gap-6 lg:grid-cols-[240px_1fr]">
-        <aside className="rounded-3xl border border-ink/10 bg-paper/80 p-3 sm:p-4 shadow-soft">
-          <p className="px-2 pb-3 text-xs uppercase tracking-[0.3em] text-ink/40">Навігація</p>
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-1 sm:space-y-0 sm:flex sm:flex-col">
-            {tabItems.map((item) => (
+        <aside className="lg:sticky lg:top-6 lg:self-start">
+          <div className="max-h-[70vh] overflow-y-auto rounded-3xl border border-ink/10 bg-paper/80 p-3 shadow-soft sm:max-h-none sm:overflow-visible sm:p-4">
+            <p className="px-2 pb-3 text-xs uppercase tracking-[0.3em] text-ink/40">{t.admin.navTitle}</p>
+            <div className="hidden space-y-4 sm:block">
+              {navGroups.map((group) => (
+                <div key={group.label} className="space-y-2">
+                  <p className="px-2 text-[10px] uppercase tracking-[0.3em] text-ink/40">{group.label}</p>
+                  <div className="flex flex-col gap-2">
+                    {group.items.map((item) => (
+                      <button
+                        key={item.id}
+                        onClick={() => setTab(item.id as typeof tab)}
+                        className={`flex w-full items-center justify-start gap-3 rounded-2xl px-3 py-2 text-sm font-semibold transition ${
+                          tab === item.id
+                            ? "bg-ink text-paper"
+                            : "border border-ink/10 bg-paper/60 text-ink/70 hover:border-ink/30 hover:bg-paper"
+                        }`}
+                      >
+                        <item.icon size={18} weight="bold" />
+                        <span className="flex-1 text-left">{item.label}</span>
+                        {typeof item.badge === "number" && (
+                          <span className="ml-auto rounded-full bg-ink/10 px-2 py-[2px] text-[10px] font-semibold text-ink/60">
+                            {item.badge}
+                          </span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="mt-3 flex gap-2 overflow-x-auto rounded-3xl border border-ink/10 bg-paper/80 p-2 shadow-soft sm:hidden">
+            {navGroups.flatMap((group) => group.items).map((item) => (
               <button
                 key={item.id}
                 onClick={() => setTab(item.id as typeof tab)}
-                className={`flex w-full items-center justify-center sm:justify-start gap-2 sm:gap-3 rounded-2xl px-3 py-2 text-xs sm:text-sm font-semibold transition ${
+                className={`flex min-w-[68px] flex-col items-center justify-center gap-1 rounded-2xl px-2 py-2 text-[10px] font-semibold transition ${
                   tab === item.id
                     ? "bg-ink text-paper"
                     : "border border-ink/10 bg-paper/60 text-ink/70 hover:border-ink/30 hover:bg-paper"
                 }`}
               >
-                <item.icon size={16} weight="bold" className="sm:w-[18px] sm:h-[18px]" />
-                <span className="flex-1 text-left hidden sm:inline">{item.label}</span>
-                <span className="sm:hidden text-[10px]">{item.label}</span>
+                <item.icon size={16} weight="bold" />
+                <span className="text-center">{item.label}</span>
               </button>
+            ))}
+          </div>
+          <div className="mt-3 hidden flex-wrap gap-2 rounded-3xl border border-ink/10 bg-paper/80 p-3 shadow-soft sm:flex lg:hidden">
+            {navGroups.map((group) => (
+              <div key={group.label} className="flex flex-wrap items-center gap-2">
+                <span className="rounded-full border border-ink/10 bg-paper/60 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-ink/50">
+                  {group.label}
+                </span>
+                {group.items.map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => setTab(item.id as typeof tab)}
+                    className={`flex items-center gap-2 rounded-full px-3 py-1.5 text-[11px] font-semibold transition ${
+                      tab === item.id
+                        ? "bg-ink text-paper"
+                        : "border border-ink/10 bg-paper/60 text-ink/70 hover:border-ink/30 hover:bg-paper"
+                    }`}
+                  >
+                    <item.icon size={14} weight="bold" />
+                    <span>{item.label}</span>
+                  </button>
+                ))}
+              </div>
             ))}
           </div>
         </aside>
@@ -185,6 +265,45 @@ export default function AdminDashboard({ summary }: { summary: Summary }) {
         <div className="space-y-4 sm:space-y-6">
           {tab === "overview" && (
             <div className="space-y-4 sm:space-y-6">
+              <div className="rounded-3xl border border-ink/10 bg-paper/80 p-4 sm:p-6 shadow-soft">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    <Lightning size={20} weight="fill" className="text-terracotta" />
+                    <h2 className="text-lg sm:text-xl font-semibold">{t.admin.quickActions}</h2>
+                  </div>
+                  <p className="text-xs text-ink/50">{t.admin.quickActionsHint}</p>
+                </div>
+                <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                  {[
+                    { id: "content", label: t.admin.tabs.content, icon: BookBookmark, tone: "moss" },
+                    { id: "ai", label: t.admin.tabs.ai, icon: Brain, tone: "terracotta" },
+                    { id: "monetization", label: t.admin.tabs.monetization, icon: CurrencyDollar, tone: "gold" },
+                    { id: "monitoring", label: t.admin.tabs.monitoring, icon: Bug, tone: "ink" }
+                  ].map((action) => (
+                    <button
+                      key={action.id}
+                      onClick={() => setTab(action.id as typeof tab)}
+                      className="group flex items-center gap-3 rounded-2xl border border-ink/10 bg-paper/60 px-4 py-3 text-left transition hover:border-ink/30 hover:bg-paper"
+                    >
+                      <span
+                        className={`inline-flex h-10 w-10 items-center justify-center rounded-2xl ${
+                          action.tone === "moss"
+                            ? "bg-moss/10 text-moss"
+                            : action.tone === "terracotta"
+                            ? "bg-terracotta/10 text-terracotta"
+                            : action.tone === "gold"
+                            ? "bg-gold/20 text-terracotta"
+                            : "bg-ink/10 text-ink"
+                        }`}
+                      >
+                        <action.icon size={20} weight="fill" />
+                      </span>
+                      <span className="text-sm font-semibold text-ink/80 group-hover:text-ink">{action.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               {/* Content Stats - Word Types Charts */}
               <div className="rounded-3xl border border-ink/10 bg-paper/80 p-4 sm:p-6 shadow-soft">
                 <div className="mb-4 sm:mb-6 flex flex-wrap items-center justify-between gap-3">
@@ -380,11 +499,6 @@ export default function AdminDashboard({ summary }: { summary: Summary }) {
                 </div>
               </div>
 
-              {/* System Diagnostics */}
-              <AdminDiagnosticsPanel />
-
-              {/* AI Models Configuration */}
-              <AdminAiModelsPanel />
             </div>
           )}
 
@@ -412,11 +526,23 @@ export default function AdminDashboard({ summary }: { summary: Summary }) {
             </div>
           )}
 
+          {tab === "ai" && (
+            <div className="space-y-6">
+              <AdminAiUsagePanel />
+              <AdminAiModelsPanel />
+            </div>
+          )}
+
           {tab === "monetization" && (
             <div className="space-y-6">
               <AdminBillingPanel />
               <PromoCodesAdvancedPanel />
-              <AdminAiUsagePanel />
+            </div>
+          )}
+
+          {tab === "monitoring" && (
+            <div className="space-y-6">
+              <AdminDiagnosticsPanel />
             </div>
           )}
 

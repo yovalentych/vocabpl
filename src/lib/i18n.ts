@@ -676,6 +676,16 @@ export const dictionary = {
     admin: {
       title: "Panel admina",
       subtitle: "Szybki wgląd w dane i checklistę zmian.",
+      quickActions: "Szybkie akcje",
+      quickActionsHint: "Najczęstsze działania w jednym miejscu.",
+      navTitle: "Nawigacja",
+      navGroups: {
+        core: "Podstawy",
+        content: "Treści",
+        ai: "AI",
+        commerce: "Płatności",
+        monitoring: "Monitoring"
+      },
       workbookContentTitle: "Treści do zeszytu",
       workbookContentSubtitle: "Dodawaj materiały dla wszystkich typów ćwiczeń.",
       workbookContentTitleLabel: "Tytuł (opcjonalnie)",
@@ -703,7 +713,9 @@ export const dictionary = {
         overview: "Przegląd",
         users: "Użytkownicy",
         content: "Treści",
+        ai: "AI i modele",
         monetization: "Monetyzacja",
+        monitoring: "Monitoring",
         checklist: "Checklist"
       },
       usersTitle: "Użytkownicy",
@@ -1807,6 +1819,16 @@ export const dictionary = {
     admin: {
       title: "Адмін панель",
       subtitle: "Швидкий огляд даних і чеклист.",
+      quickActions: "Швидкі дії",
+      quickActionsHint: "Найчастіші дії в одному місці.",
+      navTitle: "Навігація",
+      navGroups: {
+        core: "Базове",
+        content: "Контент",
+        ai: "AI",
+        commerce: "Оплати",
+        monitoring: "Моніторинг"
+      },
       workbookContentTitle: "Контент для зошита",
       workbookContentSubtitle: "Додавайте матеріали для всіх типів вправ.",
       workbookContentTitleLabel: "Назва (необовʼязково)",
@@ -1834,7 +1856,9 @@ export const dictionary = {
         overview: "Огляд",
         users: "Користувачі",
         content: "Контент",
+        ai: "AI та моделі",
         monetization: "Монетизація",
+        monitoring: "Моніторинг",
         checklist: "Чеклист"
       },
       usersTitle: "Користувачі",
