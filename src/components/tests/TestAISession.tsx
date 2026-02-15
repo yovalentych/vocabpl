@@ -59,6 +59,10 @@ export default function TestAISession({
   const [retryAction, setRetryAction] = useState<"check" | "continue" | null>(null);
   const [addedWords, setAddedWords] = useState<Set<string>>(new Set());
   const [addingWord, setAddingWord] = useState<string | null>(null);
+  const [appealItem, setAppealItem] = useState<CheckResult["items"][number] | null>(null);
+  const [appealNote, setAppealNote] = useState("");
+  const [appealSending, setAppealSending] = useState(false);
+  const [appealSentFor, setAppealSentFor] = useState<Set<string>>(new Set());
 
   const displayLang = locale === "uk" ? "uk" : "pl";
 
@@ -252,6 +256,47 @@ export default function TestAISession({
       setShowErrorModal(true);
     } finally {
       setContinuing(false);
+    }
+  }
+
+  async function submitAppeal() {
+    if (!appealItem || !result) return;
+
+    const question = test.questions.find((q) => q.id === appealItem.questionId);
+    const message = [
+      "AI Test Appeal",
+      `Topic: ${test.topic}`,
+      `Level: ${test.level}`,
+      `Question ID: ${appealItem.questionId}`,
+      `Question: ${question?.question?.pl || ""}`,
+      `User answer: ${appealItem.userAnswer}`,
+      `Expected: ${appealItem.expectedAnswer}`,
+      `AI feedback: ${appealItem.feedback}`,
+      appealNote ? `User note: ${appealNote}` : ""
+    ]
+      .filter(Boolean)
+      .join("\n");
+
+    setAppealSending(true);
+    try {
+      const res = await fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          subject: "AI Test Appeal",
+          message
+        })
+      });
+
+      if (res.ok) {
+        setAppealSentFor((prev) => new Set(prev).add(appealItem.questionId));
+        setAppealItem(null);
+        setAppealNote("");
+      }
+    } catch (err) {
+      console.error("Appeal send error:", err);
+    } finally {
+      setAppealSending(false);
     }
   }
 
@@ -507,6 +552,20 @@ export default function TestAISession({
                         <p className="mt-1 text-sm text-ink/60">Правильна відповідь: {item.expectedAnswer}</p>
                       )}
                       <p className="mt-2 text-sm text-ink/70">{item.feedback}</p>
+                      {!item.correct && (
+                        <div className="mt-3 flex flex-wrap items-center gap-2">
+                          <button
+                            onClick={() => setAppealItem(item)}
+                            disabled={appealSentFor.has(item.questionId)}
+                            className="rounded-full border border-ink/20 px-3 py-1 text-xs font-semibold text-ink/70 transition hover:bg-ink/5 disabled:opacity-50"
+                          >
+                            {appealSentFor.has(item.questionId) ? "Оскаржено ✓" : "Оскаржити"}
+                          </button>
+                          <span className="text-[11px] text-ink/40">
+                            Якщо відповідь коректна — надішли апеляцію.
+                          </span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -587,7 +646,7 @@ export default function TestAISession({
                 >
                   <span className="flex items-center justify-center gap-2">
                     <ArrowClockwise size={18} />
-                    Новий тест
+                    Завершити тест
                   </span>
                 </button>
                 <button
@@ -597,6 +656,66 @@ export default function TestAISession({
                   Закрити
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {appealItem && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-ink/60 p-4">
+          <div className="w-full max-w-lg rounded-3xl border border-ink/10 bg-paper p-6 shadow-2xl">
+            <div className="flex items-start justify-between">
+              <div>
+                <h4 className="text-lg font-semibold">Оскарження відповіді</h4>
+                <p className="mt-1 text-sm text-ink/60">
+                  Опиши, чому відповідь має бути зарахована.
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  setAppealItem(null);
+                  setAppealNote("");
+                }}
+                className="rounded-full p-2 text-ink/40 transition hover:bg-ink/5"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="mt-4 rounded-2xl border border-ink/10 bg-paper/70 p-3 text-sm text-ink/70">
+              <p>
+                <span className="font-semibold">Ваша відповідь:</span> {appealItem.userAnswer}
+              </p>
+              <p className="mt-1">
+                <span className="font-semibold">AI вважає правильним:</span> {appealItem.expectedAnswer}
+              </p>
+            </div>
+
+            <textarea
+              value={appealNote}
+              onChange={(e) => setAppealNote(e.target.value)}
+              placeholder="Коротко поясни, чому твоя відповідь правильна..."
+              rows={4}
+              className="mt-4 w-full rounded-2xl border border-ink/20 bg-paper px-3 py-2 text-sm focus:border-gold/40 focus:outline-none"
+            />
+
+            <div className="mt-4 flex gap-3">
+              <button
+                onClick={() => {
+                  setAppealItem(null);
+                  setAppealNote("");
+                }}
+                className="flex-1 rounded-full border border-ink/20 px-4 py-2 text-sm font-semibold text-ink"
+              >
+                Скасувати
+              </button>
+              <button
+                onClick={submitAppeal}
+                disabled={appealSending || !appealNote.trim()}
+                className="flex-1 rounded-full bg-ink px-4 py-2 text-sm font-semibold text-paper disabled:opacity-50"
+              >
+                {appealSending ? "Надсилаю..." : "Надіслати"}
+              </button>
             </div>
           </div>
         </div>

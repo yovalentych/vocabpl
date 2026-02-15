@@ -20,6 +20,26 @@ type TestProgress = {
 
 type TestHistoryEntry = { testId: string; correct: number; total: number; completedAt: string };
 
+type AiHistoryEntry = {
+  id: string;
+  testTopic: string;
+  testLevel: string;
+  testFocus: string[];
+  questionsCount: number;
+  score: number;
+  points: number;
+  feedback: string;
+  createdAt: string;
+};
+
+type AiHistoryStats = {
+  totalAttempts: number;
+  averageScore: number;
+  averagePoints: number;
+  bestScore: number;
+  bestPoints: number;
+};
+
 function toAnswerList(value: string | string[] | undefined) {
   if (!value) return [];
   return Array.isArray(value) ? value : [value];
@@ -66,6 +86,9 @@ export default function TestsClient() {
 
   const [history, setHistory] = useState<TestHistoryEntry[]>([]);
   const [locked, setLocked] = useState(false);
+  const [aiHistory, setAiHistory] = useState<AiHistoryEntry[]>([]);
+  const [aiStats, setAiStats] = useState<AiHistoryStats | null>(null);
+  const [aiLoading, setAiLoading] = useState(false);
 
   // We store a final score snapshot so the "Finished" screen never shows a stale score.
   const [finalScore, setFinalScore] = useState<{ correct: number; total: number } | null>(null);
@@ -113,6 +136,31 @@ export default function TestsClient() {
       mounted = false;
     };
   }, []);
+
+  useEffect(() => {
+    if (tab !== "aiHistory") return;
+    let mounted = true;
+
+    async function loadAiHistory() {
+      setAiLoading(true);
+      const res = await fetch("/api/tests/ai-sessions?limit=30");
+      if (!res.ok) {
+        setAiLoading(false);
+        return;
+      }
+      const data = await res.json().catch(() => ({}));
+      if (!mounted) return;
+      setAiHistory(data.sessions || []);
+      setAiStats(data.stats || null);
+      setAiLoading(false);
+    }
+
+    loadAiHistory();
+
+    return () => {
+      mounted = false;
+    };
+  }, [tab]);
 
   // -----------------------------
   // Load selected test + its saved progress (if any)
@@ -499,9 +547,70 @@ export default function TestsClient() {
 
         {/* AI History Tab */}
         {tab === "aiHistory" && (
-          <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft text-center">
-            <ClockCounterClockwise size={48} weight="thin" className="mx-auto text-ink/20" />
-            <p className="mt-4 text-sm text-ink/60">Історія AI тестів буде доступна незабаром</p>
+          <div className="space-y-6">
+            <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
+              <div className="flex items-center justify-between">
+                <p className="text-xs uppercase tracking-[0.3em] text-ink/40">AI Історія</p>
+                <span className="text-xs text-ink/40">{aiHistory.length}</span>
+              </div>
+              {aiStats && (
+                <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                  <div className="rounded-2xl border border-ink/10 bg-paper/60 p-3">
+                    <p className="text-xs text-ink/50">Спроби</p>
+                    <p className="text-lg font-semibold">{aiStats.totalAttempts}</p>
+                  </div>
+                  <div className="rounded-2xl border border-ink/10 bg-paper/60 p-3">
+                    <p className="text-xs text-ink/50">Середній бал</p>
+                    <p className="text-lg font-semibold">{Math.round(aiStats.averagePoints || 0)}/10</p>
+                  </div>
+                  <div className="rounded-2xl border border-ink/10 bg-paper/60 p-3">
+                    <p className="text-xs text-ink/50">Найкращий бал</p>
+                    <p className="text-lg font-semibold">{Math.round(aiStats.bestPoints || 0)}/10</p>
+                  </div>
+                  <div className="rounded-2xl border border-ink/10 bg-paper/60 p-3">
+                    <p className="text-xs text-ink/50">Середній %</p>
+                    <p className="text-lg font-semibold">{Math.round((aiStats.averageScore || 0) * 100)}%</p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
+              {aiLoading && (
+                <div className="text-sm text-ink/60">Завантаження історії...</div>
+              )}
+              {!aiLoading && aiHistory.length === 0 && (
+                <div className="text-center text-sm text-ink/60">
+                  <ClockCounterClockwise size={48} weight="thin" className="mx-auto text-ink/20" />
+                  <p className="mt-4">Поки що немає завершених AI тестів.</p>
+                </div>
+              )}
+              {!aiLoading && aiHistory.length > 0 && (
+                <div className="space-y-3">
+                  {aiHistory.map((entry) => (
+                    <div
+                      key={entry.id}
+                      className="rounded-2xl border border-ink/10 bg-paper/60 p-4"
+                    >
+                      <div className="flex flex-wrap items-center justify-between gap-3">
+                        <div>
+                          <p className="text-sm font-semibold">{entry.testTopic}</p>
+                          <p className="text-xs text-ink/50">
+                            {entry.testLevel} · {entry.questionsCount} питань · {new Date(entry.createdAt).toLocaleDateString()}
+                          </p>
+                        </div>
+                        <span className="rounded-full border border-ink/10 bg-paper px-3 py-1 text-xs font-semibold text-ink/70">
+                          {Math.round(entry.points || 0)}/10
+                        </span>
+                      </div>
+                      {entry.feedback && (
+                        <p className="mt-3 text-sm text-ink/70">{entry.feedback}</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         )}
 
