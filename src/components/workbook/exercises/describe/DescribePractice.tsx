@@ -126,7 +126,7 @@ export default function DescribePractice({ prompt = "", level = "A1" }: Describe
   }));
 
   async function addVocabWord({ pl, uk }: { pl: string; uk: string }) {
-    await fetch("/api/user/vocabulary/add", {
+    await fetch("/api/user/words/custom", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ pl, uk })

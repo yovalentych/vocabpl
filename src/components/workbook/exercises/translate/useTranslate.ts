@@ -250,13 +250,12 @@ export function useTranslate() {
     setVocabStatus((prev) => ({ ...prev, [word.pl]: "saving" }));
 
     try {
-      const res = await fetch("/api/words", {
+      const res = await fetch("/api/user/words/custom", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           pl: word.pl,
-          uk: word.uk,
-          type: "phrase"
+          uk: word.uk
         })
       });
 

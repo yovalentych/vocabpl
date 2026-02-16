@@ -83,10 +83,10 @@ export default function TestAISession({
   async function addWordToVocabulary(lemma: string, meaning: string) {
     setAddingWord(lemma);
     try {
-      const res = await fetch("/api/user/vocabulary/add", {
+      const res = await fetch("/api/user/words/custom", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ lemma, meaning })
+        body: JSON.stringify({ pl: lemma, uk: meaning })
       });
 
       if (res.ok) {

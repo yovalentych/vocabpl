@@ -35,7 +35,7 @@ export default function StoryResultModal({
   const addVocabWord = async (pl: string, uk: string) => {
     setAddingWord(pl);
     try {
-      const res = await fetch("/api/user/vocabulary/add", {
+      const res = await fetch("/api/user/words/custom", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ pl, uk })

@@ -2,6 +2,7 @@
 "use client";
 
 import { Circle, X, Trophy, Sparkle, CheckCircle } from "@phosphor-icons/react";
+import VocabSuggestions from "../../shared/VocabSuggestions";
 
 interface ClozeResultsProps {
   results: {
@@ -18,6 +19,29 @@ interface ClozeResultsProps {
 
 export default function ClozeResults({ results, onClose }: ClozeResultsProps) {
   const { mode, totalGaps, correctCount, score, aiCheck, topic, level } = results;
+  const suggested = (aiCheck?.suggestedVocab || [])
+    .map((item: any) => ({
+      pl: String(item.lemma || item.pl || "").trim(),
+      uk: String(item.meaning || item.meaningUk || item.translation || item.uk || "").trim()
+    }))
+    .filter((item: any) => item.pl && item.uk);
+
+  const addSuggestedWord = async (pl: string, uk: string) => {
+    const res = await fetch("/api/user/words/custom", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ pl, uk })
+    });
+    if (!res.ok && res.status !== 409) {
+      throw new Error("Failed to add word");
+    }
+  };
+
+  const addAllSuggested = async () => {
+    for (const item of suggested) {
+      await addSuggestedWord(item.pl, item.uk);
+    }
+  };
 
   const displayScore = mode === "classic" && score !== undefined
     ? score
@@ -174,21 +198,13 @@ export default function ClozeResults({ results, onClose }: ClozeResultsProps) {
               )}
 
               {/* Suggested vocabulary */}
-              {aiCheck.suggestedVocab && aiCheck.suggestedVocab.length > 0 && (
-                <div className="rounded-2xl border border-gold/20 bg-gold/5 p-4">
-                  <p className="text-xs uppercase tracking-[0.3em] text-gold/70 mb-3">
-                    Рекомендовані слова для вивчення
-                  </p>
-                  <div className="space-y-2">
-                    {aiCheck.suggestedVocab.map((vocab, idx) => (
-                      <div key={idx} className="flex items-start gap-2">
-                        <span className="text-sm font-semibold text-gold">{vocab.lemma}</span>
-                        <span className="text-sm text-ink/70">—</span>
-                        <span className="text-sm text-ink/70">{vocab.meaning}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+              {suggested.length > 0 && (
+                <VocabSuggestions
+                  suggestions={suggested}
+                  onAdd={addSuggestedWord}
+                  onAddAll={addAllSuggested}
+                  title="Рекомендовані слова для вивчення"
+                />
               )}
             </div>
           )}

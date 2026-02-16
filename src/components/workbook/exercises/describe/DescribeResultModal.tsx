@@ -29,7 +29,7 @@ export default function DescribeResultModal({
   const addVocabWord = async (lemma: string, meaningUk: string) => {
     setAddingWord(lemma);
     try {
-      const res = await fetch("/api/user/vocabulary/add", {
+      const res = await fetch("/api/user/words/custom", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ pl: lemma, uk: meaningUk })

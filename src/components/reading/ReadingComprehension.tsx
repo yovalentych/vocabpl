@@ -126,28 +126,33 @@ export default function ReadingComprehension({
     setVocabMessage("");
 
     try {
-      const words = result.suggestedVocab.map((v) => ({
-        pl: v.lemma,
-        uk: v.meaning
-      }));
+      let added = 0;
+      let skipped = 0;
 
-      const res = await fetch("/api/user/vocabulary/add", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ words })
-      });
-
-      if (!res.ok) {
-        setVocabMessage("Помилка додавання слів");
-        return;
+      for (const vocab of result.suggestedVocab) {
+        const res = await fetch("/api/user/words/custom", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ pl: vocab.lemma, uk: vocab.meaning })
+        });
+        if (res.ok) {
+          added += 1;
+        } else if (res.status === 409) {
+          skipped += 1;
+        } else if (res.status === 403) {
+          setVocabMessage("Доступ до словника доступний лише для активної підписки.");
+          setAddingVocab(false);
+          return;
+        } else {
+          skipped += 1;
+        }
       }
 
-      const data = await res.json();
       setVocabAdded(true);
 
-      if (data.added > 0) {
-        setVocabMessage(`✓ Додано ${data.added} ${data.added === 1 ? "слово" : data.added < 5 ? "слова" : "слів"} до словника!`);
-      } else if (data.skipped > 0) {
+      if (added > 0) {
+        setVocabMessage(`✓ Додано ${added} ${added === 1 ? "слово" : added < 5 ? "слова" : "слів"} до словника!`);
+      } else if (skipped > 0) {
         setVocabMessage("Ці слова вже в словнику або не знайдені");
       }
     } catch (err) {

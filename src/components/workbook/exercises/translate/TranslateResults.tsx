@@ -1,7 +1,8 @@
 // @ts-nocheck
 "use client";
 
-import { X, Trophy, Sparkle, CheckCircle, BookOpen, ArrowsClockwise, Lightbulb } from "@phosphor-icons/react";
+import { X, Trophy, Sparkle, CheckCircle, ArrowsClockwise, Lightbulb } from "@phosphor-icons/react";
+import VocabSuggestions from "../../shared/VocabSuggestions";
 
 interface TranslateResultsProps {
   results: {
@@ -20,6 +21,29 @@ interface TranslateResultsProps {
 
 export default function TranslateResults({ results, onClose }: TranslateResultsProps) {
   const { mode, total, completed, accuracy, score, direction, level, aiCheck, topic } = results;
+  const suggested = (aiCheck?.suggestedVocab || [])
+    .map((item: any) => ({
+      pl: String(item.lemma || item.pl || "").trim(),
+      uk: String(item.translation || item.meaning || item.meaningUk || item.uk || "").trim()
+    }))
+    .filter((item: any) => item.pl && item.uk);
+
+  const addSuggestedWord = async (pl: string, uk: string) => {
+    const res = await fetch("/api/user/words/custom", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ pl, uk })
+    });
+    if (!res.ok && res.status !== 409) {
+      throw new Error("Failed to add word");
+    }
+  };
+
+  const addAllSuggested = async () => {
+    for (const item of suggested) {
+      await addSuggestedWord(item.pl, item.uk);
+    }
+  };
 
   const getVerdictColor = (verdict: string) => {
     switch (verdict) {
@@ -231,24 +255,13 @@ export default function TranslateResults({ results, onClose }: TranslateResultsP
               )}
 
               {/* Suggested Vocabulary */}
-              {aiCheck.suggestedVocab && aiCheck.suggestedVocab.length > 0 && (
-                <div className="rounded-3xl border border-gold/20 bg-gold/5 p-6">
-                  <div className="flex items-center gap-2 mb-4">
-                    <BookOpen size={20} weight="fill" className="text-gold" />
-                    <h4 className="text-sm font-semibold text-ink">Рекомендовані слова для словника</h4>
-                  </div>
-                  <div className="space-y-3">
-                    {aiCheck.suggestedVocab.map((vocab: any, vIdx: number) => (
-                      <div key={vIdx} className="rounded-2xl border border-ink/10 bg-paper p-3">
-                        <div className="flex items-start justify-between gap-3 mb-1">
-                          <span className="text-sm font-semibold text-moss">{vocab.lemma}</span>
-                          <span className="text-xs text-ink/60">{vocab.translation}</span>
-                        </div>
-                        <p className="text-xs text-ink/60 italic">{vocab.reason}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+              {suggested.length > 0 && (
+                <VocabSuggestions
+                  suggestions={suggested}
+                  onAdd={addSuggestedWord}
+                  onAddAll={addAllSuggested}
+                  title="Рекомендовані слова для словника"
+                />
               )}
             </div>
           )}

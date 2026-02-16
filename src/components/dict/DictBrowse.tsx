@@ -80,6 +80,11 @@ export default function DictBrowse() {
   const [editStatus, setEditStatus] = useState<"idle" | "saving" | "error">("idle");
   const [activeLetter, setActiveLetter] = useState<string>("all");
   const [aiModalWord, setAiModalWord] = useState<Word | null>(null);
+  const [bulkOpen, setBulkOpen] = useState(false);
+  const [bulkText, setBulkText] = useState("");
+  const [bulkStatus, setBulkStatus] = useState<"idle" | "adding" | "done" | "error">("idle");
+  const [bulkSummary, setBulkSummary] = useState({ added: 0, skipped: 0 });
+  const [bulkError, setBulkError] = useState("");
 
   // Load words based on type and search
   useEffect(() => {
@@ -484,6 +489,69 @@ export default function DictBrowse() {
     setMyWordsTick((prev) => prev + 1);
   }
 
+  function parseBulkInput(text: string) {
+    const lines = text
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter(Boolean);
+    const items: { pl: string; uk: string }[] = [];
+    const seen = new Set<string>();
+
+    for (const line of lines) {
+      const match = line.match(/(.+?)\s*(?:-+|–|—|:|;|\t|\|)\s*(.+)/);
+      if (!match) continue;
+      const pl = match[1].trim();
+      const uk = match[2].trim();
+      if (!pl || !uk) continue;
+      const key = `${pl.toLowerCase()}|||${uk.toLowerCase()}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      items.push({ pl, uk });
+    }
+
+    return items;
+  }
+
+  async function handleBulkAdd() {
+    setBulkError("");
+    const items = parseBulkInput(bulkText);
+    if (items.length === 0) {
+      setBulkError(t.words.bulkAddEmpty || "Немає валідних рядків.");
+      return;
+    }
+
+    setBulkStatus("adding");
+    let added = 0;
+    let skipped = 0;
+
+    for (const item of items) {
+      const res = await fetch("/api/user/words/custom", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(item)
+      }).catch(() => null);
+
+      if (res && res.ok) {
+        added += 1;
+        continue;
+      }
+      if (res && res.status === 409) {
+        skipped += 1;
+        continue;
+      }
+      if (res && res.status === 403) {
+        setBulkError(t.words.bulkAddLocked || "Доступ до словника доступний лише для активної підписки.");
+        setBulkStatus("error");
+        return;
+      }
+      skipped += 1;
+    }
+
+    setBulkSummary({ added, skipped });
+    setBulkStatus("done");
+    setMyWordsTick((prev) => prev + 1);
+  }
+
   return (
     <div className="space-y-6">
       {/* Back to dict home */}
@@ -513,6 +581,7 @@ export default function DictBrowse() {
         }}
         onToggleControls={() => setShowControls((prev) => !prev)}
         onOpenTrainer={() => setTrainerOpen(true)}
+        onOpenBulkAdd={() => setBulkOpen(true)}
       />
 
       {/* Alphabet Navigation */}
@@ -570,6 +639,62 @@ export default function DictBrowse() {
           setEditUk={setEditUk}
           onOpenAI={setAiModalWord}
         />
+      )}
+
+      {/* Bulk Add Modal */}
+      {bulkOpen && !locked && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/30 px-4">
+          <div className="w-full max-w-2xl rounded-3xl border border-ink/10 bg-paper p-6 shadow-soft">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold">{t.words.bulkAddTitle}</h2>
+              <button
+                onClick={() => {
+                  setBulkOpen(false);
+                  setBulkStatus("idle");
+                  setBulkError("");
+                }}
+                className="rounded-full border border-ink/20 px-3 py-1 text-xs font-semibold"
+              >
+                {t.common.close}
+              </button>
+            </div>
+            <p className="mt-2 text-sm text-ink/60">{t.words.bulkAddHint}</p>
+            <textarea
+              value={bulkText}
+              onChange={(event) => setBulkText(event.target.value)}
+              rows={8}
+              placeholder={t.words.bulkAddPlaceholder}
+              className="mt-4 w-full rounded-2xl border border-ink/15 bg-paper px-4 py-3 text-sm text-ink outline-none focus:border-ink/30"
+            />
+            {bulkError && (
+              <p className="mt-3 text-sm text-terracotta">{bulkError}</p>
+            )}
+            {bulkStatus === "done" && (
+              <p className="mt-3 text-sm text-moss">
+                {t.words.bulkAddAdded}: {bulkSummary.added} · {t.words.bulkAddSkipped}: {bulkSummary.skipped}
+              </p>
+            )}
+            <div className="mt-4 flex flex-wrap gap-2">
+              <button
+                onClick={() => {
+                  setBulkOpen(false);
+                  setBulkStatus("idle");
+                  setBulkError("");
+                }}
+                className="rounded-full border border-ink/20 px-4 py-2 text-xs font-semibold text-ink"
+              >
+                {t.common.cancel}
+              </button>
+              <button
+                onClick={handleBulkAdd}
+                disabled={bulkStatus === "adding"}
+                className="rounded-full bg-ink px-4 py-2 text-xs font-semibold text-paper transition hover:bg-ink/90 disabled:opacity-60"
+              >
+                {bulkStatus === "adding" ? t.common.loading : t.words.bulkAddAction}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Trainer Modal */}

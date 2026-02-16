@@ -52,7 +52,16 @@ export const dictionary = {
       addError: "Nie udało się dodać.",
       myWords: "Moje słowa",
       duplicateHint: "To słowo jest już w słownikach.",
-      removeDuplicate: "Usuń duplikat"
+      removeDuplicate: "Usuń duplikat",
+      bulkAdd: "Dodaj wiele",
+      bulkAddTitle: "Masowe dodawanie słów",
+      bulkAddHint: "Wklej listę w formacie: polski - ukraiński (każda para w osobnym wierszu).",
+      bulkAddPlaceholder: "np.\npracować - працювати\nwczoraj — вчора\npies: пес",
+      bulkAddAction: "Dodaj słowa",
+      bulkAddEmpty: "Brak poprawnych wierszy do dodania.",
+      bulkAddLocked: "Dodawanie słów jest dostępne tylko przy aktywnej subskrypcji.",
+      bulkAddAdded: "Dodano",
+      bulkAddSkipped: "Pominięto"
     },
     notes: {
       title: "Notatki",
@@ -1212,7 +1221,16 @@ export const dictionary = {
       addError: "Не вдалося додати.",
       myWords: "Мої слова",
       duplicateHint: "Це слово вже є у словниках.",
-      removeDuplicate: "Видалити дубль"
+      removeDuplicate: "Видалити дубль",
+      bulkAdd: "Масове додавання",
+      bulkAddTitle: "Масове додавання слів",
+      bulkAddHint: "Встав список у форматі: польська - українська (кожна пара в окремому рядку).",
+      bulkAddPlaceholder: "наприклад\npracować - працювати\nwczoraj — вчора\npies: пес",
+      bulkAddAction: "Додати слова",
+      bulkAddEmpty: "Немає валідних рядків для додавання.",
+      bulkAddLocked: "Додавання слів доступне лише за активної підписки.",
+      bulkAddAdded: "Додано",
+      bulkAddSkipped: "Пропущено"
     },
     notes: {
       title: "Нотатки",

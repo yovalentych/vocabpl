@@ -16,6 +16,7 @@ interface DictFiltersProps {
   onHideTranslationsChange: (hide: boolean) => void;
   onToggleControls: () => void;
   onOpenTrainer: () => void;
+  onOpenBulkAdd: () => void;
 }
 
 export default function DictFilters({
@@ -30,7 +31,8 @@ export default function DictFilters({
   onSortChange,
   onHideTranslationsChange,
   onToggleControls,
-  onOpenTrainer
+  onOpenTrainer,
+  onOpenBulkAdd
 }: DictFiltersProps) {
   const { t } = useLocale();
 
@@ -50,6 +52,14 @@ export default function DictFilters({
               aria-pressed={showControls}
             >
               {t.deck.controls}
+            </button>
+            <button
+              onClick={onOpenBulkAdd}
+              className="rounded-full border border-ink/20 px-4 py-2 text-xs font-semibold text-ink transition hover:bg-ink/5 disabled:opacity-60"
+              disabled={locked}
+              aria-label="Bulk add words"
+            >
+              {t.words.bulkAdd}
             </button>
             <button
               onClick={onOpenTrainer}

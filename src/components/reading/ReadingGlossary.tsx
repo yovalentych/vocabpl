@@ -25,7 +25,7 @@ export default function ReadingGlossary({ text, level, locale = "uk" }: ReadingG
 
     setAddingWord(word.pl);
     try {
-      const res = await fetch("/api/user/vocabulary/add", {
+      const res = await fetch("/api/user/words/custom", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ pl: word.pl, uk: word.uk })
