@@ -212,7 +212,12 @@ export function getUserAchievements(params: {
 
     if (achievement.targetType === "rankMax") {
       if (typeof rank === "number") {
-        achievedIndex = levels.findLastIndex((level) => rank <= level.value);
+        for (let i = levels.length - 1; i >= 0; i -= 1) {
+          if (rank <= levels[i].value) {
+            achievedIndex = i;
+            break;
+          }
+        }
       }
       const completed = achievedIndex === maxIndex;
       const nextIndex = completed ? maxIndex : Math.max(0, achievedIndex + 1);
@@ -220,7 +225,12 @@ export function getUserAchievements(params: {
       progress = typeof rank === "number" && rank <= target ? target : 0;
     } else {
       const value = Number(stats[achievement.targetType] || 0);
-      achievedIndex = levels.findLastIndex((level) => value >= level.value);
+      for (let i = levels.length - 1; i >= 0; i -= 1) {
+        if (value >= levels[i].value) {
+          achievedIndex = i;
+          break;
+        }
+      }
       const completed = achievedIndex === maxIndex;
       const nextIndex = completed ? maxIndex : Math.max(0, achievedIndex + 1);
       target = levels[nextIndex]?.value || 0;
