@@ -13,7 +13,7 @@ export default function AchievementsGrid({
       {achievements.map((achievement) => {
         const percent = achievement.target > 0
           ? Math.round((achievement.progress / achievement.target) * 100)
-          : achievement.unlocked ? 100 : 0;
+          : achievement.completed ? 100 : 0;
 
         return (
           <div
@@ -30,13 +30,18 @@ export default function AchievementsGrid({
                 <div className="flex items-center justify-between gap-2">
                   <p className="font-semibold">{achievement.title}</p>
                   <span className="text-xs font-semibold text-ink/60">
-                    {achievement.unlocked ? "Отримано" : `${achievement.progress}/${achievement.target}`}
+                    {achievement.completed
+                      ? achievement.statusLabel || "Отримано"
+                      : `${achievement.progress}/${achievement.target}`}
                   </span>
                 </div>
                 <p className="mt-1 text-xs text-ink/50">{achievement.desc}</p>
+                {achievement.statusLabel && !achievement.completed && (
+                  <p className="mt-1 text-[11px] text-ink/45">{achievement.statusLabel}</p>
+                )}
                 <div className="mt-3 h-2 w-full rounded-full bg-ink/10">
                   <div
-                    className={`h-2 rounded-full ${achievement.unlocked ? "bg-moss" : "bg-gold/70"}`}
+                    className={`h-2 rounded-full ${achievement.completed ? "bg-moss" : "bg-gold/70"}`}
                     style={{ width: `${percent}%` }}
                   />
                 </div>

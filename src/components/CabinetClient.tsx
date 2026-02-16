@@ -5,7 +5,6 @@ import { useLocale } from "@/components/LocaleProvider";
 import { plans as defaultPlans, Plan, getPlanById } from "@/lib/plans";
 import { readPrefs, setCookie, writePrefs } from "@/lib/prefs";
 import { csrfFetch } from "@/lib/csrf-client";
-import AchievementsSection from "@/components/AchievementsSection";
 import {
   User,
   Lock,
@@ -329,13 +328,6 @@ export default function CabinetClient({ username }: { username: string }) {
     .slice(0, 10); // Top 10
 
   const maxCount = Math.max(...aiUsageChartData.map((d) => d.count), 1);
-  const statsSnapshot = useMemo(() => ({
-    wordsStudied: Number(profile?.stats?.wordsStudied || 0),
-    testsTaken: Number(profile?.stats?.testsTaken || 0),
-    sessions: Number(profile?.stats?.sessions || 0),
-    points: Number(profile?.stats?.points || 0)
-  }), [profile?.stats]);
-
   return (
     <div className="space-y-10">
       {/* Header */}
@@ -352,13 +344,6 @@ export default function CabinetClient({ username }: { username: string }) {
           </div>
 
           <div className="flex flex-col items-end gap-3">
-            <a
-              href="/cabinet/achievements"
-              className="inline-flex items-center gap-2 rounded-full border border-ink/20 bg-paper px-4 py-2 text-xs font-semibold text-ink/70 hover:bg-ink/5"
-            >
-              <Trophy size={16} weight="fill" className="text-terracotta" />
-              Мої ачівки
-            </a>
             {isActive && (
               <div className="inline-flex items-center gap-2 rounded-full border border-moss/20 bg-moss/10 px-4 py-2">
                 <CheckCircle size={16} weight="fill" className="text-moss" />
@@ -368,15 +353,6 @@ export default function CabinetClient({ username }: { username: string }) {
           </div>
         </div>
       </div>
-
-      <AchievementsSection
-        username={profile?.username || username}
-        name={profile?.name || username}
-        stats={statsSnapshot}
-        locale={locale}
-        title="Мої ачівки"
-        subtitle="Збирай нагороди за навчальний прогрес"
-      />
 
       {/* AI Usage Stats */}
       <section>

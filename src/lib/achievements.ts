@@ -26,16 +26,19 @@ export type AchievementIcon =
 
 type LocaleText = { uk: string; pl: string };
 
+export type AchievementLevel = {
+  value: number;
+  label: LocaleText;
+};
+
 export type AchievementDefinition = {
   id: AchievementId;
   title: LocaleText;
   desc: LocaleText;
   icon: AchievementIcon;
   tone: AchievementTone;
-  target: {
-    type: "testsTaken" | "wordsStudied" | "sessions" | "points" | "rankMax";
-    value: number;
-  };
+  targetType: "testsTaken" | "wordsStudied" | "sessions" | "points" | "rankMax";
+  levels: AchievementLevel[];
 };
 
 export type UserStatsSnapshot = {
@@ -52,8 +55,12 @@ export type AchievementProgress = {
   icon: AchievementIcon;
   tone: AchievementTone;
   unlocked: boolean;
+  completed: boolean;
   progress: number;
   target: number;
+  tierLabel: string | null;
+  nextLabel: string | null;
+  statusLabel: string;
 };
 
 export const ACHIEVEMENTS: AchievementDefinition[] = [
@@ -63,7 +70,12 @@ export const ACHIEVEMENTS: AchievementDefinition[] = [
     desc: { uk: "Завершити 1 тест", pl: "Ukończ 1 test" },
     icon: "seedling",
     tone: "moss",
-    target: { type: "testsTaken", value: 1 }
+    targetType: "testsTaken",
+    levels: [
+      { value: 1, label: { uk: "Бронза", pl: "Brąz" } },
+      { value: 10, label: { uk: "Срібло", pl: "Srebro" } },
+      { value: 30, label: { uk: "Золото", pl: "Złoto" } }
+    ]
   },
   {
     id: "five-tests",
@@ -71,7 +83,12 @@ export const ACHIEVEMENTS: AchievementDefinition[] = [
     desc: { uk: "Завершити 5 тестів", pl: "Ukończ 5 testów" },
     icon: "flask",
     tone: "gold",
-    target: { type: "testsTaken", value: 5 }
+    targetType: "testsTaken",
+    levels: [
+      { value: 5, label: { uk: "Бронза", pl: "Brąz" } },
+      { value: 25, label: { uk: "Срібло", pl: "Srebro" } },
+      { value: 60, label: { uk: "Золото", pl: "Złoto" } }
+    ]
   },
   {
     id: "ten-tests",
@@ -79,7 +96,12 @@ export const ACHIEVEMENTS: AchievementDefinition[] = [
     desc: { uk: "Завершити 10 тестів", pl: "Ukończ 10 testów" },
     icon: "medal",
     tone: "terracotta",
-    target: { type: "testsTaken", value: 10 }
+    targetType: "testsTaken",
+    levels: [
+      { value: 10, label: { uk: "Бронза", pl: "Brąz" } },
+      { value: 50, label: { uk: "Срібло", pl: "Srebro" } },
+      { value: 120, label: { uk: "Золото", pl: "Złoto" } }
+    ]
   },
   {
     id: "words-20",
@@ -87,7 +109,12 @@ export const ACHIEVEMENTS: AchievementDefinition[] = [
     desc: { uk: "Вивчити 20 слів", pl: "Poznaj 20 słów" },
     icon: "book",
     tone: "moss",
-    target: { type: "wordsStudied", value: 20 }
+    targetType: "wordsStudied",
+    levels: [
+      { value: 20, label: { uk: "Бронза", pl: "Brąz" } },
+      { value: 100, label: { uk: "Срібло", pl: "Srebro" } },
+      { value: 300, label: { uk: "Золото", pl: "Złoto" } }
+    ]
   },
   {
     id: "words-100",
@@ -95,7 +122,12 @@ export const ACHIEVEMENTS: AchievementDefinition[] = [
     desc: { uk: "Вивчити 100 слів", pl: "Poznaj 100 słów" },
     icon: "stack",
     tone: "gold",
-    target: { type: "wordsStudied", value: 100 }
+    targetType: "wordsStudied",
+    levels: [
+      { value: 200, label: { uk: "Бронза", pl: "Brąz" } },
+      { value: 500, label: { uk: "Срібло", pl: "Srebro" } },
+      { value: 1000, label: { uk: "Золото", pl: "Złoto" } }
+    ]
   },
   {
     id: "sessions-5",
@@ -103,7 +135,12 @@ export const ACHIEVEMENTS: AchievementDefinition[] = [
     desc: { uk: "Зробити 5 навчальних сесій", pl: "Zrób 5 sesji nauki" },
     icon: "timer",
     tone: "ink",
-    target: { type: "sessions", value: 5 }
+    targetType: "sessions",
+    levels: [
+      { value: 5, label: { uk: "Бронза", pl: "Brąz" } },
+      { value: 20, label: { uk: "Срібло", pl: "Srebro" } },
+      { value: 60, label: { uk: "Золото", pl: "Złoto" } }
+    ]
   },
   {
     id: "sessions-20",
@@ -111,7 +148,12 @@ export const ACHIEVEMENTS: AchievementDefinition[] = [
     desc: { uk: "Зробити 20 навчальних сесій", pl: "Zrób 20 sesji nauki" },
     icon: "fire",
     tone: "terracotta",
-    target: { type: "sessions", value: 20 }
+    targetType: "sessions",
+    levels: [
+      { value: 20, label: { uk: "Бронза", pl: "Brąz" } },
+      { value: 80, label: { uk: "Срібло", pl: "Srebro" } },
+      { value: 160, label: { uk: "Золото", pl: "Złoto" } }
+    ]
   },
   {
     id: "points-100",
@@ -119,7 +161,12 @@ export const ACHIEVEMENTS: AchievementDefinition[] = [
     desc: { uk: "Набрати 100 балів", pl: "Zdobądź 100 punktów" },
     icon: "bolt",
     tone: "gold",
-    target: { type: "points", value: 100 }
+    targetType: "points",
+    levels: [
+      { value: 100, label: { uk: "Бронза", pl: "Brąz" } },
+      { value: 500, label: { uk: "Срібло", pl: "Srebro" } },
+      { value: 2000, label: { uk: "Золото", pl: "Złoto" } }
+    ]
   },
   {
     id: "points-500",
@@ -127,7 +174,12 @@ export const ACHIEVEMENTS: AchievementDefinition[] = [
     desc: { uk: "Набрати 500 балів", pl: "Zdobądź 500 punktów" },
     icon: "diamond",
     tone: "moss",
-    target: { type: "points", value: 500 }
+    targetType: "points",
+    levels: [
+      { value: 1000, label: { uk: "Бронза", pl: "Brąz" } },
+      { value: 2500, label: { uk: "Срібло", pl: "Srebro" } },
+      { value: 5000, label: { uk: "Золото", pl: "Złoto" } }
+    ]
   },
   {
     id: "top-10",
@@ -135,7 +187,12 @@ export const ACHIEVEMENTS: AchievementDefinition[] = [
     desc: { uk: "Увійти в першу десятку рейтингу", pl: "Wejdź do top 10 rankingu" },
     icon: "trophy",
     tone: "terracotta",
-    target: { type: "rankMax", value: 10 }
+    targetType: "rankMax",
+    levels: [
+      { value: 10, label: { uk: "Top 10", pl: "Top 10" } },
+      { value: 3, label: { uk: "Top 3", pl: "Top 3" } },
+      { value: 1, label: { uk: "Top 1", pl: "Top 1" } }
+    ]
   }
 ];
 
@@ -147,23 +204,42 @@ export function getUserAchievements(params: {
   const { locale, stats, rank } = params;
 
   return ACHIEVEMENTS.map((achievement) => {
-    const target = achievement.target.value;
+    const levels = [...achievement.levels].sort((a, b) => a.value - b.value);
+    const maxIndex = levels.length - 1;
+    let achievedIndex = -1;
     let progress = 0;
-    let unlocked = false;
+    let target = levels[0]?.value || 0;
 
-    if (achievement.target.type === "rankMax") {
+    if (achievement.targetType === "rankMax") {
       if (typeof rank === "number") {
-        unlocked = rank <= target;
-        progress = unlocked ? target : 0;
-      } else {
-        unlocked = false;
-        progress = 0;
+        achievedIndex = levels.findLastIndex((level) => rank <= level.value);
       }
+      const completed = achievedIndex === maxIndex;
+      const nextIndex = completed ? maxIndex : Math.max(0, achievedIndex + 1);
+      target = levels[nextIndex]?.value || 0;
+      progress = typeof rank === "number" && rank <= target ? target : 0;
     } else {
-      const value = Number(stats[achievement.target.type] || 0);
+      const value = Number(stats[achievement.targetType] || 0);
+      achievedIndex = levels.findLastIndex((level) => value >= level.value);
+      const completed = achievedIndex === maxIndex;
+      const nextIndex = completed ? maxIndex : Math.max(0, achievedIndex + 1);
+      target = levels[nextIndex]?.value || 0;
       progress = Math.min(value, target);
-      unlocked = value >= target;
     }
+
+    const unlocked = achievedIndex >= 0;
+    const completed = achievedIndex === maxIndex && unlocked;
+    const tierLabel = unlocked ? levels[achievedIndex]?.label[locale] || null : null;
+    const nextLabel = completed ? null : levels[Math.max(0, achievedIndex + 1)]?.label[locale] || null;
+    const statusLabel = completed
+      ? locale === "pl"
+        ? "Maks"
+        : "Макс"
+      : unlocked
+        ? tierLabel && nextLabel
+          ? `${tierLabel} → ${nextLabel}`
+          : tierLabel || ""
+        : nextLabel || "";
 
     return {
       id: achievement.id,
@@ -172,8 +248,12 @@ export function getUserAchievements(params: {
       icon: achievement.icon,
       tone: achievement.tone,
       unlocked,
+      completed,
       progress,
-      target
+      target,
+      tierLabel,
+      nextLabel,
+      statusLabel
     };
   });
 }
