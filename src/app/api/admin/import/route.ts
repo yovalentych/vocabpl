@@ -31,7 +31,15 @@ function normalizeFileBase(fileName?: string) {
 
 function buildWordOps(
   payload: WordPayload,
-  type: "verb" | "adverb" | "adjective",
+  type:
+    | "verb"
+    | "adverb"
+    | "adjective"
+    | "slang"
+    | "others"
+    | "soft_swears"
+    | "clean_emotions"
+    | "abbreviations",
   sourceFallback: string
 ) {
   const items = Array.isArray(payload.items) ? payload.items : [];
@@ -69,19 +77,39 @@ export async function POST(request: Request) {
   const fileName = typeof body.fileName === "string" ? body.fileName : "";
   const fileBase = normalizeFileBase(fileName);
 
-  if (!kind || !["verbs", "adverbs", "adjectives", "tests"].includes(kind)) {
+  const typeMap: Record<
+    string,
+    | "verb"
+    | "adverb"
+    | "adjective"
+    | "slang"
+    | "others"
+    | "soft_swears"
+    | "clean_emotions"
+    | "abbreviations"
+  > = {
+    verbs: "verb",
+    adverbs: "adverb",
+    adjectives: "adjective",
+    slang: "slang",
+    others: "others",
+    soft_swears: "soft_swears",
+    clean_emotions: "clean_emotions",
+    abbreviations: "abbreviations"
+  };
+
+  if (!kind || (!typeMap[kind] && kind !== "tests")) {
     return NextResponse.json({ error: "Missing or invalid import kind." }, { status: 400 });
   }
 
   const db = await getDb();
 
-  if (kind === "verbs" || kind === "adverbs" || kind === "adjectives") {
+  if (kind !== "tests") {
     const payload = body.payload as WordPayload | undefined;
     if (!payload || !Array.isArray(payload.items)) {
       return NextResponse.json({ error: "Expected JSON with items array." }, { status: 400 });
     }
-    const type =
-      kind === "verbs" ? "verb" : kind === "adverbs" ? "adverb" : "adjective";
+    const type = typeMap[kind];
     const items = payload.items || [];
     const ids = items.map((item) => item.id?.trim()).filter(Boolean) as string[];
     const duplicateIds = ids.filter((id, idx) => ids.indexOf(id) !== idx);

@@ -26,6 +26,10 @@ export default function AdminImportPanel() {
   const [meta, setMeta] = useState<{ lastId: string; nextId: string; type: string } | null>(null);
   const [editorOpen, setEditorOpen] = useState(false);
   const [state, setState] = useState<ImportState>({ status: "idle", message: "" });
+  const [singleId, setSingleId] = useState("");
+  const [singlePl, setSinglePl] = useState("");
+  const [singleUk, setSingleUk] = useState("");
+  const [singleState, setSingleState] = useState<ImportState>({ status: "idle", message: "" });
 
   const loadMeta = useCallback(async (selectedKind: ImportKind) => {
     if (selectedKind === "tests") {
@@ -44,6 +48,12 @@ export default function AdminImportPanel() {
   useEffect(() => {
     loadMeta(kind);
   }, [kind, loadMeta]);
+
+  useEffect(() => {
+    if (meta?.nextId) {
+      setSingleId(meta.nextId);
+    }
+  }, [meta]);
 
   function buildTemplate() {
     if (kind === "tests") {
@@ -131,6 +141,54 @@ export default function AdminImportPanel() {
     });
   }
 
+  async function handleSingleAdd() {
+    if (kind === "tests") {
+      setSingleState({ status: "error", message: t.admin.importSingleInvalid });
+      return;
+    }
+    if (!singlePl.trim() || !singleUk.trim()) {
+      setSingleState({ status: "error", message: t.admin.importSingleMissing });
+      return;
+    }
+
+    setSingleState({ status: "loading", message: "" });
+    const payload = {
+      version: "1.0.0",
+      source: "manual",
+      items: [
+        {
+          id: singleId?.trim() || meta?.nextId || "",
+          pl: singlePl.trim(),
+          uk: singleUk.trim(),
+          pos: meta?.type || ""
+        }
+      ]
+    };
+
+    const res = await fetch("/api/admin/import", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ kind, fileName: `${kind}.manual.json`, payload })
+    });
+
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      const duplicateMessage = Array.isArray(data.duplicates)
+        ? `${t.admin.importErrors.duplicates}: ${data.duplicates.join(", ")}`
+        : null;
+      setSingleState({
+        status: "error",
+        message: duplicateMessage || data.error || t.admin.importErrors.server
+      });
+      return;
+    }
+
+    setSingleState({ status: "success", message: t.admin.importSingleSuccess });
+    setSinglePl("");
+    setSingleUk("");
+    await loadMeta(kind);
+  }
+
   return (
     <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
       <h2 className="text-2xl font-semibold">{t.admin.importTitle}</h2>
@@ -180,6 +238,66 @@ export default function AdminImportPanel() {
 
         <div className="rounded-2xl border border-ink/10 bg-paper/60 px-4 py-3 text-xs text-ink/60">
           {t.admin.importHint}
+        </div>
+
+        <div className="rounded-2xl border border-ink/10 bg-paper/70 p-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="text-sm font-semibold text-ink">{t.admin.importSingleTitle}</p>
+              <p className="text-xs text-ink/60">{t.admin.importSingleSubtitle}</p>
+            </div>
+          </div>
+          <div className="mt-4 grid gap-3 sm:grid-cols-3">
+            <label className="text-xs text-ink/60">
+              {t.admin.importSingleId}
+              <input
+                value={singleId}
+                onChange={(event) => setSingleId(event.target.value)}
+                className="mt-1 w-full rounded-2xl border border-ink/15 bg-paper px-3 py-2 text-sm text-ink"
+                placeholder={meta?.nextId || ""}
+              />
+            </label>
+            <label className="text-xs text-ink/60">
+              {t.admin.importSinglePl}
+              <input
+                value={singlePl}
+                onChange={(event) => setSinglePl(event.target.value)}
+                className="mt-1 w-full rounded-2xl border border-ink/15 bg-paper px-3 py-2 text-sm text-ink"
+                placeholder="polski"
+              />
+            </label>
+            <label className="text-xs text-ink/60">
+              {t.admin.importSingleUk}
+              <input
+                value={singleUk}
+                onChange={(event) => setSingleUk(event.target.value)}
+                className="mt-1 w-full rounded-2xl border border-ink/15 bg-paper px-3 py-2 text-sm text-ink"
+                placeholder="українською"
+              />
+            </label>
+          </div>
+          <div className="mt-3 flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onClick={handleSingleAdd}
+              className="inline-flex items-center justify-center rounded-full bg-ink px-5 py-2 text-xs uppercase tracking-[0.2em] text-paper transition hover:opacity-90"
+            >
+              {singleState.status === "loading" ? t.common.loading : t.admin.importSingleAction}
+            </button>
+            {singleState.status !== "idle" && (
+              <span
+                className={`text-xs ${
+                  singleState.status === "success"
+                    ? "text-emerald-700"
+                    : singleState.status === "error"
+                      ? "text-rose-600"
+                      : "text-ink/60"
+                }`}
+              >
+                {singleState.message}
+              </span>
+            )}
+          </div>
         </div>
 
         <button
