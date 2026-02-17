@@ -105,6 +105,8 @@ export default function AuthPanel({ initialMode = "login" }: { initialMode?: "lo
         setMessage(t.auth.verifySent);
         startCooldown(60);
         window.localStorage.setItem("pendingVerificationEmail", data.email);
+      } else if (data?.code === "PROMO_INVALID") {
+        setMessage(t.auth.promoInvalid);
       } else if (data?.code === "USERNAME_EXISTS") {
         setMessage(t.auth.usernameExists);
       } else if (data?.code === "EMAIL_EXISTS") {
@@ -248,21 +250,21 @@ export default function AuthPanel({ initialMode = "login" }: { initialMode?: "lo
 
   return (
     <div className="relative pb-8">
-      <div className="relative p-4 sm:p-10">
-        <div className="mx-auto max-w-lg rounded-3xl border border-ink/10 bg-paper/90 p-6 sm:border-2 sm:p-8 shadow-soft">
+      <div className="relative px-4 py-6 sm:p-10">
+        <div className="mx-auto w-full max-w-lg rounded-2xl bg-paper/80 p-5 sm:rounded-3xl sm:border-2 sm:border-ink/10 sm:bg-paper/90 sm:p-8 sm:shadow-soft">
           {stage === "auth" && (
             <>
               <div className="flex items-center justify-between gap-4">
                 <div>
                   <p className="text-xs uppercase tracking-[0.4em] text-ink/50 font-bold">{t.auth.welcome}</p>
-                  <h1 className="mt-4 sm:mt-3 text-3xl sm:text-3xl font-bold sm:font-semibold leading-tight">
+                  <h1 className="mt-3 sm:mt-3 text-2xl sm:text-3xl font-bold sm:font-semibold leading-tight">
                     {mode === "login" ? t.auth.loginTab : t.auth.registerTab}
                   </h1>
                   <p className="mt-3 sm:mt-2 text-base sm:text-sm text-ink/60 leading-relaxed">{t.auth.subtitle}</p>
                 </div>
               </div>
 
-              <form onSubmit={handleSubmit} className="mt-8 sm:mt-8 space-y-5 sm:space-y-6">
+              <form onSubmit={handleSubmit} className="mt-6 sm:mt-8 space-y-4 sm:space-y-6">
                 {mode === "register" ? (
                   <>
                     <div className="grid gap-4 sm:gap-4 sm:grid-cols-2">

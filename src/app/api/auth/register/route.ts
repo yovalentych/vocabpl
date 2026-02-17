@@ -83,6 +83,15 @@ export async function POST(request: Request) {
   if (promoCode) {
     const db = await getDb();
     const promo = await db.collection("promo_codes").findOne({ code: String(promoCode).trim().toUpperCase() });
+    if (!promo) {
+      return NextResponse.json({ error: "Promo code not found", code: "PROMO_INVALID" }, { status: 400 });
+    }
+    if (promo.redeemedBy) {
+      return NextResponse.json({ error: "Promo code already used", code: "PROMO_INVALID" }, { status: 400 });
+    }
+    if (promo.expiresAt && new Date(promo.expiresAt).getTime() <= Date.now()) {
+      return NextResponse.json({ error: "Promo code expired", code: "PROMO_INVALID" }, { status: 400 });
+    }
     if (promo && !promo.redeemedBy && (!promo.expiresAt || new Date(promo.expiresAt).getTime() > Date.now())) {
       const duration = promo.durationDays === null ? null : Number(promo.durationDays);
       const expiresAt = getExpiryDate(duration as PromoDuration);
