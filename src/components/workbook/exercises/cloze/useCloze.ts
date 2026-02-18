@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react";
+import { safeParseAIResponse } from "@/lib/workbook";
 
 export interface ClozeGap {
   answers: string[];
@@ -222,7 +223,7 @@ export function useCloze() {
         return false;
       }
 
-      const result = JSON.parse(String(data?.text || ""));
+      const result = safeParseAIResponse(data?.text);
 
       if (result?.task) {
         // Convert AI task to material format
@@ -292,7 +293,8 @@ export function useCloze() {
         return null;
       }
 
-      const result = JSON.parse(String(data?.text || ""));
+      const result = safeParseAIResponse(data?.text);
+      if (!result) return null;
 
       // Save points if available
       if (result?.overall?.pointsForRating) {

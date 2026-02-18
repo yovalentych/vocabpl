@@ -4,6 +4,7 @@
 import { useState } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { CheckCircle, Circle, Sparkle, PaperPlaneRight } from "@phosphor-icons/react";
+import { safeParseAIResponse } from "@/lib/workbook";
 import ClozeResults from "./ClozeResults";
 
 interface ClozeClassicPracticeProps {
@@ -42,9 +43,13 @@ export default function ClozeClassicPractice({ config, onComplete }: ClozeClassi
   const [items] = useState(() => generateStaticExercise(config.level, config.sentenceCount));
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [showResults, setShowResults] = useState(false);
+  const [aiCheckResult, setAiCheckResult] = useState<any>(null);
   const [isCheckingAI, setIsCheckingAI] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  const isProcessing = isCheckingAI || isSubmitting;
 
   const updateAnswer = (index: number, value: string) => {
     setAnswers((prev) => ({ ...prev, [index]: value }));
@@ -63,7 +68,7 @@ export default function ClozeClassicPractice({ config, onComplete }: ClozeClassi
     const filledAnswers = Object.entries(answers).filter(([_, value]) => value.trim());
 
     if (filledAnswers.length === 0) {
-      alert("Будь ласка, заповніть хоча б одну пропуск");
+      setError("Будь ласка, заповніть хоча б один пропуск");
       return;
     }
 
@@ -110,25 +115,35 @@ export default function ClozeClassicPractice({ config, onComplete }: ClozeClassi
         return;
       }
 
-      const result = JSON.parse(String(data?.text || "{}"));
+      const result = safeParseAIResponse(data?.text);
+
+      if (!result || !result.items) {
+        setError("AI повернула неправильний формат відповіді. Спробуйте ще раз.");
+        return;
+      }
 
       // Save points to database
       if (result?.overall?.pointsForRating) {
-        await fetch("/api/exercises/attempt", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            exercise: "cloze",
-            points: result.overall.pointsForRating,
-            xp: result.overall.xp || 0
-          })
-        });
+        try {
+          await fetch("/api/exercises/attempt", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              exercise: "cloze",
+              points: result.overall.pointsForRating,
+              xp: result.overall.xp || 0
+            })
+          });
+        } catch (err) {
+          console.error("Failed to save points:", err);
+        }
       }
 
-      // Show results
+      // Store AI result and show results
+      setAiCheckResult(result);
       setShowResults(true);
-    } catch (error) {
-      console.error("Failed to check with AI:", error);
+    } catch (err) {
+      console.error("Failed to check with AI:", err);
       setError("Помилка перевірки");
     } finally {
       setIsCheckingAI(false);
@@ -139,7 +154,7 @@ export default function ClozeClassicPractice({ config, onComplete }: ClozeClassi
     const filledAnswers = Object.entries(answers).filter(([_, value]) => value.trim());
 
     if (filledAnswers.length === 0) {
-      alert("Будь ласка, заповніть хоча б одну пропуск");
+      setError("Будь ласка, заповніть хоча б один пропуск");
       return;
     }
 
@@ -167,28 +182,32 @@ export default function ClozeClassicPractice({ config, onComplete }: ClozeClassi
         })
       });
 
-      const data = await res.json();
-
       if (!res.ok) {
+        let data = {};
+        try { data = await res.json(); } catch {}
         setError(data?.error || "Помилка надсилання");
         return;
       }
 
       // Save minimal points for submission
-      await fetch("/api/exercises/attempt", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          exercise: "cloze",
-          points: filledAnswers.length,
-          xp: filledAnswers.length * 2
-        })
-      });
+      try {
+        await fetch("/api/exercises/attempt", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            exercise: "cloze",
+            points: filledAnswers.length,
+            xp: filledAnswers.length * 2
+          })
+        });
+      } catch (err) {
+        console.error("Failed to save points:", err);
+      }
 
-      alert("✅ Вправу надіслано на перевірку! Очікуйте фідбек від викладача.");
-      onComplete();
-    } catch (error) {
-      console.error("Failed to submit:", error);
+      setSuccessMessage("Вправу надіслано на перевірку! Очікуйте фідбек від викладача.");
+      setTimeout(() => onComplete(), 2000);
+    } catch (err) {
+      console.error("Failed to submit:", err);
       setError("Помилка надсилання");
     } finally {
       setIsSubmitting(false);
@@ -249,6 +268,7 @@ export default function ClozeClassicPractice({ config, onComplete }: ClozeClassi
                         value={userAnswer}
                         onChange={(e) => updateAnswer(index, e.target.value)}
                         placeholder="..."
+                        maxLength={100}
                         className="inline-block min-w-[120px] rounded-xl border border-ink/20 bg-paper px-3 py-1.5 text-sm text-ink placeholder:text-ink/30 focus:border-gold/40 focus:outline-none"
                       />
                       <span>{parts[1]}</span>
@@ -281,6 +301,13 @@ export default function ClozeClassicPractice({ config, onComplete }: ClozeClassi
           })}
         </div>
 
+        {/* Success message */}
+        {successMessage && (
+          <div className="rounded-2xl border border-moss/20 bg-moss/5 p-4 text-sm text-moss">
+            {successMessage}
+          </div>
+        )}
+
         {/* Error message */}
         {error && (
           <div className="rounded-2xl border border-terracotta/20 bg-terracotta/5 p-4 text-sm text-terracotta">
@@ -293,7 +320,7 @@ export default function ClozeClassicPractice({ config, onComplete }: ClozeClassi
           <div className="flex flex-wrap items-center justify-center gap-3">
             <button
               onClick={handleCheckWithAI}
-              disabled={isCheckingAI || filledCount === 0}
+              disabled={isProcessing || filledCount === 0}
               className="inline-flex items-center gap-2 rounded-full bg-moss px-6 py-3 text-sm font-semibold text-paper transition hover:bg-moss/90 disabled:cursor-not-allowed disabled:opacity-40"
             >
               {isCheckingAI ? (
@@ -311,7 +338,7 @@ export default function ClozeClassicPractice({ config, onComplete }: ClozeClassi
 
             <button
               onClick={handleSubmitForReview}
-              disabled={isSubmitting || filledCount === 0}
+              disabled={isProcessing || filledCount === 0}
               className="inline-flex items-center gap-2 rounded-full bg-terracotta px-6 py-3 text-sm font-semibold text-paper transition hover:bg-terracotta/90 disabled:cursor-not-allowed disabled:opacity-40"
             >
               {isSubmitting ? (
@@ -329,7 +356,7 @@ export default function ClozeClassicPractice({ config, onComplete }: ClozeClassi
           </div>
 
           <p className="text-center text-xs text-ink/50">
-            💡 Перевірка з AI дає детальний фідбек та оцінку. Відправка на перевірку — для ручного review від викладача.
+            Перевірка з AI дає детальний фідбек та оцінку. Відправка на перевірку — для ручного review від викладача.
           </p>
 
           <div className="text-center text-sm text-ink/60">
@@ -346,6 +373,7 @@ export default function ClozeClassicPractice({ config, onComplete }: ClozeClassi
             totalGaps: items.length,
             correctCount,
             score: correctCount / items.length,
+            aiCheck: aiCheckResult,
             level: config.level
           }}
           onClose={() => {

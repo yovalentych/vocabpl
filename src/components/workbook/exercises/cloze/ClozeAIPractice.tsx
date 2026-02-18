@@ -4,6 +4,7 @@
 import { useState, useEffect } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { CheckCircle, Circle, Sparkle } from "@phosphor-icons/react";
+import { safeParseAIResponse } from "@/lib/workbook";
 import ClozeResults from "./ClozeResults";
 
 interface ClozeAIPracticeProps {
@@ -27,6 +28,8 @@ export default function ClozeAIPractice({ config, onComplete }: ClozeAIPracticeP
 
   // Generate exercise with AI
   useEffect(() => {
+    let cancelled = false;
+
     async function generateExercise() {
       try {
         setError(null);
@@ -44,6 +47,8 @@ export default function ClozeAIPractice({ config, onComplete }: ClozeAIPracticeP
           })
         });
 
+        if (cancelled) return;
+
         const data = await res.json().catch(() => ({}));
 
         if (!res.ok) {
@@ -60,18 +65,30 @@ export default function ClozeAIPractice({ config, onComplete }: ClozeAIPracticeP
         }
 
         // Parse AI response
-        const result = JSON.parse(String(data?.text || ""));
-        setTask(result.task);
-      } catch (error) {
-        console.error("Failed to generate exercise:", error);
-        setError("Помилка мережі");
+        const result = safeParseAIResponse(data?.text);
+
+        if (!result || !result.task || !result.task.items || result.task.items.length === 0) {
+          setError("AI не змогла згенерувати вправу. Спробуйте іншу тему.");
+          setIsGenerating(false);
+          return;
+        }
+
+        if (!cancelled) {
+          setTask(result.task);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          console.error("Failed to generate exercise:", err);
+          setError("Помилка мережі");
+        }
       } finally {
-        setIsGenerating(false);
+        if (!cancelled) setIsGenerating(false);
       }
     }
 
     generateExercise();
-  }, [config, locale]);
+    return () => { cancelled = true; };
+  }, [config.topic, config.level, config.sentenceCount, locale]);
 
   const updateAnswer = (itemId: string, gapIndex: number, value: string) => {
     setAnswers((prev) => ({
@@ -87,10 +104,10 @@ export default function ClozeAIPractice({ config, onComplete }: ClozeAIPracticeP
     if (!task) return;
 
     // Prepare answers for checking
-    const itemsWithAnswers = task.items.map((item) => ({
+    const itemsWithAnswers = task.items.map((item: any) => ({
       id: item.id,
       text: item.text,
-      gaps: item.gaps.map((gap, idx) => ({
+      gaps: (item.gaps || []).map((gap: any, idx: number) => ({
         ...gap,
         userAnswer: answers[item.id]?.[idx] || ""
       }))
@@ -130,7 +147,14 @@ export default function ClozeAIPractice({ config, onComplete }: ClozeAIPracticeP
       }
 
       // Parse result
-      const result = JSON.parse(String(data?.text || ""));
+      const result = safeParseAIResponse(data?.text);
+
+      if (!result || !result.items) {
+        setError("AI повернула неправильний формат відповіді. Спробуйте ще раз.");
+        setIsChecking(false);
+        return;
+      }
+
       setCheckResult(result);
 
       // Save points if available
@@ -145,14 +169,14 @@ export default function ClozeAIPractice({ config, onComplete }: ClozeAIPracticeP
               xp: result.overall.xp || 0
             })
           });
-        } catch (error) {
-          console.error("Failed to save points:", error);
+        } catch (err) {
+          console.error("Failed to save points:", err);
         }
       }
 
       setShowResults(true);
-    } catch (error) {
-      console.error("Failed to check with AI:", error);
+    } catch (err) {
+      console.error("Failed to check with AI:", err);
       setError("Помилка мережі");
     } finally {
       setIsChecking(false);
@@ -192,9 +216,9 @@ export default function ClozeAIPractice({ config, onComplete }: ClozeAIPracticeP
   if (!task) return null;
 
   // Count filled gaps
-  const totalGaps = task.items.reduce((sum, item) => sum + item.gaps.length, 0);
+  const totalGaps = task.items.reduce((sum: number, item: any) => sum + (item.gaps || []).length, 0);
   const filledGaps = Object.values(answers).reduce(
-    (sum, itemAnswers) => sum + Object.values(itemAnswers).filter((a) => a.trim()).length,
+    (sum: number, itemAnswers: any) => sum + Object.values(itemAnswers).filter((a: any) => a.trim()).length,
     0
   );
 
@@ -225,9 +249,9 @@ export default function ClozeAIPractice({ config, onComplete }: ClozeAIPracticeP
 
         {/* Exercise items */}
         <div className="space-y-4">
-          {task.items.map((item, itemIndex) => (
+          {task.items.map((item: any, itemIndex: number) => (
             <div
-              key={item.id}
+              key={item.id || itemIndex}
               className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft"
             >
               <div className="flex items-start gap-3">
@@ -239,7 +263,7 @@ export default function ClozeAIPractice({ config, onComplete }: ClozeAIPracticeP
                   <div className="flex flex-wrap items-center gap-2 text-base text-ink">
                     {(() => {
                       const parts = item.text.split("___");
-                      return parts.map((part, partIndex) => (
+                      return parts.map((part: string, partIndex: number) => (
                         <span key={partIndex}>
                           {part}
                           {partIndex < parts.length - 1 && (
@@ -248,6 +272,7 @@ export default function ClozeAIPractice({ config, onComplete }: ClozeAIPracticeP
                               value={answers[item.id]?.[partIndex] || ""}
                               onChange={(e) => updateAnswer(item.id, partIndex, e.target.value)}
                               placeholder="..."
+                              maxLength={100}
                               className="inline-block min-w-[120px] mx-1 rounded-xl border border-ink/20 bg-paper px-3 py-1.5 text-sm text-ink placeholder:text-ink/30 focus:border-moss/40 focus:outline-none"
                             />
                           )}
@@ -257,7 +282,7 @@ export default function ClozeAIPractice({ config, onComplete }: ClozeAIPracticeP
                   </div>
 
                   {/* Hints */}
-                  {item.gaps.map((gap, gapIndex) => (
+                  {(item.gaps || []).map((gap: any, gapIndex: number) => (
                     <div key={gapIndex} className="rounded-xl border border-moss/20 bg-moss/5 px-3 py-2">
                       <p className="text-xs text-ink/70">
                         <span className="font-semibold text-moss">Підказка {gapIndex + 1}:</span> {gap.hint}

@@ -4,6 +4,14 @@
 import { X, Trophy, Sparkle, CheckCircle, ArrowsClockwise, Lightbulb } from "@phosphor-icons/react";
 import VocabSuggestions from "../../shared/VocabSuggestions";
 
+const VERDICT_STYLES = {
+  excellent: { color: "text-moss", label: "Відмінно" },
+  good: { color: "text-moss", label: "Добре" },
+  acceptable: { color: "text-gold", label: "Прийнятно" },
+  weak: { color: "text-terracotta", label: "Слабко" },
+  poor: { color: "text-terracotta", label: "Погано" },
+};
+
 interface TranslateResultsProps {
   results: {
     mode: "classic" | "ai";
@@ -34,41 +42,23 @@ export default function TranslateResults({ results, onClose }: TranslateResultsP
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ pl, uk })
     });
-    if (!res.ok && res.status !== 409) {
+    if (res.status === 409) return;
+    if (!res.ok) {
       throw new Error("Failed to add word");
     }
   };
 
   const addAllSuggested = async () => {
-    for (const item of suggested) {
-      await addSuggestedWord(item.pl, item.uk);
-    }
-  };
-
-  const getVerdictColor = (verdict: string) => {
-    switch (verdict) {
-      case "excellent": return "moss";
-      case "good": return "moss";
-      case "acceptable": return "gold";
-      case "weak": return "terracotta";
-      case "poor": return "terracotta";
-      default: return "ink";
-    }
-  };
-
-  const getVerdictLabel = (verdict: string) => {
-    switch (verdict) {
-      case "excellent": return "Відмінно";
-      case "good": return "Добре";
-      case "acceptable": return "Прийнятно";
-      case "weak": return "Слабко";
-      case "poor": return "Погано";
-      default: return verdict;
-    }
+    await Promise.all(
+      suggested.map((item: any) => addSuggestedWord(item.pl, item.uk))
+    );
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/60 px-4">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/60 px-4"
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+    >
       <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-3xl border border-ink/10 bg-paper shadow-2xl">
         {/* Header */}
         <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-ink/10 bg-paper p-6">
@@ -79,7 +69,7 @@ export default function TranslateResults({ results, onClose }: TranslateResultsP
             <div>
               <h3 className="text-xl font-semibold text-ink">Вправу завершено!</h3>
               <p className="mt-1 text-sm text-ink/60">
-                {mode === "classic" ? "Класичний режим" : "Режим з AI · Робота"}
+                {mode === "classic" ? "Класичний режим" : "Режим з AI"}
                 {topic && ` · ${topic}`}
               </p>
             </div>
@@ -95,7 +85,7 @@ export default function TranslateResults({ results, onClose }: TranslateResultsP
         {/* Content */}
         <div className="p-6 space-y-6">
           {/* Stats */}
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
             <div className="rounded-2xl border border-ink/10 bg-fog p-4 text-center">
               <div className="text-2xl font-bold text-moss">{completed}</div>
               <div className="mt-1 text-xs text-ink/60">
@@ -113,6 +103,15 @@ export default function TranslateResults({ results, onClose }: TranslateResultsP
               <div className="mt-1 text-xs text-ink/60">Балів</div>
             </div>
           </div>
+
+          {/* Motivational message for low scores */}
+          {accuracy < 30 && (
+            <div className="rounded-2xl border border-gold/20 bg-gold/5 p-4 text-center">
+              <p className="text-sm text-ink/70">
+                Не зупиняйтесь! Навіть перші спроби цінні для навчання. Спробуйте ще раз!
+              </p>
+            </div>
+          )}
 
           {/* AI Feedback */}
           {mode === "ai" && aiCheck && (
@@ -151,7 +150,7 @@ export default function TranslateResults({ results, onClose }: TranslateResultsP
                   </p>
                   <div className="space-y-4">
                     {aiCheck.items.map((item: any, idx: number) => {
-                      const verdictColor = getVerdictColor(item.verdict);
+                      const verdict = VERDICT_STYLES[item.verdict] || { color: "text-ink", label: item.verdict };
 
                       return (
                         <div key={idx} className="rounded-3xl border border-ink/10 bg-fog p-5">
@@ -171,8 +170,8 @@ export default function TranslateResults({ results, onClose }: TranslateResultsP
                                   Ваш переклад
                                 </p>
                                 {item.verdict && (
-                                  <span className={`text-xs font-semibold text-${verdictColor}`}>
-                                    {getVerdictLabel(item.verdict)} · {Math.round((item.score || 0) * 100)}%
+                                  <span className={`text-xs font-semibold ${verdict.color}`}>
+                                    {verdict.label} · {Math.round((item.score || 0) * 100)}%
                                   </span>
                                 )}
                               </div>
@@ -198,7 +197,7 @@ export default function TranslateResults({ results, onClose }: TranslateResultsP
                                 {item.improvements.map((improvement: any, impIdx: number) => (
                                   <div key={impIdx} className="rounded-2xl border border-gold/20 bg-gold/5 p-3 space-y-2">
                                     <p className="text-xs font-semibold text-ink">{improvement.issue}</p>
-                                    <div className="grid gap-2 sm:grid-cols-2">
+                                    <div className="grid gap-2 grid-cols-1 sm:grid-cols-2">
                                       <div>
                                         <p className="text-[10px] uppercase tracking-[0.2em] text-terracotta/70 mb-1">
                                           Було
@@ -240,7 +239,7 @@ export default function TranslateResults({ results, onClose }: TranslateResultsP
                                 <div className="space-y-1.5">
                                   {item.alternativeVersions.map((alt: string, altIdx: number) => (
                                     <p key={altIdx} className="text-xs text-ink/60 pl-4">
-                                      • {alt}
+                                      {"\u2022"} {alt}
                                     </p>
                                   ))}
                                 </div>

@@ -4,6 +4,7 @@
 import { useState, useEffect } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { CheckCircle, Circle, Sparkle } from "@phosphor-icons/react";
+import { safeParseAIResponse } from "@/lib/workbook";
 import MatchResults from "./MatchResults";
 
 interface MatchAIPracticeProps {
@@ -39,6 +40,8 @@ export default function MatchAIPractice({ config, onComplete }: MatchAIPracticeP
 
   // Generate exercise with AI
   useEffect(() => {
+    let cancelled = false;
+
     async function generateExercise() {
       try {
         setError(null);
@@ -57,6 +60,8 @@ export default function MatchAIPractice({ config, onComplete }: MatchAIPracticeP
           })
         });
 
+        if (cancelled) return;
+
         const data = await res.json().catch(() => ({}));
 
         if (!res.ok) {
@@ -73,7 +78,13 @@ export default function MatchAIPractice({ config, onComplete }: MatchAIPracticeP
         }
 
         // Parse AI response
-        const result = JSON.parse(String(data?.text || ""));
+        const result = safeParseAIResponse(data?.text);
+
+        if (!result || !result.task || !result.task.pairs || result.task.pairs.length === 0) {
+          setError("AI не змогла згенерувати вправу. Спробуйте іншу тему.");
+          setIsGenerating(false);
+          return;
+        }
 
         const normalizedPairs = (result.task.pairs || []).map((p: any, idx: number) => ({
           ...p,
@@ -90,17 +101,22 @@ export default function MatchAIPractice({ config, onComplete }: MatchAIPracticeP
           })))
         };
 
-        setTask(shuffledTask);
-      } catch (error) {
-        console.error("Failed to generate exercise:", error);
-        setError("Помилка мережі");
+        if (!cancelled) {
+          setTask(shuffledTask);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          console.error("Failed to generate exercise:", err);
+          setError("Помилка мережі");
+        }
       } finally {
-        setIsGenerating(false);
+        if (!cancelled) setIsGenerating(false);
       }
     }
 
     generateExercise();
-  }, [config, locale]);
+    return () => { cancelled = true; };
+  }, [config.topic, config.pairType, config.level, config.pairCount, locale]);
 
   const handleLeftClick = (leftId: string) => {
     if (selectedLeft === leftId) {
@@ -171,7 +187,14 @@ export default function MatchAIPractice({ config, onComplete }: MatchAIPracticeP
       }
 
       // Parse result
-      const result = JSON.parse(String(data?.text || ""));
+      const result = safeParseAIResponse(data?.text);
+
+      if (!result || !result.pairs) {
+        setError("AI повернула неправильний формат відповіді. Спробуйте ще раз.");
+        setIsChecking(false);
+        return;
+      }
+
       setCheckResult(result);
 
       // Save points if available
@@ -186,14 +209,14 @@ export default function MatchAIPractice({ config, onComplete }: MatchAIPracticeP
               xp: result.overall.xp || 0
             })
           });
-        } catch (error) {
-          console.error("Failed to save points:", error);
+        } catch (err) {
+          console.error("Failed to save points:", err);
         }
       }
 
       setShowResults(true);
-    } catch (error) {
-      console.error("Failed to check with AI:", error);
+    } catch (err) {
+      console.error("Failed to check with AI:", err);
       setError("Помилка мережі");
     } finally {
       setIsChecking(false);
@@ -268,7 +291,7 @@ export default function MatchAIPractice({ config, onComplete }: MatchAIPracticeP
         </div>
 
         {/* Matching area */}
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
           {/* Left column */}
           <div className="rounded-3xl border border-ink/10 bg-paper/80 p-4 shadow-soft">
             <p className="text-xs uppercase tracking-[0.3em] text-ink/40 mb-4">

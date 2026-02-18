@@ -4,6 +4,12 @@
 import { Circle, X, Trophy, Sparkle, CheckCircle } from "@phosphor-icons/react";
 import VocabSuggestions from "../../shared/VocabSuggestions";
 
+const VERDICT_STYLES = {
+  ok: { icon: "text-moss", label: "Правильно" },
+  weak: { icon: "text-gold", label: "Частково" },
+  bad: { icon: "text-terracotta", label: "Неправильно" },
+};
+
 interface ClozeResultsProps {
   results: {
     mode: "classic" | "ai";
@@ -32,15 +38,16 @@ export default function ClozeResults({ results, onClose }: ClozeResultsProps) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ pl, uk })
     });
-    if (!res.ok && res.status !== 409) {
+    if (res.status === 409) return;
+    if (!res.ok) {
       throw new Error("Failed to add word");
     }
   };
 
   const addAllSuggested = async () => {
-    for (const item of suggested) {
-      await addSuggestedWord(item.pl, item.uk);
-    }
+    await Promise.all(
+      suggested.map((item: any) => addSuggestedWord(item.pl, item.uk))
+    );
   };
 
   const displayScore = mode === "classic" && score !== undefined
@@ -49,12 +56,17 @@ export default function ClozeResults({ results, onClose }: ClozeResultsProps) {
 
   const displayCorrect = mode === "classic" && correctCount !== undefined
     ? correctCount
-    : aiCheck?.items?.reduce((sum, item) => {
-        return sum + item.gaps.filter((g) => g.verdict === "ok").length;
+    : aiCheck?.items?.reduce((sum: number, item: any) => {
+        return sum + (item.gaps || []).filter((g: any) => g.verdict === "ok").length;
       }, 0);
 
+  const scorePercent = displayScore != null ? Math.round(displayScore * 100) : null;
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/60 px-4">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/60 px-4"
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+    >
       <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl border border-ink/10 bg-paper shadow-2xl">
         {/* Header */}
         <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-ink/10 bg-paper p-6">
@@ -81,7 +93,7 @@ export default function ClozeResults({ results, onClose }: ClozeResultsProps) {
         {/* Content */}
         <div className="p-6 space-y-6">
           {/* Stats */}
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
             <div className="rounded-2xl border border-ink/10 bg-fog p-4 text-center">
               <div className="text-2xl font-bold text-gold">{totalGaps}</div>
               <div className="mt-1 text-xs text-ink/60">Пропусків загалом</div>
@@ -92,11 +104,20 @@ export default function ClozeResults({ results, onClose }: ClozeResultsProps) {
             </div>
             <div className="rounded-2xl border border-ink/10 bg-fog p-4 text-center">
               <div className="text-2xl font-bold text-terracotta">
-                {displayScore !== undefined ? `${Math.round(displayScore * 100)}%` : "—"}
+                {scorePercent !== null ? `${scorePercent}%` : "\u2014"}
               </div>
               <div className="mt-1 text-xs text-ink/60">Точність</div>
             </div>
           </div>
+
+          {/* Motivational message for low scores */}
+          {scorePercent !== null && scorePercent < 30 && (
+            <div className="rounded-2xl border border-gold/20 bg-gold/5 p-4 text-center">
+              <p className="text-sm text-ink/70">
+                Не зупиняйтесь! Навіть перші спроби цінні для навчання. Спробуйте ще раз!
+              </p>
+            </div>
+          )}
 
           {/* AI Feedback */}
           {mode === "ai" && aiCheck && (
@@ -135,20 +156,15 @@ export default function ClozeResults({ results, onClose }: ClozeResultsProps) {
                     Детальний фідбек
                   </p>
                   <div className="space-y-4">
-                    {aiCheck.items.map((item, idx) => (
+                    {aiCheck.items.map((item: any, idx: number) => (
                       <div key={idx} className="rounded-2xl border border-ink/10 bg-fog p-4">
                         <p className="text-sm font-semibold text-ink mb-3">
                           Речення {idx + 1}
                         </p>
 
                         <div className="space-y-2">
-                          {item.gaps?.map((gap, gapIdx) => {
-                            const verdictColor =
-                              gap.verdict === "ok"
-                                ? "moss"
-                                : gap.verdict === "weak"
-                                  ? "gold"
-                                  : "terracotta";
+                          {(item.gaps || []).map((gap: any, gapIdx: number) => {
+                            const verdict = VERDICT_STYLES[gap.verdict] || VERDICT_STYLES.bad;
 
                             return (
                               <div
@@ -160,13 +176,13 @@ export default function ClozeResults({ results, onClose }: ClozeResultsProps) {
                                     <CheckCircle
                                       size={16}
                                       weight="fill"
-                                      className={`text-${verdictColor} flex-shrink-0 mt-0.5`}
+                                      className={`${verdict.icon} flex-shrink-0 mt-0.5`}
                                     />
                                   ) : (
                                     <Circle
                                       size={16}
                                       weight="fill"
-                                      className={`text-${verdictColor} flex-shrink-0 mt-0.5`}
+                                      className={`${verdict.icon} flex-shrink-0 mt-0.5`}
                                     />
                                   )}
                                   <div className="flex-1">
@@ -218,7 +234,7 @@ export default function ClozeResults({ results, onClose }: ClozeResultsProps) {
                   <p className="text-xs font-semibold text-gold mb-1">Чудова робота!</p>
                   <p className="text-xs text-ink/70">
                     Ви заповнили {totalGaps} {totalGaps === 1 ? "пропуск" : "пропусків"},
-                    з них {correctCount || 0} правильно ({Math.round((score || 0) * 100)}%).
+                    з них {correctCount || 0} правильно ({scorePercent !== null ? `${scorePercent}%` : "\u2014"}).
                     Продовжуйте практикуватися!
                   </p>
                 </div>

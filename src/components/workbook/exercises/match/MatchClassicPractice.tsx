@@ -4,6 +4,7 @@
 import { useState } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { CheckCircle, Circle, Sparkle, PaperPlaneRight } from "@phosphor-icons/react";
+import { safeParseAIResponse } from "@/lib/workbook";
 import MatchResults from "./MatchResults";
 
 interface MatchClassicPracticeProps {
@@ -112,9 +113,13 @@ export default function MatchClassicPractice({ config, onComplete }: MatchClassi
   const [matches, setMatches] = useState<Record<string, string>>({});
   const [selectedLeft, setSelectedLeft] = useState<string | null>(null);
   const [showResults, setShowResults] = useState(false);
+  const [aiCheckResult, setAiCheckResult] = useState<any>(null);
   const [isCheckingAI, setIsCheckingAI] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  const isProcessing = isCheckingAI || isSubmitting;
 
   // Shuffle right items for display
   const [rightItems] = useState(() => {
@@ -158,7 +163,7 @@ export default function MatchClassicPractice({ config, onComplete }: MatchClassi
 
   const handleCheckWithAI = async () => {
     if (Object.keys(matches).length === 0) {
-      alert("Будь ласка, створіть хоча б одну пару");
+      setError("Будь ласка, створіть хоча б одну пару");
       return;
     }
 
@@ -206,25 +211,35 @@ export default function MatchClassicPractice({ config, onComplete }: MatchClassi
         return;
       }
 
-      const result = JSON.parse(String(data?.text || "{}"));
+      const result = safeParseAIResponse(data?.text);
+
+      if (!result || !result.pairs) {
+        setError("AI повернула неправильний формат відповіді. Спробуйте ще раз.");
+        return;
+      }
 
       // Save points to database
       if (result?.overall?.pointsForRating) {
-        await fetch("/api/exercises/attempt", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            exercise: "match",
-            points: result.overall.pointsForRating,
-            xp: result.overall.xp || 0
-          })
-        });
+        try {
+          await fetch("/api/exercises/attempt", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              exercise: "match",
+              points: result.overall.pointsForRating,
+              xp: result.overall.xp || 0
+            })
+          });
+        } catch (err) {
+          console.error("Failed to save points:", err);
+        }
       }
 
-      // Show results
+      // Store AI result and show results
+      setAiCheckResult(result);
       setShowResults(true);
-    } catch (error) {
-      console.error("Failed to check with AI:", error);
+    } catch (err) {
+      console.error("Failed to check with AI:", err);
       setError("Помилка перевірки");
     } finally {
       setIsCheckingAI(false);
@@ -233,7 +248,7 @@ export default function MatchClassicPractice({ config, onComplete }: MatchClassi
 
   const handleSubmitForReview = async () => {
     if (Object.keys(matches).length === 0) {
-      alert("Будь ласка, створіть хоча б одну пару");
+      setError("Будь ласка, створіть хоча б одну пару");
       return;
     }
 
@@ -262,28 +277,32 @@ export default function MatchClassicPractice({ config, onComplete }: MatchClassi
         })
       });
 
-      const data = await res.json();
-
       if (!res.ok) {
+        let data = {};
+        try { data = await res.json(); } catch {}
         setError(data?.error || "Помилка надсилання");
         return;
       }
 
       // Save minimal points for submission
-      await fetch("/api/exercises/attempt", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          exercise: "match",
-          points: items.length,
-          xp: items.length * 2
-        })
-      });
+      try {
+        await fetch("/api/exercises/attempt", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            exercise: "match",
+            points: items.length,
+            xp: items.length * 2
+          })
+        });
+      } catch (err) {
+        console.error("Failed to save points:", err);
+      }
 
-      alert("✅ Вправу надіслано на перевірку! Очікуйте фідбек від викладача.");
-      onComplete();
-    } catch (error) {
-      console.error("Failed to submit:", error);
+      setSuccessMessage("Вправу надіслано на перевірку! Очікуйте фідбек від викладача.");
+      setTimeout(() => onComplete(), 2000);
+    } catch (err) {
+      console.error("Failed to submit:", err);
       setError("Помилка надсилання");
     } finally {
       setIsSubmitting(false);
@@ -328,7 +347,7 @@ export default function MatchClassicPractice({ config, onComplete }: MatchClassi
         </div>
 
         {/* Matching area */}
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
           {/* Left column */}
           <div className="rounded-3xl border border-ink/10 bg-paper/80 p-4 shadow-soft">
             <p className="text-xs uppercase tracking-[0.3em] text-ink/40 mb-4">
@@ -422,6 +441,13 @@ export default function MatchClassicPractice({ config, onComplete }: MatchClassi
           </div>
         </div>
 
+        {/* Success message */}
+        {successMessage && (
+          <div className="rounded-2xl border border-moss/20 bg-moss/5 p-4 text-sm text-moss">
+            {successMessage}
+          </div>
+        )}
+
         {/* Error message */}
         {error && (
           <div className="rounded-2xl border border-terracotta/20 bg-terracotta/5 p-4 text-sm text-terracotta">
@@ -434,7 +460,7 @@ export default function MatchClassicPractice({ config, onComplete }: MatchClassi
           <div className="flex flex-wrap items-center justify-center gap-3">
             <button
               onClick={handleCheckWithAI}
-              disabled={isCheckingAI || matchedCount === 0}
+              disabled={isProcessing || matchedCount === 0}
               className="inline-flex items-center gap-2 rounded-full bg-moss px-6 py-3 text-sm font-semibold text-paper transition hover:bg-moss/90 disabled:cursor-not-allowed disabled:opacity-40"
             >
               {isCheckingAI ? (
@@ -452,7 +478,7 @@ export default function MatchClassicPractice({ config, onComplete }: MatchClassi
 
             <button
               onClick={handleSubmitForReview}
-              disabled={isSubmitting || matchedCount === 0}
+              disabled={isProcessing || matchedCount === 0}
               className="inline-flex items-center gap-2 rounded-full bg-terracotta px-6 py-3 text-sm font-semibold text-paper transition hover:bg-terracotta/90 disabled:cursor-not-allowed disabled:opacity-40"
             >
               {isSubmitting ? (
@@ -470,7 +496,7 @@ export default function MatchClassicPractice({ config, onComplete }: MatchClassi
           </div>
 
           <p className="text-center text-xs text-ink/50">
-            💡 Перевірка з AI дає детальний фідбек та оцінку. Відправка на перевірку — для ручного review від викладача.
+            Перевірка з AI дає детальний фідбек та оцінку. Відправка на перевірку — для ручного review від викладача.
           </p>
 
           <div className="text-center text-sm text-ink/60">
@@ -487,6 +513,7 @@ export default function MatchClassicPractice({ config, onComplete }: MatchClassi
             totalPairs: pairs.length,
             correctMatches: correctCount,
             score: correctCount / pairs.length,
+            aiCheck: aiCheckResult,
             pairType: config.pairType,
             level: config.level
           }}

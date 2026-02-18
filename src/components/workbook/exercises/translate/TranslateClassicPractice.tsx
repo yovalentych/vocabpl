@@ -4,6 +4,7 @@
 import { useState } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { CheckCircle, Circle, Sparkle, PaperPlaneRight } from "@phosphor-icons/react";
+import { safeParseAIResponse } from "@/lib/workbook";
 import TranslateResults from "./TranslateResults";
 
 interface Sentence {
@@ -67,9 +68,13 @@ export default function TranslateClassicPractice({ config, onComplete }: Transla
 
   const [showResults, setShowResults] = useState(false);
   const [results, setResults] = useState<any>(null);
+  const [aiCheckResult, setAiCheckResult] = useState<any>(null);
   const [isCheckingAI, setIsCheckingAI] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  const isProcessing = isCheckingAI || isSubmitting;
 
   const updateTranslation = (id: string, value: string) => {
     setSentences((prev) =>
@@ -87,7 +92,7 @@ export default function TranslateClassicPractice({ config, onComplete }: Transla
     const completed = sentences.filter((s) => s.userTranslation.trim());
 
     if (completed.length === 0) {
-      alert("Будь ласка, перекладіть хоча б одне речення");
+      setError("Будь ласка, перекладіть хоча б одне речення");
       return;
     }
 
@@ -131,33 +136,45 @@ export default function TranslateClassicPractice({ config, onComplete }: Transla
         return;
       }
 
-      const result = JSON.parse(String(data?.text || "{}"));
+      const result = safeParseAIResponse(data?.text);
+
+      if (!result || !result.items) {
+        setError("AI повернула неправильний формат відповіді. Спробуйте ще раз.");
+        return;
+      }
 
       // Save points to database
       if (result?.overall?.pointsForRating) {
-        await fetch("/api/exercises/attempt", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            exercise: "translate",
-            points: result.overall.pointsForRating,
-            xp: result.overall.xp || 0
-          })
-        });
+        try {
+          await fetch("/api/exercises/attempt", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              exercise: "translate",
+              points: result.overall.pointsForRating,
+              xp: result.overall.xp || 0
+            })
+          });
+        } catch (err) {
+          console.error("Failed to save points:", err);
+        }
       }
 
-      // Show results
+      // Store AI result and show results
+      setAiCheckResult(result);
       setResults({
         mode: "classic",
         total: sentences.length,
         completed: completed.length,
+        accuracy: result.overall?.accuracy || accuracy,
+        score: result.overall?.points || score,
         aiCheck: result,
         direction: config.direction,
         level: config.level
       });
       setShowResults(true);
-    } catch (error) {
-      console.error("Failed to check with AI:", error);
+    } catch (err) {
+      console.error("Failed to check with AI:", err);
       setError("Помилка перевірки");
     } finally {
       setIsCheckingAI(false);
@@ -168,7 +185,7 @@ export default function TranslateClassicPractice({ config, onComplete }: Transla
     const completed = sentences.filter((s) => s.userTranslation.trim());
 
     if (completed.length === 0) {
-      alert("Будь ласка, перекладіть хоча б одне речення");
+      setError("Будь ласка, перекладіть хоча б одне речення");
       return;
     }
 
@@ -190,28 +207,32 @@ export default function TranslateClassicPractice({ config, onComplete }: Transla
         })
       });
 
-      const data = await res.json();
-
       if (!res.ok) {
+        let data = {};
+        try { data = await res.json(); } catch {}
         setError(data?.error || "Помилка надсилання");
         return;
       }
 
       // Save minimal points for submission
-      await fetch("/api/exercises/attempt", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          exercise: "translate",
-          points: completed.length,
-          xp: completed.length * 2
-        })
-      });
+      try {
+        await fetch("/api/exercises/attempt", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            exercise: "translate",
+            points: completed.length,
+            xp: completed.length * 2
+          })
+        });
+      } catch (err) {
+        console.error("Failed to save points:", err);
+      }
 
-      alert("✅ Вправу надіслано на перевірку! Очікуйте фідбек від викладача.");
-      onComplete();
-    } catch (error) {
-      console.error("Failed to submit:", error);
+      setSuccessMessage("Вправу надіслано на перевірку! Очікуйте фідбек від викладача.");
+      setTimeout(() => onComplete(), 2000);
+    } catch (err) {
+      console.error("Failed to submit:", err);
       setError("Помилка надсилання");
     } finally {
       setIsSubmitting(false);
@@ -292,6 +313,7 @@ export default function TranslateClassicPractice({ config, onComplete }: Transla
                             : "Введіть переклад українською..."
                         }
                         rows={2}
+                        maxLength={500}
                         className="w-full rounded-2xl border border-ink/20 bg-paper px-4 py-3 text-sm text-ink placeholder:text-ink/40 focus:border-moss/40 focus:outline-none focus:ring-0"
                       />
                     </div>
@@ -311,6 +333,13 @@ export default function TranslateClassicPractice({ config, onComplete }: Transla
           })}
         </div>
 
+        {/* Success message */}
+        {successMessage && (
+          <div className="rounded-2xl border border-moss/20 bg-moss/5 p-4 text-sm text-moss">
+            {successMessage}
+          </div>
+        )}
+
         {/* Error message */}
         {error && (
           <div className="rounded-2xl border border-terracotta/20 bg-terracotta/5 p-4 text-sm text-terracotta">
@@ -323,7 +352,7 @@ export default function TranslateClassicPractice({ config, onComplete }: Transla
           <div className="flex flex-wrap items-center justify-center gap-3">
             <button
               onClick={handleCheckWithAI}
-              disabled={isCheckingAI || completedCount === 0}
+              disabled={isProcessing || completedCount === 0}
               className="inline-flex items-center gap-2 rounded-full bg-moss px-6 py-3 text-sm font-semibold text-paper transition hover:bg-moss/90 disabled:cursor-not-allowed disabled:opacity-40"
             >
               {isCheckingAI ? (
@@ -341,7 +370,7 @@ export default function TranslateClassicPractice({ config, onComplete }: Transla
 
             <button
               onClick={handleSubmitForReview}
-              disabled={isSubmitting || completedCount === 0}
+              disabled={isProcessing || completedCount === 0}
               className="inline-flex items-center gap-2 rounded-full bg-terracotta px-6 py-3 text-sm font-semibold text-paper transition hover:bg-terracotta/90 disabled:cursor-not-allowed disabled:opacity-40"
             >
               {isSubmitting ? (
@@ -359,7 +388,7 @@ export default function TranslateClassicPractice({ config, onComplete }: Transla
           </div>
 
           <p className="text-center text-xs text-ink/50">
-            💡 Перевірка з AI дає детальний фідбек та оцінку. Відправка на перевірку — для ручного review від викладача.
+            Перевірка з AI дає детальний фідбек та оцінку. Відправка на перевірку — для ручного review від викладача.
           </p>
         </div>
       </div>

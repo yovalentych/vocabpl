@@ -4,6 +4,7 @@
 import { useState, useEffect } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { CheckCircle, Circle, Sparkle } from "@phosphor-icons/react";
+import { safeParseAIResponse } from "@/lib/workbook";
 import TranslateResults from "./TranslateResults";
 
 interface Sentence {
@@ -34,6 +35,8 @@ export default function TranslateAIPractice({ config, onComplete }: TranslateAIP
 
   // Generate sentences with AI
   useEffect(() => {
+    let cancelled = false;
+
     async function generateSentences() {
       try {
         setError(null);
@@ -52,6 +55,8 @@ export default function TranslateAIPractice({ config, onComplete }: TranslateAIP
           })
         });
 
+        if (cancelled) return;
+
         const data = await res.json().catch(() => ({}));
 
         if (!res.ok) {
@@ -68,25 +73,39 @@ export default function TranslateAIPractice({ config, onComplete }: TranslateAIP
         }
 
         // Parse AI response
-        const result = JSON.parse(String(data?.text || ""));
-        const generatedSentences: Sentence[] = (result.task?.items || []).map((item: any, idx: number) => ({
-          id: item.id || `ai-${idx}`,
-          source: item.source,
-          reference: "",
-          userTranslation: ""
-        }));
+        const result = safeParseAIResponse(data?.text);
 
-        setSentences(generatedSentences);
-      } catch (error) {
-        console.error("Failed to generate sentences:", error);
-        setError("Помилка мережі");
+        if (!result || !result.task?.items || result.task.items.length === 0) {
+          setError("AI не змогла згенерувати речення. Спробуйте іншу тему.");
+          setIsGenerating(false);
+          return;
+        }
+
+        const generatedSentences: Sentence[] = result.task.items
+          .filter((item: any) => item?.source)
+          .map((item: any, idx: number) => ({
+            id: item.id || `ai-${idx}`,
+            source: item.source,
+            reference: "",
+            userTranslation: ""
+          }));
+
+        if (!cancelled) {
+          setSentences(generatedSentences);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          console.error("Failed to generate sentences:", err);
+          setError("Помилка мережі");
+        }
       } finally {
-        setIsGenerating(false);
+        if (!cancelled) setIsGenerating(false);
       }
     }
 
     generateSentences();
-  }, [config, locale]);
+    return () => { cancelled = true; };
+  }, [config.topic, config.direction, config.level, config.count, locale]);
 
   const updateTranslation = (id: string, value: string) => {
     setSentences((prev) =>
@@ -100,7 +119,7 @@ export default function TranslateAIPractice({ config, onComplete }: TranslateAIP
 
   const handleCheckWithAI = async () => {
     if (completedCount === 0) {
-      alert("Перекладіть хоча б одне речення перед перевіркою");
+      setError("Перекладіть хоча б одне речення перед перевіркою");
       return;
     }
 
@@ -149,7 +168,14 @@ export default function TranslateAIPractice({ config, onComplete }: TranslateAIP
       }
 
       // Parse result
-      const result = JSON.parse(String(data?.text || ""));
+      const result = safeParseAIResponse(data?.text);
+
+      if (!result || !result.items) {
+        setError("AI повернула неправильний формат відповіді. Спробуйте ще раз.");
+        setIsChecking(false);
+        return;
+      }
+
       setCheckResult(result);
 
       // Save points to database if we have a valid score
@@ -164,15 +190,15 @@ export default function TranslateAIPractice({ config, onComplete }: TranslateAIP
               xp: result.overall.xp || 0
             })
           });
-        } catch (error) {
-          console.error("Failed to save points:", error);
+        } catch (err) {
+          console.error("Failed to save points:", err);
         }
       }
 
       // Show results modal
       setShowResults(true);
-    } catch (error) {
-      console.error("Failed to check with AI:", error);
+    } catch (err) {
+      console.error("Failed to check with AI:", err);
       setError("Помилка мережі");
     } finally {
       setIsChecking(false);
@@ -234,7 +260,7 @@ export default function TranslateAIPractice({ config, onComplete }: TranslateAIP
             Переклад речень
           </h2>
           <p className="mt-2 text-sm text-ink/60">
-            Тема: {config.topic} · {config.direction === "uk_to_pl" ? "Українська → Польська" : "Польська → Українська"} · {config.level}
+            Тема: {config.topic} · {config.direction === "uk_to_pl" ? "Українська \u2192 Польська" : "Польська \u2192 Українська"} · {config.level}
           </p>
         </div>
 
@@ -292,6 +318,7 @@ export default function TranslateAIPractice({ config, onComplete }: TranslateAIP
                             : "Введіть переклад українською..."
                         }
                         rows={2}
+                        maxLength={500}
                         className="w-full rounded-2xl border border-ink/20 bg-paper px-4 py-3 text-sm text-ink placeholder:text-ink/40 focus:border-gold/40 focus:outline-none focus:ring-0"
                       />
                     </div>

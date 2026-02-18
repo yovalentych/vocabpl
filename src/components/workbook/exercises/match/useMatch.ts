@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react";
+import { safeParseAIResponse } from "@/lib/workbook";
 
 export interface MatchPair {
   left: string;
@@ -300,7 +301,7 @@ export function useMatch() {
         return false;
       }
 
-      const result = JSON.parse(String(data?.text || ""));
+      const result = safeParseAIResponse(data?.text);
 
       if (result?.task) {
         const aiMaterial: MatchMaterial = {
