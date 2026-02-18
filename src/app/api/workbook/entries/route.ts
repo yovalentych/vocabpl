@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 import { getAuthUser } from "@/lib/auth";
 import { getDb } from "@/lib/db";
+import { scoreForCount } from "@/lib/workbook";
 
 type WordProgressEntry = {
   wordId: string;
@@ -16,21 +17,15 @@ type UserDoc = {
   stats?: { points?: number };
 };
 
-function countSentences(text: string) {
+function countSentencesInText(text: string) {
   const cleaned = text.replace(/\r/g, " ").trim();
   if (!cleaned) return 0;
-  const parts = cleaned
+  const lines = cleaned.split(/\n+/).map((l) => l.trim()).filter(Boolean);
+  const punctuated = cleaned
     .split(/(?<=[.!?])\s+|\n+/)
     .map((item) => item.trim())
     .filter(Boolean);
-  return parts.length;
-}
-
-function scoreForCount(count: number) {
-  if (count >= 3) return 1;
-  if (count === 2) return 0.75;
-  if (count === 1) return 0.5;
-  return 0;
+  return Math.max(lines.length, punctuated.length);
 }
 
 function buildFormattedText(items: { word: string; text: string }[]) {
@@ -98,7 +93,7 @@ export async function POST(request: Request) {
 
   const normalized = items.map((item: any) => {
     const text = String(item.text || "").trim();
-    const sentenceCount = countSentences(text);
+    const sentenceCount = countSentencesInText(text);
     return {
       wordId: String(item.wordId || ""),
       pl: String(item.pl || "").trim(),

@@ -3,7 +3,8 @@
 
 import { useState, useEffect } from "react";
 import { useLocale } from "@/components/LocaleProvider";
-import { CheckCircle, Circle, FloppyDisk, Sparkle, PaperPlaneRight } from "@phosphor-icons/react";
+import { CheckCircle, Circle, Sparkle, PaperPlaneRight } from "@phosphor-icons/react";
+import { countSentences, scoreForCount, safeParseAIResponse } from "@/lib/workbook";
 import SentencesResults from "./SentencesResults";
 
 interface Word {
@@ -29,15 +30,19 @@ export default function SentencesClassicPractice({ config, onComplete }: Sentenc
   const [words, setWords] = useState<Word[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isSaving, setIsSaving] = useState(false);
   const [isCheckingAI, setIsCheckingAI] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const [results, setResults] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  const isProcessing = isCheckingAI || isSubmitting;
 
   // Load words from API
   useEffect(() => {
+    let cancelled = false;
+
     async function loadWords() {
       try {
         const selected = [...config.selectedTypes];
@@ -49,8 +54,14 @@ export default function SentencesClassicPractice({ config, onComplete }: Sentenc
         params.set("count", String(config.count));
 
         const res = await fetch(`/api/workbook/words?${params.toString()}`);
-        const data = await res.json();
+        if (cancelled) return;
 
+        if (!res.ok) {
+          setError("Помилка завантаження слів");
+          return;
+        }
+
+        const data = await res.json();
         const items: Word[] = (data.items || []).map((word: any) => ({
           ...word,
           sentences: ["", "", ""]
@@ -58,15 +69,19 @@ export default function SentencesClassicPractice({ config, onComplete }: Sentenc
 
         setWords(items);
         setActiveId(items[0]?.id || null);
-      } catch (error) {
-        console.error("Failed to load words:", error);
+      } catch (err) {
+        if (!cancelled) {
+          console.error("Failed to load words:", err);
+          setError("Помилка мережі при завантаженні слів");
+        }
       } finally {
-        setIsLoading(false);
+        if (!cancelled) setIsLoading(false);
       }
     }
 
     loadWords();
-  }, [config]);
+    return () => { cancelled = true; };
+  }, [config.selectedTypes.join(","), config.includeFavorites, config.includeMyWords, config.count]);
 
   const activeWord = words.find((w) => w.id === activeId);
   const activeIndex = words.findIndex((w) => w.id === activeId);
@@ -84,28 +99,16 @@ export default function SentencesClassicPractice({ config, onComplete }: Sentenc
     );
   };
 
-  const countSentences = (sentences: string[]) => {
-    return sentences.map((s) => s.trim()).filter(Boolean).length;
-  };
-
-  const scoreForCount = (count: number) => {
-    if (count >= 3) return 1;
-    if (count === 2) return 0.75;
-    if (count === 1) return 0.5;
-    return 0;
-  };
-
   const totalPoints = words.reduce((sum, word) => {
     const count = countSentences(word.sentences);
     return sum + scoreForCount(count);
   }, 0);
 
   const handleCheckWithAI = async () => {
-    // Get words with at least one sentence
     const completed = words.filter((word) => countSentences(word.sentences) > 0);
 
     if (completed.length === 0) {
-      alert("Будь ласка, напишіть хоча б одне речення");
+      setError("Будь ласка, напишіть хоча б одне речення");
       return;
     }
 
@@ -133,9 +136,9 @@ export default function SentencesClassicPractice({ config, onComplete }: Sentenc
         })
       });
 
-      const data = await res.json().catch(() => ({}));
-
       if (!res.ok) {
+        let data = {};
+        try { data = await res.json(); } catch {}
         const errorCode = data?.code;
         const message =
           errorCode === "ai_quota"
@@ -147,7 +150,13 @@ export default function SentencesClassicPractice({ config, onComplete }: Sentenc
         return;
       }
 
-      const result = JSON.parse(String(data?.text || "{}"));
+      const data = await res.json();
+      const result = safeParseAIResponse(data?.text);
+
+      if (!result || !result.items) {
+        setError("AI повернула неправильний формат відповіді. Спробуйте ще раз.");
+        return;
+      }
 
       // Save points to database
       if (result?.overall?.pointsForRating) {
@@ -171,8 +180,8 @@ export default function SentencesClassicPractice({ config, onComplete }: Sentenc
         aiCheck: result
       });
       setShowResults(true);
-    } catch (error) {
-      console.error("Failed to check with AI:", error);
+    } catch (err) {
+      console.error("Failed to check with AI:", err);
       setError("Помилка перевірки");
     } finally {
       setIsCheckingAI(false);
@@ -183,7 +192,7 @@ export default function SentencesClassicPractice({ config, onComplete }: Sentenc
     const completed = words.filter((word) => countSentences(word.sentences) > 0);
 
     if (completed.length === 0) {
-      alert("Будь ласка, напишіть хоча б одне речення");
+      setError("Будь ласка, напишіть хоча б одне речення");
       return;
     }
 
@@ -204,9 +213,9 @@ export default function SentencesClassicPractice({ config, onComplete }: Sentenc
         })
       });
 
-      const data = await res.json();
-
       if (!res.ok) {
+        let data = {};
+        try { data = await res.json(); } catch {}
         setError(data?.error || "Помилка надсилання");
         return;
       }
@@ -223,10 +232,10 @@ export default function SentencesClassicPractice({ config, onComplete }: Sentenc
         })
       });
 
-      alert("✅ Вправу надіслано на перевірку! Очікуйте фідбек від викладача.");
-      onComplete();
-    } catch (error) {
-      console.error("Failed to submit:", error);
+      setSuccessMessage("Вправу надіслано на перевірку! Очікуйте фідбек від викладача.");
+      setTimeout(() => onComplete(), 2000);
+    } catch (err) {
+      console.error("Failed to submit:", err);
       setError("Помилка надсилання");
     } finally {
       setIsSubmitting(false);
@@ -245,16 +254,22 @@ export default function SentencesClassicPractice({ config, onComplete }: Sentenc
   if (!activeWord) {
     return (
       <div className="rounded-3xl border border-ink/10 bg-paper/80 p-8 shadow-soft text-center">
-        <p className="text-sm text-ink/60">
+        <p className="text-sm text-ink/60 mb-4">
           Слова не знайдено. Спробуйте інші налаштування.
         </p>
+        <button
+          onClick={onComplete}
+          className="inline-flex items-center gap-2 rounded-full border border-ink/20 px-4 py-2 text-xs font-semibold text-ink transition hover:bg-ink/5"
+        >
+          Повернутися
+        </button>
       </div>
     );
   }
 
   return (
     <>
-      <div className="grid gap-6 lg:grid-cols-[300px_1fr]">
+      <div className="grid gap-6 grid-cols-1 md:grid-cols-[260px_1fr] lg:grid-cols-[300px_1fr]">
         {/* Left sidebar - word list */}
         <div className="rounded-3xl border border-ink/10 bg-paper/80 p-4 shadow-soft">
           <div className="flex items-center justify-between mb-4">
@@ -368,12 +383,20 @@ export default function SentencesClassicPractice({ config, onComplete }: Sentenc
                     onChange={(e) => updateSentence(activeWord.id, index, e.target.value)}
                     placeholder="Напишіть речення польською..."
                     rows={3}
+                    maxLength={500}
                     className="w-full rounded-2xl border border-ink/20 bg-paper px-4 py-3 text-sm text-ink placeholder:text-ink/40 focus:border-moss/40 focus:outline-none focus:ring-0"
                   />
                 </div>
               ))}
             </div>
           </div>
+
+          {/* Success message */}
+          {successMessage && (
+            <div className="rounded-2xl border border-moss/20 bg-moss/5 p-4 text-sm text-moss">
+              {successMessage}
+            </div>
+          )}
 
           {/* Error message */}
           {error && (
@@ -387,7 +410,7 @@ export default function SentencesClassicPractice({ config, onComplete }: Sentenc
             <div className="flex flex-wrap items-center gap-3">
               <button
                 onClick={handleCheckWithAI}
-                disabled={isCheckingAI || totalPoints === 0}
+                disabled={isProcessing || totalPoints === 0}
                 className="inline-flex items-center gap-2 rounded-full bg-moss px-6 py-3 text-sm font-semibold text-paper transition hover:bg-moss/90 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 {isCheckingAI ? (
@@ -405,7 +428,7 @@ export default function SentencesClassicPractice({ config, onComplete }: Sentenc
 
               <button
                 onClick={handleSubmitForReview}
-                disabled={isSubmitting || totalPoints === 0}
+                disabled={isProcessing || totalPoints === 0}
                 className="inline-flex items-center gap-2 rounded-full bg-terracotta px-6 py-3 text-sm font-semibold text-paper transition hover:bg-terracotta/90 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 {isSubmitting ? (
@@ -438,7 +461,7 @@ export default function SentencesClassicPractice({ config, onComplete }: Sentenc
             </div>
 
             <p className="text-xs text-ink/50">
-              💡 Перевірка з AI дає детальний фідбек та оцінку. Відправка на перевірку — для ручного review від викладача.
+              Перевірка з AI дає детальний фідбек та оцінку. Відправка на перевірку — для ручного review від викладача.
             </p>
           </div>
         </div>

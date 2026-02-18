@@ -4,6 +4,7 @@
 import { useCallback } from "react";
 import { useWorkbookContext } from "../../WorkbookContext";
 import { WorkbookWord } from "../../types";
+import { countSentences, scoreForCount, safeParseAIResponse } from "@/lib/workbook";
 
 export function useSentences() {
   const { state, dispatch } = useWorkbookContext();
@@ -89,18 +90,8 @@ export function useSentences() {
     [dispatch]
   );
 
-  // Count sentences for a word
-  const countSentences = (sentences: string[]) => {
-    return sentences.map((s) => s.trim()).filter(Boolean).length;
-  };
-
-  // Calculate score for sentence count
-  const scoreForCount = (count: number) => {
-    if (count >= 3) return 1;
-    if (count === 2) return 0.75;
-    if (count === 1) return 0.5;
-    return 0;
-  };
+  // Re-export shared helpers for backward compatibility
+  // countSentences and scoreForCount are imported from @/lib/workbook
 
   // Save entry to API
   const saveEntry = useCallback(async () => {
@@ -225,7 +216,17 @@ export function useSentences() {
         }
 
         // Parse result
-        const result = JSON.parse(String(data?.text || ""));
+        const result = safeParseAIResponse(data?.text);
+
+        if (!result || !result.items) {
+          dispatch({ type: "SET_ERROR", payload: "AI повернула неправильний формат відповіді" });
+          dispatch({
+            type: "UPDATE_EXERCISE_STATE",
+            exercise: "sentences",
+            payload: { checkLoading: false }
+          });
+          return false;
+        }
 
         // Save points to database if we have a valid score
         if (result?.overall?.pointsForRating) {

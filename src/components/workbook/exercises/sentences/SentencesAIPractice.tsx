@@ -4,6 +4,7 @@
 import { useState, useEffect } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { CheckCircle, Circle, Sparkle } from "@phosphor-icons/react";
+import { countSentences, safeParseAIResponse } from "@/lib/workbook";
 import SentencesResults from "./SentencesResults";
 
 interface Word {
@@ -35,6 +36,8 @@ export default function SentencesAIPractice({ config, onComplete }: SentencesAIP
 
   // Generate words with AI
   useEffect(() => {
+    let cancelled = false;
+
     async function generateWords() {
       try {
         setError(null);
@@ -52,9 +55,11 @@ export default function SentencesAIPractice({ config, onComplete }: SentencesAIP
           })
         });
 
-        const data = await res.json().catch(() => ({}));
+        if (cancelled) return;
 
         if (!res.ok) {
+          let data = {};
+          try { data = await res.json(); } catch {}
           const errorCode = data?.code;
           const message =
             errorCode === "ai_quota"
@@ -67,28 +72,46 @@ export default function SentencesAIPractice({ config, onComplete }: SentencesAIP
           return;
         }
 
-        // Parse AI response
-        const result = JSON.parse(String(data?.text || ""));
-        const generatedWords: Word[] = (result.words || []).map((word: any, idx: number) => ({
-          id: `ai-${idx}`,
-          pl: word.pl,
-          uk: word.uk,
-          type: word.type || "word",
-          sentences: ["", "", ""]
-        }));
+        const data = await res.json();
+        const result = safeParseAIResponse(data?.text);
+
+        if (!result || !result.words || result.words.length === 0) {
+          setError("AI не змогла згенерувати слова. Спробуйте іншу тему.");
+          setIsGenerating(false);
+          return;
+        }
+
+        const generatedWords: Word[] = result.words
+          .filter((word: any) => word?.pl && word?.uk)
+          .map((word: any, idx: number) => ({
+            id: `ai-${idx}`,
+            pl: String(word.pl).trim(),
+            uk: String(word.uk).trim(),
+            type: word.type || "word",
+            sentences: ["", "", ""]
+          }));
+
+        if (generatedWords.length === 0) {
+          setError("Всі згенеровані слова були невалідні. Спробуйте ще раз.");
+          setIsGenerating(false);
+          return;
+        }
 
         setWords(generatedWords);
         setActiveId(generatedWords[0]?.id || null);
-      } catch (error) {
-        console.error("Failed to generate words:", error);
-        setError("Помилка мережі");
+      } catch (err) {
+        if (!cancelled) {
+          console.error("Failed to generate words:", err);
+          setError("Помилка мережі");
+        }
       } finally {
-        setIsGenerating(false);
+        if (!cancelled) setIsGenerating(false);
       }
     }
 
     generateWords();
-  }, [config, locale]);
+    return () => { cancelled = true; };
+  }, [config.topic, config.level, config.count, locale]);
 
   const activeWord = words.find((w) => w.id === activeId);
   const activeIndex = words.findIndex((w) => w.id === activeId);
@@ -106,16 +129,11 @@ export default function SentencesAIPractice({ config, onComplete }: SentencesAIP
     );
   };
 
-  const countSentences = (sentences: string[]) => {
-    return sentences.map((s) => s.trim()).filter(Boolean).length;
-  };
-
   const totalSentences = words.reduce((sum, word) => sum + countSentences(word.sentences), 0);
 
   const handleCheckWithAI = async () => {
-    // Check if we have any sentences
     if (totalSentences === 0) {
-      alert("Напишіть хоча б одне речення перед перевіркою");
+      setError("Напишіть хоча б одне речення перед перевіркою");
       return;
     }
 
@@ -123,7 +141,6 @@ export default function SentencesAIPractice({ config, onComplete }: SentencesAIP
     setError(null);
 
     try {
-      // Prepare items for checking
       const items = words.map((word) => ({
         wordId: word.id,
         word: word.pl,
@@ -148,9 +165,9 @@ export default function SentencesAIPractice({ config, onComplete }: SentencesAIP
         })
       });
 
-      const data = await res.json().catch(() => ({}));
-
       if (!res.ok) {
+        let data = {};
+        try { data = await res.json(); } catch {}
         const errorCode = data?.code;
         const message =
           errorCode === "ai_quota"
@@ -163,8 +180,15 @@ export default function SentencesAIPractice({ config, onComplete }: SentencesAIP
         return;
       }
 
-      // Parse result
-      const result = JSON.parse(String(data?.text || ""));
+      const data = await res.json();
+      const result = safeParseAIResponse(data?.text);
+
+      if (!result || !result.items) {
+        setError("AI повернула неправильний формат відповіді. Спробуйте ще раз.");
+        setIsChecking(false);
+        return;
+      }
+
       setCheckResult(result);
 
       // Save points to database if we have a valid score
@@ -179,15 +203,15 @@ export default function SentencesAIPractice({ config, onComplete }: SentencesAIP
               xp: result.overall.xp || 0
             })
           });
-        } catch (error) {
-          console.error("Failed to save points:", error);
+        } catch (err) {
+          console.error("Failed to save points:", err);
         }
       }
 
       // Show results modal
       setShowResults(true);
-    } catch (error) {
-      console.error("Failed to check with AI:", error);
+    } catch (err) {
+      console.error("Failed to check with AI:", err);
       setError("Помилка мережі");
     } finally {
       setIsChecking(false);
@@ -236,7 +260,7 @@ export default function SentencesAIPractice({ config, onComplete }: SentencesAIP
 
   return (
     <>
-      <div className="grid gap-6 lg:grid-cols-[300px_1fr]">
+      <div className="grid gap-6 grid-cols-1 md:grid-cols-[260px_1fr] lg:grid-cols-[300px_1fr]">
         {/* Left sidebar - word list */}
         <div className="rounded-3xl border border-ink/10 bg-paper/80 p-4 shadow-soft">
           <div className="flex items-center justify-between mb-4">
@@ -360,6 +384,7 @@ export default function SentencesAIPractice({ config, onComplete }: SentencesAIP
                     onChange={(e) => updateSentence(activeWord.id, index, e.target.value)}
                     placeholder="Напишіть речення польською..."
                     rows={3}
+                    maxLength={500}
                     className="w-full rounded-2xl border border-ink/20 bg-paper px-4 py-3 text-sm text-ink placeholder:text-ink/40 focus:border-gold/40 focus:outline-none focus:ring-0"
                   />
                 </div>
