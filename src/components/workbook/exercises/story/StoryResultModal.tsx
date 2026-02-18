@@ -41,7 +41,7 @@ export default function StoryResultModal({
         body: JSON.stringify({ pl, uk })
       });
 
-      if (res.ok) {
+      if (res.ok || res.status === 409) {
         setAddedWords(prev => new Set([...prev, pl]));
       }
     } catch (error) {
@@ -54,11 +54,11 @@ export default function StoryResultModal({
   const addAllWords = async () => {
     if (!feedback.vocabulary) return;
 
-    for (const vocab of feedback.vocabulary) {
-      if (!addedWords.has(vocab.pl)) {
-        await addVocabWord(vocab.pl, vocab.uk);
-      }
-    }
+    await Promise.all(
+      feedback.vocabulary
+        .filter(vocab => !addedWords.has(vocab.pl))
+        .map(vocab => addVocabWord(vocab.pl, vocab.uk))
+    );
   };
 
   // Calculate score percentage for visual feedback
@@ -88,7 +88,10 @@ export default function StoryResultModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/60 px-4">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/60 px-4"
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+    >
       <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl border border-ink/10 bg-paper shadow-2xl">
         {/* Header */}
         <div className="sticky top-0 z-10 flex items-center justify-between border-b border-ink/10 bg-paper px-6 py-4">

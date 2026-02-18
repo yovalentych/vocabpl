@@ -4,6 +4,7 @@
 import { useState, useEffect } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { CheckCircle, User, Sparkle, PaperPlaneRight } from "@phosphor-icons/react";
+import { safeParseAIResponse } from "@/lib/workbook";
 import DialogueResults from "./DialogueResults";
 
 interface Turn {
@@ -201,13 +202,17 @@ export default function DialogueClassicPractice({ config, onComplete }: Dialogue
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCheckingAI, setIsCheckingAI] = useState(false);
   const [showResults, setShowResults] = useState(false);
+  const [aiCheckResult, setAiCheckResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  const isProcessing = isCheckingAI || isSubmitting;
 
   useEffect(() => {
     // Load appropriate scenario
     const scenarioData = SCENARIOS[config.scenario]?.[config.level] || [];
     setTurns(scenarioData.map(turn => ({ ...turn, userResponse: "" })));
-  }, [config]);
+  }, [config.scenario, config.level]);
 
   const handleResponseChange = (turnId: number, value: string) => {
     setTurns(prev =>
@@ -222,7 +227,7 @@ export default function DialogueClassicPractice({ config, onComplete }: Dialogue
     const filledResponses = userTurns.filter(t => t.userResponse?.trim()).length;
 
     if (filledResponses === 0) {
-      alert("Будь ласка, заповніть хоча б одну відповідь");
+      setError("Будь ласка, заповніть хоча б одну відповідь");
       return;
     }
 
@@ -265,22 +270,32 @@ export default function DialogueClassicPractice({ config, onComplete }: Dialogue
         return;
       }
 
-      const result = JSON.parse(String(data?.text || "{}"));
+      const result = safeParseAIResponse(data?.text);
+
+      if (!result) {
+        setError("AI повернула неправильний формат відповіді. Спробуйте ще раз.");
+        return;
+      }
 
       // Save points to database
       if (result?.overall?.pointsForRating) {
-        await fetch("/api/exercises/attempt", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            exercise: "dialogue",
-            points: result.overall.pointsForRating,
-            xp: result.overall.xp || 0
-          })
-        });
+        try {
+          await fetch("/api/exercises/attempt", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              exercise: "dialogue",
+              points: result.overall.pointsForRating,
+              xp: result.overall.xp || 0
+            })
+          });
+        } catch (err) {
+          console.error("Failed to save points:", err);
+        }
       }
 
       // Show results
+      setAiCheckResult(result);
       setShowResults(true);
     } catch (error) {
       console.error("Failed to check with AI:", error);
@@ -295,7 +310,7 @@ export default function DialogueClassicPractice({ config, onComplete }: Dialogue
     const filledResponses = userTurns.filter(t => t.userResponse?.trim()).length;
 
     if (filledResponses === 0) {
-      alert("Будь ласка, заповніть хоча б одну відповідь");
+      setError("Будь ласка, заповніть хоча б одну відповідь");
       return;
     }
 
@@ -318,26 +333,30 @@ export default function DialogueClassicPractice({ config, onComplete }: Dialogue
         })
       });
 
-      const data = await res.json();
-
       if (!res.ok) {
+        let data = {};
+        try { data = await res.json(); } catch {}
         setError(data?.error || "Помилка надсилання");
         return;
       }
 
       // Save minimal points for submission
-      await fetch("/api/exercises/attempt", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          exercise: "dialogue",
-          points: filledResponses,
-          xp: filledResponses * 2
-        })
-      });
+      try {
+        await fetch("/api/exercises/attempt", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            exercise: "dialogue",
+            points: filledResponses,
+            xp: filledResponses * 2
+          })
+        });
+      } catch (err) {
+        console.error("Failed to save points:", err);
+      }
 
-      alert("✅ Вправу надіслано на перевірку! Очікуйте фідбек від викладача.");
-      onComplete();
+      setSuccessMessage("Вправу надіслано на перевірку! Очікуйте фідбек від викладача.");
+      setTimeout(() => onComplete(), 2000);
     } catch (error) {
       console.error("Failed to submit:", error);
       setError("Помилка надсилання");
@@ -422,6 +441,7 @@ export default function DialogueClassicPractice({ config, onComplete }: Dialogue
                         onChange={(e) => handleResponseChange(turn.id, e.target.value)}
                         placeholder="Напишіть вашу відповідь польською..."
                         rows={3}
+                        maxLength={500}
                         className="w-full rounded-xl border border-ink/20 bg-fog px-3 py-2 text-sm text-ink placeholder:text-ink/40 focus:border-gold/40 focus:outline-none focus:ring-0"
                       />
                     </div>
@@ -431,6 +451,13 @@ export default function DialogueClassicPractice({ config, onComplete }: Dialogue
             </div>
           ))}
         </div>
+
+        {/* Success message */}
+        {successMessage && (
+          <div className="rounded-2xl border border-moss/20 bg-moss/5 p-4 text-sm text-moss">
+            {successMessage}
+          </div>
+        )}
 
         {/* Error message */}
         {error && (
@@ -444,7 +471,7 @@ export default function DialogueClassicPractice({ config, onComplete }: Dialogue
           <div className="flex flex-wrap items-center justify-center gap-3">
             <button
               onClick={handleCheckWithAI}
-              disabled={isCheckingAI || filledCount === 0}
+              disabled={isProcessing || filledCount === 0}
               className="inline-flex items-center gap-2 rounded-full bg-moss px-6 py-3 text-sm font-semibold text-paper transition hover:bg-moss/90 disabled:cursor-not-allowed disabled:opacity-40"
             >
               {isCheckingAI ? (
@@ -462,7 +489,7 @@ export default function DialogueClassicPractice({ config, onComplete }: Dialogue
 
             <button
               onClick={handleSubmitForReview}
-              disabled={isSubmitting || filledCount === 0}
+              disabled={isProcessing || filledCount === 0}
               className="inline-flex items-center gap-2 rounded-full bg-terracotta px-6 py-3 text-sm font-semibold text-paper transition hover:bg-terracotta/90 disabled:cursor-not-allowed disabled:opacity-40"
             >
               {isSubmitting ? (
@@ -494,7 +521,8 @@ export default function DialogueClassicPractice({ config, onComplete }: Dialogue
             level: config.level,
             totalTurns: userTurns.length,
             filledTurns: filledCount,
-            qualityScore: filledCount / userTurns.length
+            qualityScore: aiCheckResult?.overall?.accuracy || (filledCount / userTurns.length),
+            aiFeedback: aiCheckResult
           }}
           onClose={() => {
             setShowResults(false);

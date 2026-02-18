@@ -20,7 +20,10 @@ export default function ParaphraseResults({ results, onClose }: ParaphraseResult
   const { mode, totalSentences, completedSentences, totalPoints, aiCheck, topic, level } = results;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/60 px-4">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/60 px-4"
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+    >
       <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl border border-ink/10 bg-paper shadow-2xl">
         {/* Header */}
         <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-ink/10 bg-paper p-6">
@@ -47,7 +50,7 @@ export default function ParaphraseResults({ results, onClose }: ParaphraseResult
         {/* Content */}
         <div className="p-6 space-y-6">
           {/* Stats */}
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
             <div className="rounded-2xl border border-ink/10 bg-fog p-4 text-center">
               <div className="text-2xl font-bold text-terracotta">{totalSentences}</div>
               <div className="mt-1 text-xs text-ink/60">Всього речень</div>
@@ -79,6 +82,15 @@ export default function ParaphraseResults({ results, onClose }: ParaphraseResult
               )}
             </div>
           </div>
+
+          {/* Motivational message for low scores */}
+          {aiCheck?.overall?.qualityScore !== undefined && aiCheck.overall.qualityScore < 0.3 && (
+            <div className="rounded-2xl border border-gold/20 bg-gold/5 p-4 text-center">
+              <p className="text-sm text-ink/70">
+                Не зупиняйтесь! Навіть перші спроби цінні для навчання. Спробуйте ще раз!
+              </p>
+            </div>
+          )}
 
           {/* AI Feedback */}
           {mode === "ai" && aiCheck && (
@@ -118,12 +130,13 @@ export default function ParaphraseResults({ results, onClose }: ParaphraseResult
                   </p>
                   <div className="space-y-4">
                     {aiCheck.items.map((item: any, idx: number) => {
-                      const qualityColor =
-                        (item.qualityScore || 0) >= 0.8
-                          ? "moss"
-                          : (item.qualityScore || 0) >= 0.6
-                            ? "gold"
-                            : "terracotta";
+                      const qualityScore = item.qualityScore || 0;
+                      const qualityColorClass =
+                        qualityScore >= 0.8
+                          ? "text-moss"
+                          : qualityScore >= 0.6
+                            ? "text-gold"
+                            : "text-terracotta";
 
                       return (
                         <div key={idx} className="rounded-2xl border border-ink/10 bg-fog p-4">
@@ -145,7 +158,7 @@ export default function ParaphraseResults({ results, onClose }: ParaphraseResult
                                 <Circle
                                   size={16}
                                   weight="fill"
-                                  className={`text-${qualityColor} flex-shrink-0 mt-0.5`}
+                                  className={`${qualityColorClass} flex-shrink-0 mt-0.5`}
                                 />
                                 <p className="text-sm text-ink flex-1">{item.paraphrase}</p>
                               </div>
@@ -160,7 +173,7 @@ export default function ParaphraseResults({ results, onClose }: ParaphraseResult
 
                             {/* Quality metrics */}
                             {(item.synonymsUsed || item.structureChanged || item.meaningPreserved !== undefined) && (
-                              <div className="grid gap-2 sm:grid-cols-3">
+                              <div className="grid gap-2 grid-cols-1 sm:grid-cols-3">
                                 {item.synonymsUsed !== undefined && (
                                   <div className="rounded-lg border border-ink/10 bg-paper p-2 text-center">
                                     <p className="text-xs text-ink/50">Синоніми</p>

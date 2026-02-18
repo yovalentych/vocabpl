@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react";
+import { safeParseAIResponse } from "@/lib/workbook";
 
 interface DescribeImage {
   url: string;
@@ -90,7 +91,7 @@ export function useDescribe() {
           setChecking(false);
           return false;
         }
-        const parsed = JSON.parse(String(data?.text || "{}"));
+        const parsed = safeParseAIResponse(data?.text);
         setResult(parsed);
 
         // Calculate points based on score if not provided

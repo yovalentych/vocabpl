@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import Loader from "@/components/ui/Loader";
 import { Sparkle, Book } from "@phosphor-icons/react/dist/ssr";
+import { safeParseAIResponse } from "@/lib/workbook";
 import StoryResultModal from "./StoryResultModal";
 
 interface StoryPracticeProps {
@@ -67,7 +68,7 @@ export default function StoryPractice({ level = "A2", onComplete }: StoryPractic
         return;
       }
 
-      const parsed = JSON.parse(String(data?.text || "{}"));
+      const parsed = safeParseAIResponse(data?.text);
 
       if (parsed?.feedback) {
         setFeedback(parsed.feedback);

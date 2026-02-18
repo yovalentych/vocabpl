@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { safeParseAIResponse } from "@/lib/workbook";
 
 export interface DialogueTurn {
   role: "user" | "ai";
@@ -61,8 +62,7 @@ export function useDialogue() {
         return false;
       }
 
-      // Parse JSON response
-      const parsed = JSON.parse(String(data?.text || ""));
+      const parsed = safeParseAIResponse(data?.text);
       if (parsed?.aiText) {
         setRoleplay([{ role: "ai", text: parsed.aiText }]);
         return true;
@@ -115,8 +115,7 @@ export function useDialogue() {
         return false;
       }
 
-      // Parse JSON response
-      const parsed = JSON.parse(String(data?.text || ""));
+      const parsed = safeParseAIResponse(data?.text);
       if (parsed?.aiText) {
         setRoleplay([...newRoleplay, { role: "ai", text: parsed.aiText }]);
         return true;

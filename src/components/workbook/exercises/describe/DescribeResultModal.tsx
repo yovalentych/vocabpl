@@ -35,7 +35,7 @@ export default function DescribeResultModal({
         body: JSON.stringify({ pl: lemma, uk: meaningUk })
       });
 
-      if (res.ok) {
+      if (res.ok || res.status === 409) {
         setAddedWords(prev => new Set([...prev, lemma]));
       }
     } catch (error) {
@@ -48,11 +48,11 @@ export default function DescribeResultModal({
   const addAllWords = async () => {
     if (!result.suggestedVocab) return;
 
-    for (const vocab of result.suggestedVocab) {
-      if (!addedWords.has(vocab.lemma)) {
-        await addVocabWord(vocab.lemma, vocab.meaningUk);
-      }
-    }
+    await Promise.all(
+      result.suggestedVocab
+        .filter(vocab => !addedWords.has(vocab.lemma))
+        .map(vocab => addVocabWord(vocab.lemma, vocab.meaningUk))
+    );
   };
 
   // Calculate score percentage for visual feedback
@@ -83,7 +83,10 @@ export default function DescribeResultModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/60 px-4">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/60 px-4"
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+    >
       <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl border border-ink/10 bg-paper shadow-2xl">
         {/* Header */}
         <div className="sticky top-0 z-10 flex items-center justify-between border-b border-ink/10 bg-paper px-6 py-4">

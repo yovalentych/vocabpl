@@ -4,6 +4,7 @@
 import { useState, useEffect } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { CheckCircle, Circle, FloppyDisk, Sparkle, PaperPlaneRight } from "@phosphor-icons/react";
+import { safeParseAIResponse } from "@/lib/workbook";
 import ParaphraseResults from "./ParaphraseResults";
 
 interface Sentence {
@@ -82,6 +83,9 @@ export default function ParaphraseClassicPractice({ config, onComplete }: Paraph
   const [showResults, setShowResults] = useState(false);
   const [results, setResults] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  const isProcessing = isCheckingAI || isSubmitting;
 
   // Load sentences based on config
   useEffect(() => {
@@ -98,7 +102,7 @@ export default function ParaphraseClassicPractice({ config, onComplete }: Paraph
     setSentences(items);
     setActiveId(items[0]?.id || null);
     setIsLoading(false);
-  }, [config]);
+  }, [config.level, config.count]);
 
   const activeSentence = sentences.find((s) => s.id === activeId);
   const activeIndex = sentences.findIndex((s) => s.id === activeId);
@@ -120,7 +124,7 @@ export default function ParaphraseClassicPractice({ config, onComplete }: Paraph
     const completed = sentences.filter((s) => s.paraphrase.trim());
 
     if (completed.length === 0) {
-      alert("Будь ласка, перефразуйте хоча б одне речення");
+      setError("Будь ласка, перефразуйте хоча б одне речення");
       return;
     }
 
@@ -161,19 +165,28 @@ export default function ParaphraseClassicPractice({ config, onComplete }: Paraph
         return;
       }
 
-      const result = JSON.parse(String(data?.text || "{}"));
+      const result = safeParseAIResponse(data?.text);
+
+      if (!result) {
+        setError("AI повернула неправильний формат відповіді. Спробуйте ще раз.");
+        return;
+      }
 
       // Save points to database
       if (result?.overall?.pointsForRating) {
-        await fetch("/api/exercises/attempt", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            exercise: "paraphrase",
-            points: result.overall.pointsForRating,
-            xp: result.overall.xp || 0
-          })
-        });
+        try {
+          await fetch("/api/exercises/attempt", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              exercise: "paraphrase",
+              points: result.overall.pointsForRating,
+              xp: result.overall.xp || 0
+            })
+          });
+        } catch (err) {
+          console.error("Failed to save points:", err);
+        }
       }
 
       // Show results
@@ -198,7 +211,7 @@ export default function ParaphraseClassicPractice({ config, onComplete }: Paraph
     const completed = sentences.filter((s) => s.paraphrase.trim());
 
     if (completed.length === 0) {
-      alert("Будь ласка, перефразуйте хоча б одне речення");
+      setError("Будь ласка, перефразуйте хоча б одне речення");
       return;
     }
 
@@ -219,26 +232,30 @@ export default function ParaphraseClassicPractice({ config, onComplete }: Paraph
         })
       });
 
-      const data = await res.json();
-
       if (!res.ok) {
+        let data = {};
+        try { data = await res.json(); } catch {}
         setError(data?.error || "Помилка надсилання");
         return;
       }
 
       // Save minimal points for submission
-      await fetch("/api/exercises/attempt", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          exercise: "paraphrase",
-          points: completed.length,
-          xp: completed.length * 2
-        })
-      });
+      try {
+        await fetch("/api/exercises/attempt", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            exercise: "paraphrase",
+            points: completed.length,
+            xp: completed.length * 2
+          })
+        });
+      } catch (err) {
+        console.error("Failed to save points:", err);
+      }
 
-      alert("✅ Вправу надіслано на перевірку! Очікуйте фідбек від викладача.");
-      onComplete();
+      setSuccessMessage("Вправу надіслано на перевірку! Очікуйте фідбек від викладача.");
+      setTimeout(() => onComplete(), 2000);
     } catch (error) {
       console.error("Failed to submit:", error);
       setError("Помилка надсилання");
@@ -366,6 +383,7 @@ export default function ParaphraseClassicPractice({ config, onComplete }: Paraph
               onChange={(e) => updateParaphrase(activeSentence.id, e.target.value)}
               placeholder="Напишіть це речення іншими словами..."
               rows={5}
+              maxLength={500}
               className="w-full rounded-2xl border border-ink/20 bg-paper px-4 py-3 text-sm text-ink placeholder:text-ink/40 focus:border-terracotta/40 focus:outline-none focus:ring-0"
             />
 
@@ -373,6 +391,13 @@ export default function ParaphraseClassicPractice({ config, onComplete }: Paraph
               Спробуйте змінити структуру та використати синоніми
             </p>
           </div>
+
+          {/* Success message */}
+          {successMessage && (
+            <div className="rounded-2xl border border-moss/20 bg-moss/5 p-4 text-sm text-moss">
+              {successMessage}
+            </div>
+          )}
 
           {/* Error message */}
           {error && (
@@ -386,7 +411,7 @@ export default function ParaphraseClassicPractice({ config, onComplete }: Paraph
             <div className="flex flex-wrap items-center gap-3">
               <button
                 onClick={handleCheckWithAI}
-                disabled={isCheckingAI || completedCount === 0}
+                disabled={isProcessing || completedCount === 0}
                 className="inline-flex items-center gap-2 rounded-full bg-moss px-6 py-3 text-sm font-semibold text-paper transition hover:bg-moss/90 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 {isCheckingAI ? (
@@ -404,7 +429,7 @@ export default function ParaphraseClassicPractice({ config, onComplete }: Paraph
 
               <button
                 onClick={handleSubmitForReview}
-                disabled={isSubmitting || completedCount === 0}
+                disabled={isProcessing || completedCount === 0}
                 className="inline-flex items-center gap-2 rounded-full bg-terracotta px-6 py-3 text-sm font-semibold text-paper transition hover:bg-terracotta/90 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 {isSubmitting ? (

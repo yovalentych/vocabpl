@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { safeParseAIResponse } from "@/lib/workbook";
 
 export interface ParaphraseTask {
   id: string;
@@ -68,18 +69,13 @@ export function useParaphrase() {
         return false;
       }
 
-      try {
-        const parsed = JSON.parse(String(data?.text || ""));
-        if (parsed?.task) {
-          setTask(parsed.task);
-          setAnswer("");
-          setResult(null);
-          return true;
-        } else {
-          setError("Failed to parse AI response");
-          return false;
-        }
-      } catch {
+      const parsed = safeParseAIResponse(data?.text);
+      if (parsed?.task) {
+        setTask(parsed.task);
+        setAnswer("");
+        setResult(null);
+        return true;
+      } else {
         setError("Failed to parse AI response");
         return false;
       }
@@ -121,13 +117,13 @@ export function useParaphrase() {
         return false;
       }
 
-      try {
-        const parsed = JSON.parse(String(data?.text || ""));
-        if (parsed?.result) {
-          setResult(parsed.result);
+      const parsed = safeParseAIResponse(data?.text);
+      if (parsed?.result) {
+        setResult(parsed.result);
 
-          // Save attempt
-          if (parsed.result.score !== undefined) {
+        // Save attempt
+        if (parsed.result.score !== undefined) {
+          try {
             await fetch("/api/exercises/attempt", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -137,14 +133,13 @@ export function useParaphrase() {
                 score: parsed.result.score
               })
             });
+          } catch (err) {
+            console.error("Failed to save attempt:", err);
           }
-
-          return true;
-        } else {
-          setError("Failed to parse AI response");
-          return false;
         }
-      } catch {
+
+        return true;
+      } else {
         setError("Failed to parse AI response");
         return false;
       }

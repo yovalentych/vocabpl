@@ -4,6 +4,7 @@
 import { useState, useEffect } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { Sparkle, User, PaperPlaneTilt } from "@phosphor-icons/react";
+import { safeParseAIResponse } from "@/lib/workbook";
 import DialogueResults from "./DialogueResults";
 
 interface Turn {
@@ -33,6 +34,8 @@ export default function DialogueAIPractice({ config, onComplete }: DialogueAIPra
 
   // Generate initial dialogue
   useEffect(() => {
+    let cancelled = false;
+
     async function generateDialogue() {
       try {
         setError(null);
@@ -49,6 +52,8 @@ export default function DialogueAIPractice({ config, onComplete }: DialogueAIPra
           })
         });
 
+        if (cancelled) return;
+
         const data = await res.json().catch(() => ({}));
 
         if (!res.ok) {
@@ -59,26 +64,30 @@ export default function DialogueAIPractice({ config, onComplete }: DialogueAIPra
               : errorCode === "pvs_unavailable"
                 ? "Потрібен AI план"
                 : data?.error || "Помилка AI";
-          setError(message);
-          setIsGenerating(false);
+          if (!cancelled) setError(message);
+          if (!cancelled) setIsGenerating(false);
           return;
         }
 
-        // Parse AI response - get first turn
-        const result = JSON.parse(String(data?.text || ""));
-        if (result.firstTurn) {
+        const result = safeParseAIResponse(data?.text);
+        if (!cancelled && result?.firstTurn) {
           setTurns([{ speaker: "ai", text: result.firstTurn }]);
+        } else if (!cancelled) {
+          setError("AI не змогла створити діалог. Спробуйте іншу ситуацію.");
         }
       } catch (error) {
-        console.error("Failed to generate dialogue:", error);
-        setError("Помилка мережі");
+        if (!cancelled) {
+          console.error("Failed to generate dialogue:", error);
+          setError("Помилка мережі");
+        }
       } finally {
-        setIsGenerating(false);
+        if (!cancelled) setIsGenerating(false);
       }
     }
 
     generateDialogue();
-  }, [config, locale]);
+    return () => { cancelled = true; };
+  }, [config.situation, config.level, locale]);
 
   const handleSendResponse = async () => {
     if (!currentInput.trim() || isWaitingForAI) return;
@@ -105,22 +114,13 @@ export default function DialogueAIPractice({ config, onComplete }: DialogueAIPra
         context: JSON.stringify({ uiLanguage: locale })
       };
 
-      console.log("=== Sending AI Request ===");
-      console.log("Request body:", requestBody);
-      console.log("Conversation history:", newTurns);
-
       const res = await fetch("/api/ai/run", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(requestBody)
       });
 
-      console.log("Response status:", res.status, res.statusText);
-
-      const data = await res.json().catch((err) => {
-        console.error("JSON parse error:", err);
-        return {};
-      });
+      const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
         const errorCode = data?.code;
@@ -135,31 +135,17 @@ export default function DialogueAIPractice({ config, onComplete }: DialogueAIPra
         return;
       }
 
-      console.log("=== AI Response Debug ===");
-      console.log("Full data:", data);
-      console.log("data.text:", data?.text);
+      const result = safeParseAIResponse(data?.text);
 
-      const result = JSON.parse(String(data?.text || "{}"));
-      console.log("Parsed result:", result);
-      console.log("result.nextTurn:", result.nextTurn);
-
-      if (result.nextTurn && result.nextTurn.trim()) {
-        console.log("Adding AI turn to state:", result.nextTurn);
-        setTurns(prev => {
-          const newTurns = [...prev, { speaker: "ai", text: result.nextTurn }];
-          console.log("New turns state:", newTurns);
-          return newTurns;
-        });
+      if (result?.nextTurn && result.nextTurn.trim()) {
+        setTurns(prev => [...prev, { speaker: "ai", text: result.nextTurn }]);
       } else {
-        console.error("Empty or missing AI response! Result:", result);
         setError("AI не надав відповіді. Спробуйте ще раз.");
       }
     } catch (error) {
       console.error("Failed to get AI response:", error);
-      console.error("Error details:", error.message, error.stack);
-      setError("Помилка мережі: " + error.message);
+      setError("Помилка мережі");
     } finally {
-      console.log("Setting isWaitingForAI to false");
       setIsWaitingForAI(false);
     }
   };
@@ -198,7 +184,12 @@ export default function DialogueAIPractice({ config, onComplete }: DialogueAIPra
         return;
       }
 
-      const result = JSON.parse(String(data?.text || ""));
+      const result = safeParseAIResponse(data?.text);
+      if (!result) {
+        setError("AI повернула неправильний формат відповіді. Спробуйте ще раз.");
+        setIsChecking(false);
+        return;
+      }
       setCheckResult(result);
 
       // Save points
@@ -367,6 +358,7 @@ export default function DialogueAIPractice({ config, onComplete }: DialogueAIPra
                 }}
                 placeholder="Напишіть вашу відповідь польською..."
                 rows={3}
+                maxLength={500}
                 disabled={isWaitingForAI}
                 className="flex-1 rounded-2xl border border-ink/20 bg-paper px-4 py-3 text-sm text-ink placeholder:text-ink/40 focus:border-moss/40 focus:outline-none focus:ring-0 disabled:opacity-50"
               />

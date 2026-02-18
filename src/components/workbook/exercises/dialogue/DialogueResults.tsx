@@ -63,7 +63,10 @@ export default function DialogueResults({ results, onClose }: DialogueResultsPro
   const points = aiFeedback?.overall?.pointsForRating ?? null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/60 px-4">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/60 px-4"
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+    >
       <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl border border-ink/10 bg-paper shadow-2xl">
         {/* Header */}
         <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-ink/10 bg-paper p-6">
@@ -91,7 +94,7 @@ export default function DialogueResults({ results, onClose }: DialogueResultsPro
         {/* Content */}
         <div className="p-6 space-y-6">
           {/* Stats */}
-          <div className="grid gap-4 sm:grid-cols-4">
+          <div className="grid gap-4 grid-cols-2 sm:grid-cols-4">
             <div className="rounded-2xl border border-ink/10 bg-fog p-4 text-center">
               <div className="text-2xl font-bold text-gold">{totalTurns}</div>
               <div className="mt-1 text-xs text-ink/60">Всього обмінів</div>
@@ -115,6 +118,15 @@ export default function DialogueResults({ results, onClose }: DialogueResultsPro
               </div>
             </div>
           </div>
+
+          {/* Motivational message for low scores */}
+          {qualityPercent !== null && qualityPercent < 30 && (
+            <div className="rounded-2xl border border-gold/20 bg-gold/5 p-4 text-center">
+              <p className="text-sm text-ink/70">
+                Не зупиняйтесь! Навіть перші спроби цінні для навчання. Спробуйте ще раз!
+              </p>
+            </div>
+          )}
 
           {/* AI Feedback */}
           {mode === "ai" && aiFeedback && (

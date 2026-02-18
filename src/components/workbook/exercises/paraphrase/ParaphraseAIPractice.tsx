@@ -4,6 +4,7 @@
 import { useState, useEffect } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { CheckCircle, Circle, Sparkle } from "@phosphor-icons/react";
+import { safeParseAIResponse } from "@/lib/workbook";
 import ParaphraseResults from "./ParaphraseResults";
 
 interface Sentence {
@@ -33,6 +34,8 @@ export default function ParaphraseAIPractice({ config, onComplete }: ParaphraseA
 
   // Generate sentences with AI
   useEffect(() => {
+    let cancelled = false;
+
     async function generateSentences() {
       try {
         setError(null);
@@ -50,6 +53,8 @@ export default function ParaphraseAIPractice({ config, onComplete }: ParaphraseA
           })
         });
 
+        if (cancelled) return;
+
         const data = await res.json().catch(() => ({}));
 
         if (!res.ok) {
@@ -60,31 +65,42 @@ export default function ParaphraseAIPractice({ config, onComplete }: ParaphraseA
               : errorCode === "pvs_unavailable"
                 ? "Потрібен AI план"
                 : data?.error || "Помилка AI";
-          setError(message);
-          setIsGenerating(false);
+          if (!cancelled) setError(message);
+          if (!cancelled) setIsGenerating(false);
           return;
         }
 
-        // Parse AI response
-        const result = JSON.parse(String(data?.text || ""));
-        const generatedSentences: Sentence[] = (result.task?.items || []).map((item: any, idx: number) => ({
+        const result = safeParseAIResponse(data?.text);
+
+        if (!result || !result.task?.items || result.task.items.length === 0) {
+          if (!cancelled) setError("AI не змогла згенерувати завдання. Спробуйте іншу тему.");
+          if (!cancelled) setIsGenerating(false);
+          return;
+        }
+
+        const generatedSentences: Sentence[] = (result.task.items || []).map((item: any, idx: number) => ({
           id: item.id || `ai-${idx}`,
           original: item.sourcePl,
           paraphrase: ""
         }));
 
-        setSentences(generatedSentences);
-        setActiveId(generatedSentences[0]?.id || null);
+        if (!cancelled) {
+          setSentences(generatedSentences);
+          setActiveId(generatedSentences[0]?.id || null);
+        }
       } catch (error) {
-        console.error("Failed to generate sentences:", error);
-        setError("Помилка мережі");
+        if (!cancelled) {
+          console.error("Failed to generate sentences:", error);
+          setError("Помилка мережі");
+        }
       } finally {
-        setIsGenerating(false);
+        if (!cancelled) setIsGenerating(false);
       }
     }
 
     generateSentences();
-  }, [config, locale]);
+    return () => { cancelled = true; };
+  }, [config.topic, config.level, config.count, locale]);
 
   const activeSentence = sentences.find((s) => s.id === activeId);
   const activeIndex = sentences.findIndex((s) => s.id === activeId);
@@ -104,7 +120,7 @@ export default function ParaphraseAIPractice({ config, onComplete }: ParaphraseA
   const handleCheckWithAI = async () => {
     // Check if we have any paraphrases
     if (completedCount === 0) {
-      alert("Перефразуйте хоча б одне речення перед перевіркою");
+      setError("Перефразуйте хоча б одне речення перед перевіркою");
       return;
     }
 
@@ -152,7 +168,12 @@ export default function ParaphraseAIPractice({ config, onComplete }: ParaphraseA
       }
 
       // Parse result
-      const result = JSON.parse(String(data?.text || ""));
+      const result = safeParseAIResponse(data?.text);
+      if (!result) {
+        setError("AI повернула неправильний формат відповіді. Спробуйте ще раз.");
+        setIsChecking(false);
+        return;
+      }
       setCheckResult(result);
 
       // Save points to database if we have a valid score
@@ -323,6 +344,7 @@ export default function ParaphraseAIPractice({ config, onComplete }: ParaphraseA
               onChange={(e) => updateParaphrase(activeSentence.id, e.target.value)}
               placeholder="Напишіть це речення іншими словами..."
               rows={5}
+              maxLength={500}
               className="w-full rounded-2xl border border-ink/20 bg-paper px-4 py-3 text-sm text-ink placeholder:text-ink/40 focus:border-moss/40 focus:outline-none focus:ring-0"
             />
 

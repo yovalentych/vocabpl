@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { validateGeneratedContent } from "@/lib/difficulty";
+import { safeParseAIResponse } from "@/lib/workbook";
 
 export interface StoryMaterial {
   _id: string;
@@ -162,62 +163,44 @@ export function useStory() {
         return false;
       }
 
-      try {
-        const parsed = JSON.parse(String(data?.text || ""));
-        if (parsed?.prompt && parsed?.text) {
-          // Validate content quality
-          const validation = validateGeneratedContent({
-            content: { text: parsed.text },
-            level: level as any,
-            exerciseType: "reading" // Story is similar to reading
-          });
+      const parsed = safeParseAIResponse(data?.text);
 
-          // Log validation results
-          console.log("📊 Story content validation:", {
-            valid: validation.valid,
-            score: validation.score,
-            metrics: validation.metrics
-          });
+      if (parsed?.prompt && parsed?.text) {
+        // Validate content quality
+        const validation = validateGeneratedContent({
+          content: { text: parsed.text },
+          level: level as any,
+          exerciseType: "reading" // Story is similar to reading
+        });
 
-          if (validation.errors.length > 0) {
-            console.warn("⚠️ Content quality issues:", validation.errors);
-          }
+        // If quality is too low, reject and retry
+        if (!validation.valid || validation.score < 0.6) {
+          fetch("/api/admin/content-quality-log", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              type: "story_generate",
+              level,
+              topic,
+              validation: {
+                valid: validation.valid,
+                score: validation.score,
+                errors: validation.errors.map(e => e.message)
+              },
+              metrics: validation.metrics
+            })
+          }).catch(() => null);
 
-          // If quality is too low, reject and retry
-          if (!validation.valid || validation.score < 0.6) {
-            console.error("❌ Story quality too low, rejecting...");
-
-            // Log to backend for monitoring
-            fetch("/api/admin/content-quality-log", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                type: "story_generate",
-                level,
-                topic,
-                validation: {
-                  valid: validation.valid,
-                  score: validation.score,
-                  errors: validation.errors.map(e => e.message)
-                },
-                metrics: validation.metrics
-              })
-            }).catch(() => null);
-
-            setError(`Якість згенерованої історії недостатня (score: ${(validation.score * 100).toFixed(0)}%). Спробуйте ще раз.`);
-            return false;
-          }
-
-          setAiStory({ prompt: parsed.prompt, text: parsed.text });
-          setUserText("");
-          setFeedback(null);
-          setHints([]);
-          return true;
-        } else {
-          setError("Failed to parse AI response");
+          setError(`Якість згенерованої історії недостатня (score: ${(validation.score * 100).toFixed(0)}%). Спробуйте ще раз.`);
           return false;
         }
-      } catch {
+
+        setAiStory({ prompt: parsed.prompt, text: parsed.text });
+        setUserText("");
+        setFeedback(null);
+        setHints([]);
+        return true;
+      } else {
         setError("Failed to parse AI response");
         return false;
       }
@@ -259,13 +242,13 @@ export function useStory() {
         return false;
       }
 
-      try {
-        const parsed = JSON.parse(String(data?.text || ""));
-        if (parsed?.feedback) {
-          setFeedback(parsed.feedback);
+      const parsed = safeParseAIResponse(data?.text);
+      if (parsed?.feedback) {
+        setFeedback(parsed.feedback);
 
-          // Save attempt with points
-          if (parsed.feedback.score !== undefined) {
+        // Save attempt with points
+        if (parsed.feedback.score !== undefined) {
+          try {
             await fetch("/api/exercises/attempt", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -275,16 +258,15 @@ export function useStory() {
                 score: parsed.feedback.score
               })
             });
-            setPoints(Number(parsed.feedback.score * 10 || 0));
-            setAwarded(true);
+          } catch (err) {
+            console.error("Failed to save attempt:", err);
           }
-
-          return true;
-        } else {
-          setError("Failed to parse AI response");
-          return false;
+          setPoints(Number(parsed.feedback.score * 10 || 0));
+          setAwarded(true);
         }
-      } catch {
+
+        return true;
+      } else {
         setError("Failed to parse AI response");
         return false;
       }
@@ -318,13 +300,9 @@ export function useStory() {
       const data = await res.json().catch(() => ({}));
 
       if (res.ok) {
-        try {
-          const parsed = JSON.parse(String(data?.text || ""));
-          if (parsed?.hints && Array.isArray(parsed.hints)) {
-            setHints(parsed.hints);
-          }
-        } catch {
-          // Ignore parsing errors for hints
+        const parsed = safeParseAIResponse(data?.text);
+        if (parsed?.hints && Array.isArray(parsed.hints)) {
+          setHints(parsed.hints);
         }
       }
     } catch {
