@@ -12,8 +12,12 @@ export type ReadingText = {
 };
 
 export function loadReadingTexts(): ReadingText[] {
-  const filePath = path.join(process.cwd(), "data", "reading_texts_a1.json");
-  const raw = fs.readFileSync(filePath, "utf-8");
-  const data = JSON.parse(raw);
-  return Array.isArray(data?.items) ? data.items : [];
+  try {
+    const filePath = path.join(process.cwd(), "data", "reading_texts_a1.json");
+    const raw = fs.readFileSync(filePath, "utf-8");
+    const data = JSON.parse(raw);
+    return Array.isArray(data?.items) ? data.items : [];
+  } catch {
+    return [];
+  }
 }
