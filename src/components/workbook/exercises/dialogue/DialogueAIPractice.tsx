@@ -1,9 +1,9 @@
 // @ts-nocheck
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocale } from "@/components/LocaleProvider";
-import { Sparkle, User, PaperPlaneTilt } from "@phosphor-icons/react";
+import { Sparkle, User, PaperPlaneTilt, CheckCircle } from "@phosphor-icons/react";
 import { safeParseAIResponse } from "@/lib/workbook";
 import DialogueResults from "./DialogueResults";
 
@@ -31,6 +31,12 @@ export default function DialogueAIPractice({ config, onComplete }: DialogueAIPra
   const [showResults, setShowResults] = useState(false);
   const [checkResult, setCheckResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll to bottom when new messages arrive
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [turns, isWaitingForAI]);
 
   // Generate initial dialogue
   useEffect(() => {
@@ -253,148 +259,145 @@ export default function DialogueAIPractice({ config, onComplete }: DialogueAIPra
 
   return (
     <>
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="rounded-3xl border border-moss/20 bg-moss/5 p-6 shadow-soft">
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-2">
-                <Sparkle size={16} weight="fill" className="text-moss" />
-                <p className="text-xs uppercase tracking-[0.3em] text-moss/70">
-                  AI режим
-                </p>
-              </div>
-              <h2 className="text-xl font-semibold text-ink">
-                {config.situation}
-              </h2>
-              <p className="mt-1 text-sm text-ink/60">
-                Рівень: {config.level} · Обмінів: {userTurnCount}
-              </p>
+      {/* Single chat container */}
+      <div className="rounded-3xl border border-ink/10 bg-paper/80 shadow-soft flex flex-col h-[70vh] max-h-[600px]">
+        {/* Compact header */}
+        <div className="flex items-center gap-2 px-4 py-3 border-b border-ink/10 flex-shrink-0">
+          <Sparkle size={16} weight="fill" className="text-moss" />
+          <span className="text-xs font-semibold text-moss/70 uppercase tracking-wider">AI режим</span>
+          <span className="text-xs text-ink/40">·</span>
+          <span className="text-sm text-ink truncate">{config.situation}</span>
+          <span className="text-xs text-ink/40">·</span>
+          <span className="text-xs text-ink/50">{config.level}</span>
+          <span className="text-xs text-ink/40">·</span>
+          <span className="text-xs text-ink/50">{userTurnCount} обмінів</span>
+        </div>
+
+        {/* Scrollable messages area */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {turns.map((turn, idx) => (
+            <div key={idx}>
+              {turn.speaker === "ai" ? (
+                <div className="flex gap-3">
+                  <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-moss/10">
+                    <Sparkle size={20} weight="fill" className="text-moss" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-xs font-semibold text-moss mb-1">AI співрозмовник</p>
+                    <div className="rounded-2xl border border-moss/20 bg-moss/5 px-4 py-3">
+                      <p className="text-sm text-ink">{turn.text}</p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex gap-3 justify-end">
+                  <div className="flex-1 max-w-[80%]">
+                    <p className="text-xs font-semibold text-gold mb-1 text-right">Ви</p>
+                    <div className="rounded-2xl border border-gold/20 bg-gold/5 px-4 py-3">
+                      <p className="text-sm text-ink">{turn.text}</p>
+                    </div>
+                  </div>
+                  <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gold/10">
+                    <User size={20} weight="fill" className="text-gold" />
+                  </div>
+                </div>
+              )}
             </div>
-            {!isComplete && userTurnCount > 0 && (
-              <button
-                onClick={() => setIsComplete(true)}
-                className="rounded-full border border-ink/20 px-4 py-2 text-xs font-semibold text-ink transition hover:bg-ink/5"
-              >
-                Завершити
-              </button>
-            )}
-          </div>
-        </div>
+          ))}
 
-        {/* Conversation */}
-        <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
-          <div className="space-y-4">
-            {turns.map((turn, idx) => (
-              <div key={idx}>
-                {turn.speaker === "ai" ? (
-                  <div className="flex gap-3">
-                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-moss/10">
-                      <Sparkle size={20} weight="fill" className="text-moss" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-xs font-semibold text-moss mb-1">AI співрозмовник</p>
-                      <div className="rounded-2xl border border-moss/20 bg-moss/5 px-4 py-3">
-                        <p className="text-sm text-ink">{turn.text}</p>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex gap-3 justify-end">
-                    <div className="flex-1 max-w-[80%]">
-                      <p className="text-xs font-semibold text-gold mb-1 text-right">Ви</p>
-                      <div className="rounded-2xl border border-gold/20 bg-gold/5 px-4 py-3">
-                        <p className="text-sm text-ink">{turn.text}</p>
-                      </div>
-                    </div>
-                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gold/10">
-                      <User size={20} weight="fill" className="text-gold" />
-                    </div>
-                  </div>
-                )}
+          {/* Waiting indicator */}
+          {isWaitingForAI && (
+            <div className="flex gap-3">
+              <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-moss/10">
+                <Sparkle size={20} weight="fill" className="text-moss animate-pulse" />
               </div>
-            ))}
-
-            {/* Waiting indicator */}
-            {isWaitingForAI && (
-              <div className="flex gap-3">
-                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-moss/10">
-                  <Sparkle size={20} weight="fill" className="text-moss animate-pulse" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-xs font-semibold text-moss mb-1">AI співрозмовник</p>
-                  <div className="rounded-2xl border border-moss/20 bg-moss/5 px-4 py-3">
-                    <div className="flex gap-1">
-                      <span className="h-2 w-2 rounded-full bg-moss/40 animate-bounce" style={{ animationDelay: "0ms" }} />
-                      <span className="h-2 w-2 rounded-full bg-moss/40 animate-bounce" style={{ animationDelay: "150ms" }} />
-                      <span className="h-2 w-2 rounded-full bg-moss/40 animate-bounce" style={{ animationDelay: "300ms" }} />
-                    </div>
+              <div className="flex-1">
+                <p className="text-xs font-semibold text-moss mb-1">AI співрозмовник</p>
+                <div className="rounded-2xl border border-moss/20 bg-moss/5 px-4 py-3">
+                  <div className="flex gap-1">
+                    <span className="h-2 w-2 rounded-full bg-moss/40 animate-bounce" style={{ animationDelay: "0ms" }} />
+                    <span className="h-2 w-2 rounded-full bg-moss/40 animate-bounce" style={{ animationDelay: "150ms" }} />
+                    <span className="h-2 w-2 rounded-full bg-moss/40 animate-bounce" style={{ animationDelay: "300ms" }} />
                   </div>
                 </div>
               </div>
-            )}
-          </div>
+            </div>
+          )}
+
+          {/* Scroll anchor */}
+          <div ref={messagesEndRef} />
         </div>
 
-        {/* Error message */}
+        {/* Error inside chat window */}
         {error && (
-          <div className="rounded-2xl border border-terracotta/20 bg-terracotta/5 p-4 text-sm text-terracotta">
+          <div className="mx-4 mb-2 rounded-xl border border-terracotta/20 bg-terracotta/5 px-4 py-2 text-sm text-terracotta flex-shrink-0">
             {error}
           </div>
         )}
 
-        {/* Input or completion */}
-        {!isComplete ? (
-          <div className="rounded-3xl border border-ink/10 bg-paper/80 p-4 shadow-soft">
-            <div className="flex gap-3">
-              <textarea
-                value={currentInput}
-                onChange={(e) => setCurrentInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault();
-                    handleSendResponse();
-                  }
-                }}
-                placeholder="Напишіть вашу відповідь польською..."
-                rows={3}
-                maxLength={500}
-                disabled={isWaitingForAI}
-                className="flex-1 rounded-2xl border border-ink/20 bg-paper px-4 py-3 text-sm text-ink placeholder:text-ink/40 focus:border-moss/40 focus:outline-none focus:ring-0 disabled:opacity-50"
-              />
+        {/* Sticky bottom: input or completion */}
+        <div className="border-t border-ink/10 px-4 py-3 flex-shrink-0">
+          {!isComplete ? (
+            <>
+              <div className="flex items-end gap-2">
+                {userTurnCount > 0 && (
+                  <button
+                    onClick={() => setIsComplete(true)}
+                    title="Завершити діалог"
+                    className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-ink/20 text-ink/60 transition hover:bg-ink/5 hover:text-ink"
+                  >
+                    <CheckCircle size={20} weight="bold" />
+                  </button>
+                )}
+                <textarea
+                  value={currentInput}
+                  onChange={(e) => setCurrentInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault();
+                      handleSendResponse();
+                    }
+                  }}
+                  placeholder="Напишіть вашу відповідь польською..."
+                  rows={2}
+                  maxLength={500}
+                  disabled={isWaitingForAI}
+                  className="flex-1 rounded-2xl border border-ink/20 bg-paper px-4 py-2 text-sm text-ink placeholder:text-ink/40 focus:border-moss/40 focus:outline-none focus:ring-0 disabled:opacity-50 resize-none"
+                />
+                <button
+                  onClick={handleSendResponse}
+                  disabled={!currentInput.trim() || isWaitingForAI}
+                  className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-moss text-paper transition hover:bg-moss/90 disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  <PaperPlaneTilt size={20} weight="fill" />
+                </button>
+              </div>
+              <p className="mt-1 text-xs text-ink/40">
+                Enter — відправити · Shift+Enter — новий рядок
+              </p>
+            </>
+          ) : (
+            <div className="flex justify-center py-1">
               <button
-                onClick={handleSendResponse}
-                disabled={!currentInput.trim() || isWaitingForAI}
-                className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-moss text-paper transition hover:bg-moss/90 disabled:cursor-not-allowed disabled:opacity-40"
+                onClick={handleCheckDialogue}
+                disabled={isChecking}
+                className="inline-flex items-center gap-2 rounded-full bg-moss px-8 py-3 text-sm font-semibold text-paper transition hover:bg-moss/90 disabled:cursor-not-allowed disabled:opacity-40"
               >
-                <PaperPlaneTilt size={20} weight="fill" />
+                {isChecking ? (
+                  <>
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-paper/20 border-t-paper" />
+                    <span>Перевірка AI...</span>
+                  </>
+                ) : (
+                  <>
+                    <Sparkle size={18} weight="fill" />
+                    <span>Отримати фідбек</span>
+                  </>
+                )}
               </button>
             </div>
-            <p className="mt-2 text-xs text-ink/50">
-              Натисніть Enter для відправки · Shift+Enter для нового рядка
-            </p>
-          </div>
-        ) : (
-          <div className="flex justify-center">
-            <button
-              onClick={handleCheckDialogue}
-              disabled={isChecking}
-              className="inline-flex items-center gap-2 rounded-full bg-moss px-8 py-3 text-sm font-semibold text-paper transition hover:bg-moss/90 disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              {isChecking ? (
-                <>
-                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-paper/20 border-t-paper" />
-                  <span>Перевірка AI...</span>
-                </>
-              ) : (
-                <>
-                  <Sparkle size={18} weight="fill" />
-                  <span>Отримати фідбек</span>
-                </>
-              )}
-            </button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {/* Results Modal */}
