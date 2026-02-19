@@ -198,7 +198,7 @@ export function buildExamplesSection(spec: DifficultySpec): string {
  */
 export function buildGenerationPrompt(options: {
   level: "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
-  exerciseType: "reading" | "translation" | "dialogue" | "test" | "sentences";
+  exerciseType: "reading" | "translation" | "dialogue" | "test" | "sentences" | "cloze" | "paraphrase" | "match";
   topic?: string;
   additionalConstraints?: string;
   count?: number; // Кількість речень/питань
@@ -317,6 +317,49 @@ export function getExerciseSpecificInstructions(
 - Дистрактори мають бути правдоподібними але ЯВНО неправильними.
 - Без "пасток" і двозначностей.
 - Перевіряй ТІЛЬКИ те, що відповідає рівню ${spec.id}.
+`;
+
+    case "cloze":
+      return `
+**Інструкції для CLOZE:**
+- ${spec.id.startsWith("A") ? "1 gap на речення" : "до 2 gaps на речення"}.
+- Кожен gap тестує ОДНЕ граматичне/лексичне поняття.
+- ${spec.id.startsWith("A")
+  ? "Базові форми: теперішній/минулий час, прості відмінки (Nom, Acc, Gen)."
+  : "Складніші форми: умовний спосіб, підрядні речення, рідкісні відмінки."}
+- Підказки (hints) мають бути КОРИСНИМИ:
+  - hintType=word: базова форма слова (інфінітив/називний).
+  - hintType=translation: точний український переклад очікуваної відповіді.
+  - hintType=context: контекстна підказка, що наводить на правильну форму.
+- Речення тематично зв'язані, НЕ повторюються за структурою.
+- answers: включи ВСІ допустимі форми (з/без діакритик, синоніми).
+`;
+
+    case "paraphrase":
+      return `
+**Інструкції для PARAPHRASE:**
+- forbiddenWords обрані СТРАТЕГІЧНО: змушують використати синоніми/перефразування.
+- ${spec.id.startsWith("A")
+  ? "A-рівень: проста заміна окремих слів синонімами. 1-2 forbidden words."
+  : spec.id.startsWith("B")
+    ? "B-рівень: структурна трансформація (активний→пасивний, пряма→непряма мова). 2-3 forbidden words."
+    : "C-рівень: повне перефразування зі збереженням нюансів. 3-4 forbidden words."}
+- sourcePl ОБОВ'ЯЗКОВО природне, не підручникове речення.
+- constraints досяжні для рівня ${spec.id}: не вимагай конструкцій вище рівня.
+- instructions (instructionUk) мають бути чіткими та зрозумілими.
+- requireAtLeastOneOf: включи слова, що природно підходять для перефразування.
+`;
+
+    case "match":
+      return `
+**Інструкції для MATCH:**
+- Пари ОДНОЗНАЧНІ: кожен лівий елемент має ТІЛЬКИ один правильний правий.
+- БЕЗ дублікатів та близьких синонімів, що створюють плутанину.
+- Mix складності: ~40% easy (базова лексика), ~40% medium (рівень ${spec.id}), ~20% hard (трохи вище рівня).
+- Лексика відповідає рівню ${spec.id}: ${spec.lexicon.frequencyBand.preferredRange[0]}-${spec.lexicon.frequencyBand.preferredRange[1]} найчастіших слів.
+- Для pairType "translation": однозначний переклад без багатозначних слів.
+- Для pairType "semantic": чіткі смислові зв'язки (антоніми, тематичні пари).
+- Для pairType "definition": стислі визначення 3-8 слів, зрозумілі для рівня.
 `;
 
     default:

@@ -28,7 +28,7 @@ import { validateExerciseContent, ValidationResult } from "./validator";
  */
 export function generateDifficultyAwarePrompt(options: {
   level: "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
-  exerciseType: "reading" | "translation" | "dialogue" | "test" | "sentences";
+  exerciseType: "reading" | "translation" | "dialogue" | "test" | "sentences" | "cloze" | "paraphrase" | "match";
   topic?: string;
   userInput?: string;
   count?: number;

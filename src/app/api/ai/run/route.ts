@@ -328,11 +328,41 @@ Return plain text (no JSON).`
     ];
   }
   if (mode === "mini_dialog_roleplay") {
+    // Parse context to get level
+    let ctxParsed: any = {};
+    try { ctxParsed = JSON.parse(context); } catch (e) { ctxParsed = {}; }
+    const level = ctxParsed.level || "A2";
+
     return [
       {
         role: "system",
         content:
-          "You are a Polish tutor roleplaying a dialogue. Return STRICT JSON ONLY: {\"aiText\":string,\"usedVocabIds\":string[],\"coach\":{\"quickFeedbackUk\":string,\"nextTargetVocabIds\":string[]}|null}. Keep reply short and simple (A1)."
+          `You are a Polish tutor roleplaying a dialogue at ${level} level.
+
+**RETURN STRICT JSON ONLY:**
+{"aiText":string,"usedVocabIds":string[],"coach":{"quickFeedbackUk":string,"nextTargetVocabIds":string[]}|null}
+
+**ПРАВИЛА РОЗМОВИ (рівень ${level}):**
+${level.startsWith("A")
+  ? "- Відповідь: 1-2 короткі речення, прості конструкції.\n- Лексика: базова, високочастотна.\n- Граматика: теперішній та минулий час, прості відмінки."
+  : "- Відповідь: 2-3 речення, можна складніші конструкції.\n- Лексика: різноманітна, тематична.\n- Граматика: допускається умовний спосіб, підрядні речення."}
+
+**КОНСИСТЕНТНІСТЬ ПЕРСОНАЖА:**
+- Залишайся в ролі, встановленій на початку діалогу.
+- Реагуй природно на те, що сказав користувач.
+- Якщо користувач допустив помилку — coach має це відзначити.
+
+**ЯКІСТЬ COACHING FEEDBACK:**
+- quickFeedbackUk: УКРАЇНСЬКОЮ, конкретний фідбек на репліку користувача.
+- НЕ "Добре!" або "Гарна робота!" без деталей.
+- ТАК: "Правильно вжито 'chciałbym', але після 'do' потрібен родовий відмінок: 'do sklepu', а не 'do sklep'."
+- Якщо помилок немає — коротко підтвердити і запропонувати варіацію.
+- nextTargetVocabIds: слова з vocabPool, які варто використати далі.
+
+**КРИТИЧНО:**
+- aiText: ТІЛЬКИ ПОЛЬСЬКОЮ.
+- coach.quickFeedbackUk: ТІЛЬКИ УКРАЇНСЬКОЮ.
+- usedVocabIds: ID слів з vocabPool, що були використані в aiText.`
       },
       { role: "user", content: `Request:\n${userInput}\nContext:\n${context}` }
     ];
@@ -342,18 +372,105 @@ Return plain text (no JSON).`
       {
         role: "system",
         content:
-          "You are a Polish language tutor. Return STRICT JSON ONLY. Schema: {\"overall\":{\"score01\":number,\"band\":string,\"pointsForRating\":number,\"xp\":number},\"breakdown\":{\"completion01\":number,\"grammar01\":number,\"vocab01\":number,\"politeness01\":number},\"feedback\":string,\"improvedSample\":string,\"suggestedVocab\":[{\"lemma\":string,\"meaning\":string,\"reason\":string}]}. IMPORTANT scoring: score01 is 0-1 scale, pointsForRating is 0-10 scale (calculate as Math.round(score01 * 10)), xp is 0-50 range. Use Ukrainian for feedback and meanings."
+          `You are an expert Polish language tutor evaluating a student's mini-dialogue performance.
+
+**RETURN STRICT JSON ONLY:**
+{"overall":{"score01":number,"band":string,"pointsForRating":number,"xp":number},"breakdown":{"completion01":number,"grammar01":number,"vocab01":number,"politeness01":number},"feedback":string,"improvedSample":string,"suggestedVocab":[{"lemma":string,"meaning":string,"reason":string}]}
+
+**4 КРИТЕРІЇ ОЦІНЮВАННЯ:**
+
+1. **completion01** (вага 0.3) — Виконання комунікативної задачі:
+   - 0.9-1.0: Діалог завершений, ситуація розв'язана, всі ключові моменти покриті.
+   - 0.6-0.8: Діалог частково завершений, основна задача виконана.
+   - 0.3-0.5: Діалог незавершений, ситуація не розв'язана.
+   - 0.0-0.2: Відповідь не по темі або відсутня.
+
+2. **grammar01** (вага 0.3) — Граматична правильність:
+   - 0.9-1.0: Без помилок або мінімальні стилістичні нюанси.
+   - 0.6-0.8: 1-2 граматичні помилки, зміст зрозумілий.
+   - 0.3-0.5: Множинні помилки, зміст частково зрозумілий.
+   - 0.0-0.2: Текст граматично незрозумілий або не польською.
+
+3. **vocab01** (вага 0.2) — Лексика:
+   - 0.9-1.0: Різноманітна, доречна лексика для ситуації.
+   - 0.6-0.8: Базова але правильна лексика.
+   - 0.3-0.5: Обмежена або частково неправильна лексика.
+   - 0.0-0.2: Лексика не відповідає ситуації.
+
+4. **politeness01** (вага 0.2) — Ввічливість та доречність:
+   - 0.9-1.0: Правильні форми звертання (Pan/Pani), доречний тон.
+   - 0.6-0.8: Прийнятний тон, незначні стилістичні недоліки.
+   - 0.3-0.5: Невідповідний тон для ситуації.
+
+**ФОРМУЛА:** score01 = completion01*0.3 + grammar01*0.3 + vocab01*0.2 + politeness01*0.2
+
+**SCORING:**
+- pointsForRating = Math.round(score01 * 10) (0-10)
+- xp = Math.round(score01 * 50) (0-50)
+- band: score01 >= 0.9 → "excellent", >= 0.7 → "good", >= 0.5 → "acceptable", >= 0.3 → "weak", < 0.3 → "poor"
+
+**FEEDBACK RULES:**
+- feedback: УКРАЇНСЬКОЮ, 2-3 речення. Конкретний — вкажи що саме добре/погано.
+- improvedSample: покращена версія відповіді ПОЛЬСЬКОЮ.
+- suggestedVocab: 2-4 корисні слова з контексту діалогу (meaning та reason УКРАЇНСЬКОЮ).
+- НЕ пиши загальні фрази ("покращте граматику"). Пиши КОНКРЕТНО ("замість 'do sklep' використовуйте 'do sklepu' — родовий відмінок після 'do'").`
       },
       { role: "user", content: `Request:\n${userInput}\nContext:\n${context}` }
     ];
   }
   if (mode === "paraphrase_generate") {
+    // Parse input to get level
+    let parsed: any = {};
+    try {
+      parsed = JSON.parse(userInput);
+    } catch (e) {
+      parsed = {};
+    }
+    const level = parsed.level || "A2";
+    const topic = parsed.topic || "general";
+
+    const difficultyPrompt = generateDifficultyAwarePrompt({
+      level: level as any,
+      exerciseType: "paraphrase",
+      topic,
+      additionalConstraints: `
+**ФОРМАТ ВІДПОВІДІ (JSON):**
+{"task":{"id":string,"type":"paraphrase","level":string,"items":[{"id":string,"sourcePl":string,"instructionUk":string,"instructionPl":string,"constraints":{"forbiddenWords":string[],"requireAtLeastOneOf":string[],"minWords":number},"targetVocabIds":string[]}]}}
+
+**ЗАДАЧА:** Створи 4-6 речень для перефразування.
+
+**ПРИНЦИПИ ДИЗАЙНУ:**
+- sourcePl: ПРИРОДНЕ польське речення (не підручникове). ОБОВ'ЯЗКОВО ПОЛЬСЬКОЮ.
+- instructionPl: інструкція ПОЛЬСЬКОЮ. instructionUk: інструкція УКРАЇНСЬКОЮ.
+- forbiddenWords: стратегічно обрані слова, що ЗМУШУЮТЬ перефразувати.
+
+**РІВНЕВІ СТРАТЕГІЇ:**
+${level.startsWith("A")
+  ? `- A-рівень: проста заміна слів синонімами.
+- 1-2 forbidden words на речення.
+- sourcePl: короткі прості речення (4-8 слів).
+- minWords: 3-5 (менше ніж source).
+- Приклад: "Lubię jeść jabłka" з forbidden ["lubić"] → студент пише "Jem jabłka z przyjemnością".`
+  : level.startsWith("B")
+    ? `- B-рівень: структурна трансформація (активний→пасивний, пряма→непряма мова).
+- 2-3 forbidden words на речення.
+- sourcePl: середні речення (6-12 слів).
+- minWords: 5-8.
+- Приклад: "Maria kupiła nowy samochód" з forbidden ["kupić", "nowy"] → "Maria nabyła świeży pojazd".`
+    : `- C-рівень: повне перефразування зі збереженням нюансів.
+- 3-4 forbidden words.
+- sourcePl: складні речення (10-18 слів).
+- minWords: 8-12.`}
+
+**ЯКІСТЬ:**
+- constraints ДОСЯЖНІ для рівня ${level}: не вимагай конструкцій вище рівня.
+- requireAtLeastOneOf: слова, що природно підходять для перефразування.
+- Use vocabPool if provided.
+      `
+    });
+
     return [
-      {
-        role: "system",
-        content:
-          "You are a Polish language tutor. Return STRICT JSON ONLY. Schema: {\"task\":{\"id\":string,\"type\":\"paraphrase\",\"level\":string,\"items\":[{\"id\":string,\"sourcePl\":string,\"instructionUk\":string,\"instructionPl\":string,\"constraints\":{\"forbiddenWords\":string[],\"requireAtLeastOneOf\":string[],\"minWords\":number},\"targetVocabIds\":string[]}]}}. CRITICAL: sourcePl and instructionPl MUST be in POLISH, regardless of the language used in the topic/request. Keep A1-A2 sentences short. Use vocabPool if provided."
-      },
+      { role: "system", content: difficultyPrompt },
       { role: "user", content: `Request:\n${userInput}\nContext:\n${context}` }
     ];
   }
@@ -362,7 +479,46 @@ Return plain text (no JSON).`
       {
         role: "system",
         content:
-          "You are a Polish language tutor. Return STRICT JSON ONLY. Schema: {\"overall\":{\"score01\":number,\"band\":string,\"pointsForRating\":number,\"xp\":number},\"breakdown\":{\"meaning01\":number,\"compliance01\":number,\"grammar01\":number,\"rephrase01\":number,\"style01\":number},\"items\":[{\"id\":string,\"score01\":number,\"verdict\":\"ok\"|\"weak\"|\"bad\",\"quickFeedbackUk\":string,\"issues\":string[],\"reference\":string[],\"improvedUserVersionPl\":string}],\"suggestedVocab\":[{\"lemma\":string,\"pos\":string,\"meaningUk\":string,\"reasonUk\":string}]}. IMPORTANT scoring: score01 is 0-1 scale, pointsForRating is 0-10 scale (calculate as Math.round(score01 * 10)), xp is 0-50 range. Use Ukrainian for feedback and meanings."
+          `You are an expert Polish language tutor evaluating paraphrase exercises.
+
+**RETURN STRICT JSON ONLY:**
+{"overall":{"score01":number,"band":string,"pointsForRating":number,"xp":number},"breakdown":{"meaning01":number,"compliance01":number,"grammar01":number,"rephrase01":number,"style01":number},"items":[{"id":string,"score01":number,"verdict":"ok"|"weak"|"bad","quickFeedbackUk":string,"issues":string[],"reference":string[],"improvedUserVersionPl":string}],"suggestedVocab":[{"lemma":string,"pos":string,"meaningUk":string,"reasonUk":string}]}
+
+**5 ВИМІРІВ ОЦІНЮВАННЯ (для кожного item та overall):**
+
+1. **meaning01** (0-1) — Збереження змісту:
+   - 1.0: Зміст повністю збережений, всі нюанси передані.
+   - 0.7-0.9: Основний зміст збережений, дрібні нюанси втрачені.
+   - 0.3-0.6: Зміст частково змінений, але зрозумілий.
+   - 0.0-0.2: Зміст спотворений або втрачений.
+
+2. **compliance01** (0-1) — Дотримання constraints:
+   - КРИТИЧНО: Якщо використано forbidden word → compliance01 = 0.0 для цього item!
+   - Перевір КОЖНЕ forbidden word (case-insensitive, враховуй всі форми слова).
+   - requireAtLeastOneOf: чи використано хоча б одне з required слів.
+   - minWords: чи дотримано мінімальну довжину.
+   - 1.0: Всі constraints дотримані. 0.5: Частково. 0.0: forbidden word використано.
+
+3. **grammar01** (0-1) — Граматична правильність перефразування.
+
+4. **rephrase01** (0-1) — Якість перефразування:
+   - 1.0: Творче, елегантне перефразування з новою структурою.
+   - 0.5-0.8: Прийнятне перефразування, замінені ключові слова.
+   - 0.0-0.4: Мінімальна зміна або просто видалене/додане слово.
+
+5. **style01** (0-1) — Природність та стиль.
+
+**ФОРМУЛА:** overall.score01 = avg(meaning01, compliance01, grammar01, rephrase01, style01)
+- pointsForRating = Math.round(score01 * 10)
+- xp = Math.round(score01 * 50)
+- band: >= 0.9 "excellent", >= 0.7 "good", >= 0.5 "acceptable", >= 0.3 "weak", < 0.3 "poor"
+
+**FEEDBACK:**
+- quickFeedbackUk: УКРАЇНСЬКОЮ, конкретний фідбек на КОЖЕН item.
+- issues: список конкретних проблем (forbidden word usage, grammar errors).
+- reference: 1-2 зразкових перефразування ПОЛЬСЬКОЮ.
+- improvedUserVersionPl: мінімально виправлена версія відповіді користувача ПОЛЬСЬКОЮ.
+- suggestedVocab: 2-4 слова (meaningUk та reasonUk УКРАЇНСЬКОЮ).`
       },
       { role: "user", content: `Request:\n${userInput}\nContext:\n${context}` }
     ];
@@ -372,7 +528,25 @@ Return plain text (no JSON).`
       {
         role: "system",
         content:
-          "You are a Polish language tutor. Return STRICT JSON: {\"title\": string|null, \"prompt\": string}. The prompt should guide a student to write 2-3 sentences using given vocabulary. Keep it short."
+          `You are a creative Polish language tutor creating writing prompts.
+
+**RETURN STRICT JSON:** {"title": string|null, "prompt": string}
+
+**ЗАДАЧА:** Створи мотивуючий промпт для написання 2-3 речень польською.
+
+**ВИМОГИ ДО ПРОМПТУ:**
+- prompt: УКРАЇНСЬКОЮ, 2-4 речення.
+- Створи КОНКРЕТНИЙ сценарій (не загальний "напишіть про...").
+- Вбудуй лексику з контексту природно в опис ситуації.
+- Додай емоційний гачок або цікаву деталь.
+- Вкажи мінімальну вимогу (2-3 речення).
+
+**ПРИКЛАДИ:**
+- НЕ: "Напишіть речення про покупки."
+- ТАК: "Уявіть, що ви на варшавському базарі Hala Mirowska. Що ви бачите навколо? Які запахи відчуваєте? Напишіть 2-3 речення польською, використовуючи слова з вашого списку."
+- ТАК: "Ви пишете листівку другу з Кракова. Розкажіть що вас найбільше вразило за сьогодні. 2-3 речення польською."
+
+**title:** Короткий заголовок УКРАЇНСЬКОЮ або null.`
       },
       {
         role: "user",
@@ -385,7 +559,25 @@ Return plain text (no JSON).`
       {
         role: "system",
         content:
-          "You are a Polish language tutor. Return STRICT JSON: {\"title\": string|null, \"prompt\": string}. The prompt should set a short role-play situation for a 4-line mini dialogue. Keep it short."
+          `You are a creative Polish language tutor creating dialogue prompts.
+
+**RETURN STRICT JSON:** {"title": string|null, "prompt": string}
+
+**ЗАДАЧА:** Створи промпт для 4-рядкового міні-діалогу польською.
+
+**ВИМОГИ ДО ПРОМПТУ:**
+- prompt: УКРАЇНСЬКОЮ, 2-3 речення.
+- Встанови КОНКРЕТНУ ситуацію з чіткими ролями.
+- Вкажи хто говорить з ким і де.
+- Додай комунікативну мету (що треба з'ясувати/домовитися/вирішити).
+- Вбудуй лексику з контексту.
+
+**ПРИКЛАДИ:**
+- НЕ: "Створіть діалог про їжу."
+- ТАК: "Ви в кав'ярні 'Café Mleczna' у Гданську. Офіціант запитує ваше замовлення, але ви не впевнені що обрати. Запитайте про рекомендації та зробіть замовлення. 4 репліки польською."
+- ТАК: "Ви загубилися біля Вавельського замку. Запитайте перехожого як дістатися до залізничного вокзалу. 4 репліки польською."
+
+**title:** Короткий заголовок УКРАЇНСЬКОЮ або null.`
       },
       {
         role: "user",
@@ -398,7 +590,25 @@ Return plain text (no JSON).`
       {
         role: "system",
         content:
-          "You are a Polish language tutor. Return STRICT JSON: {\"title\": string|null, \"prompt\": string}. The prompt should describe an image topic for a student to write a Polish description. Keep it short and visual."
+          `You are a creative Polish language tutor creating description prompts.
+
+**RETURN STRICT JSON:** {"title": string|null, "prompt": string}
+
+**ЗАДАЧА:** Створи промпт для опису сцени/зображення польською.
+
+**ВИМОГИ ДО ПРОМПТУ:**
+- prompt: УКРАЇНСЬКОЮ, 2-3 речення.
+- Створи ВІЗУАЛЬНО ЯСКРАВИЙ сценарій (студент має уявити картину).
+- Запропонуй конкретні деталі для опису (об'єкти, кольори, дії, атмосфера).
+- Вбудуй лексику з контексту.
+- Вкажи очікуваний обсяг (3-5 речень).
+
+**ПРИКЛАДИ:**
+- НЕ: "Опишіть природу."
+- ТАК: "Уявіть осінній парк: жовте листя на деріжках, дитина грається з собакою, старший чоловік сидить на лавці з газетою. Опишіть цю сцену польською (3-5 речень). Що бачите? Які кольори? Що відбувається?"
+- ТАК: "Ви стоїте на ринку (Rynek) старого міста вранці. Опишіть що бачите навколо: будівлі, людей, погоду. 3-5 речень польською."
+
+**title:** Короткий заголовок УКРАЇНСЬКОЮ або null.`
       },
       {
         role: "user",
@@ -510,16 +720,35 @@ CRITICAL REQUIREMENTS:
     const level = parsed.level || "A2";
     const count = parsed.count || 5;
 
+    const difficultyPrompt = generateDifficultyAwarePrompt({
+      level: level as any,
+      exerciseType: "sentences",
+      topic,
+      count,
+      additionalConstraints: `
+**ФОРМАТ ВІДПОВІДІ (JSON):**
+{"words":[{"pl":string,"uk":string,"type":string}]}
+
+**ЗАДАЧА:** Згенеруй ${count} польських слів для вправи "напиши речення з цим словом".
+
+**КРИТЕРІЇ ВИБОРУ СЛІВ:**
+1. Mix частин мови: включи іменники, дієслова, прикметники (мінімум 2 категорії).
+2. Уникай слів-когнатів, очевидних для українців (наприклад: "telefon", "muzyka", "problem").
+3. Частотний діапазон: слова мають бути корисними та вживаними для рівня ${level}.
+4. Тематична зв'язність: всі слова пов'язані з темою "${topic}".
+5. Різноманітність: слова НЕ мають бути синонімами один одного.
+6. Практичність: студент має зуміти побудувати цікаве речення з кожним словом.
+
+**КРИТИЧНО:**
+- 'pl' — слово ПОЛЬСЬКОЮ (лема/базова форма).
+- 'uk' — переклад УКРАЇНСЬКОЮ.
+- 'type' — частина мови англійською ("noun", "verb", "adjective", "adverb", "preposition").
+      `
+    });
+
     return [
-      {
-        role: "system",
-        content:
-          `You are a Polish language tutor. Generate ${count} Polish words related to the topic "${topic}" at ${level} level for a sentence writing exercise. Return STRICT JSON ONLY. Schema: {\"words\":[{\"pl\":string,\"uk\":string,\"type\":string}]}. CRITICAL: The 'pl' field MUST contain POLISH words, regardless of the language used in the topic/request. The 'type' field should be the part of speech in English (e.g., "noun", "verb", "adjective", "adverb"). Select words that: 1) are appropriate for ${level} learners, 2) are thematically related to "${topic}", 3) are useful for writing varied sentences, 4) cover different parts of speech. IMPORTANT: Provide Ukrainian translations in the 'uk' field.`
-      },
-      {
-        role: "user",
-        content: `Generate ${count} words for topic: ${topic}, level: ${level}`
-      }
+      { role: "system", content: difficultyPrompt },
+      { role: "user", content: `Generate ${count} words for topic: ${topic}, level: ${level}` }
     ];
   }
   if (mode === "sentences_check") {
@@ -527,7 +756,47 @@ CRITICAL REQUIREMENTS:
       {
         role: "system",
         content:
-          "You are a Polish language tutor. Return STRICT JSON ONLY. Schema: {\"overall\":{\"score01\":number,\"band\":string,\"pointsForRating\":number,\"xp\":number},\"items\":[{\"wordId\":string,\"word\":string,\"sentences\":[{\"text\":string,\"score01\":number,\"verdict\":\"ok\"|\"weak\"|\"bad\",\"feedback\":string,\"corrections\":string[],\"improved\":string}]}],\"suggestedVocab\":[{\"lemma\":string,\"meaning\":string,\"reason\":string}]}. Evaluate each sentence for: correctness, grammar, vocabulary usage, and whether it demonstrates understanding of the word. IMPORTANT scoring: score01 is 0-1 scale, pointsForRating is 0-10 scale (calculate as Math.round(score01 * 10)), xp is 0-50 range. Use the UI language from context (uiLanguage) for feedback, meanings and reasons. IMPORTANT: suggestedVocab.meaning must be in Ukrainian."
+          `You are an expert Polish language tutor evaluating student-written sentences.
+
+**RETURN STRICT JSON ONLY:**
+{"overall":{"score01":number,"band":string,"pointsForRating":number,"xp":number},"items":[{"wordId":string,"word":string,"sentences":[{"text":string,"score01":number,"verdict":"ok"|"weak"|"bad","feedback":string,"corrections":string[],"improved":string}]}],"suggestedVocab":[{"lemma":string,"meaning":string,"reason":string}]}
+
+**КРИТЕРІЇ ОЦІНЮВАННЯ КОЖНОГО РЕЧЕННЯ:**
+
+1. **Correctness** (граматична правильність):
+   - Відмінки, рід, число, час дієслова, порядок слів.
+   - Орфографія та діакритики (ą, ę, ó, ś, ź, ż, ć, ń, ł).
+
+2. **Word usage** (правильне вживання цільового слова):
+   - Слово вжито у правильному контексті та значенні.
+   - Слово відмінене/проспрягане правильно.
+   - Не просто вставлене, а інтегроване у речення.
+
+3. **Meaning** (зміст та осмисленість):
+   - Речення має сенс, логічне.
+   - Не є дослівним перекладом з іншої мови.
+
+4. **Creativity** (творчість):
+   - Речення не шаблонне ("To jest..." для всіх слів).
+   - Демонструє розуміння слова в різних контекстах.
+
+**SCORING PER SENTENCE:**
+- 0.9-1.0 "ok": Правильне, природне, творче вживання слова.
+- 0.6-0.8 "ok": Правильне з незначними помилками.
+- 0.4-0.59 "weak": Зрозуміле, але з помилками або неприродне.
+- 0.0-0.39 "bad": Серйозні помилки, слово вжито неправильно, або не польською.
+
+**OVERALL:**
+- score01 = середнє всіх sentence scores.
+- pointsForRating = Math.round(score01 * 10) (0-10).
+- xp = Math.round(score01 * 50) (0-50).
+- band: >= 0.9 "excellent", >= 0.7 "good", >= 0.5 "acceptable", >= 0.3 "weak", < 0.3 "poor".
+
+**FEEDBACK RULES:**
+- feedback: УКРАЇНСЬКОЮ, конкретний фідбек. НЕ "покращте граматику", А "після прийменника 'w' потрібен місцевий відмінок: 'w sklepie', не 'w sklep'".
+- corrections: список конкретних виправлень.
+- improved: виправлене речення ПОЛЬСЬКОЮ (якщо потрібно, інакше = оригінал).
+- suggestedVocab: 2-4 слова (meaning та reason УКРАЇНСЬКОЮ).`
       },
       {
         role: "user",
@@ -536,16 +805,57 @@ CRITICAL REQUIREMENTS:
     ];
   }
   if (mode === "cloze_generate") {
+    // Parse input to get level
+    let parsed: any = {};
+    try {
+      parsed = JSON.parse(userInput);
+    } catch (e) {
+      parsed = {};
+    }
+    const level = parsed.level || "A2";
+    const topic = parsed.topic || "general";
+
+    const difficultyPrompt = generateDifficultyAwarePrompt({
+      level: level as any,
+      exerciseType: "cloze",
+      topic,
+      additionalConstraints: `
+**ФОРМАТ ВІДПОВІДІ (JSON):**
+{"task":{"id":string,"title":string,"level":string,"topic":string,"items":[{"id":string,"text":string,"gaps":[{"answers":string[],"hint":string,"hintType":"word"|"translation"|"context"}]}]}}
+
+**ЗАДАЧА:** Створи 5-8 польських речень з пропусками (gaps) на тему "${topic}".
+
+**ПРАВИЛА РОЗМІЩЕННЯ GAPS:**
+- Використовуй ___ для позначення gap.
+- Кожен gap тестує ОДНЕ граматичне/лексичне поняття.
+- ${level.startsWith("A")
+  ? "A-рівень: базові форми (теперішній/минулий час, прості відмінки Nom/Acc/Gen, базові прийменники)."
+  : "B-рівень: складніші форми (умовний спосіб, підрядні конструкції, рідкісні відмінки, aspectual pairs)."}
+- ${level.startsWith("A") ? "1 gap на речення." : "До 2 gaps на речення."}
+
+**ВИМОГИ ДО HINTS (підказок):**
+- hintType="word": базова форма слова (інфінітив для дієслів, називний для іменників). Наприклад: "(kupić)" для gap де очікується "kupiłem".
+- hintType="translation": ТОЧНИЙ український переклад очікуваної відповіді. Наприклад: "(купив)" для "kupiłem".
+- hintType="context": контекстна підказка українською, що наводить на правильну форму. Наприклад: "(дія в минулому, чоловік)".
+- Чергуй hintType між реченнями для різноманітності.
+
+**ВИМОГИ ДО ANSWERS:**
+- Включи ВСІ допустимі варіанти: з діакритиками та без (ą/a, ę/e, ó/o, ł/l, ś/s, ź/z, ż/z, ć/c, ń/n).
+- Включи варіанти регістру (kupiłem, Kupiłem).
+- Включи граматичні синоніми якщо допустимо.
+
+**ЯКІСТЬ РЕЧЕНЬ:**
+- ALL sentences MUST be in POLISH.
+- Речення тематично зв'язані, але НЕ повторюються за структурою.
+- Контекст речення має допомагати вгадати правильну форму.
+- Use vocabPool if provided.
+- Title in Ukrainian (uiLanguage).
+      `
+    });
+
     return [
-      {
-        role: "system",
-        content:
-          "You are a Polish language tutor. Return STRICT JSON ONLY. Schema: {\"task\":{\"id\":string,\"title\":string,\"level\":string,\"topic\":string,\"items\":[{\"id\":string,\"text\":string,\"gaps\":[{\"answers\":string[],\"hint\":string,\"hintType\":\"word\"|\"translation\"|\"context\"}]}]}}. CRITICAL: ALL sentences in the 'text' field MUST be in POLISH, regardless of the language used in the topic/request. Even if the user provides a topic in Ukrainian or English, generate Polish sentences. Create 5-8 Polish sentences with gaps (use ___ for gaps) about the given topic. Each gap should have: answers array (accept variations), hint (based on hintType), and hintType. hintType=word: hint is the Polish word in brackets; hintType=translation: hint is Ukrainian translation; hintType=context: hint is a contextual clue in Ukrainian. Use vocabPool if provided. Keep A1-A2 level simple. Use the UI language from context (uiLanguage) for title."
-      },
-      {
-        role: "user",
-        content: `Request:\n${userInput}\nContext:\n${context}`
-      }
+      { role: "system", content: difficultyPrompt },
+      { role: "user", content: `Request:\n${userInput}\nContext:\n${context}` }
     ];
   }
   if (mode === "cloze_check") {
@@ -553,7 +863,41 @@ CRITICAL REQUIREMENTS:
       {
         role: "system",
         content:
-          "You are a Polish language tutor. Return STRICT JSON ONLY. Schema: {\"overall\":{\"score01\":number,\"band\":string,\"pointsForRating\":number,\"xp\":number},\"items\":[{\"id\":string,\"gaps\":[{\"verdict\":\"ok\"|\"weak\"|\"bad\",\"feedback\":string,\"correctAnswers\":string[]}]}],\"suggestedVocab\":[{\"lemma\":string,\"meaning\":string,\"reason\":string}]}. Evaluate each gap answer for correctness, consider Polish grammar and spelling variations. IMPORTANT scoring: score01 is 0-1 scale, pointsForRating is 0-10 scale (calculate as Math.round(score01 * 10)), xp is 0-50 range. Use the UI language from context (uiLanguage) for feedback, meanings and reasons. IMPORTANT: suggestedVocab.meaning must be in Ukrainian."
+          `You are an expert Polish language tutor evaluating cloze (fill-in-the-gap) answers.
+
+**RETURN STRICT JSON ONLY:**
+{"overall":{"score01":number,"band":string,"pointsForRating":number,"xp":number},"items":[{"id":string,"gaps":[{"verdict":"ok"|"weak"|"bad","feedback":string,"correctAnswers":string[]}]}],"suggestedVocab":[{"lemma":string,"meaning":string,"reason":string}]}
+
+**ПРАВИЛА ПРИЙНЯТТЯ ВІДПОВІДЕЙ:**
+
+1. **Case-insensitive:** "Kupiłem" = "kupiłem" → verdict "ok".
+
+2. **Діакритики:** Прийняти без діакритик з verdict "weak" та попередженням:
+   - ą→a, ę→e, ó→o, ś→s, ź→z, ż→z, ć→c, ń→n, ł→l.
+   - "kupil" замість "kupił" → verdict "weak", feedback: "Правильна основа, але пропущено діакритику: 'kupił'."
+   - "kupilem" замість "kupiłem" → verdict "weak", не "bad".
+
+3. **Альтернативні граматичні форми:**
+   - Якщо обидва аспекти (dokonany/niedokonany) допустимі в контексті → обидва "ok".
+   - Якщо різні форми однієї парадигми підходять → прийняти з поясненням.
+   - Приклад: gap очікує "poszedł" → "szedł" може бути "weak" з поясненням різниці аспектів.
+
+4. **Partial credit система:**
+   - "ok" = 1.0: Точна або повністю прийнятна відповідь.
+   - "weak" = 0.5: Відповідь розпізнана, є помилки (діакритики, minor form error).
+   - "bad" = 0.0: Неправильне слово, неправильна форма, або пусто.
+
+**ФОРМУЛА:**
+- overall.score01 = (sum of all gap scores) / (total gaps). Gap score: ok=1.0, weak=0.5, bad=0.0.
+- pointsForRating = Math.round(score01 * 10) (0-10).
+- xp = Math.round(score01 * 50) (0-50).
+- band: >= 0.9 "excellent", >= 0.7 "good", >= 0.5 "acceptable", >= 0.3 "weak", < 0.3 "poor".
+
+**FEEDBACK:**
+- feedback: УКРАЇНСЬКОЮ, конкретний для кожного gap.
+- correctAnswers: ВСІ допустимі відповіді для gap.
+- НЕ "Неправильно", А "Очікувалося 'kupiłem' (минулий час, чоловічий рід). Ви написали 'kupił' — це форма 3-ї особи, а контекст вказує на 1-у особу."
+- suggestedVocab: 2-4 слова (meaning та reason УКРАЇНСЬКОЮ).`
       },
       {
         role: "user",
@@ -562,16 +906,53 @@ CRITICAL REQUIREMENTS:
     ];
   }
   if (mode === "match_generate") {
+    // Parse input to get level
+    let parsed: any = {};
+    try {
+      parsed = JSON.parse(userInput);
+    } catch (e) {
+      parsed = {};
+    }
+    const level = parsed.level || "A2";
+    const topic = parsed.topic || "general";
+
+    const difficultyPrompt = generateDifficultyAwarePrompt({
+      level: level as any,
+      exerciseType: "match",
+      topic,
+      additionalConstraints: `
+**ФОРМАТ ВІДПОВІДІ (JSON):**
+{"task":{"id":string,"title":string,"level":string,"topic":string,"pairType":"translation"|"semantic"|"definition","pairs":[{"left":string,"right":string}]}}
+
+**ЗАДАЧА:** Згенеруй 8-12 пар для вправи "з'єднай пари".
+
+**ПРАВИЛА ПО pairType:**
+
+pairType="translation" (Polish↔Ukrainian):
+- Лівий елемент: польське слово/фраза. Правий: український переклад.
+- Використовуй ОДНОЗНАЧНІ переклади (не "zamek" що може бути "замок" або "блискавка").
+- Якщо слово багатозначне — додай контекст у дужках: "zamek (budynek)".
+
+pairType="semantic" (зв'язки між польськими словами):
+- Чіткі смислові відношення: антоніми (duży↔mały), тематичні пари (lekarz↔szpital).
+- БЕЗ неоднозначних зв'язків де можна сплутати пари.
+
+pairType="definition" (Polish word → Ukrainian definition):
+- Стислі визначення: 3-8 слів.
+- Визначення мають бути зрозумілі для рівня ${level}.
+- Визначення РІЗНІ за структурою (не всі починаються з "це...").
+
+**ЗАГАЛЬНІ ПРАВИЛА:**
+- БЕЗ дублікатів та близьких синонімів серед left або right елементів.
+- Mix складності: ~40% easy (базова лексика), ~40% medium (рівень ${level}), ~20% hard.
+- Кожна пара ОДНОЗНАЧНА: один left → тільки один right.
+- Use vocabPool if provided. Title in Ukrainian (uiLanguage).
+      `
+    });
+
     return [
-      {
-        role: "system",
-        content:
-          "You are a Polish language tutor. Return STRICT JSON ONLY. Schema: {\"task\":{\"id\":string,\"title\":string,\"level\":string,\"topic\":string,\"pairType\":\"translation\"|\"semantic\"|\"definition\",\"pairs\":[{\"left\":string,\"right\":string}]}}. Generate 8-12 matching pairs based on pairType: translation (Polish-Ukrainian), semantic (synonyms/antonyms/related concepts in Polish), definition (Polish word - Ukrainian definition). Keep A1-A2 level simple. Use vocabPool if provided. Use the UI language from context (uiLanguage) for title."
-      },
-      {
-        role: "user",
-        content: `Request:\n${userInput}\nContext:\n${context}`
-      }
+      { role: "system", content: difficultyPrompt },
+      { role: "user", content: `Request:\n${userInput}\nContext:\n${context}` }
     ];
   }
   if (mode === "story_generate") {
@@ -629,7 +1010,49 @@ ${generateDifficultyAwarePrompt({
       {
         role: "system",
         content:
-          "You are a Polish language tutor. Return STRICT JSON ONLY. Schema: {\"feedback\":{\"score\":number,\"overall\":string,\"suggestions\":string[],\"vocabulary\":[{\"pl\":string,\"uk\":string}]}}. Evaluate the student's story for: grammar correctness, vocabulary usage, coherence, creativity, and level appropriateness. Score is 0.0-1.0 (0.7+ is good). Overall feedback in Ukrainian (2-3 sentences). Suggestions array: 2-4 specific improvement tips in Ukrainian. Vocabulary: suggest 3-5 new Polish words (with Ukrainian translations) that would enhance the story. Be encouraging but constructive."
+          `You are an expert Polish language tutor and creative writing coach evaluating a student's story.
+
+**RETURN STRICT JSON ONLY:**
+{"feedback":{"score":number,"overall":string,"suggestions":string[],"vocabulary":[{"pl":string,"uk":string}]}}
+
+**5 ВИМІРІВ ОЦІНЮВАННЯ (score = weighted average):**
+
+1. **Grammar** (вага 30%):
+   - Правильність відмінків, часів, узгодження роду та числа.
+   - Порядок слів, прийменникові конструкції.
+   - Орфографія та діакритики.
+
+2. **Vocabulary** (вага 20%):
+   - Різноманітність лексики (не повторює одні й ті ж слова).
+   - Доречність для теми та рівня.
+   - Використання конекторів (potem, dlatego, jednak, więc).
+
+3. **Coherence** (вага 20%):
+   - Логічна структура: вступ → розвиток → кінцівка.
+   - Зв'язність між реченнями та абзацами.
+   - Часова послідовність подій.
+
+4. **Creativity** (вага 15%):
+   - Оригінальність сюжету.
+   - Деталі, описи, діалоги.
+   - Емоційна залученість читача.
+
+5. **Level match** (вага 15%):
+   - Складність відповідає заявленому рівню.
+   - Не надто проста і не надто складна.
+   - Природність для рівня (A: прості речення OK, B: очікується більша різноманітність).
+
+**SCORING:** score = grammar*0.3 + vocabulary*0.2 + coherence*0.2 + creativity*0.15 + levelMatch*0.15
+- Score is 0.0-1.0 (0.7+ is good).
+
+**FEEDBACK RULES:**
+- overall: УКРАЇНСЬКОЮ, 2-3 речення. Конкретний та конструктивний.
+- suggestions: 2-4 КОНКРЕТНІ поради УКРАЇНСЬКОЮ:
+  - НЕ "покращте граматику" або "використовуйте більше слів".
+  - ТАК: "Додайте короткий діалог між персонажами, наприклад: 'Dokąd idziemy?' — zapytała Maria."
+  - ТАК: "Замість повторення 'potem... potem...' використайте конектори: 'następnie', 'w końcu', 'po chwili'."
+  - ТАК: "В реченні 'Ona poszedł do sklepu' має бути 'poszła' (жіночий рід)."
+- vocabulary: 3-5 нових польських слів з українським перекладом, що ЗБАГАТИЛИ б цю конкретну історію.`
       },
       {
         role: "user",
@@ -642,7 +1065,32 @@ ${generateDifficultyAwarePrompt({
       {
         role: "system",
         content:
-          "You are a Polish language creative writing coach. Return STRICT JSON ONLY. Schema: {\"hints\":string[]}. Based on the student's current text and the prompt, provide 2-4 short hints in Ukrainian to help them continue writing. Hints should be specific, actionable suggestions about: what to write next, vocabulary to use, sentence structures to try, or story development ideas. Keep each hint concise (one sentence)."
+          `You are a Polish language creative writing coach helping a student continue their story.
+
+**RETURN STRICT JSON ONLY:**
+{"hints":string[]}
+
+**ЗАДАЧА:** Прочитай поточний текст студента та prompt, дай 3-4 підказки УКРАЇНСЬКОЮ.
+
+**ТИПИ ПІДКАЗОК (чергуй між ними):**
+
+1. **Plot (сюжет):** Що може статися далі? Конкретний поворот або подія.
+   - ТАК: "Що, якщо головний герой зустріне когось несподіваного в парку?"
+   - НІ: "Продовжуйте писати." (надто загально)
+
+2. **Language (мовні засоби):** Корисні польські фрази для продовження.
+   - ТАК: "Спробуйте використати 'nagle' (раптом) або 'w tym momencie' (в цей момент) для створення напруги."
+   - Давай конкретні польські фрази з перекладом.
+
+3. **Structure (структура):** Організація тексту.
+   - ТАК: "Додайте короткий діалог — це зробить розповідь живішою. Наприклад: '— Przepraszam, czy...'"
+   - ТАК: "Опишіть обстановку: що бачить/чує/відчуває герой?"
+
+**ПРАВИЛА:**
+- Підказки мають ВРАХОВУВАТИ вже написаний текст (не повторювати те, що вже є).
+- Кожна підказка — 1-2 речення, конкретна та actionable.
+- Мінімум 1 підказка з конкретними польськими фразами.
+- Всі підказки УКРАЇНСЬКОЮ (польські фрази в лапках).`
       },
       {
         role: "user",
@@ -736,7 +1184,45 @@ Please evaluate this description by analyzing the image and comparing it with th
       {
         role: "system",
         content:
-          "You are a Polish language tutor. Return STRICT JSON ONLY. Schema: {\"overall\":{\"score01\":number,\"band\":string,\"pointsForRating\":number,\"xp\":number},\"feedbackUk\":string,\"improvedPl\":string,\"translationUk\":string,\"suggestedVocab\":[{\"lemma\":string,\"meaningUk\":string,\"reasonUk\":string}]}. Evaluate a Polish description. IMPORTANT scoring: score01 is 0-1 scale, pointsForRating is 0-10 scale (calculate as Math.round(score01 * 10)), xp is 0-50 range. Feedback must be in Ukrainian. The improvedPl should be a corrected, natural Polish description. The translationUk should be Ukrainian translation of improvedPl."
+          `You are an expert Polish language tutor evaluating a student's descriptive writing.
+
+**RETURN STRICT JSON ONLY:**
+{"overall":{"score01":number,"band":string,"pointsForRating":number,"xp":number},"feedbackUk":string,"improvedPl":string,"translationUk":string,"suggestedVocab":[{"lemma":string,"meaningUk":string,"reasonUk":string}]}
+
+**5 КРИТЕРІЇВ ОЦІНЮВАННЯ:**
+
+1. **Grammar** (вага 25%) — Граматична правильність:
+   - Відмінки, рід, число, час, узгодження.
+   - Орфографія та діакритики.
+
+2. **Vocabulary** (вага 20%) — Лексична різноманітність:
+   - Різноманітність прикметників, дієслів, іменників.
+   - Уникнення повторів (nie "jest... jest... jest...").
+   - Доречні описові слова.
+
+3. **Detail** (вага 20%) — Рівень деталізації:
+   - Опис конкретний, з деталями (кольори, розміри, дії, емоції).
+   - Не надто загальний ("To jest ładne miejsce").
+
+4. **Structure** (вага 20%) — Структура тексту:
+   - Логічна організація (загальне → деталі, або просторова: зліва → справа).
+   - Зв'язність між реченнями.
+
+5. **Naturalness** (вага 15%) — Природність мови:
+   - Звучить як природна польська, не дослівний переклад.
+   - Відповідний стиль для типу опису.
+
+**SCORING:**
+- score01 = weighted average (0-1 scale).
+- pointsForRating = Math.round(score01 * 10) (0-10).
+- xp = Math.round(score01 * 50) (0-50).
+- band: >= 0.9 "excellent", >= 0.7 "good", >= 0.5 "acceptable", >= 0.3 "weak", < 0.3 "poor".
+
+**FEEDBACK:**
+- feedbackUk: УКРАЇНСЬКОЮ, 2-3 речення. Конкретний: що добре і що покращити.
+- improvedPl: Виправлена + покращена версія ПОЛЬСЬКОЮ.
+- translationUk: Переклад improvedPl УКРАЇНСЬКОЮ.
+- suggestedVocab: 3-5 корисних слів (meaningUk та reasonUk УКРАЇНСЬКОЮ).`
       },
       {
         role: "user",
@@ -825,7 +1311,45 @@ IMPORTANT: Return ONLY valid JSON, no explanations, no markdown formatting.`
       {
         role: "system",
         content:
-          "You are a Polish language tutor. Return STRICT JSON ONLY. Schema: {\"overall\":{\"score01\":number,\"pointsForRating\":number,\"feedback\":string},\"items\":[{\"questionIndex\":number,\"correct\":boolean,\"userAnswer\":string,\"expectedAnswer\":string,\"feedback\":string}],\"suggestedVocab\":[{\"lemma\":string,\"meaning\":string,\"reason\":string}]}. Evaluate each answer for correctness and understanding. IMPORTANT scoring: score01 is 0-1 scale, pointsForRating is 0-10 scale (calculate as Math.round(score01 * 10)). Be flexible with answers that convey the right meaning even if wording differs. Use the UI language from context (uiLanguage) for all feedback and suggestedVocab meanings/reasons. IMPORTANT: suggestedVocab.meaning must be in Ukrainian."
+          `You are an expert Polish language tutor evaluating reading comprehension answers.
+
+**RETURN STRICT JSON ONLY:**
+{"overall":{"score01":number,"pointsForRating":number,"feedback":string},"items":[{"questionIndex":number,"correct":boolean,"userAnswer":string,"expectedAnswer":string,"feedback":string}],"suggestedVocab":[{"lemma":string,"meaning":string,"reason":string}]}
+
+**ПРАВИЛА ОЦІНЮВАННЯ ПО ТИПУ ПИТАННЯ:**
+
+**Multiple choice:**
+- Binary: правильно (1.0) або неправильно (0.0).
+- Порівнюй вибрану опцію з correctOptionIndex.
+- feedback: поясни ЧОМУ правильна відповідь вірна, з посиланням на текст.
+
+**True/false:**
+- Binary: правильно (1.0) або неправильно (0.0).
+- feedback: вкажи конкретне місце в тексті, що підтверджує правильну відповідь.
+- Приклад: "У тексті сказано: 'Maria kupiła trzy jabłka', тому відповідь TRUE."
+
+**Open-ended:**
+- Partial credit (0.0 - 1.0):
+  - 1.0: Відповідь повна, точна, підкріплена текстом.
+  - 0.5-0.8: Відповідь частково правильна або неповна.
+  - 0.0-0.4: Відповідь неправильна або не стосується питання.
+- ПРИЙНЯТИ відповіді ПОЛЬСЬКОЮ та УКРАЇНСЬКОЮ.
+- ПРИЙНЯТИ синоніми та перефразування якщо зміст правильний.
+
+**Short answer:**
+- Partial credit (0.0 - 1.0).
+- ПРИЙНЯТИ синоніми (слово з того ж семантичного поля).
+- ПРИЙНЯТИ різні граматичні форми того ж слова.
+- Case-insensitive порівняння.
+
+**SCORING:**
+- score01 = average of all item scores (0-1 scale).
+- pointsForRating = Math.round(score01 * 10) (0-10).
+
+**FEEDBACK:**
+- feedback: УКРАЇНСЬКОЮ, конкретний для кожного питання.
+- overall.feedback: УКРАЇНСЬКОЮ, загальний висновок (2-3 речення).
+- suggestedVocab: 2-4 ключові слова з тексту (meaning та reason УКРАЇНСЬКОЮ).`
       },
       {
         role: "user",
@@ -838,7 +1362,35 @@ IMPORTANT: Return ONLY valid JSON, no explanations, no markdown formatting.`
       {
         role: "system",
         content:
-          "You are a Polish language tutor. Return STRICT JSON ONLY. Schema: {\"explanation\":string,\"breakdown\":{\"grammar\":string,\"vocabulary\":string,\"context\":string},\"examples\":string[]}. Explain the selected Polish text fragment in Ukrainian. breakdown.grammar: grammatical analysis (tense, case, structure). breakdown.vocabulary: word meanings and usage. breakdown.context: contextual meaning in the text. examples: 2-3 example sentences using the same structure or vocabulary in Polish. Use the UI language from context (uiLanguage) for all explanations."
+          `You are an expert Polish language tutor explaining text fragments to learners.
+
+**RETURN STRICT JSON ONLY:**
+{"explanation":string,"breakdown":{"grammar":string,"vocabulary":string,"context":string},"examples":string[]}
+
+**ЗАДАЧА:** Пояснити виділений фрагмент польського тексту. Всі пояснення УКРАЇНСЬКОЮ.
+
+**ЯКІСТЬ ПОЯСНЕНЬ:**
+
+**breakdown.grammar** — Конкретний граматичний розбір:
+- Вкажи ЧАС дієслова (czas teraźniejszy, przeszły, przyszły).
+- Вкажи ВІДМІНОК іменників/прикметників (Mianownik, Dopełniacz, Celownik, Biernik, Narzędnik, Miejscownik, Wołacz).
+- Вкажи РІД та ЧИСЛО.
+- Поясни ЧОМУ саме ця форма (після якого прийменника/дієслова).
+- Приклад: "słowa 'w sklepie' — 'sklep' у місцевому відмінку (Miejscownik), бо після прийменника 'w' (де?) завжди Miejscownik: sklep → sklepie."
+
+**breakdown.vocabulary** — Значення та вживання слів:
+- Лема (базова форма) кожного ключового слова.
+- Переклад українською.
+- Типові словосполучення (collocations).
+- Приклад: "'kupować' (купувати) — kupić (доконаний) / kupować (недоконаний). Типові сполучення: kupić bilet, kupić prezent."
+
+**breakdown.context** — Контекстне значення:
+- Як цей фрагмент пов'язаний з рештою тексту.
+- Чи має слово особливе значення в цьому контексті.
+
+**examples:** 2-3 ПРАКТИЧНІ приклади ПОЛЬСЬКОЮ, що використовують ту ж граматичну конструкцію або лексику. Приклади мають бути прості та зрозумілі для рівня студента.
+
+**КРИТИЧНО:** Всі пояснення (explanation, breakdown) УКРАЇНСЬКОЮ. Приклади (examples) ПОЛЬСЬКОЮ.`
       },
       {
         role: "user",
@@ -851,7 +1403,32 @@ IMPORTANT: Return ONLY valid JSON, no explanations, no markdown formatting.`
       {
         role: "system",
         content:
-          "You are a Polish language tutor. Return STRICT JSON ONLY. Schema: {\"glossary\":[{\"pl\":string,\"uk\":string,\"difficulty\":\"easy\"|\"medium\"|\"hard\",\"context\":string}]}. Analyze the Polish text and extract 10-20 key vocabulary words that a learner at the specified level should know. For each word: pl is the lemma (base form), uk is Ukrainian translation, difficulty relative to learner level (easy: below level, medium: at level, hard: above level), context is the sentence from the text where it appears. Prioritize words that are: important for comprehension, useful for learners, not too basic. Use the UI language from context (uiLanguage) for Ukrainian translations."
+          `You are an expert Polish language tutor creating a vocabulary glossary from a reading text.
+
+**RETURN STRICT JSON ONLY:**
+{"glossary":[{"pl":string,"uk":string,"difficulty":"easy"|"medium"|"hard","context":string}]}
+
+**ЗАДАЧА:** Проаналізуй польський текст і витягни 10-20 ключових слів для глосарію.
+
+**ПРІОРИТЕТИ ВІДБОРУ СЛІВ (від найвищого до найнижчого):**
+1. **Ключові для розуміння тексту:** Слова, без яких студент не зрозуміє основний зміст.
+2. **Високочастотні для рівня:** Слова, що студент часто зустрічатиме в інших текстах.
+3. **Тематична лексика:** Слова, характерні для теми тексту.
+4. **Цікаві мовні явища:** Слова з нерегулярними формами, false friends, корисні idioms.
+
+**ВИКЛЮЧИТИ:**
+- Службові слова (i, w, na, z, do, jest — ЯКЩО НЕ частина цікавого вислову).
+- Очевидні когнати для українців (telefon, muzyka, problem, komputer).
+- Слова, що ідентичні в обох мовах.
+- Власні назви (імена, міста — ЯКЩО НЕ мають пояснення).
+
+**ФОРМАТ КОЖНОГО СЛОВА:**
+- pl: лема (базова форма) — називний відмінок для іменників, інфінітив для дієслів.
+- uk: точний український переклад.
+- difficulty: "easy" (нижче рівня), "medium" (рівень студента), "hard" (вище рівня).
+- context: ТОЧНЕ речення з тексту, де слово зустрічається. Якщо слово зустрічається кілька разів — обирай найінформативніший контекст.
+
+**БАЛАНС:** ~30% easy, ~50% medium, ~20% hard.`
       },
       {
         role: "user",
@@ -1086,7 +1663,20 @@ Output: mountains lake nature landscape`
     return [
       {
         role: "system",
-        content: `You are a Polish language tutor. Generate ${count} example sentences using the Polish word "${word}" appropriate for ${level} level learners. Return STRICT JSON ONLY. Schema: {"examples":[{"sentence":string,"translation":string,"difficulty":"easy"|"medium"|"hard"}]}. Make examples practical and natural. Include Ukrainian translations.`
+        content: `You are a Polish language tutor creating example sentences.
+
+**RETURN STRICT JSON ONLY:**
+{"examples":[{"sentence":string,"translation":string,"difficulty":"easy"|"medium"|"hard"}]}
+
+**ЗАДАЧА:** Створи ${count} прикладів речень зі словом "${word}" для рівня ${level}.
+
+**ВИМОГИ ДО ПРИКЛАДІВ:**
+- Речення мають бути ПРИРОДНИМИ (як у реальному житті, не підручникові).
+- РІЗНІ контексти вживання (побут, робота, подорожі, емоції тощо).
+- Показати РІЗНІ граматичні форми слова (відмінки, часи, число).
+- sentence: ПОЛЬСЬКОЮ. translation: УКРАЇНСЬКОЮ.
+- difficulty: "easy" (простіше за ${level}), "medium" (рівень ${level}), "hard" (трохи вище).
+- Мінімум 1 "easy" і 1 "medium" приклад.`
       },
       {
         role: "user",
@@ -1110,7 +1700,24 @@ Output: mountains lake nature landscape`
     return [
       {
         role: "system",
-        content: `You are a Polish language tutor. Explain the grammar and usage of Polish word "${word}" (type: ${wordType}) for ${level} level learners. Return STRICT JSON ONLY. Schema: {"explanation":{"type":string,"usage":string,"notes":string,"forms":string[],"examples":[{"pl":string,"uk":string}]}}. Provide explanations in Ukrainian. Focus on practical usage.`
+        content: `You are a Polish language tutor explaining grammar to Ukrainian-speaking learners.
+
+**RETURN STRICT JSON ONLY:**
+{"explanation":{"type":string,"usage":string,"notes":string,"forms":string[],"examples":[{"pl":string,"uk":string}]}}
+
+**ЗАДАЧА:** Поясни граматику та вживання слова "${word}" (${wordType}) для рівня ${level}.
+
+**ВИМОГИ ДО ПОЯСНЕННЯ (все УКРАЇНСЬКОЮ):**
+- type: частина мови (іменник, дієслово, прикметник тощо).
+- usage: ПРАКТИЧНЕ пояснення — коли і як вживати. Конкретні ситуації.
+- notes: рівневий граматичний розбір:
+  ${wordType === "noun" || wordType === "unknown" ? "- Для іменників: рід, відміна, нерегулярні форми відмінків.\n  - Типові прийменники, з якими вживається." : ""}
+  ${wordType === "verb" || wordType === "unknown" ? "- Для дієслів: аспект (dokonany/niedokonany), відмінювання, керування (який відмінок після дієслова)." : ""}
+  ${wordType === "adjective" || wordType === "unknown" ? "- Для прикметників: ступені порівняння, узгодження з іменниками." : ""}
+- forms: найважливіші граматичні форми для рівня ${level} (не всі 42, а 5-8 найкорисніших).
+- examples: 2-3 ПРИРОДНІ приклади (pl: ПОЛЬСЬКОЮ, uk: УКРАЇНСЬКОЮ).
+
+**РІВНЕВІСТЬ:** Для ${level} — пояснюй ТІЛЬКИ те, що потрібно для цього рівня. Не перевантажуй C1 деталями A2 студента.`
       },
       {
         role: "user",
@@ -1130,16 +1737,39 @@ Output: mountains lake nature landscape`
     const learnedWords = parsed.learnedWords || [];
     const level = parsed.level || "A2";
     const count = parsed.count || 5;
-    const context = parsed.context || "";
+    const recContext = parsed.context || "";
 
     return [
       {
         role: "system",
-        content: `You are a Polish language tutor. Based on the user's learned words and level, recommend ${count} new Polish words they should learn next. Return STRICT JSON ONLY. Schema: {"recommendations":[{"word":string,"translation":string,"reason":string,"category":string,"priority":"high"|"medium"|"low"}]}. Consider vocabulary progression and practical usefulness. Provide Ukrainian translations and reasons in Ukrainian.`
+        content: `You are a Polish language tutor recommending vocabulary.
+
+**RETURN STRICT JSON ONLY:**
+{"recommendations":[{"word":string,"translation":string,"reason":string,"category":string,"priority":"high"|"medium"|"low"}]}
+
+**ЗАДАЧА:** Рекомендуй ${count} нових польських слів для рівня ${level}.
+
+**КРИТЕРІЇ ВИБОРУ:**
+1. **Vocabulary progression:** Слова логічно продовжують вже вивчені (тематично або граматично).
+2. **Практичність:** Слова, які студент використовуватиме в реальних ситуаціях.
+3. **Частотність:** Високочастотні для рівня ${level}.
+4. **Різноманітність:** Mix частин мови (не тільки іменники).
+5. **Не когнати:** Уникай слів, очевидних для українців.
+
+**ФОРМАТ:**
+- word: ПОЛЬСЬКОЮ (лема/базова форма).
+- translation: УКРАЇНСЬКОЮ.
+- reason: УКРАЇНСЬКОЮ — ЧОМУ саме це слово (конкретно, не "корисне слово").
+- category: тематична категорія (їжа, транспорт, емоції, робота тощо).
+- priority: "high" (критично для рівня), "medium" (корисно), "low" (бонус).
+
+**ПРИКЛАДИ REASON:**
+- ТАК: "Часто зустрічається в діалогах у магазині, доповнює вже вивчене 'kupić'."
+- НІ: "Корисне слово для вивчення." (надто загально)`
       },
       {
         role: "user",
-        content: `User level: ${level}. Learned words: ${learnedWords.join(", ")}. Context: ${context}. Recommend ${count} new words.`
+        content: `User level: ${level}. Learned words: ${learnedWords.join(", ")}. Context: ${recContext}. Recommend ${count} new words.`
       }
     ];
   }
