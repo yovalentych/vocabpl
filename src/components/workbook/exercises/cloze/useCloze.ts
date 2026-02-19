@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 import { safeParseAIResponse } from "@/lib/workbook";
+import { calculatePoints } from "@/lib/scoring";
 
 export interface ClozeGap {
   answers: string[];
@@ -297,18 +298,18 @@ export function useCloze() {
       if (!result) return null;
 
       // Save points if available
-      if (result?.overall?.pointsForRating) {
+      if (result?.overall?.score01 != null) {
         try {
+          const pts = calculatePoints({ score01: result.overall.score01, exercise: "cloze" });
           await fetch("/api/exercises/attempt", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               exercise: "cloze",
-              points: result.overall.pointsForRating,
-              xp: result.overall.xp || 0
+              points: pts
             })
           });
-          setPoints(result.overall.pointsForRating);
+          setPoints(pts);
           setAwarded(true);
         } catch (error) {
           console.error("Failed to save points:", error);

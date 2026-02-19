@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { Sparkle, User, PaperPlaneTilt, CheckCircle } from "@phosphor-icons/react";
 import { safeParseAIResponse } from "@/lib/workbook";
+import { calculatePoints } from "@/lib/scoring";
 import DialogueResults from "./DialogueResults";
 
 interface Turn {
@@ -199,7 +200,8 @@ export default function DialogueAIPractice({ config, onComplete }: DialogueAIPra
       setCheckResult(result);
 
       // Save points
-      if (result?.qualityScore !== undefined) {
+      const score01 = result?.overall?.score01;
+      if (score01 !== undefined) {
         const userTurnsCount = turns.filter(t => t.speaker === "user").length;
         try {
           await fetch("/api/exercises/attempt", {
@@ -207,8 +209,7 @@ export default function DialogueAIPractice({ config, onComplete }: DialogueAIPra
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               exercise: "dialogue",
-              points: result.qualityScore * userTurnsCount,
-              xp: Math.round(result.qualityScore * userTurnsCount * 10)
+              points: calculatePoints({ score01, level: config.level, itemCount: userTurnsCount, exercise: "dialogue" })
             })
           });
         } catch (error) {
@@ -409,7 +410,7 @@ export default function DialogueAIPractice({ config, onComplete }: DialogueAIPra
             level: config.level,
             totalTurns: userTurnCount,
             filledTurns: userTurnCount,
-            qualityScore: checkResult.qualityScore || 0,
+            qualityScore: checkResult.overall?.score01 ?? checkResult.qualityScore ?? 0,
             aiFeedback: checkResult
           }}
           onClose={() => {

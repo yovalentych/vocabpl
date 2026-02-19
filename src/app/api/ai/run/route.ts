@@ -667,11 +667,15 @@ IMPORTANT EVALUATION RULES:
 - Minor grammar mistakes → naturalness 0.7-0.8, grammar 0.6-0.8 (still conversational)
 - Good attempts with small errors → naturalness 0.8-0.9, grammar 0.7-0.9
 - Perfect or near-perfect → naturalness 0.9-1.0, grammar 0.9-1.0
-- qualityScore = (naturalness + grammar) / 2 * 10 (0-10 scale)
+- score01 = (naturalness + grammar) / 2 (0-1 scale)
 
 RETURN STRICT JSON ONLY:
 {
-  "qualityScore": number (0-10, calculated as (naturalness + grammar) / 2 * 10),
+  "overall": {
+    "score01": number (0-1, calculated as (naturalness + grammar) / 2),
+    "band": string ("excellent" | "good" | "fair" | "poor"),
+    "pointsForRating": number (Math.round(score01 * 10), 0-10)
+  },
   "overallFeedback": string (загальна оцінка українською, 2-3 речення),
   "naturalness": number (0-1),
   "naturalnessNote": string (коментар українською),

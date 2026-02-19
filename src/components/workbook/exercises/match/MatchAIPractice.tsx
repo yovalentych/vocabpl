@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { CheckCircle, Circle, Sparkle } from "@phosphor-icons/react";
 import { safeParseAIResponse } from "@/lib/workbook";
+import { calculatePoints } from "@/lib/scoring";
 import MatchResults from "./MatchResults";
 
 interface MatchAIPracticeProps {
@@ -198,15 +199,14 @@ export default function MatchAIPractice({ config, onComplete }: MatchAIPracticeP
       setCheckResult(result);
 
       // Save points if available
-      if (result?.overall?.pointsForRating) {
+      if (result?.overall?.score01 != null) {
         try {
           await fetch("/api/exercises/attempt", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               exercise: "match",
-              points: result.overall.pointsForRating,
-              xp: result.overall.xp || 0
+              points: calculatePoints({ score01: result.overall.score01, level: config.level, itemCount: task.pairs.length, exercise: "match" })
             })
           });
         } catch (err) {

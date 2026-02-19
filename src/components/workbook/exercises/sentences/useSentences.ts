@@ -5,6 +5,7 @@ import { useCallback } from "react";
 import { useWorkbookContext } from "../../WorkbookContext";
 import { WorkbookWord } from "../../types";
 import { countSentences, scoreForCount, safeParseAIResponse } from "@/lib/workbook";
+import { calculatePoints } from "@/lib/scoring";
 
 export function useSentences() {
   const { state, dispatch } = useWorkbookContext();
@@ -229,15 +230,14 @@ export function useSentences() {
         }
 
         // Save points to database if we have a valid score
-        if (result?.overall?.pointsForRating) {
+        if (result?.overall?.score01 != null) {
           try {
             await fetch("/api/exercises/attempt", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
                 exercise: "sentences",
-                points: result.overall.pointsForRating,
-                xp: result.overall.xp || 0
+                points: calculatePoints({ score01: result.overall.score01, exercise: "sentences" })
               })
             });
           } catch (error) {

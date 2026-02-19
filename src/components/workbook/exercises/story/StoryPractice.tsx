@@ -5,6 +5,7 @@ import { useLocale } from "@/components/LocaleProvider";
 import Loader from "@/components/ui/Loader";
 import { Sparkle, Book } from "@phosphor-icons/react/dist/ssr";
 import { safeParseAIResponse } from "@/lib/workbook";
+import { calculatePoints } from "@/lib/scoring";
 import StoryResultModal from "./StoryResultModal";
 
 interface StoryPracticeProps {
@@ -74,7 +75,8 @@ export default function StoryPractice({ level = "A2", onComplete }: StoryPractic
         setFeedback(parsed.feedback);
 
         // Calculate points
-        const calculatedPoints = Math.round((parsed.feedback.score || 0) * 10);
+        const score01 = parsed.feedback.score01 ?? parsed.feedback.score ?? 0;
+        const calculatedPoints = calculatePoints({ score01, level, exercise: "story" });
         setPoints(calculatedPoints);
 
         // Save to history and leaderboard
@@ -85,7 +87,7 @@ export default function StoryPractice({ level = "A2", onComplete }: StoryPractic
             title: storyTitle,
             text: storyText,
             level,
-            score: parsed.feedback.score,
+            score: score01,
             points: calculatedPoints,
             feedback: parsed.feedback.overall
           })
@@ -97,7 +99,7 @@ export default function StoryPractice({ level = "A2", onComplete }: StoryPractic
           body: JSON.stringify({
             type: "story",
             materialId: `story-${Date.now()}`,
-            score: parsed.feedback.score,
+            score: score01,
             points: calculatedPoints
           })
         }).catch(() => null);

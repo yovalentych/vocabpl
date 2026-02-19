@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { CheckCircle, Circle, FloppyDisk, Sparkle, PaperPlaneRight } from "@phosphor-icons/react";
 import { safeParseAIResponse } from "@/lib/workbook";
+import { calculatePoints } from "@/lib/scoring";
 import ParaphraseResults from "./ParaphraseResults";
 
 interface Sentence {
@@ -173,15 +174,14 @@ export default function ParaphraseClassicPractice({ config, onComplete }: Paraph
       }
 
       // Save points to database
-      if (result?.overall?.pointsForRating) {
+      if (result?.overall?.score01 != null) {
         try {
           await fetch("/api/exercises/attempt", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               exercise: "paraphrase",
-              points: result.overall.pointsForRating,
-              xp: result.overall.xp || 0
+              points: calculatePoints({ score01: result.overall.score01, level: config.level, itemCount: sentences.length, exercise: "paraphrase" })
             })
           });
         } catch (err) {
@@ -246,8 +246,7 @@ export default function ParaphraseClassicPractice({ config, onComplete }: Paraph
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             exercise: "paraphrase",
-            points: completed.length,
-            xp: completed.length * 2
+            points: calculatePoints({ score01: 0.5, level: config.level, itemCount: sentences.length, exercise: "paraphrase" })
           })
         });
       } catch (err) {

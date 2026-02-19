@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 import { safeParseAIResponse } from "@/lib/workbook";
+import { calculatePoints } from "@/lib/scoring";
 
 interface DescribeImage {
   url: string;
@@ -94,9 +95,9 @@ export function useDescribe() {
         const parsed = safeParseAIResponse(data?.text);
         setResult(parsed);
 
-        // Calculate points based on score if not provided
+        // Calculate points using centralized scoring
         const score = parsed?.overall?.score01 || 0;
-        const calculatedPoints = parsed?.overall?.pointsForRating || Math.round(score * 10);
+        const calculatedPoints = calculatePoints({ score01: score, level, exercise: "describe" });
 
         // Save to history
         const saveAttempt = await fetch("/api/workbook/describe/submit", {
@@ -117,13 +118,11 @@ export function useDescribe() {
         }).catch(() => null);
 
         // Also track in exercises (for general stats and leaderboard)
-        const trackAttempt = await fetch("/api/exercises/attempt", {
+        await fetch("/api/exercises/attempt", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            type: "describe",
-            materialId: `describe-${Date.now()}`,
-            score,
+            exercise: "describe",
             points: calculatedPoints
           })
         }).catch(() => null);

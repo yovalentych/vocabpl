@@ -20,30 +20,6 @@ interface DialogueResultsProps {
 export default function DialogueResults({ results, onClose }: DialogueResultsProps) {
   const { mode, scenario, situation, level, totalTurns, filledTurns, qualityScore, aiFeedback } = results;
 
-  const toPercent = (value?: number | null) => {
-    if (value === null || value === undefined) return null;
-    const num = Number(value);
-    if (!Number.isFinite(num)) return null;
-    let percent = num;
-    if (percent <= 1) percent = percent * 100;
-    else if (percent <= 10) percent = percent * 10;
-    if (percent > 100) percent = 100;
-    if (percent < 0) percent = 0;
-    return Math.round(percent);
-  };
-
-  const toScore10 = (value?: number | null) => {
-    if (value === null || value === undefined) return null;
-    const num = Number(value);
-    if (!Number.isFinite(num)) return null;
-    let score = num;
-    if (score <= 1) score = score * 10;
-    else if (score > 10) score = score / 10;
-    if (score > 10) score = 10;
-    if (score < 0) score = 0;
-    return Math.round(score * 10) / 10;
-  };
-
   const scenarioLabels: Record<string, string> = {
     shop: "Магазин",
     restaurant: "Ресторан",
@@ -56,10 +32,10 @@ export default function DialogueResults({ results, onClose }: DialogueResultsPro
     ? scenarioLabels[scenario || ""] || "Діалог"
     : situation || "Діалог з AI";
 
-  const overallScore01 = aiFeedback?.overall?.score01;
-  const qualityRaw = qualityScore ?? overallScore01 ?? null;
-  const qualityPercent = toPercent(qualityRaw);
-  const qualityScore10 = toScore10(qualityRaw);
+  // qualityScore is now always 0-1 (score01) from the parent component
+  const score01 = aiFeedback?.overall?.score01 ?? qualityScore ?? null;
+  const qualityPercent = score01 !== null ? Math.round(Math.min(score01, 1) * 100) : null;
+  const qualityScore10 = score01 !== null ? Math.round(Math.min(score01, 1) * 10 * 10) / 10 : null;
   const points = aiFeedback?.overall?.pointsForRating ?? null;
 
   return (
@@ -150,13 +126,13 @@ export default function DialogueResults({ results, onClose }: DialogueResultsPro
                   <div className="flex items-center justify-between mb-2">
                     <p className="text-xs font-semibold text-ink">Природність мовлення</p>
                     <span className="text-lg font-bold text-gold">
-                      {toPercent(aiFeedback.naturalness) ?? 0}%
+                      {Math.round((aiFeedback.naturalness ?? 0) * 100)}%
                     </span>
                   </div>
                   <div className="h-2 rounded-full bg-ink/10 overflow-hidden">
                     <div
                       className="h-full bg-gold transition-all"
-                      style={{ width: `${toPercent(aiFeedback.naturalness) ?? 0}%` }}
+                      style={{ width: `${Math.round((aiFeedback.naturalness ?? 0) * 100)}%` }}
                     />
                   </div>
                   {aiFeedback.naturalnessNote && (
@@ -171,13 +147,13 @@ export default function DialogueResults({ results, onClose }: DialogueResultsPro
                   <div className="flex items-center justify-between mb-2">
                     <p className="text-xs font-semibold text-ink">Граматична правильність</p>
                     <span className="text-lg font-bold text-moss">
-                      {toPercent(aiFeedback.grammar) ?? 0}%
+                      {Math.round((aiFeedback.grammar ?? 0) * 100)}%
                     </span>
                   </div>
                   <div className="h-2 rounded-full bg-ink/10 overflow-hidden">
                     <div
                       className="h-full bg-moss transition-all"
-                      style={{ width: `${toPercent(aiFeedback.grammar) ?? 0}%` }}
+                      style={{ width: `${Math.round((aiFeedback.grammar ?? 0) * 100)}%` }}
                     />
                   </div>
                   {aiFeedback.grammarNote && (

@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { CheckCircle, Circle, Sparkle } from "@phosphor-icons/react";
 import { safeParseAIResponse } from "@/lib/workbook";
+import { calculatePoints } from "@/lib/scoring";
 import ParaphraseResults from "./ParaphraseResults";
 
 interface Sentence {
@@ -177,15 +178,14 @@ export default function ParaphraseAIPractice({ config, onComplete }: ParaphraseA
       setCheckResult(result);
 
       // Save points to database if we have a valid score
-      if (result?.overall?.pointsForRating) {
+      if (result?.overall?.score01 != null) {
         try {
           await fetch("/api/exercises/attempt", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               exercise: "paraphrase",
-              points: result.overall.pointsForRating,
-              xp: result.overall.xp || 0
+              points: calculatePoints({ score01: result.overall.score01, level: config.level, itemCount: config.count, exercise: "paraphrase" })
             })
           });
         } catch (error) {

@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { CheckCircle, User, Sparkle, PaperPlaneRight } from "@phosphor-icons/react";
 import { safeParseAIResponse } from "@/lib/workbook";
+import { calculatePoints } from "@/lib/scoring";
 import DialogueResults from "./DialogueResults";
 
 interface Turn {
@@ -278,15 +279,15 @@ export default function DialogueClassicPractice({ config, onComplete }: Dialogue
       }
 
       // Save points to database
-      if (result?.overall?.pointsForRating) {
+      if (result?.overall?.score01 != null) {
         try {
+          const userTurnCount = turns.filter(t => t.speaker === "user").length;
           await fetch("/api/exercises/attempt", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               exercise: "dialogue",
-              points: result.overall.pointsForRating,
-              xp: result.overall.xp || 0
+              points: calculatePoints({ score01: result.overall.score01, level: config.level, itemCount: userTurnCount, exercise: "dialogue" })
             })
           });
         } catch (err) {
@@ -347,8 +348,7 @@ export default function DialogueClassicPractice({ config, onComplete }: Dialogue
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             exercise: "dialogue",
-            points: filledResponses,
-            xp: filledResponses * 2
+            points: calculatePoints({ score01: 0.5, level: config.level, itemCount: filledResponses, exercise: "dialogue" })
           })
         });
       } catch (err) {

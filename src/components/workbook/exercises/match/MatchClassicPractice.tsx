@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { CheckCircle, Circle, Sparkle, PaperPlaneRight } from "@phosphor-icons/react";
 import { safeParseAIResponse } from "@/lib/workbook";
+import { calculatePoints } from "@/lib/scoring";
 import MatchResults from "./MatchResults";
 
 interface MatchClassicPracticeProps {
@@ -219,15 +220,14 @@ export default function MatchClassicPractice({ config, onComplete }: MatchClassi
       }
 
       // Save points to database
-      if (result?.overall?.pointsForRating) {
+      if (result?.overall?.score01 != null) {
         try {
           await fetch("/api/exercises/attempt", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               exercise: "match",
-              points: result.overall.pointsForRating,
-              xp: result.overall.xp || 0
+              points: calculatePoints({ score01: result.overall.score01, level: config.level, itemCount: pairs.length, exercise: "match" })
             })
           });
         } catch (err) {
@@ -291,8 +291,7 @@ export default function MatchClassicPractice({ config, onComplete }: MatchClassi
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             exercise: "match",
-            points: items.length,
-            xp: items.length * 2
+            points: calculatePoints({ score01: 0.5, level: config.level, itemCount: pairs.length, exercise: "match" })
           })
         });
       } catch (err) {

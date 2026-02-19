@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { CheckCircle, Circle, Sparkle } from "@phosphor-icons/react";
 import { safeParseAIResponse } from "@/lib/workbook";
+import { calculatePoints } from "@/lib/scoring";
 import TranslateResults from "./TranslateResults";
 
 interface Sentence {
@@ -179,15 +180,15 @@ export default function TranslateAIPractice({ config, onComplete }: TranslateAIP
       setCheckResult(result);
 
       // Save points to database if we have a valid score
-      if (result?.overall?.points) {
+      const score01 = result?.overall?.score01 ?? (result?.overall?.accuracy != null ? result.overall.accuracy / 100 : null);
+      if (score01 != null) {
         try {
           await fetch("/api/exercises/attempt", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               exercise: "translate",
-              points: result.overall.points,
-              xp: result.overall.xp || 0
+              points: calculatePoints({ score01, level: config.level, itemCount: config.count, exercise: "translate" })
             })
           });
         } catch (err) {

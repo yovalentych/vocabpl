@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { CheckCircle, Circle, Sparkle } from "@phosphor-icons/react";
 import { countSentences, safeParseAIResponse } from "@/lib/workbook";
+import { calculatePoints } from "@/lib/scoring";
 import SentencesResults from "./SentencesResults";
 
 interface Word {
@@ -192,15 +193,14 @@ export default function SentencesAIPractice({ config, onComplete }: SentencesAIP
       setCheckResult(result);
 
       // Save points to database if we have a valid score
-      if (result?.overall?.pointsForRating) {
+      if (result?.overall?.score01 != null) {
         try {
           await fetch("/api/exercises/attempt", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               exercise: "sentences",
-              points: result.overall.pointsForRating,
-              xp: result.overall.xp || 0
+              points: calculatePoints({ score01: result.overall.score01, level: config.level, itemCount: config.count, exercise: "sentences" })
             })
           });
         } catch (err) {

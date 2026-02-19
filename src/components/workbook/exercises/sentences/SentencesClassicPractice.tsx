@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { CheckCircle, Circle, Sparkle, PaperPlaneRight } from "@phosphor-icons/react";
 import { countSentences, scoreForCount, safeParseAIResponse } from "@/lib/workbook";
+import { calculatePoints } from "@/lib/scoring";
 import SentencesResults from "./SentencesResults";
 
 interface Word {
@@ -159,14 +160,13 @@ export default function SentencesClassicPractice({ config, onComplete }: Sentenc
       }
 
       // Save points to database
-      if (result?.overall?.pointsForRating) {
+      if (result?.overall?.score01 != null) {
         await fetch("/api/exercises/attempt", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             exercise: "sentences",
-            points: result.overall.pointsForRating,
-            xp: result.overall.xp || 0
+            points: calculatePoints({ score01: result.overall.score01, level: config.level, itemCount: words.length, exercise: "sentences" })
           })
         });
       }
@@ -227,8 +227,7 @@ export default function SentencesClassicPractice({ config, onComplete }: Sentenc
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           exercise: "sentences",
-          points: totalSentences,
-          xp: totalSentences * 2
+          points: calculatePoints({ score01: 0.5, level: config.level, itemCount: words.length, exercise: "sentences" })
         })
       });
 

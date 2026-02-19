@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { CheckCircle, Circle, Sparkle, PaperPlaneRight } from "@phosphor-icons/react";
 import { safeParseAIResponse } from "@/lib/workbook";
+import { calculatePoints } from "@/lib/scoring";
 import ClozeResults from "./ClozeResults";
 
 interface ClozeClassicPracticeProps {
@@ -123,15 +124,14 @@ export default function ClozeClassicPractice({ config, onComplete }: ClozeClassi
       }
 
       // Save points to database
-      if (result?.overall?.pointsForRating) {
+      if (result?.overall?.score01 != null) {
         try {
           await fetch("/api/exercises/attempt", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               exercise: "cloze",
-              points: result.overall.pointsForRating,
-              xp: result.overall.xp || 0
+              points: calculatePoints({ score01: result.overall.score01, level: config.level, itemCount: items.length, exercise: "cloze" })
             })
           });
         } catch (err) {
@@ -196,8 +196,7 @@ export default function ClozeClassicPractice({ config, onComplete }: ClozeClassi
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             exercise: "cloze",
-            points: filledAnswers.length,
-            xp: filledAnswers.length * 2
+            points: calculatePoints({ score01: 0.5, level: config.level, itemCount: items.length, exercise: "cloze" })
           })
         });
       } catch (err) {
