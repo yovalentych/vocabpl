@@ -12,6 +12,7 @@ type Mode = "landing" | "classic-config" | "classic-practice" | "ai-config" | "a
 export default function StoryExercisePage() {
   const [mode, setMode] = useState<Mode>("landing");
   const [level, setLevel] = useState<"A1" | "A2" | "B1" | "B2">("A2");
+  const [topic, setTopic] = useState("");
   const [useAI, setUseAI] = useState(false);
 
   const handleSelectMode = (selectedMode: "classic" | "ai") => {
@@ -34,6 +35,7 @@ export default function StoryExercisePage() {
   const handleBackToLanding = () => {
     setMode("landing");
     setUseAI(false);
+    setTopic("");
   };
 
   return (
@@ -63,20 +65,26 @@ export default function StoryExercisePage() {
 
       {(mode === "classic-config" || mode === "ai-config") && (
         <div className="space-y-6">
-          <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
-            <p className="text-xs uppercase tracking-[0.3em] text-ink/40 mb-4">
-              {useAI ? "Крок 1: Налаштування AI" : "Крок 1: Налаштування"}
+          <div className="rounded-3xl border border-moss/20 bg-moss/5 p-6 shadow-soft">
+            <p className="text-xs uppercase tracking-[0.3em] text-moss/70 mb-2">
+              Крок 1: Налаштування
             </p>
-            <h2 className="text-2xl font-semibold text-ink mb-2">
+            <h2 className="text-2xl font-semibold text-ink">
               {useAI ? "Режим з AI" : "Класичний режим"}
             </h2>
-            <p className="text-sm text-ink/60 mb-6">
+            <p className="mt-2 text-sm text-ink/60">
               {useAI
                 ? "AI допоможе створити початок історії на вашу тему"
-                : "Напишіть історію на вільну тему"}
+                : "Напишіть історію на обрану тему"}
             </p>
-            <StoryConfig level={level} onLevelChange={setLevel} />
           </div>
+
+          <StoryConfig
+            level={level}
+            onLevelChange={setLevel}
+            topic={topic}
+            onTopicChange={setTopic}
+          />
 
           <div className="flex justify-center">
             <button
@@ -91,7 +99,7 @@ export default function StoryExercisePage() {
       )}
 
       {(mode === "classic-practice" || mode === "ai-practice") && (
-        <StoryPractice level={level} onComplete={handleBackToLanding} />
+        <StoryPractice level={level} topic={topic} onComplete={handleBackToLanding} />
       )}
     </div>
   );

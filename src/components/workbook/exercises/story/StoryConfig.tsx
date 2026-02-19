@@ -1,57 +1,104 @@
 "use client";
 
+import { useState } from "react";
 import { useLocale } from "@/components/LocaleProvider";
-import AIExercisePanel from "../../shared/AIExercisePanel";
+import { Sparkle } from "@phosphor-icons/react";
 
 interface StoryConfigProps {
   level: "A1" | "A2" | "B1" | "B2";
   onLevelChange: (level: "A1" | "A2" | "B1" | "B2") => void;
+  topic: string;
+  onTopicChange: (topic: string) => void;
 }
 
-export default function StoryConfig({ level, onLevelChange }: StoryConfigProps) {
+export default function StoryConfig({ level, onLevelChange, topic, onTopicChange }: StoryConfigProps) {
   const { t } = useLocale();
+
+  const topicSuggestions = [
+    "Пригоди в Польщі",
+    "Перший день на роботі",
+    "Незвичайна подорож",
+    "Зустріч зі старим другом",
+    "Загублений у місті",
+    "Вихідні на природі",
+    "Смішна ситуація",
+    "Мій ідеальний день"
+  ];
 
   return (
     <div className="space-y-6">
-      <AIExercisePanel exercise="story" onUsePrompt={() => {}} />
-
+      {/* Topic input */}
       <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
-        <h3 className="text-xl font-semibold">
-          {t.workbook.storyConfigTitle || "Налаштування мікроісторії"}
-        </h3>
-        <p className="mt-2 text-sm text-ink/60">
-          {t.workbook.storyConfigHint || "Оберіть рівень складності для вашої історії"}
+        <p className="text-xs uppercase tracking-[0.3em] text-ink/40 mb-4">
+          Тема для вправи
         </p>
 
-        {/* Level Selection */}
-        <div className="mt-6">
-          <label className="block text-xs uppercase tracking-[0.2em] text-ink/40">
-            Рівень складності
-          </label>
-          <div className="mt-3 flex flex-wrap gap-3">
-            {(["A1", "A2", "B1", "B2"] as const).map((lvl) => (
+        <input
+          type="text"
+          value={topic}
+          onChange={(e) => onTopicChange(e.target.value)}
+          placeholder="Наприклад: Пригоди в Польщі, Перший день на роботі..."
+          className="w-full rounded-2xl border border-ink/20 bg-paper px-4 py-3 text-sm text-ink placeholder:text-ink/40 focus:border-moss/40 focus:outline-none focus:ring-0"
+        />
+
+        {/* Suggestions */}
+        <div className="mt-4">
+          <p className="text-xs text-ink/50 mb-2">Швидкий вибір:</p>
+          <div className="flex flex-wrap gap-2">
+            {topicSuggestions.map((suggestion) => (
               <button
-                key={lvl}
-                type="button"
-                onClick={() => onLevelChange(lvl)}
-                className={`rounded-full border px-6 py-3 text-sm font-semibold transition ${
-                  level === lvl
-                    ? "border-moss bg-moss text-paper"
-                    : "border-ink/10 bg-paper hover:border-ink/20"
-                }`}
+                key={suggestion}
+                onClick={() => onTopicChange(suggestion)}
+                className="rounded-full border border-ink/20 px-3 py-1 text-xs text-ink transition hover:bg-ink/5"
               >
-                {lvl}
+                {suggestion}
               </button>
             ))}
           </div>
         </div>
+      </div>
 
-        {/* Instructions */}
-        <div className="mt-6 rounded-2xl border border-gold/20 bg-gold/5 p-4">
-          <p className="text-sm text-ink/70">
-            💡 <strong>Підказка:</strong> Напишіть коротку історію (мінімум 50 слів) польською мовою.
-            AI перевірить граматику, лексику та стиль написання.
-          </p>
+      {/* Level Selection */}
+      <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
+        <p className="text-xs uppercase tracking-[0.3em] text-ink/40 mb-4">
+          Рівень складності
+        </p>
+
+        <div className="grid grid-cols-4 gap-3">
+          {(["A1", "A2", "B1", "B2"] as const).map((lvl) => (
+            <button
+              key={lvl}
+              type="button"
+              onClick={() => onLevelChange(lvl)}
+              className={`rounded-2xl border p-4 text-center transition ${
+                level === lvl
+                  ? "border-moss bg-moss text-paper"
+                  : "border-ink/20 text-ink hover:bg-ink/5"
+              }`}
+            >
+              <div className="text-xl font-bold">{lvl}</div>
+              <div className="mt-1 text-[10px] opacity-80">
+                {lvl === "A1" && "Початківець"}
+                {lvl === "A2" && "Базовий"}
+                {lvl === "B1" && "Середній"}
+                {lvl === "B2" && "Просунутий"}
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Instructions */}
+      <div className="rounded-2xl border border-moss/20 bg-moss/5 p-4">
+        <div className="flex items-start gap-3">
+          <Sparkle size={20} weight="fill" className="text-moss flex-shrink-0 mt-0.5" />
+          <div>
+            <p className="text-xs font-semibold text-moss mb-1">Як це працює</p>
+            <p className="text-xs text-ink/70">
+              Напишіть коротку історію (мінімум 50 слів) польською мовою на обрану тему.
+              AI перевірить граматику, лексику та стиль написання.
+            </p>
+          </div>
         </div>
       </div>
     </div>

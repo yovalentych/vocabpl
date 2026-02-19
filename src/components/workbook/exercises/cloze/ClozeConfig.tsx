@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import MaterialSelector from "../../shared/MaterialSelector";
-import AIExercisePanel from "../../shared/AIExercisePanel";
 import { useCloze } from "./useCloze";
 
 interface ClozeConfigProps {
@@ -115,11 +114,6 @@ export default function ClozeConfig({ onStartPractice }: ClozeConfigProps) {
       {/* AI Mode - Topic & Hint Types */}
       {mode === "ai" && (
         <>
-          <AIExercisePanel
-            exercise="cloze"
-            onUsePrompt={(prompt) => setAiTopic(prompt)}
-          />
-
           <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
             <h3 className="text-xl font-semibold">{t.workbook.clozeHintTypes}</h3>
             <p className="mt-2 text-sm text-ink/60">{t.workbook.clozeHintTypesHint}</p>

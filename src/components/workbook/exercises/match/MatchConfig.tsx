@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import MaterialSelector from "../../shared/MaterialSelector";
-import AIExercisePanel from "../../shared/AIExercisePanel";
 import { useMatch } from "./useMatch";
 
 interface MatchConfigProps {
@@ -167,11 +166,6 @@ export default function MatchConfig({ onStartPractice }: MatchConfigProps) {
       {/* AI Mode */}
       {mode === "ai" && (
         <>
-          <AIExercisePanel
-            exercise="match"
-            onUsePrompt={(prompt) => setAiTopic(prompt)}
-          />
-
           <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
             <h3 className="text-xl font-semibold">{t.workbook.matchPairType}</h3>
             <p className="mt-2 text-sm text-ink/60">

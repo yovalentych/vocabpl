@@ -52,14 +52,14 @@ export default function DialogueAIConfig({ onStart }: DialogueAIConfigProps) {
       {/* Situation input */}
       <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
         <p className="text-xs uppercase tracking-[0.3em] text-ink/40 mb-4">
-          Ситуація або тема діалогу
+          Тема для вправи
         </p>
 
-        <textarea
+        <input
+          type="text"
           value={situation}
           onChange={(e) => setSituation(e.target.value)}
-          placeholder="Наприклад: Розмова з лікарем про головний біль, замовлення піци по телефону..."
-          rows={3}
+          placeholder="Наприклад: Розмова з лікарем, замовлення піци по телефону..."
           className="w-full rounded-2xl border border-ink/20 bg-paper px-4 py-3 text-sm text-ink placeholder:text-ink/40 focus:border-moss/40 focus:outline-none focus:ring-0"
         />
 

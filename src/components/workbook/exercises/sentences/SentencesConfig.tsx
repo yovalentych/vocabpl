@@ -4,7 +4,6 @@ import { useSentences } from "./useSentences";
 import { useWorkbookContext } from "../../WorkbookContext";
 import { useLocale } from "@/components/LocaleProvider";
 import { Sparkle } from "@phosphor-icons/react";
-import AIExercisePanel from "../../shared/AIExercisePanel";
 
 export default function SentencesConfig() {
   const { dispatch } = useWorkbookContext();
@@ -39,14 +38,6 @@ export default function SentencesConfig() {
 
   return (
     <div className="space-y-6">
-      {/* AI Exercise Panel */}
-      <AIExercisePanel
-        exercise="sentences"
-        onUsePrompt={(prompt) => {
-          // AI-generated theme for inspiration
-        }}
-      />
-
       {/* Word types selection */}
       <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
         <p className="text-xs uppercase tracking-[0.3em] text-ink/40">

@@ -2,201 +2,146 @@
 
 import { useState } from "react";
 import { useLocale } from "@/components/LocaleProvider";
-import AIExercisePanel from "../../shared/AIExercisePanel";
-import {
-  TreePalm,
-  Buildings,
-  Users,
-  Coffee,
-  Sun,
-  Mountains,
-  ShoppingBag,
-  BookOpen
-} from "@phosphor-icons/react";
+import { Sparkle } from "@phosphor-icons/react";
 
 interface DescribeConfigProps {
   onStartPractice: (config: {
     prompt: string;
     level: "A1" | "A2" | "B1" | "B2";
-    category?: string;
   }) => void;
 }
-
-type Category = {
-  id: string;
-  label: string;
-  icon: typeof TreePalm;
-  examples: string[];
-};
 
 export default function DescribeConfig({ onStartPractice }: DescribeConfigProps) {
   const { t } = useLocale();
   const [prompt, setPrompt] = useState("");
   const [level, setLevel] = useState<"A1" | "A2" | "B1" | "B2">("A1");
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  const categories: Category[] = [
-    {
-      id: "nature",
-      label: "Природа",
-      icon: TreePalm,
-      examples: ["park", "forest", "mountains", "beach", "lake", "sunset"]
-    },
-    {
-      id: "city",
-      label: "Місто",
-      icon: Buildings,
-      examples: ["street", "building", "cafe", "market", "square", "architecture"]
-    },
-    {
-      id: "people",
-      label: "Люди",
-      icon: Users,
-      examples: ["family", "friends", "portrait", "children", "group"]
-    },
-    {
-      id: "food",
-      label: "Їжа та напої",
-      icon: Coffee,
-      examples: ["breakfast", "coffee", "restaurant", "meal", "kitchen"]
-    },
-    {
-      id: "travel",
-      label: "Подорожі",
-      icon: Mountains,
-      examples: ["vacation", "adventure", "tourism", "landscape", "destination"]
-    },
-    {
-      id: "lifestyle",
-      label: "Повсякденність",
-      icon: ShoppingBag,
-      examples: ["shopping", "home", "interior", "fashion", "workspace"]
-    },
-    {
-      id: "education",
-      label: "Навчання",
-      icon: BookOpen,
-      examples: ["classroom", "library", "study", "school", "books"]
-    },
-    {
-      id: "seasons",
-      label: "Пори року",
-      icon: Sun,
-      examples: ["spring", "summer", "autumn", "winter", "snow", "flowers"]
-    }
+  const suggestions = [
+    "Парк восени",
+    "Вулиця Кракова",
+    "Ранок у кав'ярні",
+    "Родина на пікніку",
+    "Ринок старого міста",
+    "Зимовий пейзаж",
+    "Кухня ресторану",
+    "Пляж влітку"
   ];
-
-  const handleCategorySelect = (categoryId: string) => {
-    const category = categories.find(c => c.id === categoryId);
-    if (category) {
-      setSelectedCategory(categoryId);
-      // Set a random example as prompt
-      const randomExample = category.examples[Math.floor(Math.random() * category.examples.length)];
-      setPrompt(`Describe a scene with ${randomExample}`);
-    }
-  };
 
   const handleStart = () => {
     if (!prompt.trim()) return;
-    onStartPractice({
-      prompt: prompt.trim(),
-      level,
-      category: selectedCategory || undefined
-    });
+    onStartPractice({ prompt: prompt.trim(), level });
   };
 
   return (
     <div className="space-y-6">
-      <AIExercisePanel
-        exercise="describe"
-        onUsePrompt={(text) => setPrompt(text)}
-      />
+      {/* Header */}
+      <div className="rounded-3xl border border-moss/20 bg-moss/5 p-6 shadow-soft">
+        <p className="text-xs uppercase tracking-[0.3em] text-moss/70 mb-2">
+          Крок 1: Налаштування AI
+        </p>
+        <h2 className="text-2xl font-semibold text-ink">
+          {t.workbook.describeConfigTitle || "Опис зображення"}
+        </h2>
+        <p className="mt-2 text-sm text-ink/60">
+          {t.workbook.describeConfigHint || "AI згенерує зображення за вашим описом, а ви опишете його польською"}
+        </p>
+      </div>
 
+      {/* Topic input */}
       <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
-        <h3 className="text-xl font-semibold">{t.workbook.describeConfigTitle || "Налаштування опису зображення"}</h3>
-        <p className="mt-2 text-sm text-ink/60">{t.workbook.describeConfigHint || "Оберіть категорію або введіть власний опис"}</p>
+        <p className="text-xs uppercase tracking-[0.3em] text-ink/40 mb-4">
+          Тема або опис сцени
+        </p>
 
-        {/* Category Selection */}
-        <div className="mt-6">
-          <label className="block text-xs uppercase tracking-[0.2em] text-ink/40">
-            Категорія зображення (опціонально)
-          </label>
-          <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {categories.map((category) => {
-              const Icon = category.icon;
-              const isSelected = selectedCategory === category.id;
+        <input
+          type="text"
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
+          placeholder="Наприклад: Парк восени, Вулиця Кракова..."
+          className="w-full rounded-2xl border border-ink/20 bg-paper px-4 py-3 text-sm text-ink placeholder:text-ink/40 focus:border-moss/40 focus:outline-none focus:ring-0"
+        />
 
-              return (
-                <button
-                  key={category.id}
-                  type="button"
-                  onClick={() => handleCategorySelect(category.id)}
-                  className={`group flex items-center gap-3 rounded-2xl border p-3 text-left transition ${
-                    isSelected
-                      ? "border-moss bg-moss/10"
-                      : "border-ink/10 bg-paper hover:border-ink/20 hover:bg-ink/5"
-                  }`}
-                >
-                  <div className={`flex h-10 w-10 items-center justify-center rounded-xl transition ${
-                    isSelected ? "bg-moss/20" : "bg-ink/5 group-hover:bg-ink/10"
-                  }`}>
-                    <Icon size={20} weight="bold" className={isSelected ? "text-moss" : "text-ink/60"} />
-                  </div>
-                  <div className="flex-1">
-                    <p className={`text-sm font-semibold ${isSelected ? "text-moss" : "text-ink"}`}>
-                      {category.label}
-                    </p>
-                  </div>
-                </button>
-              );
-            })}
+        {/* Suggestions */}
+        <div className="mt-4">
+          <p className="text-xs text-ink/50 mb-2">Швидкий вибір:</p>
+          <div className="flex flex-wrap gap-2">
+            {suggestions.map((suggestion) => (
+              <button
+                key={suggestion}
+                onClick={() => setPrompt(suggestion)}
+                className="rounded-full border border-ink/20 px-3 py-1 text-xs text-ink transition hover:bg-ink/5"
+              >
+                {suggestion}
+              </button>
+            ))}
           </div>
         </div>
+      </div>
 
-        {/* Custom Prompt */}
-        <div className="mt-6 grid gap-4 md:grid-cols-[1fr_220px]">
-          <label className="block text-sm text-ink/70">
-            {t.workbook.describePrompt || "Опис сцени"}
-            <input
-              value={prompt}
-              onChange={(event) => {
-                setPrompt(event.target.value);
-                setSelectedCategory(null); // Clear category on manual input
-              }}
-              className="mt-2 w-full rounded-2xl border border-ink/20 bg-paper px-4 py-3 text-sm focus:border-moss/40 focus:outline-none"
-              placeholder={t.workbook.describePromptPlaceholder || "Наприклад: A busy street in Krakow"}
-            />
-          </label>
+      {/* Level selection */}
+      <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
+        <p className="text-xs uppercase tracking-[0.3em] text-ink/40 mb-4">
+          Рівень складності
+        </p>
 
-          <label className="block text-sm text-ink/70">
-            {t.workbook.describeLevel || "Рівень"}
-            <div className="mt-2 grid grid-cols-4 gap-2">
-              {(["A1", "A2", "B1", "B2"] as const).map((lvl) => (
-                <button
-                  key={lvl}
-                  type="button"
-                  onClick={() => setLevel(lvl)}
-                  className={`rounded-full border px-3 py-2 text-xs font-semibold transition ${
-                    level === lvl
-                      ? "border-moss bg-moss text-paper"
-                      : "border-ink/10 bg-paper hover:border-ink/20"
-                  }`}
-                >
-                  {lvl}
-                </button>
-              ))}
-            </div>
-          </label>
+        <div className="grid grid-cols-4 gap-3">
+          {(["A1", "A2", "B1", "B2"] as const).map((lvl) => (
+            <button
+              key={lvl}
+              onClick={() => setLevel(lvl)}
+              className={`rounded-2xl border p-4 text-center transition ${
+                level === lvl
+                  ? "border-moss bg-moss text-paper"
+                  : "border-ink/20 text-ink hover:bg-ink/5"
+              }`}
+            >
+              <div className="text-xl font-bold">{lvl}</div>
+              <div className="mt-1 text-[10px] opacity-80">
+                {lvl === "A1" && "Початківець"}
+                {lvl === "A2" && "Базовий"}
+                {lvl === "B1" && "Середній"}
+                {lvl === "B2" && "Просунутий"}
+              </div>
+            </button>
+          ))}
         </div>
+      </div>
 
+      {/* AI info */}
+      <div className="rounded-2xl border border-moss/20 bg-moss/5 p-4">
+        <div className="flex items-start gap-3">
+          <Sparkle size={20} weight="fill" className="text-moss flex-shrink-0 mt-0.5" />
+          <div>
+            <p className="text-xs font-semibold text-moss mb-1">Як це працює</p>
+            <p className="text-xs text-ink/70">
+              AI згенерує зображення за вашою темою. Ви опишете його польською мовою,
+              а AI перевірить граматику, лексику та точність опису.
+            </p>
+            <p className="mt-2 text-xs text-moss/70">
+              Вартість: 2 кредити за генерацію + 2 кредити за перевірку
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Start button */}
+      <div className="flex justify-center">
         <button
           onClick={handleStart}
           disabled={!prompt.trim()}
-          className="mt-6 rounded-full bg-ink px-6 py-3 text-sm font-semibold text-paper transition hover:bg-ink/90 disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-full bg-moss px-8 py-3 text-sm font-semibold text-paper transition hover:bg-moss/90 disabled:cursor-not-allowed disabled:opacity-40"
         >
-          {t.workbook.startPractice || "Почати практику"}
+          <Sparkle size={18} weight="fill" />
+          <span>{t.workbook.startPractice || "Почати практику"}</span>
+          <span>→</span>
         </button>
       </div>
+
+      {!prompt.trim() && (
+        <p className="text-center text-xs text-terracotta">
+          Введіть тему або оберіть зі списку
+        </p>
+      )}
     </div>
   );
 }

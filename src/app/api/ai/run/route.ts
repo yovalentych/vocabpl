@@ -1056,11 +1056,24 @@ ${generateDifficultyAwarePrompt({
   - ТАК: "Додайте короткий діалог між персонажами, наприклад: 'Dokąd idziemy?' — zapytała Maria."
   - ТАК: "Замість повторення 'potem... potem...' використайте конектори: 'następnie', 'w końcu', 'po chwili'."
   - ТАК: "В реченні 'Ona poszedł do sklepu' має бути 'poszła' (жіночий рід)."
-- vocabulary: 3-5 нових польських слів з українським перекладом, що ЗБАГАТИЛИ б цю конкретну історію.`
+- vocabulary: 3-5 нових польських слів з українським перекладом, що ЗБАГАТИЛИ б цю конкретну історію.
+
+**TOPIC EVALUATION (if topic is provided):**
+- Evaluate how well the story matches the given topic.
+- If the story significantly deviates from the topic, mention it in "overall" and reduce the score accordingly.
+- Factor topic relevance into the Coherence dimension.`
       },
       {
         role: "user",
-        content: `Request:\n${userInput}\nContext:\n${context}`
+        content: (() => {
+          try {
+            const parsed = JSON.parse(userInput);
+            const topicLine = parsed.topic ? `\nTOPIC: ${parsed.topic}` : "";
+            return `Request:\n${userInput}${topicLine}\nContext:\n${context}`;
+          } catch {
+            return `Request:\n${userInput}\nContext:\n${context}`;
+          }
+        })()
       }
     ];
   }

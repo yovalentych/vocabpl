@@ -10,6 +10,7 @@ import StoryResultModal from "./StoryResultModal";
 
 interface StoryPracticeProps {
   level?: "A1" | "A2" | "B1" | "B2";
+  topic?: string;
   onComplete?: () => void;
 }
 
@@ -20,7 +21,7 @@ interface StoryFeedback {
   vocabulary?: { pl: string; uk: string }[];
 }
 
-export default function StoryPractice({ level = "A2", onComplete }: StoryPracticeProps) {
+export default function StoryPractice({ level = "A2", topic, onComplete }: StoryPracticeProps) {
   const { t, locale } = useLocale();
 
   // Form state
@@ -48,7 +49,8 @@ export default function StoryPractice({ level = "A2", onComplete }: StoryPractic
       const payload = {
         title: storyTitle.trim(),
         text: storyText.trim(),
-        level
+        level,
+        ...(topic ? { topic } : {})
       };
 
       const res = await fetch("/api/ai/run", {
@@ -139,7 +141,7 @@ export default function StoryPractice({ level = "A2", onComplete }: StoryPractic
               {t.workbook.storyWriteTitle || "Мікроісторія"}
             </h2>
             <p className="text-sm text-ink/60">
-              Рівень {level} · Напишіть коротку історію польською
+              Рівень {level}{topic ? ` · ${topic}` : " · Напишіть коротку історію польською"}
             </p>
           </div>
         </div>
