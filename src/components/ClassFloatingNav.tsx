@@ -61,7 +61,7 @@ export default function ClassFloatingNav() {
       {/* Mobile bottom nav */}
       <div
         className="fixed left-0 right-0 z-50 md:hidden border-t-2 border-ink/10 bg-paper/98 backdrop-blur-md shadow-[0_-8px_24px_rgba(0,0,0,0.08)]"
-        style={{ bottom: "var(--footer-height, 96px)" }}
+        style={{ bottom: 0 }}
       >
         <div className="flex items-center justify-around px-1 py-2 safe-area-inset-bottom">
           {items.map((item) => {

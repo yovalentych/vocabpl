@@ -60,7 +60,7 @@ export default function ByokPanel() {
   return (
     <div
       className="fixed z-40 pointer-events-none hidden"
-      style={{ left: panelLeft, bottom: "calc(var(--footer-height,96px) + 16px)" }}
+      style={{ left: panelLeft, bottom: "16px" }}
     >
       <div
         className={`mb-3 w-[360px] rounded-3xl border border-ink/10 bg-paper/95 shadow-xl transition-all duration-200 ${
