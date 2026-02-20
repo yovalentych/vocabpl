@@ -71,7 +71,7 @@ export default async function HomePage() {
               {
                 "@type": "WebApplication",
                 "name": "Polish Vocab Studio",
-                "url": "https://vocabpl.uno",
+                "url": "https://www.vocabpl.uno",
                 "applicationCategory": "EducationalApplication",
                 "operatingSystem": "Web",
                 "offers": {
@@ -86,7 +86,7 @@ export default async function HomePage() {
               {
                 "@type": "Organization",
                 "name": "Polish Vocab Studio",
-                "url": "https://vocabpl.uno",
+                "url": "https://www.vocabpl.uno",
                 "logo": "https://vocabpl.uno/favicon-pvs-C-ai-master-1024.png"
               }
             ]
