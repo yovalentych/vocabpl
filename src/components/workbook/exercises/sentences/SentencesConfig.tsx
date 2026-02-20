@@ -76,7 +76,7 @@ export default function SentencesConfig() {
               onChange={(e) => updateConfig({ includeFavorites: e.target.checked })}
               className="h-4 w-4 rounded accent-ink"
             />
-            <span className="text-sm text-ink">Include favorite words</span>
+            <span className="text-sm text-ink">{t.workbook.includeFavorites}</span>
           </label>
 
           {/* Include my words */}
@@ -87,7 +87,7 @@ export default function SentencesConfig() {
               onChange={(e) => updateConfig({ includeMyWords: e.target.checked })}
               className="h-4 w-4 rounded accent-ink"
             />
-            <span className="text-sm text-ink">Include my custom words</span>
+            <span className="text-sm text-ink">{t.workbook.includeMyWords}</span>
           </label>
         </div>
       </div>
@@ -101,7 +101,7 @@ export default function SentencesConfig() {
         <div className="mt-4 space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-2xl font-bold text-ink">{state.count}</span>
-            <span className="text-xs text-ink/50">words</span>
+            <span className="text-xs text-ink/50">{t.common.words}</span>
           </div>
 
           <input
@@ -115,7 +115,7 @@ export default function SentencesConfig() {
 
           <div className="flex justify-between text-xs text-ink/40">
             <span>1</span>
-            <span>{state.locked ? "2 (free limit)" : "50"}</span>
+            <span>{state.locked ? `2 (${t.workbook.freeLimit})` : "50"}</span>
           </div>
         </div>
 
@@ -144,11 +144,11 @@ export default function SentencesConfig() {
           {state.isLoading ? (
             <>
               <span className="h-4 w-4 animate-spin rounded-full border-2 border-paper/20 border-t-paper" />
-              <span>Generating...</span>
+              <span>{t.workbook.generating}</span>
             </>
           ) : (
             <>
-              <span>Start Practice</span>
+              <span>{t.workbook.startPractice}</span>
               <span>→</span>
             </>
           )}

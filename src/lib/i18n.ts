@@ -18,7 +18,9 @@ export const dictionary = {
       login: "Zaloguj",
       register: "Rejestracja",
       cabinet: "Kabiniet",
-      logout: "Wyloguj"
+      logout: "Wyloguj",
+      messages: "Wiadomości",
+      reviews: "Recenzje"
     },
     common: {
       language: "Język",
@@ -40,7 +42,8 @@ export const dictionary = {
       dontKnow: "Nie znam",
       edit: "Edytuj",
       delete: "Usuń",
-      hotkeys: "Dodaj słowo: Ctrl/Cmd + Shift + K · Notatki: Ctrl/Cmd + Shift + M"
+      hotkeys: "Dodaj słowo: Ctrl/Cmd + Shift + K · Notatki: Ctrl/Cmd + Shift + M",
+      words: "słowa"
     },
     words: {
       quickAdd: "Dodaj słowo",
@@ -238,6 +241,10 @@ export const dictionary = {
       prev: "Poprzednie",
       next: "Następne",
       locked: "W trybie darmowym dostępne są tylko 2 słowa.",
+      includeFavorites: "Uwzględnij ulubione słowa",
+      includeMyWords: "Uwzględnij moje słowa",
+      freeLimit: "limit darmowy",
+      generating: "Generowanie...",
       exercises: {
         sentences: {
           title: "Zdania ze słowami",
@@ -494,7 +501,14 @@ export const dictionary = {
       feedbackPlaceholder: "Opisz problem lub pomysł...",
       feedbackSend: "Wyślij",
       feedbackSent: "Dziękujemy! Wiadomość została wysłana.",
-      feedbackError: "Nie udało się wysłać wiadomości."
+      feedbackError: "Nie udało się wysłać wiadomości.",
+      terms: "Regulamin",
+      privacy: "Polityka prywatności",
+      payments: "Płatności",
+      about: "O PVS",
+      cookies: "Cookies",
+      contacts: "Kontakt",
+      tagline: "Ucz się we własnym tempie. Codziennie mały krok."
     },
     home: {
       eyebrow: "Polskie Studio Słownictwa",
@@ -1197,7 +1211,9 @@ export const dictionary = {
       login: "Вхід",
       register: "Реєстрація",
       cabinet: "Кабінет",
-      logout: "Вийти"
+      logout: "Вийти",
+      messages: "Повідомлення",
+      reviews: "Відгуки"
     },
     common: {
       language: "Мова",
@@ -1219,7 +1235,8 @@ export const dictionary = {
       dontKnow: "Не знаю",
       edit: "Редагувати",
       delete: "Видалити",
-      hotkeys: "Додати слово: Ctrl/Cmd + Shift + K · Нотатки: Ctrl/Cmd + Shift + M"
+      hotkeys: "Додати слово: Ctrl/Cmd + Shift + K · Нотатки: Ctrl/Cmd + Shift + M",
+      words: "слова"
     },
     words: {
       quickAdd: "Додати слово",
@@ -1417,6 +1434,10 @@ export const dictionary = {
       prev: "Попереднє",
       next: "Наступне",
       locked: "У безкоштовному режимі доступні лише 2 слова.",
+      includeFavorites: "Включити обрані слова",
+      includeMyWords: "Включити мої слова",
+      freeLimit: "безкоштовний ліміт",
+      generating: "Генерування...",
       exercises: {
         sentences: {
           title: "Речення зі словами",
@@ -1673,7 +1694,14 @@ export const dictionary = {
       feedbackPlaceholder: "Опиши проблему або ідею...",
       feedbackSend: "Надіслати",
       feedbackSent: "Дякуємо! Повідомлення надіслано.",
-      feedbackError: "Не вдалося надіслати повідомлення."
+      feedbackError: "Не вдалося надіслати повідомлення.",
+      terms: "Умови",
+      privacy: "Політика",
+      payments: "Оплата",
+      about: "Про PVS",
+      cookies: "Cookies",
+      contacts: "Контакти",
+      tagline: "Навчайся у своєму темпі. Кожен день — маленький прогрес."
     },
     home: {
       eyebrow: "Польська студія словника",

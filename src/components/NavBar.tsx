@@ -138,8 +138,8 @@ export default function NavBar() {
             <Link
               href={auth.isAdmin ? "/admin/reviews" : "/messages"}
               className="relative rounded-full border border-ink/20 px-3 py-1 text-ink/70 hover:bg-ink/10"
-              aria-label="Messages"
-              title="Messages"
+              aria-label={auth.isAdmin ? t.nav.reviews : t.nav.messages}
+              title={auth.isAdmin ? t.nav.reviews : t.nav.messages}
             >
               <EnvelopeSimple size={18} weight="bold" />
               {auth.isAdmin && pendingCount > 0 && (
@@ -214,7 +214,7 @@ export default function NavBar() {
               className="relative rounded-full border-2 border-ink/20 px-6 py-3.5 text-base font-medium text-ink/70 transition-all active:scale-95 active:bg-ink/10 flex items-center justify-center gap-2.5"
             >
               <EnvelopeSimple size={20} weight="bold" />
-              <span>{auth.isAdmin ? t.nav.admin + " Reviews" : "Messages"}</span>
+              <span>{auth.isAdmin ? t.nav.reviews : t.nav.messages}</span>
               {auth.isAdmin && pendingCount > 0 && (
                 <span className="rounded-full bg-terracotta px-2.5 py-1 text-xs font-semibold text-paper">
                   {pendingCount}

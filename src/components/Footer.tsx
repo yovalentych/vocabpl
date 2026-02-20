@@ -1,9 +1,9 @@
-import { getServerLocale } from "@/lib/i18n-server";
+import { getDictionary } from "@/lib/i18n-server";
 import FeedbackModal from "@/components/FeedbackModal";
 import Link from "next/link";
 
 export default function Footer() {
-  const locale = getServerLocale();
+  const { locale, t } = getDictionary();
   const year = new Date().getFullYear();
   return (
     <footer className="border-t border-ink/10 bg-paper/85 backdrop-blur-sm">
@@ -15,38 +15,36 @@ export default function Footer() {
               <span className="sm:hidden">PVS</span>
             </span>
             <span className="text-ink/40">v2.0.0</span>
-            <span>© {year}</span>
-            <span className="hidden sm:inline">·</span>
+            <span>&copy; {year}</span>
+            <span className="hidden sm:inline">&middot;</span>
             <Link className="underline underline-offset-4" href="/terms">
-              {locale === "uk" ? "Умови" : "Regulamin"}
+              {t.footer.terms}
             </Link>
-            <span className="hidden sm:inline">·</span>
+            <span className="hidden sm:inline">&middot;</span>
             <Link className="underline underline-offset-4" href="/privacy">
-              {locale === "uk" ? "Політика" : "Polityka prywatności"}
+              {t.footer.privacy}
             </Link>
-            <span className="hidden sm:inline">·</span>
+            <span className="hidden sm:inline">&middot;</span>
             <Link className="underline underline-offset-4" href="/subscription">
-              {locale === "uk" ? "Оплата" : "Płatności"}
+              {t.footer.payments}
             </Link>
-            <span className="hidden sm:inline">·</span>
+            <span className="hidden sm:inline">&middot;</span>
             <Link className="underline underline-offset-4" href="/pvs">
-              {locale === "uk" ? "Про PVS" : "O PVS"}
+              {t.footer.about}
             </Link>
-            <span className="hidden sm:inline">·</span>
+            <span className="hidden sm:inline">&middot;</span>
             <Link className="underline underline-offset-4" href="/cookies">
-              Cookies
+              {t.footer.cookies}
             </Link>
-            <span className="hidden sm:inline">·</span>
+            <span className="hidden sm:inline">&middot;</span>
             <Link className="underline underline-offset-4" href="/contacts">
-              {locale === "uk" ? "Контакти" : "Kontakt"}
+              {t.footer.contacts}
             </Link>
           </div>
           <FeedbackModal />
         </div>
         <p className="mt-2 sm:mt-3 text-[10px] sm:text-[11px] text-ink/40 hidden sm:block">
-          {locale === "uk"
-            ? "Навчайся у своєму темпі. Кожен день — маленький прогрес."
-            : "Ucz się we własnym tempie. Codziennie mały krok."}
+          {t.footer.tagline}
         </p>
       </div>
     </footer>
