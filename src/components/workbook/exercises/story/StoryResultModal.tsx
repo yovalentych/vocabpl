@@ -67,24 +67,24 @@ export default function StoryResultModal({
   // Determine feedback color and emoji
   let feedbackColor = "text-moss";
   let feedbackEmoji = "🎉";
-  let feedbackTitle = "Чудова робота!";
+  let feedbackTitle: string = t.workbook.excellentWork;
 
   if (scorePercentage >= 80) {
     feedbackColor = "text-moss";
     feedbackEmoji = "🎉";
-    feedbackTitle = "Чудова робота!";
+    feedbackTitle = t.workbook.excellentWork;
   } else if (scorePercentage >= 60) {
     feedbackColor = "text-gold";
     feedbackEmoji = "👍";
-    feedbackTitle = "Добре!";
+    feedbackTitle = t.workbook.goodWork;
   } else if (scorePercentage >= 40) {
     feedbackColor = "text-orange-500";
     feedbackEmoji = "💪";
-    feedbackTitle = "Продовжуйте!";
+    feedbackTitle = t.workbook.keepGoing;
   } else {
     feedbackColor = "text-terracotta";
     feedbackEmoji = "📚";
-    feedbackTitle = "Потренуйтеся ще";
+    feedbackTitle = t.workbook.practiceMore;
   }
 
   return (
@@ -101,7 +101,7 @@ export default function StoryResultModal({
             </div>
             <div>
               <h2 className="text-xl font-semibold text-ink">{feedbackTitle}</h2>
-              <p className="text-sm text-ink/60">Результати перевірки</p>
+              <p className="text-sm text-ink/60">{t.workbook.resultsTitle}</p>
             </div>
           </div>
           <button
@@ -120,7 +120,7 @@ export default function StoryResultModal({
               <div className="flex items-center gap-4">
                 <div className="text-6xl">{feedbackEmoji}</div>
                 <div>
-                  <p className="text-sm uppercase tracking-wider text-ink/60">Оцінка</p>
+                  <p className="text-sm uppercase tracking-wider text-ink/60">{t.workbook.scoreLabel}</p>
                   <p className={`text-5xl font-bold ${feedbackColor}`}>
                     {Math.round(feedback.score * 10)}/10
                   </p>
@@ -134,7 +134,7 @@ export default function StoryResultModal({
                   <Trophy size={20} weight="fill" className="text-gold" />
                   <span className="text-xl font-bold text-gold">+{points}</span>
                 </div>
-                <p className="mt-2 text-xs text-ink/60">балів до рейтингу</p>
+                <p className="mt-2 text-xs text-ink/60">{t.workbook.pointsToRating}</p>
               </div>
             </div>
           </div>
@@ -143,7 +143,7 @@ export default function StoryResultModal({
           {feedback.overall && (
             <div className="rounded-2xl border border-ink/10 bg-paper/80 p-4">
               <p className="text-xs uppercase tracking-[0.3em] text-ink/40">
-                Зворотній зв&apos;язок
+                {t.workbook.feedbackLabel}
               </p>
               <p className="mt-3 text-sm leading-relaxed text-ink/80">
                 {feedback.overall}
@@ -155,7 +155,7 @@ export default function StoryResultModal({
           {feedback.suggestions && feedback.suggestions.length > 0 && (
             <div className="rounded-2xl border border-moss/20 bg-moss/5 p-4">
               <p className="text-xs uppercase tracking-[0.3em] text-moss/60">
-                Рекомендації для покращення
+                {t.workbook.improvementTips}
               </p>
               <ul className="mt-3 space-y-2">
                 {feedback.suggestions.map((suggestion, idx) => (
@@ -172,14 +172,14 @@ export default function StoryResultModal({
             <div className="rounded-2xl border border-ink/10 bg-paper/80 p-4">
               <div className="flex items-center justify-between">
                 <p className="text-xs uppercase tracking-[0.3em] text-ink/40">
-                  Рекомендовані слова
+                  {t.workbook.recommendedWords}
                 </p>
                 <button
                   onClick={addAllWords}
                   disabled={feedback.vocabulary.every(v => addedWords.has(v.pl))}
                   className="text-xs font-semibold text-moss hover:underline disabled:opacity-50"
                 >
-                  + Додати всі
+                  {t.workbook.addAll}
                 </button>
               </div>
               <div className="mt-3 flex flex-wrap gap-2">
@@ -221,13 +221,13 @@ export default function StoryResultModal({
             className="flex flex-1 items-center justify-center gap-2 rounded-full border border-ink/20 bg-paper px-6 py-3 text-sm font-semibold text-ink transition hover:bg-ink/5"
           >
             <ArrowsClockwise size={18} weight="bold" />
-            Написати нову
+            {t.workbook.writeNew}
           </button>
           <button
             onClick={onClose}
             className="flex flex-1 items-center justify-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-semibold text-paper transition hover:bg-ink/90"
           >
-            Дякую 👍
+            {t.workbook.thankYou}
           </button>
         </div>
       </div>

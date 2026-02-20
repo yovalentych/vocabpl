@@ -62,24 +62,24 @@ export default function DescribeResultModal({
   // Determine feedback color and emoji
   let feedbackColor = "text-moss";
   let feedbackEmoji = "🎉";
-  let feedbackTitle = "Чудова робота!";
+  let feedbackTitle: string = t.workbook.excellentWork;
 
   if (scorePercentage >= 80) {
     feedbackColor = "text-moss";
     feedbackEmoji = "🎉";
-    feedbackTitle = "Чудова робота!";
+    feedbackTitle = t.workbook.excellentWork;
   } else if (scorePercentage >= 60) {
     feedbackColor = "text-gold";
     feedbackEmoji = "👍";
-    feedbackTitle = "Добре!";
+    feedbackTitle = t.workbook.goodWork;
   } else if (scorePercentage >= 40) {
     feedbackColor = "text-orange-500";
     feedbackEmoji = "💪";
-    feedbackTitle = "Продовжуйте!";
+    feedbackTitle = t.workbook.keepGoing;
   } else {
     feedbackColor = "text-terracotta";
     feedbackEmoji = "📚";
-    feedbackTitle = "Потренуйтеся ще";
+    feedbackTitle = t.workbook.practiceMore;
   }
 
   return (
@@ -96,7 +96,7 @@ export default function DescribeResultModal({
             </div>
             <div>
               <h2 className="text-xl font-semibold text-ink">{feedbackTitle}</h2>
-              <p className="text-sm text-ink/60">Результати перевірки</p>
+              <p className="text-sm text-ink/60">{t.workbook.resultsTitle}</p>
             </div>
           </div>
           <button
@@ -115,7 +115,7 @@ export default function DescribeResultModal({
               <div className="flex items-center gap-4">
                 <div className="text-6xl">{feedbackEmoji}</div>
                 <div>
-                  <p className="text-sm uppercase tracking-wider text-ink/60">Оцінка</p>
+                  <p className="text-sm uppercase tracking-wider text-ink/60">{t.workbook.scoreLabel}</p>
                   <p className={`text-5xl font-bold ${feedbackColor}`}>{band}</p>
                   <p className="mt-1 text-sm text-ink/60">{scorePercentage.toFixed(0)}%</p>
                 </div>
@@ -127,7 +127,7 @@ export default function DescribeResultModal({
                   <Trophy size={20} weight="fill" className="text-gold" />
                   <span className="text-xl font-bold text-gold">+{points}</span>
                 </div>
-                <p className="mt-2 text-xs text-ink/60">балів до рейтингу</p>
+                <p className="mt-2 text-xs text-ink/60">{t.workbook.pointsToRating}</p>
               </div>
             </div>
           </div>
@@ -136,7 +136,7 @@ export default function DescribeResultModal({
           {result.feedbackUk && (
             <div className="rounded-2xl border border-ink/10 bg-paper/80 p-4">
               <p className="text-xs uppercase tracking-[0.3em] text-ink/40">
-                Зворотній зв&apos;язок
+                {t.workbook.feedbackLabel}
               </p>
               <p className="mt-3 text-sm leading-relaxed text-ink/80">
                 {result.feedbackUk}
@@ -148,7 +148,7 @@ export default function DescribeResultModal({
           {result.improvedPl && (
             <div className="rounded-2xl border border-moss/20 bg-moss/5 p-4">
               <p className="text-xs uppercase tracking-[0.3em] text-moss/60">
-                Краща версія (Польською)
+                {t.workbook.betterVersion}
               </p>
               <p className="mt-3 text-sm leading-relaxed text-ink">
                 {result.improvedPl}
@@ -160,7 +160,7 @@ export default function DescribeResultModal({
           {result.translationUk && (
             <div className="rounded-2xl border border-ink/10 bg-paper/80 p-4">
               <p className="text-xs uppercase tracking-[0.3em] text-ink/40">
-                Переклад (Українською)
+                {t.workbook.translationUk}
               </p>
               <p className="mt-3 text-sm leading-relaxed text-ink/80">
                 {result.translationUk}
@@ -173,14 +173,14 @@ export default function DescribeResultModal({
             <div className="rounded-2xl border border-ink/10 bg-paper/80 p-4">
               <div className="flex items-center justify-between">
                 <p className="text-xs uppercase tracking-[0.3em] text-ink/40">
-                  Рекомендовані слова
+                  {t.workbook.recommendedWords}
                 </p>
                 <button
                   onClick={addAllWords}
                   disabled={result.suggestedVocab.every(v => addedWords.has(v.lemma))}
                   className="text-xs font-semibold text-moss hover:underline disabled:opacity-50"
                 >
-                  + Додати всі
+                  {t.workbook.addAll}
                 </button>
               </div>
               <div className="mt-3 flex flex-wrap gap-2">
@@ -222,13 +222,13 @@ export default function DescribeResultModal({
             className="flex flex-1 items-center justify-center gap-2 rounded-full border border-ink/20 bg-paper px-6 py-3 text-sm font-semibold text-ink transition hover:bg-ink/5"
           >
             <ArrowsClockwise size={18} weight="bold" />
-            Спробувати ще раз
+            {t.workbook.tryAgain}
           </button>
           <button
             onClick={onClose}
             className="flex flex-1 items-center justify-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-semibold text-paper transition hover:bg-ink/90"
           >
-            Дякую 👍
+            {t.workbook.thankYou}
           </button>
         </div>
       </div>

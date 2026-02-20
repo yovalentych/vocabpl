@@ -107,12 +107,12 @@ export default async function HomePage() {
           </div>
 
           <h1 className="mx-auto max-w-4xl text-4xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.15] sm:leading-tight px-2">
-            {user ? `Привіт, ${user.name || user.username || "друже"}!` : t.home.aiTitle}
+            {user ? t.home.greeting.replace("{name}", user.name || user.username || t.home.friend) : t.home.aiTitle}
           </h1>
 
           <p className="mx-auto max-w-2xl text-lg sm:text-lg leading-relaxed text-ink/70 px-4 sm:px-0">
             {user
-              ? "Повертаємось до навчання: твій прогрес збережено, а AI вправи готові."
+              ? t.home.welcomeBackUser
               : t.home.aiSubtitle}
           </p>
 
@@ -124,19 +124,19 @@ export default async function HomePage() {
                   className="inline-flex items-center justify-center gap-2.5 rounded-full bg-ink px-10 py-4 sm:px-8 sm:py-3 text-base sm:text-sm font-bold sm:font-semibold text-paper shadow-soft transition active:scale-95 hover:bg-ink/90"
                 >
                   <Lightning size={20} weight="fill" className="sm:w-[18px] sm:h-[18px]" />
-                  Продовжити навчання
+                  {t.home.continueStudy}
                 </Link>
                 <Link
                   href="/cabinet"
                   className="inline-flex items-center justify-center rounded-full border-2 border-ink/20 px-10 py-4 sm:px-8 sm:py-3 text-base sm:text-sm font-bold sm:font-semibold text-ink transition active:scale-95 hover:bg-ink/5"
                 >
-                  Мій кабінет
+                  {t.home.myCabinet}
                 </Link>
                 <Link
                   href="/class/workbook"
                   className="inline-flex items-center justify-center rounded-full border-2 border-ink/10 px-10 py-4 sm:px-8 sm:py-3 text-base sm:text-sm font-semibold text-ink/70 transition active:scale-95 hover:bg-ink/5"
                 >
-                  Вправи та зошит
+                  {t.home.exercisesWorkbook}
                 </Link>
               </>
             ) : (
@@ -161,10 +161,10 @@ export default async function HomePage() {
           {user && (
             <div className="mx-auto mt-6 grid w-full max-w-3xl gap-4 sm:grid-cols-4">
               {[
-                { label: "Слова", value: user.stats.wordsStudied },
-                { label: "Сесії", value: user.stats.sessions },
-                { label: "Тести", value: user.stats.testsTaken },
-                { label: "Балів", value: user.stats.points }
+                { label: t.home.statsWords, value: user.stats.wordsStudied },
+                { label: t.home.statsSessions, value: user.stats.sessions },
+                { label: t.home.statsTests, value: user.stats.testsTaken },
+                { label: t.home.statsPoints, value: user.stats.points }
               ].map((item) => (
                 <div
                   key={item.label}
@@ -420,7 +420,7 @@ export default async function HomePage() {
               <div>
                 <h3 className="text-xl sm:text-lg font-bold sm:font-semibold text-moss leading-snug">{t.home.aiPersonalized}</h3>
                 <p className="mt-2 sm:mt-1 text-base sm:text-sm text-ink/70 leading-relaxed">
-                  AI аналізує твій рівень і пропонує вправи, які підходять саме тобі
+                  {t.home.aiPersonalizedText}
                 </p>
               </div>
             </div>
@@ -434,7 +434,7 @@ export default async function HomePage() {
               <div>
                 <h3 className="text-xl sm:text-lg font-bold sm:font-semibold text-terracotta leading-snug">{t.home.aiRealtime}</h3>
                 <p className="mt-2 sm:mt-1 text-base sm:text-sm text-ink/70 leading-relaxed">
-                  Миттєва перевірка відповідей та детальний feedback від AI
+                  {t.home.aiRealtimeText}
                 </p>
               </div>
             </div>
@@ -448,7 +448,7 @@ export default async function HomePage() {
               <div>
                 <h3 className="text-xl sm:text-lg font-bold sm:font-semibold text-ink leading-snug">{t.home.aiChecking}</h3>
                 <p className="mt-2 sm:mt-1 text-base sm:text-sm text-ink/70 leading-relaxed">
-                  AI перевіряє граматику, вокабуляр та стиль твоїх відповідей
+                  {t.home.aiCheckingText}
                 </p>
               </div>
             </div>
@@ -459,7 +459,7 @@ export default async function HomePage() {
       {/* Traditional Features */}
       <section className="mt-20 sm:mt-24">
         <div className="mb-10 sm:mb-8 text-center px-4">
-          <h2 className="text-3xl sm:text-3xl font-bold">Додаткові можливості</h2>
+          <h2 className="text-3xl sm:text-3xl font-bold">{t.home.extraFeatures}</h2>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -517,8 +517,8 @@ export default async function HomePage() {
       {/* Final CTA */}
       <section className="mt-20 sm:mt-24 rounded-3xl sm:rounded-[32px] border border-ink/10 bg-gradient-to-br from-moss/5 to-terracotta/5 p-10 sm:p-10 md:p-12 text-center shadow-soft">
         <Sparkle size={48} weight="fill" className="mx-auto text-gold sm:w-12 sm:h-12" />
-        <h2 className="mt-6 sm:mt-4 text-3xl sm:text-3xl font-bold leading-tight">Готовий почати?</h2>
-        <p className="mt-3 sm:mt-2 text-base sm:text-base text-ink/70 leading-relaxed px-4">Приєднуйся до тисяч студентів, які вже вчаться з AI</p>
+        <h2 className="mt-6 sm:mt-4 text-3xl sm:text-3xl font-bold leading-tight">{t.home.readyToStart}</h2>
+        <p className="mt-3 sm:mt-2 text-base sm:text-base text-ink/70 leading-relaxed px-4">{t.home.joinStudents}</p>
         <Link
           href="/register"
           className="mt-8 sm:mt-6 inline-flex items-center justify-center gap-2.5 rounded-full bg-ink px-10 py-4 sm:px-8 sm:py-3 text-base sm:text-sm font-bold sm:font-semibold text-paper shadow-soft transition active:scale-95 hover:bg-ink/90 w-full sm:w-auto max-w-xs mx-auto"

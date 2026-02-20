@@ -66,7 +66,7 @@ export default function StoryPractice({ level = "A2", topic, onComplete }: Story
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        setError(data?.error || "Помилка перевірки");
+        setError(data?.error || t.workbook.errorTitle);
         setChecking(false);
         return;
       }
@@ -109,7 +109,7 @@ export default function StoryPractice({ level = "A2", topic, onComplete }: Story
         setShowResultModal(true);
       }
     } catch (err) {
-      setError("Помилка перевірки");
+      setError(t.workbook.errorTitle);
     } finally {
       setChecking(false);
     }
@@ -138,10 +138,10 @@ export default function StoryPractice({ level = "A2", topic, onComplete }: Story
           <Book size={24} weight="fill" className="text-ink/40" />
           <div>
             <h2 className="text-xl font-semibold">
-              {t.workbook.storyWriteTitle || "Мікроісторія"}
+              {t.workbook.microStory}
             </h2>
             <p className="text-sm text-ink/60">
-              Рівень {level}{topic ? ` · ${topic}` : " · Напишіть коротку історію польською"}
+              {t.workbook.levelLabel} {level}{topic ? ` · ${topic}` : ` · ${t.workbook.writeShortStory}`}
             </p>
           </div>
         </div>
@@ -150,8 +150,7 @@ export default function StoryPractice({ level = "A2", topic, onComplete }: Story
       {/* Instructions */}
       <div className="rounded-3xl border border-gold/20 bg-gold/5 p-4">
         <p className="text-sm text-ink/70">
-          💡 <strong>Підказка:</strong> Напишіть коротку історію (мінімум 50 слів) польською мовою.
-          AI перевірить граматику, лексику та стиль написання.
+          💡 <strong>{t.workbook.hintWrite}</strong> {t.workbook.hintWriteStory}
         </p>
       </div>
 
@@ -159,13 +158,13 @@ export default function StoryPractice({ level = "A2", topic, onComplete }: Story
       <div className="rounded-3xl border border-ink/10 bg-paper/80 p-4 shadow-soft">
         <label className="block text-sm text-ink/70">
           <span className="text-xs uppercase tracking-[0.2em] text-ink/40">
-            Назва історії *
+            {t.workbook.storyTitleLabel}
           </span>
           <input
             type="text"
             value={storyTitle}
             onChange={(e) => setStoryTitle(e.target.value)}
-            placeholder="Наприклад: Wakacje nad morzem"
+            placeholder={t.workbook.storyTitlePlaceholder}
             className="mt-2 w-full rounded-2xl border border-ink/20 bg-paper px-4 py-3 text-sm focus:border-moss/40 focus:outline-none"
             disabled={checking}
           />
@@ -176,16 +175,16 @@ export default function StoryPractice({ level = "A2", topic, onComplete }: Story
       <div className="rounded-3xl border border-ink/10 bg-paper/80 p-4 shadow-soft">
         <div className="flex items-center justify-between">
           <label className="text-xs uppercase tracking-[0.2em] text-ink/40">
-            Текст історії *
+            {t.workbook.storyTextLabel}
           </label>
           <span className="text-xs text-ink/40">
-            {wordCount} слів {wordCount < 50 && `(мінімум 50)`}
+            {wordCount} {t.workbook.words} {wordCount < 50 && `(${t.workbook.storyMinChars})`}
           </span>
         </div>
         <textarea
           value={storyText}
           onChange={(e) => setStoryText(e.target.value)}
-          placeholder="Napisz swoją krótką historię..."
+          placeholder={t.workbook.storyTextPlaceholder}
           className="mt-2 min-h-[300px] w-full rounded-2xl border border-ink/20 bg-paper px-4 py-3 text-sm leading-relaxed focus:border-moss/40 focus:outline-none resize-none"
           disabled={checking}
         />
@@ -202,12 +201,12 @@ export default function StoryPractice({ level = "A2", topic, onComplete }: Story
             {checking ? (
               <>
                 <Loader label="" size="sm" />
-                {t.workbook.aiChecking || "AI перевіряє..."}
+                {t.workbook.aiCheckingStory}
               </>
             ) : (
               <>
                 <Sparkle size={16} weight="fill" />
-                {t.workbook.storyCheck || "Перевірити"}
+                {t.workbook.checkButton}
               </>
             )}
           </button>

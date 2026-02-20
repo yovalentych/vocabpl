@@ -67,10 +67,10 @@ export default function DialogueAIPractice({ config, onComplete }: DialogueAIPra
           const errorCode = data?.code;
           const message =
             errorCode === "ai_quota"
-              ? "Ліміт AI кредитів вичерпано"
+              ? t.workbook.aiQuotaExceededShort
               : errorCode === "pvs_unavailable"
-                ? "Потрібен AI план"
-                : data?.error || "Помилка AI";
+                ? t.workbook.aiPlanRequiredShort
+                : data?.error || t.workbook.aiErrorShort;
           if (!cancelled) setError(message);
           if (!cancelled) setIsGenerating(false);
           return;
@@ -80,12 +80,12 @@ export default function DialogueAIPractice({ config, onComplete }: DialogueAIPra
         if (!cancelled && result?.firstTurn) {
           setTurns([{ speaker: "ai", text: result.firstTurn }]);
         } else if (!cancelled) {
-          setError("AI не змогла створити діалог. Спробуйте іншу ситуацію.");
+          setError(t.workbook.aiCouldNotCreate);
         }
       } catch (error) {
         if (!cancelled) {
           console.error("Failed to generate dialogue:", error);
-          setError("Помилка мережі");
+          setError(t.workbook.networkError);
         }
       } finally {
         if (!cancelled) setIsGenerating(false);
@@ -133,10 +133,10 @@ export default function DialogueAIPractice({ config, onComplete }: DialogueAIPra
         const errorCode = data?.code;
         const message =
           errorCode === "ai_quota"
-            ? "Ліміт AI кредитів вичерпано"
+            ? t.workbook.aiQuotaExceededShort
             : errorCode === "pvs_unavailable"
-              ? "Потрібен AI план"
-              : data?.error || "Помилка AI";
+              ? t.workbook.aiPlanRequiredShort
+              : data?.error || t.workbook.aiErrorShort;
         setError(message);
         setIsWaitingForAI(false);
         return;
@@ -147,11 +147,11 @@ export default function DialogueAIPractice({ config, onComplete }: DialogueAIPra
       if (result?.nextTurn && result.nextTurn.trim()) {
         setTurns(prev => [...prev, { speaker: "ai", text: result.nextTurn }]);
       } else {
-        setError("AI не надав відповіді. Спробуйте ще раз.");
+        setError(t.workbook.aiNoResponse);
       }
     } catch (error) {
       console.error("Failed to get AI response:", error);
-      setError("Помилка мережі");
+      setError(t.workbook.networkError);
     } finally {
       setIsWaitingForAI(false);
     }
@@ -182,10 +182,10 @@ export default function DialogueAIPractice({ config, onComplete }: DialogueAIPra
         const errorCode = data?.code;
         const message =
           errorCode === "ai_quota"
-            ? "Ліміт AI кредитів вичерпано"
+            ? t.workbook.aiQuotaExceededShort
             : errorCode === "pvs_unavailable"
-              ? "Потрібен AI план"
-              : data?.error || "Помилка AI";
+              ? t.workbook.aiPlanRequiredShort
+              : data?.error || t.workbook.aiErrorShort;
         setError(message);
         setIsChecking(false);
         return;
@@ -193,7 +193,7 @@ export default function DialogueAIPractice({ config, onComplete }: DialogueAIPra
 
       const result = safeParseAIResponse(data?.text);
       if (!result) {
-        setError("AI повернула неправильний формат відповіді. Спробуйте ще раз.");
+        setError(t.workbook.aiBadFormat);
         setIsChecking(false);
         return;
       }
@@ -220,7 +220,7 @@ export default function DialogueAIPractice({ config, onComplete }: DialogueAIPra
       setShowResults(true);
     } catch (error) {
       console.error("Failed to check dialogue:", error);
-      setError("Помилка мережі");
+      setError(t.workbook.networkError);
     } finally {
       setIsChecking(false);
     }
@@ -233,9 +233,9 @@ export default function DialogueAIPractice({ config, onComplete }: DialogueAIPra
           <Sparkle size={24} weight="fill" className="text-moss animate-pulse" />
           <div className="h-8 w-8 animate-spin rounded-full border-2 border-moss/20 border-t-moss" />
         </div>
-        <p className="text-sm font-semibold text-ink mb-2">AI створює діалог...</p>
+        <p className="text-sm font-semibold text-ink mb-2">{t.workbook.aiCreatingDialogue}</p>
         <p className="text-xs text-ink/60">
-          Ситуація: <span className="font-medium">{config.situation}</span> · Рівень: <span className="font-medium">{config.level}</span>
+          {t.workbook.situationLabel} <span className="font-medium">{config.situation}</span> · {t.workbook.levelLabel} <span className="font-medium">{config.level}</span>
         </p>
       </div>
     );
@@ -244,13 +244,13 @@ export default function DialogueAIPractice({ config, onComplete }: DialogueAIPra
   if (error && turns.length === 0) {
     return (
       <div className="rounded-3xl border border-terracotta/20 bg-terracotta/5 p-8 shadow-soft text-center">
-        <p className="text-sm font-semibold text-terracotta mb-2">Помилка</p>
+        <p className="text-sm font-semibold text-terracotta mb-2">{t.workbook.errorTitle}</p>
         <p className="text-sm text-ink/70">{error}</p>
         <button
           onClick={onComplete}
           className="mt-4 inline-flex items-center gap-2 rounded-full border border-ink/20 px-4 py-2 text-xs font-semibold text-ink transition hover:bg-ink/5"
         >
-          Спробувати знову
+          {t.workbook.tryAgainButton}
         </button>
       </div>
     );
@@ -265,13 +265,13 @@ export default function DialogueAIPractice({ config, onComplete }: DialogueAIPra
         {/* Compact header */}
         <div className="flex items-center gap-2 px-4 py-3 border-b border-ink/10 flex-shrink-0">
           <Sparkle size={16} weight="fill" className="text-moss" />
-          <span className="text-xs font-semibold text-moss/70 uppercase tracking-wider">AI режим</span>
+          <span className="text-xs font-semibold text-moss/70 uppercase tracking-wider">{t.workbook.aiDialogueMode}</span>
           <span className="text-xs text-ink/40">·</span>
           <span className="text-sm text-ink truncate">{config.situation}</span>
           <span className="text-xs text-ink/40">·</span>
           <span className="text-xs text-ink/50">{config.level}</span>
           <span className="text-xs text-ink/40">·</span>
-          <span className="text-xs text-ink/50">{userTurnCount} обмінів</span>
+          <span className="text-xs text-ink/50">{userTurnCount} {t.workbook.exchanges}</span>
         </div>
 
         {/* Scrollable messages area */}
@@ -284,7 +284,7 @@ export default function DialogueAIPractice({ config, onComplete }: DialogueAIPra
                     <Sparkle size={20} weight="fill" className="text-moss" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-xs font-semibold text-moss mb-1">AI співрозмовник</p>
+                    <p className="text-xs font-semibold text-moss mb-1">{t.workbook.aiPartner}</p>
                     <div className="rounded-2xl border border-moss/20 bg-moss/5 px-4 py-3">
                       <p className="text-sm text-ink">{turn.text}</p>
                     </div>
@@ -293,7 +293,7 @@ export default function DialogueAIPractice({ config, onComplete }: DialogueAIPra
               ) : (
                 <div className="flex gap-3 justify-end">
                   <div className="flex-1 max-w-[80%]">
-                    <p className="text-xs font-semibold text-gold mb-1 text-right">Ви</p>
+                    <p className="text-xs font-semibold text-gold mb-1 text-right">{t.workbook.youLabel}</p>
                     <div className="rounded-2xl border border-gold/20 bg-gold/5 px-4 py-3">
                       <p className="text-sm text-ink">{turn.text}</p>
                     </div>
@@ -313,7 +313,7 @@ export default function DialogueAIPractice({ config, onComplete }: DialogueAIPra
                 <Sparkle size={20} weight="fill" className="text-moss animate-pulse" />
               </div>
               <div className="flex-1">
-                <p className="text-xs font-semibold text-moss mb-1">AI співрозмовник</p>
+                <p className="text-xs font-semibold text-moss mb-1">{t.workbook.aiPartner}</p>
                 <div className="rounded-2xl border border-moss/20 bg-moss/5 px-4 py-3">
                   <div className="flex gap-1">
                     <span className="h-2 w-2 rounded-full bg-moss/40 animate-bounce" style={{ animationDelay: "0ms" }} />
@@ -344,7 +344,7 @@ export default function DialogueAIPractice({ config, onComplete }: DialogueAIPra
                 {userTurnCount > 0 && (
                   <button
                     onClick={() => setIsComplete(true)}
-                    title="Завершити діалог"
+                    title={t.workbook.finishDialogue}
                     className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-ink/20 text-ink/60 transition hover:bg-ink/5 hover:text-ink"
                   >
                     <CheckCircle size={20} weight="bold" />
@@ -359,7 +359,7 @@ export default function DialogueAIPractice({ config, onComplete }: DialogueAIPra
                       handleSendResponse();
                     }
                   }}
-                  placeholder="Напишіть вашу відповідь польською..."
+                  placeholder={t.workbook.writeResponsePlaceholder}
                   rows={2}
                   maxLength={500}
                   disabled={isWaitingForAI}
@@ -374,7 +374,7 @@ export default function DialogueAIPractice({ config, onComplete }: DialogueAIPra
                 </button>
               </div>
               <p className="mt-1 text-xs text-ink/40">
-                Enter — відправити · Shift+Enter — новий рядок
+                {t.workbook.enterToSend}
               </p>
             </>
           ) : (
@@ -387,12 +387,12 @@ export default function DialogueAIPractice({ config, onComplete }: DialogueAIPra
                 {isChecking ? (
                   <>
                     <span className="h-4 w-4 animate-spin rounded-full border-2 border-paper/20 border-t-paper" />
-                    <span>Перевірка AI...</span>
+                    <span>{t.workbook.aiCheckingDialogue}</span>
                   </>
                 ) : (
                   <>
                     <Sparkle size={18} weight="fill" />
-                    <span>Отримати фідбек</span>
+                    <span>{t.workbook.getFeedback}</span>
                   </>
                 )}
               </button>

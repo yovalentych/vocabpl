@@ -39,33 +39,33 @@ export default function DialogueAIConfig({ onStart }: DialogueAIConfigProps) {
       {/* Header */}
       <div className="rounded-3xl border border-moss/20 bg-moss/5 p-6 shadow-soft">
         <p className="text-xs uppercase tracking-[0.3em] text-moss/70 mb-2">
-          Крок 1: Налаштування AI
+          {t.workbook.step1SetupAI}
         </p>
         <h2 className="text-2xl font-semibold text-ink">
-          Режим з AI
+          {t.workbook.dialogueAITitle}
         </h2>
         <p className="mt-2 text-sm text-ink/60">
-          AI створить унікальний діалог на вашу ситуацію та рівень
+          {t.workbook.dialogueAIHint}
         </p>
       </div>
 
       {/* Situation input */}
       <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
         <p className="text-xs uppercase tracking-[0.3em] text-ink/40 mb-4">
-          Тема для вправи
+          {t.workbook.describeConfigTopicLabel}
         </p>
 
         <input
           type="text"
           value={situation}
           onChange={(e) => setSituation(e.target.value)}
-          placeholder="Наприклад: Розмова з лікарем, замовлення піци по телефону..."
+          placeholder={t.workbook.dialogueAIPlaceholder}
           className="w-full rounded-2xl border border-ink/20 bg-paper px-4 py-3 text-sm text-ink placeholder:text-ink/40 focus:border-moss/40 focus:outline-none focus:ring-0"
         />
 
         {/* Suggestions */}
         <div className="mt-4">
-          <p className="text-xs text-ink/50 mb-2">Швидкий вибір:</p>
+          <p className="text-xs text-ink/50 mb-2">{t.workbook.quickSelect}</p>
           <div className="flex flex-wrap gap-2">
             {situationSuggestions.map((suggestion) => (
               <button
@@ -82,7 +82,7 @@ export default function DialogueAIConfig({ onStart }: DialogueAIConfigProps) {
       {/* Level selection */}
       <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
         <p className="text-xs uppercase tracking-[0.3em] text-ink/40 mb-4">
-          Рівень складності
+          {t.workbook.difficultyLevel}
         </p>
 
         <div className="grid grid-cols-4 gap-3">
@@ -98,10 +98,10 @@ export default function DialogueAIConfig({ onStart }: DialogueAIConfigProps) {
             >
               <div className="text-xl font-bold">{lvl}</div>
               <div className="mt-1 text-[10px] opacity-80">
-                {lvl === "A1" && "Початківець"}
-                {lvl === "A2" && "Базовий"}
-                {lvl === "B1" && "Середній"}
-                {lvl === "B2" && "Просунутий"}
+                {lvl === "A1" && t.workbook.levelBeginner}
+                {lvl === "A2" && t.workbook.levelBasic}
+                {lvl === "B1" && t.workbook.levelIntermediate}
+                {lvl === "B2" && t.workbook.levelAdvanced}
               </div>
             </button>
           ))}
@@ -113,14 +113,12 @@ export default function DialogueAIConfig({ onStart }: DialogueAIConfigProps) {
         <div className="flex items-start gap-3">
           <Sparkle size={20} weight="fill" className="text-moss flex-shrink-0 mt-0.5" />
           <div>
-            <p className="text-xs font-semibold text-moss mb-1">Як це працює</p>
+            <p className="text-xs font-semibold text-moss mb-1">{t.workbook.howItWorks}</p>
             <p className="text-xs text-ink/70">
-              AI створить діалог на вашу тему. Ви будете вести розмову, відповідаючи
-              на репліки AI. Після завершення отримаєте детальний фідбек про природність
-              та граматичну правильність ваших відповідей.
+              {t.workbook.dialogueAIInfo}
             </p>
             <p className="mt-2 text-xs text-moss/70">
-              Вартість: 2 кредити за генерацію + 2 кредити за перевірку
+              {t.workbook.dialogueAICredit}
             </p>
           </div>
         </div>
@@ -134,14 +132,14 @@ export default function DialogueAIConfig({ onStart }: DialogueAIConfigProps) {
           className="inline-flex items-center gap-2 rounded-full bg-moss px-8 py-3 text-sm font-semibold text-paper transition hover:bg-moss/90 disabled:cursor-not-allowed disabled:opacity-40"
         >
           <Sparkle size={18} weight="fill" />
-          <span>Створити діалог</span>
+          <span>{t.workbook.dialogueAIStart}</span>
           <span>→</span>
         </button>
       </div>
 
       {!situation.trim() && (
         <p className="text-center text-xs text-terracotta">
-          Опишіть ситуацію для діалогу
+          {t.workbook.dialogueAIInputHint}
         </p>
       )}
     </div>

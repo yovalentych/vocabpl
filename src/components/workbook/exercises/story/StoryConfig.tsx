@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { Sparkle } from "@phosphor-icons/react";
 
@@ -30,20 +29,20 @@ export default function StoryConfig({ level, onLevelChange, topic, onTopicChange
       {/* Topic input */}
       <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
         <p className="text-xs uppercase tracking-[0.3em] text-ink/40 mb-4">
-          Тема для вправи
+          {t.workbook.describeConfigTopicLabel}
         </p>
 
         <input
           type="text"
           value={topic}
           onChange={(e) => onTopicChange(e.target.value)}
-          placeholder="Наприклад: Пригоди в Польщі, Перший день на роботі..."
+          placeholder={t.workbook.storyConfigPlaceholder}
           className="w-full rounded-2xl border border-ink/20 bg-paper px-4 py-3 text-sm text-ink placeholder:text-ink/40 focus:border-moss/40 focus:outline-none focus:ring-0"
         />
 
         {/* Suggestions */}
         <div className="mt-4">
-          <p className="text-xs text-ink/50 mb-2">Швидкий вибір:</p>
+          <p className="text-xs text-ink/50 mb-2">{t.workbook.quickSelect}</p>
           <div className="flex flex-wrap gap-2">
             {topicSuggestions.map((suggestion) => (
               <button
@@ -61,7 +60,7 @@ export default function StoryConfig({ level, onLevelChange, topic, onTopicChange
       {/* Level Selection */}
       <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
         <p className="text-xs uppercase tracking-[0.3em] text-ink/40 mb-4">
-          Рівень складності
+          {t.workbook.difficultyLevel}
         </p>
 
         <div className="grid grid-cols-4 gap-3">
@@ -78,10 +77,10 @@ export default function StoryConfig({ level, onLevelChange, topic, onTopicChange
             >
               <div className="text-xl font-bold">{lvl}</div>
               <div className="mt-1 text-[10px] opacity-80">
-                {lvl === "A1" && "Початківець"}
-                {lvl === "A2" && "Базовий"}
-                {lvl === "B1" && "Середній"}
-                {lvl === "B2" && "Просунутий"}
+                {lvl === "A1" && t.workbook.levelBeginner}
+                {lvl === "A2" && t.workbook.levelBasic}
+                {lvl === "B1" && t.workbook.levelIntermediate}
+                {lvl === "B2" && t.workbook.levelAdvanced}
               </div>
             </button>
           ))}
@@ -93,10 +92,9 @@ export default function StoryConfig({ level, onLevelChange, topic, onTopicChange
         <div className="flex items-start gap-3">
           <Sparkle size={20} weight="fill" className="text-moss flex-shrink-0 mt-0.5" />
           <div>
-            <p className="text-xs font-semibold text-moss mb-1">Як це працює</p>
+            <p className="text-xs font-semibold text-moss mb-1">{t.workbook.howItWorks}</p>
             <p className="text-xs text-ink/70">
-              Напишіть коротку історію (мінімум 50 слів) польською мовою на обрану тему.
-              AI перевірить граматику, лексику та стиль написання.
+              {t.workbook.storyConfigInfo}
             </p>
           </div>
         </div>

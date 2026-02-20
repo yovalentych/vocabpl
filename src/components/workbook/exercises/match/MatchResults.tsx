@@ -2,6 +2,7 @@
 "use client";
 
 import { Circle, X, Trophy, Sparkle, CheckCircle } from "@phosphor-icons/react";
+import { useLocale } from "@/components/LocaleProvider";
 import VocabSuggestions from "../../shared/VocabSuggestions";
 
 const VERDICT_STYLES = {
@@ -25,6 +26,7 @@ interface MatchResultsProps {
 }
 
 export default function MatchResults({ results, onClose }: MatchResultsProps) {
+  const { t } = useLocale();
   const { mode, totalPairs, correctMatches, score, aiCheck, topic, level, pairType } = results;
   const suggested = (aiCheck?.suggestedVocab || [])
     .map((item: any) => ({
@@ -62,9 +64,9 @@ export default function MatchResults({ results, onClose }: MatchResultsProps) {
   const scorePercent = displayScore != null ? Math.round(displayScore * 100) : null;
 
   const getPairTypeLabel = (type?: string) => {
-    if (type === "translation") return "Переклад";
-    if (type === "semantic") return "Семантичні пари";
-    if (type === "definition") return "Визначення";
+    if (type === "translation") return t.workbook.matchTranslation;
+    if (type === "semantic") return t.workbook.matchSemantic;
+    if (type === "definition") return t.workbook.matchDefinition;
     return "";
   };
 
@@ -81,9 +83,9 @@ export default function MatchResults({ results, onClose }: MatchResultsProps) {
               <Trophy size={24} weight="fill" className="text-terracotta" />
             </div>
             <div>
-              <h3 className="text-xl font-semibold text-ink">Вправу завершено!</h3>
+              <h3 className="text-xl font-semibold text-ink">{t.workbook.exerciseComplete}</h3>
               <p className="mt-1 text-sm text-ink/60">
-                {mode === "classic" ? "Класичний режим" : "Режим з AI"}
+                {mode === "classic" ? t.workbook.classicMode : t.workbook.aiMode}
                 {topic && ` · ${topic}`}
               </p>
             </div>
@@ -102,17 +104,17 @@ export default function MatchResults({ results, onClose }: MatchResultsProps) {
           <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
             <div className="rounded-2xl border border-ink/10 bg-fog p-4 text-center">
               <div className="text-2xl font-bold text-terracotta">{totalPairs}</div>
-              <div className="mt-1 text-xs text-ink/60">Пар загалом</div>
+              <div className="mt-1 text-xs text-ink/60">{t.workbook.totalPairs}</div>
             </div>
             <div className="rounded-2xl border border-ink/10 bg-fog p-4 text-center">
               <div className="text-2xl font-bold text-moss">{displayCorrect || 0}</div>
-              <div className="mt-1 text-xs text-ink/60">Правильних відповідей</div>
+              <div className="mt-1 text-xs text-ink/60">{t.workbook.correctAnswers}</div>
             </div>
             <div className="rounded-2xl border border-ink/10 bg-fog p-4 text-center">
               <div className="text-2xl font-bold text-gold">
                 {scorePercent !== null ? `${scorePercent}%` : "\u2014"}
               </div>
-              <div className="mt-1 text-xs text-ink/60">Точність</div>
+              <div className="mt-1 text-xs text-ink/60">{t.workbook.accuracy}</div>
             </div>
           </div>
 
@@ -120,7 +122,7 @@ export default function MatchResults({ results, onClose }: MatchResultsProps) {
           {scorePercent !== null && scorePercent < 30 && (
             <div className="rounded-2xl border border-gold/20 bg-gold/5 p-4 text-center">
               <p className="text-sm text-ink/70">
-                Не зупиняйтесь! Навіть перші спроби цінні для навчання. Спробуйте ще раз!
+                {t.workbook.encouragement}
               </p>
             </div>
           )}
@@ -134,7 +136,7 @@ export default function MatchResults({ results, onClose }: MatchResultsProps) {
                   <div className="flex items-start justify-between gap-4 mb-4">
                     <div>
                       <p className="text-xs uppercase tracking-[0.3em] text-moss/70">
-                        Загальна оцінка
+                        {t.workbook.overallScore}
                       </p>
                       <div className="mt-2 flex items-center gap-3">
                         <span className="text-3xl font-bold text-moss">
@@ -159,7 +161,7 @@ export default function MatchResults({ results, onClose }: MatchResultsProps) {
               {aiCheck.pairs && aiCheck.pairs.length > 0 && (
                 <div>
                   <p className="text-xs uppercase tracking-[0.3em] text-ink/40 mb-4">
-                    Детальний фідбек
+                    {t.workbook.detailedFeedback}
                   </p>
                   <div className="space-y-3">
                     {aiCheck.pairs.map((pair: any, idx: number) => {
@@ -202,7 +204,7 @@ export default function MatchResults({ results, onClose }: MatchResultsProps) {
                               {pair.verdict !== "correct" && pair.correctRight && (
                                 <div className="rounded-lg border border-moss/20 bg-moss/5 px-3 py-2">
                                   <p className="text-[10px] uppercase tracking-[0.2em] text-moss/70 mb-1">
-                                    Правильна відповідь
+                                    {t.workbook.correctAnswerLabel}
                                   </p>
                                   <p className="text-sm text-moss">{pair.correctRight}</p>
                                 </div>
@@ -222,7 +224,7 @@ export default function MatchResults({ results, onClose }: MatchResultsProps) {
                   suggestions={suggested}
                   onAdd={addSuggestedWord}
                   onAddAll={addAllSuggested}
-                  title="Рекомендовані слова для вивчення"
+                  title={t.workbook.recommendedWords}
                 />
               )}
             </div>
@@ -234,7 +236,7 @@ export default function MatchResults({ results, onClose }: MatchResultsProps) {
               <div className="flex items-start gap-3">
                 <CheckCircle size={20} weight="fill" className="text-terracotta flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-xs font-semibold text-terracotta mb-1">Чудова робота!</p>
+                  <p className="text-xs font-semibold text-terracotta mb-1">{t.workbook.excellentWork}</p>
                   <p className="text-xs text-ink/70">
                     Ви з&apos;єднали {totalPairs} {totalPairs === 1 ? "пару" : "пар"},
                     з них {correctMatches || 0} правильно ({scorePercent !== null ? `${scorePercent}%` : "\u2014"}).
@@ -250,11 +252,11 @@ export default function MatchResults({ results, onClose }: MatchResultsProps) {
             <div className="flex items-start gap-3">
               <Sparkle size={20} weight="fill" className="text-gold flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-xs font-semibold text-ink mb-1">Порада для наступного разу</p>
+                <p className="text-xs font-semibold text-ink mb-1">{t.workbook.tipNextTime}</p>
                 <p className="text-xs text-ink/70">
                   {mode === "ai"
-                    ? "Звертайте увагу на фідбек AI. Це допоможе краще запам\u0027ятати зв\u0027язки між словами та їх значеннями."
-                    : "Спробуйте AI режим для отримання детального фідбеку та аналізу помилок!"}
+                    ? t.workbook.tipAIMatch
+                    : t.workbook.tipClassic}
                 </p>
               </div>
             </div>
@@ -267,7 +269,7 @@ export default function MatchResults({ results, onClose }: MatchResultsProps) {
             onClick={onClose}
             className="w-full rounded-full bg-terracotta px-6 py-3 text-sm font-semibold text-paper transition hover:bg-terracotta/90"
           >
-            Завершити
+            {t.workbook.finishButton}
           </button>
         </div>
       </div>

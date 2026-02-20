@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ArrowLeft } from "@phosphor-icons/react";
 import Link from "next/link";
+import { useLocale } from "@/components/LocaleProvider";
 import ClozeLanding from "./ClozeLanding";
 import ClozeClassicConfig from "./ClozeClassicConfig";
 import ClozeClassicPractice from "./ClozeClassicPractice";
@@ -12,6 +13,7 @@ import ClozeAIPractice from "./ClozeAIPractice";
 type Mode = "landing" | "classic-config" | "classic-practice" | "ai-config" | "ai-practice";
 
 export default function ClozeExercisePage() {
+  const { t } = useLocale();
   const [mode, setMode] = useState<Mode>("landing");
   const [classicConfig, setClassicConfig] = useState<any>(null);
   const [aiConfig, setAIConfig] = useState<any>(null);
@@ -49,7 +51,7 @@ export default function ClozeExercisePage() {
           className="inline-flex items-center gap-2 text-sm text-ink/60 transition hover:text-ink"
         >
           <ArrowLeft size={16} weight="bold" />
-          <span>Назад до вибору режиму</span>
+          <span>{t.workbook.backToModeSelect}</span>
         </button>
       )}
 
@@ -60,7 +62,7 @@ export default function ClozeExercisePage() {
             className="inline-flex items-center gap-2 text-sm text-ink/60 transition hover:text-ink"
           >
             <ArrowLeft size={16} weight="bold" />
-            <span>Назад до вправ</span>
+            <span>{t.workbook.backToExercises}</span>
           </Link>
           <ClozeLanding onSelectMode={handleSelectMode} />
         </>

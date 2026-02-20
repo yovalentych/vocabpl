@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ArrowLeft } from "@phosphor-icons/react";
 import Link from "next/link";
+import { useLocale } from "@/components/LocaleProvider";
 import StoryLanding from "./StoryLanding";
 import StoryConfig from "./StoryConfig";
 import StoryPractice from "./StoryPractice";
@@ -10,6 +11,7 @@ import StoryPractice from "./StoryPractice";
 type Mode = "landing" | "classic-config" | "classic-practice" | "ai-config" | "ai-practice";
 
 export default function StoryExercisePage() {
+  const { t } = useLocale();
   const [mode, setMode] = useState<Mode>("landing");
   const [level, setLevel] = useState<"A1" | "A2" | "B1" | "B2">("A2");
   const [topic, setTopic] = useState("");
@@ -46,7 +48,7 @@ export default function StoryExercisePage() {
           className="inline-flex items-center gap-2 text-sm text-ink/60 transition hover:text-ink"
         >
           <ArrowLeft size={16} weight="bold" />
-          <span>Назад до вибору режиму</span>
+          <span>{t.workbook.backToModeSelect}</span>
         </button>
       )}
 
@@ -57,7 +59,7 @@ export default function StoryExercisePage() {
             className="inline-flex items-center gap-2 text-sm text-ink/60 transition hover:text-ink"
           >
             <ArrowLeft size={16} weight="bold" />
-            <span>Назад до вправ</span>
+            <span>{t.workbook.backToExercises}</span>
           </Link>
           <StoryLanding onSelectMode={handleSelectMode} />
         </>

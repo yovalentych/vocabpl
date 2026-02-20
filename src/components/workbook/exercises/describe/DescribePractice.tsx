@@ -157,7 +157,7 @@ export default function DescribePractice({ prompt = "", level = "A1" }: Describe
             disabled={loading || !prompt.trim()}
             className="rounded-full border border-ink/20 px-4 py-2 text-xs font-semibold text-ink hover:bg-ink/5 disabled:opacity-50"
           >
-            {t.workbook.describeNewImage || "Нове фото"}
+            {t.workbook.newPhoto}
           </button>
         </div>
       </div>
@@ -185,7 +185,7 @@ export default function DescribePractice({ prompt = "", level = "A1" }: Describe
               </div>
               <div className="flex items-center justify-between">
                 <div className="text-xs text-ink/60">
-                  {t.workbook.describePhotoBy || "Фото:"}{" "}
+                  {t.workbook.photoLabel}{" "}
                   {image.authorUrl ? (
                     <a className="underline underline-offset-4" href={image.authorUrl} target="_blank" rel="noreferrer">
                       {image.author || "Unsplash"}
@@ -197,7 +197,7 @@ export default function DescribePractice({ prompt = "", level = "A1" }: Describe
                 <button
                   onClick={() => setIsFullscreen(!isFullscreen)}
                   className="rounded-full border border-ink/10 p-2 hover:bg-ink/5"
-                  title={isFullscreen ? "Зменшити" : "Збільшити"}
+                  title={isFullscreen ? t.workbook.collapseImage : t.workbook.collapseImage}
                 >
                   <ArrowsOutSimple size={16} />
                 </button>
@@ -205,7 +205,7 @@ export default function DescribePractice({ prompt = "", level = "A1" }: Describe
             </div>
           ) : (
             <div className="flex min-h-[400px] items-center justify-center">
-              <p className="text-sm text-terracotta">{error || t.workbook.describeNoImage || "Немає зображення"}</p>
+              <p className="text-sm text-terracotta">{error || t.workbook.noImage}</p>
             </div>
           )}
         </div>
@@ -219,16 +219,16 @@ export default function DescribePractice({ prompt = "", level = "A1" }: Describe
               className="flex w-full items-center gap-2 text-left"
             >
               <Lightbulb size={20} className="text-amber" />
-              <span className="text-sm font-semibold">{t.workbook.describeHints || "Підказки"}</span>
+              <span className="text-sm font-semibold">{t.workbook.hintsLabel}</span>
               <span className="ml-auto text-xs text-ink/40">{showHints ? "−" : "+"}</span>
             </button>
 
             {showHints && (
               <div className="mt-3 space-y-2 text-xs text-ink/60">
-                <p>• {t.workbook.describeHint1 || "Опишіть що бачите на фото"}</p>
-                <p>• {t.workbook.describeHint2 || "Використовуйте конкретні деталі"}</p>
-                <p>• {t.workbook.describeHint3 || "Згадайте кольори, розташування об'єктів"}</p>
-                <p>• {t.workbook.describeHint4 || "Опишіть атмосферу та настрій"}</p>
+                <p>• {t.workbook.hintDescribe}</p>
+                <p>• {t.workbook.hintDetails}</p>
+                <p>• {t.workbook.hintColors}</p>
+                <p>• {t.workbook.hintAtmosphere}</p>
               </div>
             )}
           </div>
@@ -236,7 +236,7 @@ export default function DescribePractice({ prompt = "", level = "A1" }: Describe
           {/* Quick Phrases */}
           <div className="rounded-3xl border border-ink/10 bg-paper/80 p-4 shadow-soft">
             <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-ink/60">
-              {t.workbook.describeQuickPhrases || "Швидкі фрази"}
+              {t.workbook.quickPhrases}
             </p>
             <div className="flex flex-wrap gap-2">
               {phrases.map((phrase, idx) => (
@@ -254,12 +254,12 @@ export default function DescribePractice({ prompt = "", level = "A1" }: Describe
           {/* Text Input */}
           <div className="rounded-3xl border border-ink/10 bg-paper/80 p-4 shadow-soft">
             <label className="block text-sm text-ink/70">
-              {t.workbook.describeInputLabel || "Твій опис (польською)"}
+              {t.workbook.yourDescription}
               <textarea
                 value={description}
                 onChange={(event) => setDescription(event.target.value)}
                 className="mt-2 min-h-[220px] w-full rounded-2xl border border-ink/20 bg-paper px-4 py-3 text-sm resize-none"
-                placeholder={t.workbook.describeInputPlaceholder || "Napisz opis zdjęcia po polsku..."}
+                placeholder={t.workbook.descPlaceholder}
               />
             </label>
 
@@ -270,7 +270,7 @@ export default function DescribePractice({ prompt = "", level = "A1" }: Describe
                 className="flex items-center gap-2 rounded-full bg-ink px-6 py-2 text-sm font-semibold text-paper disabled:opacity-50"
               >
                 <Sparkle size={16} weight="fill" />
-                {checking ? t.workbook.aiChecking : t.workbook.describeCheck || "Перевірити"}
+                {checking ? t.workbook.aiChecking : t.workbook.checkButton}
               </button>
               {points !== null && (
                 <span className="text-sm font-semibold text-moss">+{points} {t.workbook.points}</span>
@@ -288,7 +288,7 @@ export default function DescribePractice({ prompt = "", level = "A1" }: Describe
           suggestions={suggested}
           onAdd={async (pl, uk) => addVocabWord({ pl, uk })}
           onAddAll={addAllVocab}
-          title={t.workbook.describeSuggestedTitle || "Рекомендовані слова"}
+          title={t.workbook.recommendedWords}
         />
       )}
 
