@@ -1,8 +1,12 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import NotesModal from "@/components/NotesModal";
 import { useAuthStatus } from "@/components/useAuthStatus";
+
+const NotesModal = dynamic(() => import("@/components/NotesModal"), {
+  ssr: false
+});
 
 export default function NotesManager() {
   const [open, setOpen] = useState(false);
@@ -28,6 +32,7 @@ export default function NotesManager() {
   }, [loading, isAuthenticated, isActive]);
 
   if (loading || !isAuthenticated || !isActive) return null;
+  if (!open) return null;
 
   return <NotesModal open={open} onClose={() => setOpen(false)} />;
 }
