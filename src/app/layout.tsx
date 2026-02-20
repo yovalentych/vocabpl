@@ -27,37 +27,51 @@ function getSiteUrl() {
 
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
-  title: "Polish Vocab Studio",
-  description: "Learn Polish vocabulary with focused study decks.",
-  applicationName: "Polish Vocab Studio",
-  alternates: {
-    canonical: "/"
+  title: {
+    default: "Polish Vocab Studio — вивчення польської мови онлайн",
+    template: "%s | Polish Vocab Studio"
   },
+  description:
+    "Безкоштовний тренажер польської мови: словник, AI вправи, тести, читання. Вчи польську лексику ефективно з Polish Vocab Studio.",
+  applicationName: "Polish Vocab Studio",
+  keywords: [
+    "польська мова",
+    "вивчення польської",
+    "nauka polskiego",
+    "polski słownik",
+    "польський словник",
+    "AI вправи польська",
+    "тести з польської",
+    "Polish Vocab Studio"
+  ],
   openGraph: {
     type: "website",
-    title: "Polish Vocab Studio",
-    description: "Learn Polish vocabulary with focused study decks.",
+    title: "Polish Vocab Studio — вивчення польської мови онлайн",
+    description:
+      "Безкоштовний тренажер польської мови: словник, AI вправи, тести, читання.",
     siteName: "Polish Vocab Studio",
-    url: "/",
+    locale: "uk_UA",
     images: [
       {
         url: "/og.svg",
         width: 1200,
         height: 630,
-        alt: "Polish Vocab Studio"
+        alt: "Polish Vocab Studio — тренажер польської мови"
       }
     ]
   },
   twitter: {
-    card: "summary",
-    title: "Polish Vocab Studio",
-    description: "Learn Polish vocabulary with focused study decks.",
+    card: "summary_large_image",
+    title: "Polish Vocab Studio — вивчення польської мови онлайн",
+    description:
+      "Безкоштовний тренажер польської мови: словник, AI вправи, тести, читання.",
     images: ["/og.svg"]
   },
   icons: {
     icon: "/favicon.ico",
     apple: "/favicon-pvs-C-ai-apple-touch-icon.png"
   },
+  manifest: "/manifest.json",
   robots: {
     index: true,
     follow: true

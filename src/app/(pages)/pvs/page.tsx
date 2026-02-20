@@ -1,9 +1,15 @@
+import type { Metadata } from "next";
 import { getServerLocale } from "@/lib/i18n-server";
 import { getDb } from "@/lib/db";
 import { defaultAboutContent, AboutContent } from "@/lib/about-content";
 import { Heart, Sparkle, BookOpen, Brain, MapPin } from "@phosphor-icons/react/dist/ssr";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Про проєкт",
+  description: "Polish Vocab Studio — безкоштовний тренажер польської мови для українців. Історія, місія та команда проєкту."
+};
 
 const ACCENT_CLASSES = {
   moss: "border-moss/20 bg-moss/5 text-moss",

@@ -1,6 +1,13 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getAuthUser } from "@/lib/auth";
 import DictLanding from "@/components/dict/DictLanding";
+
+export const metadata: Metadata = {
+  title: "Словник",
+  description:
+    "Польсько-український словник з транскрипцією, прикладами та тренажером запам'ятовування слів."
+};
 
 export default async function DictPage() {
   const user = await getAuthUser();

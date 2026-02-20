@@ -1,3 +1,4 @@
+import Script from "next/script";
 import Link from "next/link";
 import type { Route } from "next";
 import {
@@ -60,6 +61,38 @@ export default async function HomePage() {
 
   return (
     <main className="mx-auto w-full max-w-6xl px-5 sm:px-6 py-12 sm:py-14 pb-24 sm:pb-14">
+      <Script
+        id="json-ld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@graph": [
+              {
+                "@type": "WebApplication",
+                "name": "Polish Vocab Studio",
+                "url": "https://vocabpl.uno",
+                "applicationCategory": "EducationalApplication",
+                "operatingSystem": "Web",
+                "offers": {
+                  "@type": "Offer",
+                  "price": "0",
+                  "priceCurrency": "USD"
+                },
+                "inLanguage": ["pl", "uk"],
+                "description":
+                  "Безкоштовний тренажер польської мови: словник, AI вправи, тести, читання."
+              },
+              {
+                "@type": "Organization",
+                "name": "Polish Vocab Studio",
+                "url": "https://vocabpl.uno",
+                "logo": "https://vocabpl.uno/favicon-pvs-C-ai-master-1024.png"
+              }
+            ]
+          })
+        }}
+      />
       {/* Hero Section */}
       <section className="relative">
         <div className="absolute -left-8 -top-8 h-32 w-32 sm:h-40 sm:w-40 rounded-full bg-gold/10 blur-3xl" />

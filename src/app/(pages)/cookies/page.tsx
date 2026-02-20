@@ -1,9 +1,15 @@
+import type { Metadata } from "next";
 import { getServerLocale } from "@/lib/i18n-server";
 import { legalContent } from "@/lib/legal-content";
 import { getDb } from "@/lib/db";
 import InfoPageLayout from "@/components/InfoPageLayout";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Cookies",
+  description: "Політика використання файлів cookie на Polish Vocab Studio."
+};
 
 export default async function CookiesPage() {
   const locale = getServerLocale();

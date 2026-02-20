@@ -1,7 +1,14 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getAuthUser } from "@/lib/auth";
 import { getDictionary } from "@/lib/i18n-server";
 import WorkbookDashboard from "@/components/workbook/WorkbookDashboard";
+
+export const metadata: Metadata = {
+  title: "Робочий зошит",
+  description:
+    "AI вправи з польської мови: речення, переклад, парафраз, діалоги, опис зображень, мікроісторії та інше."
+};
 
 export default async function WorkbookPage() {
   const user = await getAuthUser();

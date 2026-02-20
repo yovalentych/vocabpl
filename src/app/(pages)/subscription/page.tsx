@@ -1,9 +1,16 @@
+import type { Metadata } from "next";
 import { getServerLocale } from "@/lib/i18n-server";
 import { legalContent } from "@/lib/legal-content";
 import { getDb } from "@/lib/db";
 import InfoPageLayout from "@/components/InfoPageLayout";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Підписка",
+  description:
+    "Тарифні плани Polish Vocab Studio: безкоштовний доступ та PRO підписка з необмеженими AI вправами."
+};
 
 export default async function SubscriptionPage() {
   const locale = getServerLocale();

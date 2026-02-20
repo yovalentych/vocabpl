@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { getServerLocale } from "@/lib/i18n-server";
 import { getDb } from "@/lib/db";
 import { defaultContactContent } from "@/lib/contact-content";
@@ -5,6 +6,11 @@ import InfoPageLayout from "@/components/InfoPageLayout";
 import { Envelope, Phone, TelegramLogo } from "@phosphor-icons/react/dist/ssr";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Контакти",
+  description: "Зв'яжіться з командою Polish Vocab Studio — email, телефон, Telegram."
+};
 
 export default async function ContactsPage() {
   const locale = getServerLocale();

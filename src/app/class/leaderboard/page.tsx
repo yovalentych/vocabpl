@@ -1,7 +1,13 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getAuthUser } from "@/lib/auth";
 import { getDictionary } from "@/lib/i18n-server";
 import LeaderboardClient from "@/components/LeaderboardClient";
+
+export const metadata: Metadata = {
+  title: "Рейтинг",
+  description: "Таблиця лідерів Polish Vocab Studio — порівнюйте свій прогрес з іншими учнями."
+};
 
 export default async function LeaderboardPage() {
   const user = await getAuthUser();

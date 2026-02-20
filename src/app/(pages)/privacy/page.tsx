@@ -1,9 +1,15 @@
+import type { Metadata } from "next";
 import { getServerLocale } from "@/lib/i18n-server";
 import { legalContent } from "@/lib/legal-content";
 import { getDb } from "@/lib/db";
 import InfoPageLayout from "@/components/InfoPageLayout";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Політика конфіденційності",
+  description: "Політика конфіденційності Polish Vocab Studio — як ми збираємо, використовуємо та захищаємо ваші дані."
+};
 
 export default async function PrivacyPage() {
   const locale = getServerLocale();

@@ -1,0 +1,21 @@
+{
+  "name": "Polish Vocab Studio",
+  "short_name": "PVS",
+  "description": "Безкоштовний тренажер польської мови: словник, AI вправи, тести, читання.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f6e6d8",
+  "theme_color": "#2b2118",
+  "icons": [
+    {
+      "src": "/favicon-pvs-C-ai-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-pvs-C-ai-master-1024.png",
+      "sizes": "1024x1024",
+      "type": "image/png"
+    }
+  ]
+}
