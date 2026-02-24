@@ -8,6 +8,7 @@ import AdminVideoPanel from "@/components/AdminVideoPanel";
 import AdminAboutPanel from "@/components/AdminAboutPanel";
 import AdminLegalPanel from "@/components/AdminLegalPanel";
 import AdminContactPanel from "@/components/AdminContactPanel";
+import AdminCompendiumPanel from "@/components/AdminCompendiumPanel";
 
 const SECTIONS = [
   { id: "library", label: "Бібліотека" },
@@ -72,6 +73,7 @@ export default function AdminContentPanel() {
       {section === "pages" && (
         <div className="space-y-6">
           <AdminAboutPanel />
+          <AdminCompendiumPanel />
           <AdminLegalPanel />
           <AdminContactPanel />
         </div>

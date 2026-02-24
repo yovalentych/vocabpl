@@ -136,6 +136,12 @@ export default function NavBar() {
               {t.nav.class}
             </Link>
             <Link
+              href="/compendium"
+              className="rounded-full border border-ink/20 px-3 py-1 text-ink/70 transition hover:bg-ink/10"
+            >
+              {t.nav.compendium}
+            </Link>
+            <Link
               href={auth.isAdmin ? "/admin/reviews" : "/messages"}
               className="relative rounded-full border border-ink/20 px-3 py-1 text-ink/70 hover:bg-ink/10"
               aria-label={auth.isAdmin ? t.nav.reviews : t.nav.messages}
@@ -207,6 +213,13 @@ export default function NavBar() {
               className="rounded-full border-2 border-ink/20 px-6 py-3.5 text-base font-medium text-ink/70 transition-all active:scale-95 active:bg-ink/10"
             >
               {t.nav.class}
+            </Link>
+            <Link
+              href="/compendium"
+              onClick={() => setMobileMenuOpen(false)}
+              className="rounded-full border-2 border-ink/20 px-6 py-3.5 text-base font-medium text-ink/70 transition-all active:scale-95 active:bg-ink/10"
+            >
+              {t.nav.compendium}
             </Link>
             <Link
               href={auth.isAdmin ? "/admin/reviews" : "/messages"}

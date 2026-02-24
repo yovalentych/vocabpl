@@ -40,6 +40,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/reading", changeFrequency: "weekly", priority: 0.7 },
     { path: "/leaderboard", changeFrequency: "daily", priority: 0.6 },
     { path: "/pvs", changeFrequency: "monthly", priority: 0.5 },
+    { path: "/compendium", changeFrequency: "monthly", priority: 0.5 },
+    { path: "/compendium/grammar", changeFrequency: "monthly", priority: 0.45 },
+    { path: "/compendium/useful-sites", changeFrequency: "monthly", priority: 0.45 },
+    { path: "/compendium/facts", changeFrequency: "monthly", priority: 0.45 },
+    { path: "/compendium/culture", changeFrequency: "monthly", priority: 0.45 },
 
     // Legal
     { path: "/privacy", changeFrequency: "yearly", priority: 0.3 },
