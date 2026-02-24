@@ -19,6 +19,28 @@
   animation: shimmer 3s ease-in-out infinite;
 }
 
+@keyframes compendium-fade {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.compendium-fade {
+  animation: compendium-fade 0.35s ease;
+  will-change: opacity, transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .compendium-fade {
+    animation: none;
+  }
+}
+
 :root {
   color-scheme: light;
   --font-display: "Outfit", "Segoe UI", sans-serif;

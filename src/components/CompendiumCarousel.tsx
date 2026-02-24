@@ -127,10 +127,10 @@ export default function CompendiumCarousel({
   );
 
   return (
-    <section className="mt-8 grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
-      <div className="rounded-[32px] border border-ink/10 bg-paper/80 p-6 shadow-soft">
+    <section className="mt-8 grid gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
+      <div className="min-w-0 rounded-[32px] border border-ink/10 bg-paper/80 p-6 shadow-soft">
         <div className="flex items-center justify-between gap-3">
-          <div>
+          <div key={active.id} className="compendium-fade">
             <p className="text-xs uppercase tracking-[0.3em] text-ink/50">{autoplayLabel}</p>
             <h2 className="mt-2 text-xl font-semibold text-ink">{active.title}</h2>
             <p className="mt-2 text-sm text-ink/70">{active.detail}</p>
@@ -177,12 +177,12 @@ export default function CompendiumCarousel({
         </div>
       </div>
 
-      <div className="rounded-[32px] border border-ink/10 bg-paper/80 p-6 shadow-soft">
+      <div className="min-w-0 h-fit rounded-[32px] border border-ink/10 bg-paper/80 p-6 shadow-soft">
         <div
           ref={wrapRef}
           onPointerDown={markInteracting}
           onWheel={markInteracting}
-          className="flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 scrollbar-none"
+          className="flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 scrollbar-none scroll-smooth"
         >
           {sections.map((section, index) => {
             const Icon = ICONS[section.icon];
@@ -192,8 +192,8 @@ export default function CompendiumCarousel({
                 href={section.href}
                 ref={index === 0 ? cardRef : undefined}
                 onClick={markInteracting}
-                className={`min-w-[240px] flex-1 snap-start rounded-[28px] border border-ink/10 bg-gradient-to-br ${section.tone} p-5 shadow-soft transition ${
-                  index === activeIndex ? "scale-[1.02]" : "opacity-70"
+                className={`w-[240px] flex-shrink-0 snap-start rounded-[28px] border border-ink/10 bg-gradient-to-br ${section.tone} p-5 shadow-soft transition sm:w-[280px] lg:w-[320px] ${
+                  index === activeIndex ? "scale-[1.02] opacity-100" : "opacity-70"
                 }`}
               >
                 <div className="flex items-center justify-between text-xs uppercase tracking-[0.3em] text-ink/60">
