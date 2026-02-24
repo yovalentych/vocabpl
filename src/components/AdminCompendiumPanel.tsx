@@ -6,7 +6,7 @@ import {
   BookOpenText,
   GlobeHemisphereWest,
   Sparkle,
-  Theater,
+  MaskHappy,
   CheckCircle,
   Plus,
   Trash
@@ -19,7 +19,7 @@ const SECTIONS = [
   { id: "grammar", label: "Граматика", icon: BookOpenText },
   { id: "sites", label: "Корисні сайти", icon: GlobeHemisphereWest },
   { id: "facts", label: "Цікаві факти", icon: Sparkle },
-  { id: "culture", label: "Культура", icon: Theater }
+  { id: "culture", label: "Культура", icon: MaskHappy }
 ] as const;
 
 type SectionId = typeof SECTIONS[number]["id"];

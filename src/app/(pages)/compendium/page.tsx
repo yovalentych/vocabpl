@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { BookOpenText, GlobeHemisphereWest, Sparkle, Theater } from "@phosphor-icons/react/dist/ssr";
+import { BookOpenText, GlobeHemisphereWest, Sparkle, MaskHappy } from "@phosphor-icons/react/dist/ssr";
 import { getServerLocale } from "@/lib/i18n-server";
 import { requireCompendiumAccess } from "@/lib/compendium-access";
 
@@ -45,7 +45,7 @@ const SECTIONS = [
   {
     id: "culture",
     href: "/compendium/culture",
-    icon: Theater,
+    icon: MaskHappy,
     tone: "from-ink/10 via-paper to-moss/10",
     titleUk: "Культура",
     titlePl: "Kultura",

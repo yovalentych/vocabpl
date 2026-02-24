@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Theater, Compass, Heart } from "@phosphor-icons/react/dist/ssr";
+import { MaskHappy, Compass, Heart } from "@phosphor-icons/react/dist/ssr";
 import { getServerLocale } from "@/lib/i18n-server";
 import { getDb } from "@/lib/db";
 import { defaultCompendiumContent } from "@/lib/compendium-content";
@@ -25,7 +25,7 @@ export default async function CompendiumCulturePage() {
     <main className="mx-auto w-full max-w-6xl px-5 sm:px-6 py-10 sm:py-14 pb-24">
       <section className="rounded-[36px] border border-ink/10 bg-gradient-to-br from-ink/10 via-paper to-terracotta/10 p-8 sm:p-10 shadow-soft">
         <div className="flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-ink/50">
-          <Theater size={18} />
+          <MaskHappy size={18} />
           {locale === "pl" ? "Kultura" : "Культура"}
         </div>
         <h1 className="mt-3 text-3xl sm:text-4xl font-semibold text-ink">
