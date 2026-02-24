@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Manrope, Outfit } from "next/font/google";
 import "./globals.css";
 import NavBar from "@/components/NavBar";
 import QuickAddWord from "@/components/QuickAddWord";
@@ -78,18 +77,6 @@ export const metadata: Metadata = {
   }
 };
 
-const displayFont = Outfit({
-  subsets: ["latin", "latin-ext"],
-  variable: "--font-display",
-  display: "swap"
-});
-
-const bodyFont = Manrope({
-  subsets: ["latin", "latin-ext"],
-  variable: "--font-body",
-  display: "swap"
-});
-
 export default function RootLayout({
   children
 }: {
@@ -97,7 +84,7 @@ export default function RootLayout({
 }) {
   const locale = getServerLocale();
   return (
-    <html lang={locale} className={`${displayFont.variable} ${bodyFont.variable}`}>
+    <html lang={locale}>
       <body className="bg-paper text-ink antialiased">
         <LocaleProvider initialLocale={locale}>
           <AuthStatusProvider>

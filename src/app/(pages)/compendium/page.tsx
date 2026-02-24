@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Route } from "next";
 import Link from "next/link";
 import { BookOpenText, GlobeHemisphereWest, Sparkle, MaskHappy } from "@phosphor-icons/react/dist/ssr";
 import { getServerLocale } from "@/lib/i18n-server";
@@ -11,7 +11,16 @@ export const metadata: Metadata = {
   description: "Довідник з граматики, культури, фактів та корисних ресурсів."
 };
 
-const SECTIONS = [
+const SECTIONS: Array<{
+  id: string;
+  href: Route;
+  icon: typeof BookOpenText;
+  tone: string;
+  titleUk: string;
+  titlePl: string;
+  bodyUk: string;
+  bodyPl: string;
+}> = [
   {
     id: "grammar",
     href: "/compendium/grammar",

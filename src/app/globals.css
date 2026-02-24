@@ -1,5 +1,6 @@
 @import "@uiw/react-md-editor/markdown-editor.css";
 @import "@uiw/react-markdown-preview/markdown.css";
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Outfit:wght@100..900&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -20,8 +21,8 @@
 
 :root {
   color-scheme: light;
-  --font-display: "Segoe UI", sans-serif;
-  --font-body: "Segoe UI", sans-serif;
+  --font-display: "Outfit", "Segoe UI", sans-serif;
+  --font-body: "Manrope", "Segoe UI", sans-serif;
 }
 
 * {

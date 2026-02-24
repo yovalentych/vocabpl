@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Sparkle, Timer, MapPinLine } from "@phosphor-icons/react/dist/ssr";
 import { getServerLocale } from "@/lib/i18n-server";
 import { getDb } from "@/lib/db";
-import { defaultCompendiumContent } from "@/lib/compendium-content";
+import { defaultCompendiumContent, type CompendiumContent } from "@/lib/compendium-content";
 import { renderSimpleMarkdown } from "@/components/markdown";
 import { requireCompendiumAccess } from "@/lib/compendium-access";
 
@@ -19,7 +19,7 @@ export default async function CompendiumFactsPage() {
   const pick = (uk: string, pl: string) => (locale === "pl" && pl ? pl : uk);
   const db = await getDb();
   const doc = await db.collection("settings").findOne({ key: "compendium_content" });
-  const content = (doc?.value || defaultCompendiumContent).facts;
+  const content = (doc?.value || defaultCompendiumContent).facts as CompendiumContent["facts"];
 
   return (
     <main className="mx-auto w-full max-w-6xl px-5 sm:px-6 py-10 sm:py-14 pb-24">
