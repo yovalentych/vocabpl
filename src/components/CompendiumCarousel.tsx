@@ -127,31 +127,15 @@ export default function CompendiumCarousel({
   );
 
   return (
-    <section className="mt-8 grid gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
-      <div className="min-w-0 rounded-[32px] border border-ink/10 bg-paper/80 p-6 shadow-soft">
-        <div className="flex items-center justify-between gap-3">
-          <div key={active.id} className="compendium-fade">
+    <section className="mt-8 space-y-6">
+      <div className="rounded-[32px] border border-ink/10 bg-paper/80 p-6 shadow-soft">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
             <p className="text-xs uppercase tracking-[0.3em] text-ink/50">{autoplayLabel}</p>
-            <h2 className="mt-2 text-xl font-semibold text-ink">{active.title}</h2>
-            <p className="mt-2 text-sm text-ink/70">{active.detail}</p>
+            <p className="mt-2 text-sm text-ink/60">
+              {ctaLabel} — {active.title}
+            </p>
           </div>
-          <Link
-            href={active.href}
-            className="hidden sm:inline-flex items-center rounded-full border border-ink/15 bg-paper px-4 py-2 text-xs font-semibold text-ink/70 hover:border-ink/30 hover:bg-ink/5"
-          >
-            {ctaLabel}
-          </Link>
-        </div>
-
-        <div className="mt-5 grid gap-3 sm:grid-cols-2">
-          {active.highlights.map((item) => (
-            <div key={item} className="rounded-2xl border border-ink/10 bg-paper/70 px-4 py-3 text-xs text-ink/70">
-              {item}
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-5 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <button
               onClick={handlePrev}
@@ -168,21 +152,13 @@ export default function CompendiumCarousel({
               <ArrowRight size={18} />
             </button>
           </div>
-          <Link
-            href={active.href}
-            className="sm:hidden inline-flex items-center rounded-full border border-ink/15 bg-paper px-4 py-2 text-xs font-semibold text-ink/70 hover:border-ink/30 hover:bg-ink/5"
-          >
-            {ctaLabel}
-          </Link>
         </div>
-      </div>
 
-      <div className="min-w-0 h-fit rounded-[32px] border border-ink/10 bg-paper/80 p-6 shadow-soft">
         <div
           ref={wrapRef}
           onPointerDown={markInteracting}
           onWheel={markInteracting}
-          className="flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 scrollbar-none scroll-smooth"
+          className="mt-4 flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 scrollbar-none scroll-smooth"
         >
           {sections.map((section, index) => {
             const Icon = ICONS[section.icon];
@@ -206,21 +182,54 @@ export default function CompendiumCarousel({
           })}
         </div>
 
-        <div className="flex flex-wrap gap-2">
-          {dots.map((dot, index) => (
-            <button
-              key={dot.id}
-              onClick={() => {
-                markInteracting();
-                setActiveIndex(index);
-                scrollToIndex(index);
-              }}
-              className={`h-2.5 rounded-full transition ${
-                dot.active ? "w-10 bg-ink" : "w-3 bg-ink/20"
-              }`}
-              aria-label={`Go to ${dot.id}`}
-            />
-          ))}
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap gap-2">
+            {dots.map((dot, index) => (
+              <button
+                key={dot.id}
+                onClick={() => {
+                  markInteracting();
+                  setActiveIndex(index);
+                  scrollToIndex(index);
+                }}
+                className={`h-2.5 rounded-full transition ${
+                  dot.active ? "w-10 bg-ink" : "w-3 bg-ink/20"
+                }`}
+                aria-label={`Go to ${dot.id}`}
+              />
+            ))}
+          </div>
+          <Link
+            href={active.href}
+            className="inline-flex items-center rounded-full border border-ink/15 bg-paper px-4 py-2 text-xs font-semibold text-ink/70 hover:border-ink/30 hover:bg-ink/5"
+          >
+            {ctaLabel}
+          </Link>
+        </div>
+      </div>
+
+      <div className="rounded-[32px] border border-ink/10 bg-paper/80 p-6 shadow-soft">
+        <div key={active.id} className="compendium-fade">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-xs uppercase tracking-[0.3em] text-ink/50">{active.title}</p>
+              <h2 className="mt-2 text-2xl font-semibold text-ink">{active.detail}</h2>
+            </div>
+            <Link
+              href={active.href}
+              className="hidden sm:inline-flex items-center rounded-full border border-ink/15 bg-paper px-4 py-2 text-xs font-semibold text-ink/70 hover:border-ink/30 hover:bg-ink/5"
+            >
+              {ctaLabel}
+            </Link>
+          </div>
+
+          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {active.highlights.map((item) => (
+              <div key={item} className="rounded-2xl border border-ink/10 bg-paper/70 px-4 py-3 text-xs text-ink/70">
+                {item}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
