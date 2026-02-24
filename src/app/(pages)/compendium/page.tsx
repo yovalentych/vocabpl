@@ -1,8 +1,8 @@
 import type { Metadata, Route } from "next";
-import Link from "next/link";
 import { BookOpenText, GlobeHemisphereWest, Sparkle, MaskHappy } from "@phosphor-icons/react/dist/ssr";
 import { getServerLocale } from "@/lib/i18n-server";
 import { requireCompendiumAccess } from "@/lib/compendium-access";
+import CompendiumCarousel from "@/components/CompendiumCarousel";
 
 export const dynamic = "force-dynamic";
 
@@ -20,6 +20,11 @@ const SECTIONS: Array<{
   titlePl: string;
   bodyUk: string;
   bodyPl: string;
+  detailUk: string;
+  detailPl: string;
+  highlightsUk: string[];
+  highlightsPl: string[];
+  iconKey: "grammar" | "sites" | "facts" | "culture";
 }> = [
   {
     id: "grammar",
@@ -29,7 +34,24 @@ const SECTIONS: Array<{
     titleUk: "Граматика",
     titlePl: "Gramatyka",
     bodyUk: "Короткі правила, конструкції, приклади й підказки, щоб швидше впізнавати структури.",
-    bodyPl: "Zbiór reguł, konstrukcji i przykładów do szybkiego rozpoznawania struktur."
+    bodyPl: "Zbiór reguł, konstrukcji i przykładów do szybkiego rozpoznawania struktur.",
+    detailUk:
+      "Швидкий доступ до найважливіших правил: відмінки, часи, вид дієслова та базова логіка побудови речення.",
+    detailPl:
+      "Szybki доступ do najważniejszych reguł: przypadki, czasy i logika budowy zdań.",
+    highlightsUk: [
+      "Спринти з короткими підказками",
+      "Правила з прикладами",
+      "Маркерні слова для швидкого вибору відмінка",
+      "Пояснення на рівні A1–B2"
+    ],
+    highlightsPl: [
+      "Sprinty z krótkimi podpowiedziami",
+      "Reguły z przykładami",
+      "Słowa-markery dla przypadków",
+      "Wyjaśnienia A1–B2"
+    ],
+    iconKey: "grammar"
   },
   {
     id: "sites",
@@ -39,7 +61,24 @@ const SECTIONS: Array<{
     titleUk: "Корисні сайти",
     titlePl: "Przydatne strony",
     bodyUk: "Перевірені ресурси, словники, тренажери та блоги для щоденної практики.",
-    bodyPl: "Sprawdzone zasoby, słowniki i narzędzia do codziennej praktyki."
+    bodyPl: "Sprawdzone zasoby, słowniki i narzędzia do codziennej praktyki.",
+    detailUk:
+      "Підбірки за категоріями: словники, практика, медіа й спільноти. Кожен ресурс має короткий опис.",
+    detailPl:
+      "Zbiory według kategorii: słowniki, praktyka, media i społeczności.",
+    highlightsUk: [
+      "Фільтри за типом і рівнем",
+      "Короткі описи та підказки",
+      "Швидкі посилання",
+      "Добірки для щоденної рутини"
+    ],
+    highlightsPl: [
+      "Filtry według typu i poziomu",
+      "Krótkie opisy i wskazówki",
+      "Szybkie linki",
+      "Zbiory do codziennej rutyny"
+    ],
+    iconKey: "sites"
   },
   {
     id: "facts",
@@ -49,7 +88,24 @@ const SECTIONS: Array<{
     titleUk: "Цікаві факти",
     titlePl: "Ciekawe fakty",
     bodyUk: "Невеликі історії, контексти і деталі, що роблять польську культуру ближчою.",
-    bodyPl: "Krótkie historie i ciekawostki, które przybliżają polską kulturę."
+    bodyPl: "Krótkie historie i ciekawostki, które przybliżają polską kulturę.",
+    detailUk:
+      "Формат коротких блоків для щоденного читання. Пояснюємо мову через історії, звички й контекст.",
+    detailPl:
+      "Krótkie bloki do codziennego czytania. Język przez historie i kontekst.",
+    highlightsUk: [
+      "1 факт = 1 блок",
+      "Історичний і культурний контекст",
+      "Пояснення термінів",
+      "Рекомендоване читання"
+    ],
+    highlightsPl: [
+      "1 fakt = 1 blok",
+      "Kontekst historyczny i kulturowy",
+      "Wyjaśnienia pojęć",
+      "Polecane materiały"
+    ],
+    iconKey: "facts"
   },
   {
     id: "culture",
@@ -59,7 +115,24 @@ const SECTIONS: Array<{
     titleUk: "Культура",
     titlePl: "Kultura",
     bodyUk: "Сцена, традиції, міські ритми, поведінкові коди та сучасний контекст.",
-    bodyPl: "Scena, tradycje, miejskie rytmy i współczesny kontekst."
+    bodyPl: "Scena, tradycje, miejskie rytmy i współczesny kontekst.",
+    detailUk:
+      "Короткі гіди про етикет, місто, традиції та сучасну польську культуру, щоб краще розуміти мову.",
+    detailPl:
+      "Krótkie przewodniki o etykiecie, mieście i tradycjach.",
+    highlightsUk: [
+      "Етикет і звертання",
+      "Міські ритми і побут",
+      "Традиції та свята",
+      "Сучасні культурні коди"
+    ],
+    highlightsPl: [
+      "Etykieta i zwroty",
+      "Rytm miast i codzienność",
+      "Tradycje i święta",
+      "Współczesne kody kultury"
+    ],
+    iconKey: "culture"
   }
 ];
 
@@ -67,6 +140,16 @@ export default async function CompendiumPage() {
   await requireCompendiumAccess();
   const locale = getServerLocale();
   const pick = (uk: string, pl: string) => (locale === "pl" && pl ? pl : uk);
+  const sections = SECTIONS.map((section) => ({
+    id: section.id,
+    href: section.href,
+    title: pick(section.titleUk, section.titlePl),
+    body: pick(section.bodyUk, section.bodyPl),
+    detail: pick(section.detailUk, section.detailPl),
+    highlights: locale === "pl" ? section.highlightsPl : section.highlightsUk,
+    tone: section.tone,
+    icon: section.iconKey
+  }));
 
   return (
     <main className="mx-auto w-full max-w-6xl px-5 sm:px-6 py-10 sm:py-14 pb-24">
@@ -80,31 +163,11 @@ export default async function CompendiumPage() {
             ? "Zbiór materiałów do szybkiej orientacji w języku, kulturze i praktyce. Wybierz sekcję, aby przejść do treści."
             : "Збірка матеріалів для швидкої орієнтації в мові, культурі та практиці. Обери секцію для переходу."}
         </p>
-        <div className="mt-6 grid gap-4 sm:grid-cols-2">
-          {SECTIONS.map((section) => {
-            const Icon = section.icon;
-            return (
-              <Link
-                key={section.id}
-                href={section.href}
-                className={`group relative overflow-hidden rounded-[28px] border border-ink/10 bg-gradient-to-br ${section.tone} p-6 shadow-soft transition hover:-translate-y-1`}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="rounded-full border border-ink/10 bg-paper/70 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.25em] text-ink/60">
-                    {pick(section.titleUk, section.titlePl)}
-                  </div>
-                  <Icon size={22} className="text-ink/60 transition group-hover:text-ink" />
-                </div>
-                <p className="mt-4 text-sm text-ink/70 leading-relaxed">
-                  {pick(section.bodyUk, section.bodyPl)}
-                </p>
-                <div className="mt-5 inline-flex items-center gap-2 text-xs font-semibold text-ink/60">
-                  {locale === "pl" ? "Otwórz sekcję" : "Відкрити секцію"}
-                </div>
-              </Link>
-            );
-          })}
-        </div>
+        <CompendiumCarousel
+          sections={sections}
+          ctaLabel={locale === "pl" ? "Otwórz sekcję" : "Відкрити секцію"}
+          autoplayLabel={locale === "pl" ? "Автоматичний перегляд" : "Автоперегляд"}
+        />
       </section>
     </main>
   );
