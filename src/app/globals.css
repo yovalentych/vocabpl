@@ -41,6 +41,20 @@
   }
 }
 
+.compendium-card {
+  transform-origin: center;
+}
+
+.compendium-card.is-active {
+  opacity: 1;
+  transform: translateY(-6px) scale(1.025);
+  border-color: rgba(60, 45, 33, 0.18);
+}
+
+.compendium-card:hover {
+  transform: translateY(-4px);
+}
+
 :root {
   color-scheme: light;
   --font-display: "Outfit", "Segoe UI", sans-serif;

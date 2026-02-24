@@ -128,10 +128,13 @@ export default function CompendiumCarousel({
 
   return (
     <section className="mt-8 space-y-6">
-      <div className="rounded-[32px] border border-ink/10 bg-paper/80 p-6 shadow-soft">
-        <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="relative overflow-hidden rounded-[34px] border border-ink/10 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.8),_rgba(249,242,234,0.9)_45%,_rgba(243,233,223,0.95)_100%)] p-6 shadow-[0_30px_80px_rgba(41,27,14,0.18)]">
+        <div className="pointer-events-none absolute -right-12 -top-10 h-40 w-40 rounded-full bg-gold/30 blur-3xl" />
+        <div className="pointer-events-none absolute -left-16 bottom-0 h-36 w-36 rounded-full bg-moss/20 blur-3xl" />
+
+        <div className="relative flex flex-wrap items-center justify-between gap-3">
           <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-ink/50">{autoplayLabel}</p>
+            <p className="text-[11px] uppercase tracking-[0.4em] text-ink/45">{autoplayLabel}</p>
             <p className="mt-2 text-sm text-ink/60">
               {ctaLabel} — {active.title}
             </p>
@@ -139,14 +142,14 @@ export default function CompendiumCarousel({
           <div className="flex items-center gap-2">
             <button
               onClick={handlePrev}
-              className="rounded-full border border-ink/15 bg-paper p-2 text-ink/60 hover:text-ink"
+              className="rounded-full border border-ink/15 bg-paper/70 p-2 text-ink/60 shadow-soft transition hover:-translate-y-0.5 hover:text-ink"
               aria-label="Previous"
             >
               <ArrowLeft size={18} />
             </button>
             <button
               onClick={handleNext}
-              className="rounded-full border border-ink/15 bg-paper p-2 text-ink/60 hover:text-ink"
+              className="rounded-full border border-ink/15 bg-paper/70 p-2 text-ink/60 shadow-soft transition hover:-translate-y-0.5 hover:text-ink"
               aria-label="Next"
             >
               <ArrowRight size={18} />
@@ -158,7 +161,7 @@ export default function CompendiumCarousel({
           ref={wrapRef}
           onPointerDown={markInteracting}
           onWheel={markInteracting}
-          className="mt-4 flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 scrollbar-none scroll-smooth"
+          className="relative mt-4 flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 scrollbar-none scroll-smooth"
         >
           {sections.map((section, index) => {
             const Icon = ICONS[section.icon];
@@ -168,8 +171,8 @@ export default function CompendiumCarousel({
                 href={section.href}
                 ref={index === 0 ? cardRef : undefined}
                 onClick={markInteracting}
-                className={`w-[240px] flex-shrink-0 snap-start rounded-[28px] border border-ink/10 bg-gradient-to-br ${section.tone} p-5 shadow-soft transition sm:w-[280px] lg:w-[320px] ${
-                  index === activeIndex ? "scale-[1.02] opacity-100" : "opacity-70"
+                className={`compendium-card w-[240px] flex-shrink-0 snap-start rounded-[28px] border border-ink/10 bg-gradient-to-br ${section.tone} p-5 shadow-[0_18px_40px_rgba(41,27,14,0.16)] transition sm:w-[280px] lg:w-[320px] ${
+                  index === activeIndex ? "is-active" : "opacity-70"
                 }`}
               >
                 <div className="flex items-center justify-between text-xs uppercase tracking-[0.3em] text-ink/60">
@@ -182,7 +185,7 @@ export default function CompendiumCarousel({
           })}
         </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="relative flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap gap-2">
             {dots.map((dot, index) => (
               <button
@@ -193,7 +196,7 @@ export default function CompendiumCarousel({
                   scrollToIndex(index);
                 }}
                 className={`h-2.5 rounded-full transition ${
-                  dot.active ? "w-10 bg-ink" : "w-3 bg-ink/20"
+                  dot.active ? "w-10 bg-ink shadow-[0_0_10px_rgba(43,33,24,0.25)]" : "w-3 bg-ink/20"
                 }`}
                 aria-label={`Go to ${dot.id}`}
               />
@@ -201,23 +204,24 @@ export default function CompendiumCarousel({
           </div>
           <Link
             href={active.href}
-            className="inline-flex items-center rounded-full border border-ink/15 bg-paper px-4 py-2 text-xs font-semibold text-ink/70 hover:border-ink/30 hover:bg-ink/5"
+            className="inline-flex items-center rounded-full border border-ink/15 bg-paper/80 px-4 py-2 text-xs font-semibold text-ink/70 shadow-soft transition hover:-translate-y-0.5 hover:border-ink/30 hover:bg-ink/5"
           >
             {ctaLabel}
           </Link>
         </div>
       </div>
 
-      <div className="rounded-[32px] border border-ink/10 bg-paper/80 p-6 shadow-soft">
-        <div key={active.id} className="compendium-fade">
-          <div className="flex items-center justify-between gap-3">
+      <div className="relative overflow-hidden rounded-[34px] border border-ink/10 bg-paper/80 p-6 shadow-[0_26px_60px_rgba(41,27,14,0.14)]">
+        <div className="pointer-events-none absolute -right-10 bottom-0 h-32 w-32 rounded-full bg-terracotta/20 blur-3xl" />
+        <div key={active.id} className="compendium-fade relative">
+          <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p className="text-xs uppercase tracking-[0.3em] text-ink/50">{active.title}</p>
+              <p className="text-[11px] uppercase tracking-[0.4em] text-ink/45">{active.title}</p>
               <h2 className="mt-2 text-2xl font-semibold text-ink">{active.detail}</h2>
             </div>
             <Link
               href={active.href}
-              className="hidden sm:inline-flex items-center rounded-full border border-ink/15 bg-paper px-4 py-2 text-xs font-semibold text-ink/70 hover:border-ink/30 hover:bg-ink/5"
+              className="hidden sm:inline-flex items-center rounded-full border border-ink/15 bg-paper/80 px-4 py-2 text-xs font-semibold text-ink/70 shadow-soft transition hover:-translate-y-0.5 hover:border-ink/30 hover:bg-ink/5"
             >
               {ctaLabel}
             </Link>
@@ -225,7 +229,10 @@ export default function CompendiumCarousel({
 
           <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {active.highlights.map((item) => (
-              <div key={item} className="rounded-2xl border border-ink/10 bg-paper/70 px-4 py-3 text-xs text-ink/70">
+              <div
+                key={item}
+                className="rounded-2xl border border-ink/10 bg-paper/70 px-4 py-3 text-xs text-ink/70 shadow-[0_8px_18px_rgba(41,27,14,0.08)]"
+              >
                 {item}
               </div>
             ))}
