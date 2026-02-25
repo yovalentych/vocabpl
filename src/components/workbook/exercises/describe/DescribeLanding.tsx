@@ -51,10 +51,10 @@ export default function DescribeLanding({ onSelectMode }: DescribeLandingProps) 
           </div>
           <div className="flex-1">
             <h1 className="text-3xl font-semibold text-ink">
-              {t.workbook.exercises.describe?.title || "Опиши картинку"}
+              {t.workbook.exercises.describe.title}
             </h1>
             <p className="mt-2 text-sm text-ink/70">
-              {t.workbook.exercises.describe?.description || "Опишіть зображення польською мовою"}
+              {t.workbook.exercises.describe.description}
             </p>
           </div>
         </div>
@@ -63,7 +63,7 @@ export default function DescribeLanding({ onSelectMode }: DescribeLandingProps) 
       {/* Skills trained */}
       <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
         <p className="text-xs uppercase tracking-[0.3em] text-ink/40 mb-4">
-          Навички що тренуються
+          {t.workbook.landingSkillsTitle}
         </p>
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="flex items-start gap-3 rounded-2xl border border-ink/10 bg-fog p-4">
@@ -71,9 +71,9 @@ export default function DescribeLanding({ onSelectMode }: DescribeLandingProps) 
               <span className="text-lg">👁️</span>
             </div>
             <div>
-              <p className="text-sm font-semibold text-ink">Описовий словник</p>
+              <p className="text-sm font-semibold text-ink">{t.workbook.describeLandingSkill1}</p>
               <p className="mt-1 text-xs text-ink/60">
-                Прикметники, кольори, форми та розміри
+                {t.workbook.describeLandingSkill1Desc}
               </p>
             </div>
           </div>
@@ -83,9 +83,9 @@ export default function DescribeLanding({ onSelectMode }: DescribeLandingProps) 
               <span className="text-lg">📍</span>
             </div>
             <div>
-              <p className="text-sm font-semibold text-ink">Просторові відношення</p>
+              <p className="text-sm font-semibold text-ink">{t.workbook.describeLandingSkill2}</p>
               <p className="mt-1 text-xs text-ink/60">
-                Розташування об&apos;єктів (на, під, біля, між)
+                {t.workbook.describeLandingSkill2Desc}
               </p>
             </div>
           </div>
@@ -95,9 +95,9 @@ export default function DescribeLanding({ onSelectMode }: DescribeLandingProps) 
               <span className="text-lg">🎨</span>
             </div>
             <div>
-              <p className="text-sm font-semibold text-ink">Детальний опис</p>
+              <p className="text-sm font-semibold text-ink">{t.workbook.describeLandingSkill3}</p>
               <p className="mt-1 text-xs text-ink/60">
-                Вміння помічати та описувати деталі
+                {t.workbook.describeLandingSkill3Desc}
               </p>
             </div>
           </div>
@@ -107,9 +107,9 @@ export default function DescribeLanding({ onSelectMode }: DescribeLandingProps) 
               <span className="text-lg">✍️</span>
             </div>
             <div>
-              <p className="text-sm font-semibold text-ink">Структурований текст</p>
+              <p className="text-sm font-semibold text-ink">{t.workbook.describeLandingSkill4}</p>
               <p className="mt-1 text-xs text-ink/60">
-                Логічна побудова опису від загального до деталей
+                {t.workbook.describeLandingSkill4Desc}
               </p>
             </div>
           </div>
@@ -120,26 +120,26 @@ export default function DescribeLanding({ onSelectMode }: DescribeLandingProps) 
       {!loading && stats.totalAttempts > 0 && (
         <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
           <p className="text-xs uppercase tracking-[0.3em] text-ink/40 mb-4">
-            Ваша статистика
+            {t.workbook.landingYourStats}
           </p>
           <div className="grid gap-4 sm:grid-cols-4">
             <div className="rounded-2xl border border-ink/10 bg-fog p-4 text-center">
               <div className="text-2xl font-bold text-gold">{stats.totalAttempts}</div>
-              <div className="mt-1 text-xs text-ink/60">Спроб</div>
+              <div className="mt-1 text-xs text-ink/60">{t.workbook.landingAttempts}</div>
             </div>
             <div className="rounded-2xl border border-ink/10 bg-fog p-4 text-center">
               <div className="text-2xl font-bold text-moss">
                 {Math.round(stats.averageScore * 100)}%
               </div>
-              <div className="mt-1 text-xs text-ink/60">Середній бал</div>
+              <div className="mt-1 text-xs text-ink/60">{t.workbook.landingAvgScore}</div>
             </div>
             <div className="rounded-2xl border border-ink/10 bg-fog p-4 text-center">
               <div className="text-2xl font-bold text-terracotta">{stats.totalDescriptions}</div>
-              <div className="mt-1 text-xs text-ink/60">Описів створено</div>
+              <div className="mt-1 text-xs text-ink/60">{t.workbook.describeLandingStat}</div>
             </div>
             <div className="rounded-2xl border border-ink/10 bg-fog p-4 text-center">
               <div className="text-2xl font-bold text-gold">{stats.bestStreak}</div>
-              <div className="mt-1 text-xs text-ink/60">Найкраща серія</div>
+              <div className="mt-1 text-xs text-ink/60">{t.workbook.landingBestStreak}</div>
             </div>
           </div>
         </div>
@@ -157,32 +157,31 @@ export default function DescribeLanding({ onSelectMode }: DescribeLandingProps) 
               <BookOpen size={24} weight="fill" className="text-gold" />
             </div>
             <div className="rounded-full bg-gold/10 px-3 py-1 text-xs font-semibold text-gold">
-              Класичний
+              {t.workbook.landingClassicTab}
             </div>
           </div>
 
           <h3 className="mt-4 text-xl font-semibold text-ink">
-            Класичний режим
+            {t.workbook.classicMode}
           </h3>
           <p className="mt-2 text-sm text-ink/60">
-            Оберіть картинку з галереї або завантажте свою.
-            Опишіть її детально польською мовою.
+            {t.workbook.describeLandingClassicDesc}
           </p>
 
           <div className="mt-4 flex flex-wrap gap-2">
             <span className="rounded-full bg-fog px-3 py-1 text-xs text-ink/70">
-              ✓ Галерея фото
+              {t.workbook.featureGallery}
             </span>
             <span className="rounded-full bg-fog px-3 py-1 text-xs text-ink/70">
-              ✓ Власне фото
+              {t.workbook.featureOwnPhoto}
             </span>
             <span className="rounded-full bg-fog px-3 py-1 text-xs text-ink/70">
-              ✓ Швидко
+              {t.workbook.featureFast}
             </span>
           </div>
 
           <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-gold transition group-hover:gap-3">
-            Почати
+            {t.workbook.landingStart}
             <span className="transition">→</span>
           </div>
         </button>
@@ -197,32 +196,31 @@ export default function DescribeLanding({ onSelectMode }: DescribeLandingProps) 
               <Sparkle size={24} weight="fill" className="text-moss" />
             </div>
             <div className="rounded-full bg-moss/10 px-3 py-1 text-xs font-semibold text-moss">
-              AI режим
+              {t.workbook.aiMode}
             </div>
           </div>
 
           <h3 className="mt-4 text-xl font-semibold text-ink">
-            Режим з AI
+            {t.workbook.landingAIModeFull}
           </h3>
           <p className="mt-2 text-sm text-ink/60">
-            AI запропонує промпт для опису. Напишіть опис та отримайте
-            детальний фідбек про повноту, точність та граматику.
+            {t.workbook.describeLandingAIDesc}
           </p>
 
           <div className="mt-4 flex flex-wrap gap-2">
             <span className="rounded-full bg-fog px-3 py-1 text-xs text-ink/70">
-              ✓ AI промпт
+              {t.workbook.featureAIPrompt}
             </span>
             <span className="rounded-full bg-fog px-3 py-1 text-xs text-ink/70">
-              ✓ Детальна перевірка
+              {t.workbook.featureDetailCheck}
             </span>
             <span className="rounded-full bg-fog px-3 py-1 text-xs text-ink/70">
-              ✓ Фідбек
+              {t.workbook.featureFeedbackTag}
             </span>
           </div>
 
           <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-moss transition group-hover:gap-3">
-            Почати
+            {t.workbook.landingStart}
             <span className="transition">→</span>
           </div>
         </button>
@@ -233,10 +231,9 @@ export default function DescribeLanding({ onSelectMode }: DescribeLandingProps) 
         <div className="flex items-start gap-3">
           <TrendUp size={20} weight="fill" className="text-gold flex-shrink-0 mt-0.5" />
           <div>
-            <p className="text-xs font-semibold text-gold mb-1">Порада</p>
+            <p className="text-xs font-semibold text-gold mb-1">{t.workbook.landingTip}</p>
             <p className="text-xs text-ink/70">
-              При описі почніть з загального (що це за місце/об&apos;єкт), потім переходьте до деталей
-              (кольори, розміри, розташування). Використовуйте багато прикметників!
+              {t.workbook.describeLandingTip}
             </p>
           </div>
         </div>

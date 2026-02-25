@@ -67,9 +67,9 @@ export default function VideoLanding({ onSelectCategory }: VideoLandingProps) {
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
     if (hours > 0) {
-      return `${hours}г ${mins}хв`;
+      return `${hours}h ${mins}${t.workbook.videoMinutes}`;
     }
-    return `${mins}хв`;
+    return `${mins}${t.workbook.videoMinutes}`;
   };
 
   return (
@@ -82,10 +82,10 @@ export default function VideoLanding({ onSelectCategory }: VideoLandingProps) {
           </div>
           <div className="flex-1">
             <h1 className="text-3xl font-semibold text-ink">
-              Відео матеріали
+              {t.workbook.videoLandingTitle}
             </h1>
             <p className="mt-2 text-sm text-ink/70">
-              Дивись відео польською, покращуй розуміння мови на слух
+              {t.workbook.videoLandingSubtitle}
             </p>
           </div>
         </div>
@@ -94,7 +94,7 @@ export default function VideoLanding({ onSelectCategory }: VideoLandingProps) {
       {/* Skills trained */}
       <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
         <p className="text-xs uppercase tracking-[0.3em] text-ink/40 mb-4">
-          Навички що тренуються
+          {t.workbook.landingSkillsTitle}
         </p>
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="flex items-start gap-3 rounded-2xl border border-ink/10 bg-fog p-4">
@@ -102,9 +102,9 @@ export default function VideoLanding({ onSelectCategory }: VideoLandingProps) {
               <span className="text-lg">👂</span>
             </div>
             <div>
-              <p className="text-sm font-semibold text-ink">Розуміння на слух</p>
+              <p className="text-sm font-semibold text-ink">{t.workbook.videoLandingSkill1}</p>
               <p className="mt-1 text-xs text-ink/60">
-                Тренування сприйняття живої польської мови
+                {t.workbook.videoLandingSkill1Desc}
               </p>
             </div>
           </div>
@@ -114,9 +114,9 @@ export default function VideoLanding({ onSelectCategory }: VideoLandingProps) {
               <span className="text-lg">🗣️</span>
             </div>
             <div>
-              <p className="text-sm font-semibold text-ink">Вимова та інтонація</p>
+              <p className="text-sm font-semibold text-ink">{t.workbook.videoLandingSkill2}</p>
               <p className="mt-1 text-xs text-ink/60">
-                Вчись правильній вимові у носіїв мови
+                {t.workbook.videoLandingSkill2Desc}
               </p>
             </div>
           </div>
@@ -126,9 +126,9 @@ export default function VideoLanding({ onSelectCategory }: VideoLandingProps) {
               <span className="text-lg">🌍</span>
             </div>
             <div>
-              <p className="text-sm font-semibold text-ink">Культурний контекст</p>
+              <p className="text-sm font-semibold text-ink">{t.workbook.videoLandingSkill3}</p>
               <p className="mt-1 text-xs text-ink/60">
-                Дізнавайся про Польщу, культуру та традиції
+                {t.workbook.videoLandingSkill3Desc}
               </p>
             </div>
           </div>
@@ -138,9 +138,9 @@ export default function VideoLanding({ onSelectCategory }: VideoLandingProps) {
               <span className="text-lg">📚</span>
             </div>
             <div>
-              <p className="text-sm font-semibold text-ink">Реальна лексика</p>
+              <p className="text-sm font-semibold text-ink">{t.workbook.videoLandingSkill4}</p>
               <p className="mt-1 text-xs text-ink/60">
-                Вивчай слова та вирази з реальних ситуацій
+                {t.workbook.videoLandingSkill4Desc}
               </p>
             </div>
           </div>
@@ -151,26 +151,26 @@ export default function VideoLanding({ onSelectCategory }: VideoLandingProps) {
       {!loading && stats.totalVideos > 0 && (
         <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
           <p className="text-xs uppercase tracking-[0.3em] text-ink/40 mb-4">
-            Ваша статистика
+            {t.workbook.landingYourStats}
           </p>
           <div className="grid gap-4 sm:grid-cols-4">
             <div className="rounded-2xl border border-ink/10 bg-fog p-4 text-center">
               <div className="text-2xl font-bold text-terracotta">{stats.watchedVideos}</div>
-              <div className="mt-1 text-xs text-ink/60">Переглянуто</div>
+              <div className="mt-1 text-xs text-ink/60">{t.workbook.videoLandingStatWatched}</div>
             </div>
             <div className="rounded-2xl border border-ink/10 bg-fog p-4 text-center">
               <div className="text-2xl font-bold text-moss">
                 {formatTime(stats.totalWatchTime)}
               </div>
-              <div className="mt-1 text-xs text-ink/60">Час перегляду</div>
+              <div className="mt-1 text-xs text-ink/60">{t.workbook.videoLandingStatTime}</div>
             </div>
             <div className="rounded-2xl border border-ink/10 bg-fog p-4 text-center">
               <div className="text-2xl font-bold text-gold">{stats.favoriteVideos}</div>
-              <div className="mt-1 text-xs text-ink/60">В обраному</div>
+              <div className="mt-1 text-xs text-ink/60">{t.workbook.videoLandingStatFavorites}</div>
             </div>
             <div className="rounded-2xl border border-ink/10 bg-fog p-4 text-center">
               <div className="text-2xl font-bold text-terracotta">{stats.totalVideos}</div>
-              <div className="mt-1 text-xs text-ink/60">Доступно</div>
+              <div className="mt-1 text-xs text-ink/60">{t.workbook.videoLandingStatAvailable}</div>
             </div>
           </div>
         </div>
@@ -179,7 +179,7 @@ export default function VideoLanding({ onSelectCategory }: VideoLandingProps) {
       {/* Categories */}
       {categories.length > 0 && (
         <div>
-          <h2 className="text-xl font-semibold text-ink mb-4">Категорії</h2>
+          <h2 className="text-xl font-semibold text-ink mb-4">{t.workbook.videoLandingCategories}</h2>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {categories.map((category) => (
               <button
@@ -192,7 +192,7 @@ export default function VideoLanding({ onSelectCategory }: VideoLandingProps) {
                     {category.icon}
                   </div>
                   <div className="rounded-full bg-terracotta/10 px-3 py-1 text-xs font-semibold text-terracotta">
-                    {category.videoCount} відео
+                    {category.videoCount} {t.workbook.videoLandingVideoCount}
                   </div>
                 </div>
 
@@ -204,7 +204,7 @@ export default function VideoLanding({ onSelectCategory }: VideoLandingProps) {
                 </p>
 
                 <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-terracotta transition group-hover:gap-3">
-                  Дивитись
+                  {t.workbook.videoLandingWatch}
                   <span className="transition">→</span>
                 </div>
               </button>
@@ -218,7 +218,7 @@ export default function VideoLanding({ onSelectCategory }: VideoLandingProps) {
         <div className="rounded-3xl border border-moss/20 bg-moss/5 p-6 shadow-soft">
           <div className="flex items-center gap-2 mb-4">
             <Users size={20} weight="fill" className="text-moss" />
-            <h3 className="text-lg font-semibold text-ink">Рекомендовані канали</h3>
+            <h3 className="text-lg font-semibold text-ink">{t.workbook.videoLandingChannels}</h3>
           </div>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {recommendedChannels.map((channel, idx) => (
@@ -253,10 +253,9 @@ export default function VideoLanding({ onSelectCategory }: VideoLandingProps) {
         <div className="flex items-start gap-3">
           <TrendUp size={20} weight="fill" className="text-terracotta flex-shrink-0 mt-0.5" />
           <div>
-            <p className="text-xs font-semibold text-terracotta mb-1">Порада</p>
+            <p className="text-xs font-semibold text-terracotta mb-1">{t.workbook.landingTip}</p>
             <p className="text-xs text-ink/70">
-              Спочатку подивись відео без субтитрів, потім з польськими, а потім ще раз без.
-              Це допоможе краще зрозуміти та запам&apos;ятати нову лексику!
+              {t.workbook.videoLandingTip}
             </p>
           </div>
         </div>

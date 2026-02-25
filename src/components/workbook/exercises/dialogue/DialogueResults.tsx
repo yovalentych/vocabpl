@@ -2,6 +2,7 @@
 "use client";
 
 import { X, Trophy, Sparkle, CheckCircle, ChatCircleText } from "@phosphor-icons/react";
+import { useLocale } from "@/components/LocaleProvider";
 
 interface DialogueResultsProps {
   results: {
@@ -18,19 +19,20 @@ interface DialogueResultsProps {
 }
 
 export default function DialogueResults({ results, onClose }: DialogueResultsProps) {
+  const { t } = useLocale();
   const { mode, scenario, situation, level, totalTurns, filledTurns, qualityScore, aiFeedback } = results;
 
   const scenarioLabels: Record<string, string> = {
-    shop: "Магазин",
-    restaurant: "Ресторан",
-    station: "Вокзал",
-    hotel: "Готель",
-    doctor: "Лікар"
+    shop: t.workbook.dialogueScenarioShop,
+    restaurant: t.workbook.dialogueScenarioRestaurant,
+    station: t.workbook.dialogueScenarioStation,
+    hotel: t.workbook.dialogueScenarioHotel,
+    doctor: t.workbook.dialogueScenarioDoctor
   };
 
   const title = mode === "classic"
-    ? scenarioLabels[scenario || ""] || "Діалог"
-    : situation || "Діалог з AI";
+    ? scenarioLabels[scenario || ""] || t.workbook.dialogueResultsTitle
+    : situation || t.workbook.dialogueResultsTitle;
 
   // qualityScore is now always 0-1 (score01) from the parent component
   const score01 = aiFeedback?.overall?.score01 ?? qualityScore ?? null;
@@ -53,9 +55,9 @@ export default function DialogueResults({ results, onClose }: DialogueResultsPro
               <Trophy size={24} weight="fill" className={mode === "classic" ? "text-gold" : "text-moss"} />
             </div>
             <div>
-              <h3 className="text-xl font-semibold text-ink">Діалог завершено!</h3>
+              <h3 className="text-xl font-semibold text-ink">{t.workbook.dialogueResultsComplete}</h3>
               <p className="mt-1 text-sm text-ink/60">
-                {mode === "classic" ? "Класичний режим" : "Режим з AI"} · {title} · {level}
+                {mode === "classic" ? t.workbook.classicMode : t.workbook.aiMode} · {title} · {level}
               </p>
             </div>
           </div>
@@ -73,24 +75,24 @@ export default function DialogueResults({ results, onClose }: DialogueResultsPro
           <div className="grid gap-4 grid-cols-2 sm:grid-cols-4">
             <div className="rounded-2xl border border-ink/10 bg-fog p-4 text-center">
               <div className="text-2xl font-bold text-gold">{totalTurns}</div>
-              <div className="mt-1 text-xs text-ink/60">Всього обмінів</div>
+              <div className="mt-1 text-xs text-ink/60">{t.workbook.dialogueResultsTotalExchanges}</div>
             </div>
             <div className="rounded-2xl border border-ink/10 bg-fog p-4 text-center">
               <div className="text-2xl font-bold text-moss">{filledTurns}</div>
-              <div className="mt-1 text-xs text-ink/60">Відповідей дано</div>
+              <div className="mt-1 text-xs text-ink/60">{t.workbook.dialogueResultsAnswersGiven}</div>
             </div>
             <div className="rounded-2xl border border-ink/10 bg-fog p-4 text-center">
               <div className="text-2xl font-bold text-terracotta">
                 {qualityPercent !== null ? `${qualityPercent}%` : "—"}
               </div>
-              <div className="mt-1 text-xs text-ink/60">Якість</div>
+              <div className="mt-1 text-xs text-ink/60">{t.workbook.dialogueResultsQuality}</div>
             </div>
             <div className="rounded-2xl border border-ink/10 bg-fog p-4 text-center">
               <div className="text-2xl font-bold text-ink">
                 {qualityScore10 !== null ? `${qualityScore10}/10` : "—"}
               </div>
               <div className="mt-1 text-xs text-ink/60">
-                {points !== null ? `Балів: ${points}` : "Оцінка"}
+                {points !== null ? `${t.workbook.dialogueResultsPointsLabel}: ${points}` : t.workbook.dialogueResultsRating}
               </div>
             </div>
           </div>
@@ -99,7 +101,7 @@ export default function DialogueResults({ results, onClose }: DialogueResultsPro
           {qualityPercent !== null && qualityPercent < 30 && (
             <div className="rounded-2xl border border-gold/20 bg-gold/5 p-4 text-center">
               <p className="text-sm text-ink/70">
-                Не зупиняйтесь! Навіть перші спроби цінні для навчання. Спробуйте ще раз!
+                {t.workbook.encouragement}
               </p>
             </div>
           )}
@@ -113,7 +115,7 @@ export default function DialogueResults({ results, onClose }: DialogueResultsPro
                   <div className="flex items-start gap-3 mb-3">
                     <Sparkle size={20} weight="fill" className="text-moss flex-shrink-0 mt-0.5" />
                     <p className="text-xs uppercase tracking-[0.3em] text-moss/70">
-                      Загальна оцінка
+                      {t.workbook.overallScore}
                     </p>
                   </div>
                   <p className="text-sm text-ink/70">{aiFeedback.overallFeedback}</p>
@@ -124,7 +126,7 @@ export default function DialogueResults({ results, onClose }: DialogueResultsPro
               {aiFeedback.naturalness !== undefined && (
                 <div className="rounded-2xl border border-ink/10 bg-fog p-4">
                   <div className="flex items-center justify-between mb-2">
-                    <p className="text-xs font-semibold text-ink">Природність мовлення</p>
+                    <p className="text-xs font-semibold text-ink">{t.workbook.dialogueResultsNaturalness}</p>
                     <span className="text-lg font-bold text-gold">
                       {Math.round((aiFeedback.naturalness ?? 0) * 100)}%
                     </span>
@@ -145,7 +147,7 @@ export default function DialogueResults({ results, onClose }: DialogueResultsPro
               {aiFeedback.grammar !== undefined && (
                 <div className="rounded-2xl border border-ink/10 bg-fog p-4">
                   <div className="flex items-center justify-between mb-2">
-                    <p className="text-xs font-semibold text-ink">Граматична правильність</p>
+                    <p className="text-xs font-semibold text-ink">{t.workbook.dialogueResultsGrammar}</p>
                     <span className="text-lg font-bold text-moss">
                       {Math.round((aiFeedback.grammar ?? 0) * 100)}%
                     </span>
@@ -166,7 +168,7 @@ export default function DialogueResults({ results, onClose }: DialogueResultsPro
               {aiFeedback.turns && aiFeedback.turns.length > 0 && (
                 <div>
                   <p className="text-xs uppercase tracking-[0.3em] text-ink/40 mb-4">
-                    Детальний фідбек
+                    {t.workbook.detailedFeedback}
                   </p>
                   <div className="space-y-3">
                     {aiFeedback.turns.map((turn: any, idx: number) => (
@@ -174,7 +176,7 @@ export default function DialogueResults({ results, onClose }: DialogueResultsPro
                         <div className="flex items-start gap-3 mb-2">
                           <ChatCircleText size={16} weight="fill" className="text-gold flex-shrink-0 mt-0.5" />
                           <div className="flex-1">
-                            <p className="text-xs font-semibold text-ink mb-1">Ваша відповідь {idx + 1}</p>
+                            <p className="text-xs font-semibold text-ink mb-1">{t.workbook.dialogueResultsYourAnswer} {idx + 1}</p>
                             <p className="text-sm text-ink/80 italic">&quot;{turn.userResponse}&quot;</p>
                           </div>
                         </div>
@@ -188,7 +190,7 @@ export default function DialogueResults({ results, onClose }: DialogueResultsPro
                         {turn.improved && turn.improved !== turn.userResponse && (
                           <div className="mt-3 pl-7 rounded-xl border border-moss/20 bg-moss/5 px-3 py-2">
                             <p className="text-[10px] uppercase tracking-[0.2em] text-moss/70 mb-1">
-                              Рекомендоване
+                              {t.workbook.dialogueResultsRecommended}
                             </p>
                             <p className="text-sm text-moss">&quot;{turn.improved}&quot;</p>
                           </div>
@@ -203,7 +205,7 @@ export default function DialogueResults({ results, onClose }: DialogueResultsPro
               {aiFeedback.suggestedPhrases && aiFeedback.suggestedPhrases.length > 0 && (
                 <div className="rounded-2xl border border-gold/20 bg-gold/5 p-4">
                   <p className="text-xs uppercase tracking-[0.3em] text-gold/70 mb-3">
-                    Корисні фрази для вивчення
+                    {t.workbook.dialogueResultsUsefulPhrases}
                   </p>
                   <div className="space-y-2">
                     {aiFeedback.suggestedPhrases.map((phrase: any, idx: number) => (
@@ -225,10 +227,12 @@ export default function DialogueResults({ results, onClose }: DialogueResultsPro
               <div className="flex items-start gap-3">
                 <CheckCircle size={20} weight="fill" className="text-gold flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-xs font-semibold text-gold mb-1">Відмінна робота!</p>
+                  <p className="text-xs font-semibold text-gold mb-1">{t.workbook.excellentWork}</p>
                   <p className="text-xs text-ink/70">
-                    Ви заповнили {filledTurns} з {totalTurns} реплік у діалозі.
-                    Продовжуйте практикувати розмовні навички!
+                    {t.workbook.dialogueResultsSummaryText
+                      .replace("{filled}", String(filledTurns))
+                      .replace("{total}", String(totalTurns))}
+                    {" "}{t.workbook.dialogueResultsContinuePractice}
                   </p>
                 </div>
               </div>
@@ -240,11 +244,11 @@ export default function DialogueResults({ results, onClose }: DialogueResultsPro
             <div className="flex items-start gap-3">
               <Sparkle size={20} weight="fill" className="text-gold flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-xs font-semibold text-ink mb-1">Порада для наступного разу</p>
+                <p className="text-xs font-semibold text-ink mb-1">{t.workbook.tipNextTime}</p>
                 <p className="text-xs text-ink/70">
                   {mode === "ai"
-                    ? "Звертайте увагу на природність фраз та граматичні конструкції. Практикуйте різні ситуації для покращення розмовних навичок."
-                    : "Спробуйте AI режим для отримання детального фідбеку та практики з інтерактивним співрозмовником!"}
+                    ? t.workbook.dialogueResultsTipAI
+                    : t.workbook.dialogueResultsTipClassic}
                 </p>
               </div>
             </div>
@@ -261,7 +265,7 @@ export default function DialogueResults({ results, onClose }: DialogueResultsPro
                 : "bg-moss hover:bg-moss/90"
             }`}
           >
-            Завершити
+            {t.workbook.finishButton}
           </button>
         </div>
       </div>

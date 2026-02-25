@@ -62,7 +62,7 @@ export default function TranslateLanding({ onSelectMode }: TranslateLandingProps
       {/* Skills trained */}
       <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
         <p className="text-xs uppercase tracking-[0.3em] text-ink/40 mb-4">
-          Навички що тренуються
+          {t.workbook.landingSkillsTitle}
         </p>
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="flex items-start gap-3 rounded-2xl border border-ink/10 bg-fog p-4">
@@ -70,9 +70,9 @@ export default function TranslateLanding({ onSelectMode }: TranslateLandingProps
               <span className="text-lg">🔄</span>
             </div>
             <div>
-              <p className="text-sm font-semibold text-ink">Двостороння практика</p>
+              <p className="text-sm font-semibold text-ink">{t.workbook.translateLandingSkill1}</p>
               <p className="mt-1 text-xs text-ink/60">
-                Переклад з української на польську та навпаки
+                {t.workbook.translateLandingSkill1Desc}
               </p>
             </div>
           </div>
@@ -82,9 +82,9 @@ export default function TranslateLanding({ onSelectMode }: TranslateLandingProps
               <span className="text-lg">⚙️</span>
             </div>
             <div>
-              <p className="text-sm font-semibold text-ink">Граматична точність</p>
+              <p className="text-sm font-semibold text-ink">{t.workbook.translateLandingSkill2}</p>
               <p className="mt-1 text-xs text-ink/60">
-                Правильні форми, відмінки та часи
+                {t.workbook.translateLandingSkill2Desc}
               </p>
             </div>
           </div>
@@ -94,9 +94,9 @@ export default function TranslateLanding({ onSelectMode }: TranslateLandingProps
               <span className="text-lg">📖</span>
             </div>
             <div>
-              <p className="text-sm font-semibold text-ink">Природність мови</p>
+              <p className="text-sm font-semibold text-ink">{t.workbook.translateLandingSkill3}</p>
               <p className="mt-1 text-xs text-ink/60">
-                Використання ідіом та природних конструкцій
+                {t.workbook.translateLandingSkill3Desc}
               </p>
             </div>
           </div>
@@ -106,9 +106,9 @@ export default function TranslateLanding({ onSelectMode }: TranslateLandingProps
               <span className="text-lg">💡</span>
             </div>
             <div>
-              <p className="text-sm font-semibold text-ink">Контекстне розуміння</p>
+              <p className="text-sm font-semibold text-ink">{t.workbook.translateLandingSkill4}</p>
               <p className="mt-1 text-xs text-ink/60">
-                Вибір правильного значення за контекстом
+                {t.workbook.translateLandingSkill4Desc}
               </p>
             </div>
           </div>
@@ -119,26 +119,26 @@ export default function TranslateLanding({ onSelectMode }: TranslateLandingProps
       {!loading && stats.totalAttempts > 0 && (
         <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
           <p className="text-xs uppercase tracking-[0.3em] text-ink/40 mb-4">
-            Ваша статистика
+            {t.workbook.landingYourStats}
           </p>
           <div className="grid gap-4 sm:grid-cols-4">
             <div className="rounded-2xl border border-ink/10 bg-fog p-4 text-center">
               <div className="text-2xl font-bold text-moss">{stats.totalAttempts}</div>
-              <div className="mt-1 text-xs text-ink/60">Спроб</div>
+              <div className="mt-1 text-xs text-ink/60">{t.workbook.landingAttempts}</div>
             </div>
             <div className="rounded-2xl border border-ink/10 bg-fog p-4 text-center">
               <div className="text-2xl font-bold text-gold">
                 {Math.round(stats.averageScore * 100)}%
               </div>
-              <div className="mt-1 text-xs text-ink/60">Середня точність</div>
+              <div className="mt-1 text-xs text-ink/60">{t.workbook.translateLandingAvgAccuracy}</div>
             </div>
             <div className="rounded-2xl border border-ink/10 bg-fog p-4 text-center">
               <div className="text-2xl font-bold text-terracotta">{stats.totalTranslations}</div>
-              <div className="mt-1 text-xs text-ink/60">Перекладів зроблено</div>
+              <div className="mt-1 text-xs text-ink/60">{t.workbook.translateLandingStat}</div>
             </div>
             <div className="rounded-2xl border border-ink/10 bg-fog p-4 text-center">
               <div className="text-2xl font-bold text-moss">{stats.bestStreak}</div>
-              <div className="mt-1 text-xs text-ink/60">Найкраща серія</div>
+              <div className="mt-1 text-xs text-ink/60">{t.workbook.landingBestStreak}</div>
             </div>
           </div>
         </div>
@@ -156,32 +156,31 @@ export default function TranslateLanding({ onSelectMode }: TranslateLandingProps
               <BookOpen size={24} weight="fill" className="text-moss" />
             </div>
             <div className="rounded-full bg-moss/10 px-3 py-1 text-xs font-semibold text-moss">
-              Класичний
+              {t.workbook.landingClassicTab}
             </div>
           </div>
 
           <h3 className="mt-4 text-xl font-semibold text-ink">
-            Класичний режим
+            {t.workbook.classicMode}
           </h3>
           <p className="mt-2 text-sm text-ink/60">
-            Перекладайте готові речення з української на польську або навпаки.
-            Ідеально для практики базових конструкцій.
+            {t.workbook.translateLandingClassicDesc}
           </p>
 
           <div className="mt-4 flex flex-wrap gap-2">
             <span className="rounded-full bg-fog px-3 py-1 text-xs text-ink/70">
-              ✓ Готові речення
+              {t.workbook.featureReadySentences}
             </span>
             <span className="rounded-full bg-fog px-3 py-1 text-xs text-ink/70">
-              ✓ Обидва напрямки
+              {t.workbook.featureBothDirections}
             </span>
             <span className="rounded-full bg-fog px-3 py-1 text-xs text-ink/70">
-              ✓ Швидко
+              {t.workbook.featureFast}
             </span>
           </div>
 
           <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-moss transition group-hover:gap-3">
-            Почати
+            {t.workbook.landingStart}
             <span className="transition">→</span>
           </div>
         </button>
@@ -196,32 +195,31 @@ export default function TranslateLanding({ onSelectMode }: TranslateLandingProps
               <Sparkle size={24} weight="fill" className="text-gold" />
             </div>
             <div className="rounded-full bg-gold/10 px-3 py-1 text-xs font-semibold text-gold">
-              AI режим
+              {t.workbook.aiMode}
             </div>
           </div>
 
           <h3 className="mt-4 text-xl font-semibold text-ink">
-            Режим з AI
+            {t.workbook.landingAIModeFull}
           </h3>
           <p className="mt-2 text-sm text-ink/60">
-            AI створить речення для перекладу на вашу тему та рівень,
-            а потім перевірить переклади з детальним аналізом помилок.
+            {t.workbook.translateLandingAIDesc}
           </p>
 
           <div className="mt-4 flex flex-wrap gap-2">
             <span className="rounded-full bg-fog px-3 py-1 text-xs text-ink/70">
-              ✓ AI генерація
+              {t.workbook.featureAIGen}
             </span>
             <span className="rounded-full bg-fog px-3 py-1 text-xs text-ink/70">
-              ✓ Детальна перевірка
+              {t.workbook.featureDetailCheck}
             </span>
             <span className="rounded-full bg-fog px-3 py-1 text-xs text-ink/70">
-              ✓ Аналіз помилок
+              {t.workbook.featureErrorAnalysis}
             </span>
           </div>
 
           <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-gold transition group-hover:gap-3">
-            Почати
+            {t.workbook.landingStart}
             <span className="transition">→</span>
           </div>
         </button>
@@ -232,10 +230,9 @@ export default function TranslateLanding({ onSelectMode }: TranslateLandingProps
         <div className="flex items-start gap-3">
           <TrendUp size={20} weight="fill" className="text-moss flex-shrink-0 mt-0.5" />
           <div>
-            <p className="text-xs font-semibold text-moss mb-1">Порада</p>
+            <p className="text-xs font-semibold text-moss mb-1">{t.workbook.landingTip}</p>
             <p className="text-xs text-ink/70">
-              При перекладі намагайтеся спочатку зрозуміти загальний зміст, а потім підбирати
-              слова. Звертайте увагу на контекст - одне слово може мати різні переклади!
+              {t.workbook.translateLandingTip}
             </p>
           </div>
         </div>

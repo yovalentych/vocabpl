@@ -36,7 +36,7 @@ interface VideoData {
 }
 
 export default function VideoPlayer({ videoId, onBack }: VideoPlayerProps) {
-  const { locale } = useLocale();
+  const { t, locale } = useLocale();
   const [video, setVideo] = useState<VideoData | null>(null);
   const [loading, setLoading] = useState(true);
   const [showTranscript, setShowTranscript] = useState(false);
@@ -85,14 +85,12 @@ export default function VideoPlayer({ videoId, onBack }: VideoPlayerProps) {
 
   const getEmbedUrl = (url: string, provider: string) => {
     if (provider === "youtube") {
-      // Extract video ID from various YouTube URL formats
       const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
       const match = url.match(youtubeRegex);
       if (match && match[1]) {
         return `https://www.youtube.com/embed/${match[1]}?rel=0&modestbranding=1`;
       }
     } else if (provider === "vimeo") {
-      // Extract video ID from Vimeo URL
       const vimeoRegex = /vimeo\.com\/(\d+)/;
       const match = url.match(vimeoRegex);
       if (match && match[1]) {
@@ -122,7 +120,7 @@ export default function VideoPlayer({ videoId, onBack }: VideoPlayerProps) {
     if (!video) return;
     const answer = openAnswers[idx] || "";
     if (!answer.trim()) {
-      setOpenFeedback((prev) => ({ ...prev, [idx]: locale === "uk" ? "Напишіть відповідь." : "Napisz odpowiedź." }));
+      setOpenFeedback((prev) => ({ ...prev, [idx]: t.workbook.videoWriteAnswer }));
       return;
     }
     setOpenLoading((prev) => ({ ...prev, [idx]: true }));
@@ -152,9 +150,7 @@ export default function VideoPlayer({ videoId, onBack }: VideoPlayerProps) {
       if (!res.ok) {
         const message =
           data?.code === "ai_quota"
-            ? locale === "uk"
-              ? "Ліміт AI вичерпано."
-              : "Limit AI został wyczerpany."
+            ? t.workbook.videoAILimitExceeded
             : data?.error || "AI error";
         setOpenFeedback((prev) => ({ ...prev, [idx]: message }));
       } else {
@@ -163,7 +159,7 @@ export default function VideoPlayer({ videoId, onBack }: VideoPlayerProps) {
     } catch {
       setOpenFeedback((prev) => ({
         ...prev,
-        [idx]: locale === "uk" ? "Помилка з'єднання." : "Błąd połączenia."
+        [idx]: t.workbook.videoConnectionError
       }));
     } finally {
       setOpenLoading((prev) => ({ ...prev, [idx]: false }));
@@ -175,7 +171,7 @@ export default function VideoPlayer({ videoId, onBack }: VideoPlayerProps) {
       <div className="flex min-h-[400px] items-center justify-center">
         <div className="text-center">
           <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-terracotta border-t-transparent" />
-          <p className="text-sm text-ink/60">Завантаження відео...</p>
+          <p className="text-sm text-ink/60">{t.workbook.videoLoading}</p>
         </div>
       </div>
     );
@@ -184,7 +180,7 @@ export default function VideoPlayer({ videoId, onBack }: VideoPlayerProps) {
   if (!video) {
     return (
       <div className="rounded-3xl border border-ink/10 bg-paper/80 p-12 text-center shadow-soft">
-        <p className="text-sm text-ink/60">Відео не знайдено</p>
+        <p className="text-sm text-ink/60">{t.workbook.videoNotFound}</p>
       </div>
     );
   }
@@ -213,11 +209,11 @@ export default function VideoPlayer({ videoId, onBack }: VideoPlayerProps) {
               <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-ink/60">
                 <div className="flex items-center gap-1">
                   <Clock size={16} />
-                  <span>{Math.floor(video.duration / 60)}хв</span>
+                  <span>{Math.floor(video.duration / 60)}{t.workbook.videoMinutes}</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <Eye size={16} />
-                  <span>Переглядів</span>
+                  <span>{t.workbook.videoViews}</span>
                 </div>
                 <div className="rounded-full bg-moss/10 px-3 py-1 text-xs font-semibold text-moss">
                   {video.level}
@@ -268,10 +264,10 @@ export default function VideoPlayer({ videoId, onBack }: VideoPlayerProps) {
           >
             <div className="flex items-center gap-2">
               <BookOpen size={20} weight="bold" className="text-moss" />
-              <h3 className="text-lg font-semibold text-ink">Транскрипт</h3>
+              <h3 className="text-lg font-semibold text-ink">{t.workbook.videoTranscript}</h3>
             </div>
             <span className="text-sm text-ink/60">
-              {showTranscript ? "Сховати" : "Показати"}
+              {showTranscript ? t.workbook.videoHide : t.workbook.videoShow}
             </span>
           </button>
 
@@ -291,7 +287,7 @@ export default function VideoPlayer({ videoId, onBack }: VideoPlayerProps) {
           <div className="flex items-center gap-2">
             <Sparkle size={20} weight="bold" className="text-terracotta" />
             <h3 className="text-lg font-semibold text-ink">
-              {locale === "uk" ? "Картки для запам'ятовування" : "Fiszki do zapamiętywania"}
+              {t.workbook.videoFlashcards}
             </h3>
           </div>
           <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -304,7 +300,7 @@ export default function VideoPlayer({ videoId, onBack }: VideoPlayerProps) {
                   className="group relative min-h-[120px] rounded-2xl border border-ink/10 bg-fog p-4 text-left transition hover:border-ink/30"
                 >
                   <p className="text-xs uppercase tracking-[0.3em] text-ink/40">
-                    {flipped ? (locale === "uk" ? "Відповідь" : "Odpowiedź") : (locale === "uk" ? "Запитання" : "Pytanie")}
+                    {flipped ? t.workbook.videoAnswer : t.workbook.videoQuestion}
                   </p>
                   <p className="mt-2 text-base font-semibold text-ink">
                     {flipped ? card.back : card.front}
@@ -325,7 +321,7 @@ export default function VideoPlayer({ videoId, onBack }: VideoPlayerProps) {
           <div className="flex items-center gap-2">
             <BookOpen size={20} weight="bold" className="text-moss" />
             <h3 className="text-lg font-semibold text-ink">
-              {locale === "uk" ? "Вправа: Правда чи Міф?" : "Ćwiczenie: Prawda czy mit?"}
+              {t.workbook.videoTruthOrMyth}
             </h3>
           </div>
           <div className="mt-4 space-y-3">
@@ -343,7 +339,7 @@ export default function VideoPlayer({ videoId, onBack }: VideoPlayerProps) {
                         answer === true ? "bg-ink text-paper" : "border border-ink/20 text-ink/60"
                       }`}
                     >
-                      {locale === "uk" ? "Правда" : "Prawda"}
+                      {t.workbook.videoTrue}
                     </button>
                     <button
                       onClick={() => handleTruthAnswer(idx, false)}
@@ -351,7 +347,7 @@ export default function VideoPlayer({ videoId, onBack }: VideoPlayerProps) {
                         answer === false ? "bg-ink text-paper" : "border border-ink/20 text-ink/60"
                       }`}
                     >
-                      {locale === "uk" ? "Міф" : "Mit"}
+                      {t.workbook.videoMyth}
                     </button>
                     {isAnswered && (
                       <span
@@ -360,7 +356,7 @@ export default function VideoPlayer({ videoId, onBack }: VideoPlayerProps) {
                         }`}
                       >
                         {isCorrect ? <CheckCircle size={14} weight="fill" /> : <XCircle size={14} weight="fill" />}
-                        {isCorrect ? (locale === "uk" ? "Правильно" : "Dobrze") : (locale === "uk" ? "Помилка" : "Błąd")}
+                        {isCorrect ? t.workbook.videoCorrect : t.workbook.videoWrong}
                       </span>
                     )}
                   </div>
@@ -380,7 +376,7 @@ export default function VideoPlayer({ videoId, onBack }: VideoPlayerProps) {
           <div className="flex items-center gap-2">
             <Sparkle size={20} weight="bold" className="text-gold" />
             <h3 className="text-lg font-semibold text-ink">
-              {locale === "uk" ? "Відкриті відповіді" : "Odpowiedzi otwarte"}
+              {t.workbook.videoOpenAnswers}
             </h3>
           </div>
           <div className="mt-4 space-y-4">
@@ -392,7 +388,7 @@ export default function VideoPlayer({ videoId, onBack }: VideoPlayerProps) {
                   onChange={(event) => setOpenAnswers((prev) => ({ ...prev, [idx]: event.target.value }))}
                   className="mt-3 w-full rounded-2xl border border-ink/20 bg-paper px-3 py-2 text-sm"
                   rows={3}
-                  placeholder={locale === "uk" ? "Відповідь..." : "Odpowiedź..."}
+                  placeholder={t.workbook.videoAnswerPlaceholder}
                 />
                 <div className="mt-3 flex items-center gap-2">
                   <button
@@ -401,16 +397,12 @@ export default function VideoPlayer({ videoId, onBack }: VideoPlayerProps) {
                     className="rounded-full bg-ink px-4 py-2 text-xs font-semibold text-paper transition hover:bg-ink/90 disabled:opacity-60"
                   >
                     {openLoading[idx]
-                      ? locale === "uk"
-                        ? "AI перевіряє..."
-                        : "AI sprawdza..."
-                      : locale === "uk"
-                        ? "Перевірити з AI"
-                        : "Sprawdź z AI"}
+                      ? t.workbook.videoAIChecking
+                      : t.workbook.videoCheckWithAI}
                   </button>
                   {item.sampleAnswer && (
                     <span className="text-xs text-ink/50">
-                      {locale === "uk" ? "Є приклад відповіді" : "Jest przykładowa odpowiedź"}
+                      {t.workbook.videoSampleAnswer}
                     </span>
                   )}
                 </div>
@@ -435,11 +427,11 @@ export default function VideoPlayer({ videoId, onBack }: VideoPlayerProps) {
             <div className="flex items-center gap-2">
               <Download size={20} weight="bold" className="text-gold" />
               <h3 className="text-lg font-semibold text-ink">
-                Корисні слова ({video.vocabulary.length})
+                {t.workbook.videoUsefulWords} ({video.vocabulary.length})
               </h3>
             </div>
             <span className="text-sm text-ink/60">
-              {showVocabulary ? "Сховати" : "Показати"}
+              {showVocabulary ? t.workbook.videoHide : t.workbook.videoShow}
             </span>
           </button>
 

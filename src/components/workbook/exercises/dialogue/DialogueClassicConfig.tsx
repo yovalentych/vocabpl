@@ -17,11 +17,11 @@ export default function DialogueClassicConfig({ onStart }: DialogueClassicConfig
   const [level, setLevel] = useState<"A1" | "A2" | "B1" | "B2">("A2");
 
   const scenarios = [
-    { id: "shop", label: "Магазин", emoji: "🛒", description: "Покупки та спілкування з продавцем" },
-    { id: "restaurant", label: "Ресторан", emoji: "🍽️", description: "Замовлення їжі та напоїв" },
-    { id: "station", label: "Вокзал", emoji: "🚂", description: "Покупка квитків та інформація про потяги" },
-    { id: "hotel", label: "Готель", emoji: "🏨", description: "Реєстрація та обслуговування в готелі" },
-    { id: "doctor", label: "Лікар", emoji: "⚕️", description: "Візит до лікаря та опис симптомів" }
+    { id: "shop", label: t.workbook.dialogueScenarioShop, emoji: "🛒", description: t.workbook.dialogueScenarioShopDesc },
+    { id: "restaurant", label: t.workbook.dialogueScenarioRestaurant, emoji: "🍽️", description: t.workbook.dialogueScenarioRestaurantDesc },
+    { id: "station", label: t.workbook.dialogueScenarioStation, emoji: "🚂", description: t.workbook.dialogueScenarioStationDesc },
+    { id: "hotel", label: t.workbook.dialogueScenarioHotel, emoji: "🏨", description: t.workbook.dialogueScenarioHotelDesc },
+    { id: "doctor", label: t.workbook.dialogueScenarioDoctor, emoji: "⚕️", description: t.workbook.dialogueScenarioDoctorDesc }
   ];
 
   const handleStart = () => {
@@ -33,20 +33,20 @@ export default function DialogueClassicConfig({ onStart }: DialogueClassicConfig
       {/* Header */}
       <div className="rounded-3xl border border-gold/20 bg-gold/5 p-6 shadow-soft">
         <p className="text-xs uppercase tracking-[0.3em] text-gold/70 mb-2">
-          Крок 1: Налаштування
+          {t.workbook.configSetupDesc}
         </p>
         <h2 className="text-2xl font-semibold text-ink">
-          Класичний режим
+          {t.workbook.classicMode}
         </h2>
         <p className="mt-2 text-sm text-ink/60">
-          Оберіть сценарій діалогу та рівень складності
+          {t.workbook.dialogueConfigSetupHint}
         </p>
       </div>
 
       {/* Scenario selection */}
       <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
         <p className="text-xs uppercase tracking-[0.3em] text-ink/40 mb-4">
-          Оберіть сценарій
+          {t.workbook.configSelectScenario}
         </p>
 
         <div className="grid gap-3 sm:grid-cols-2">
@@ -86,7 +86,7 @@ export default function DialogueClassicConfig({ onStart }: DialogueClassicConfig
       {/* Level selection */}
       <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
         <p className="text-xs uppercase tracking-[0.3em] text-ink/40 mb-4">
-          Рівень складності
+          {t.workbook.levelLabel}
         </p>
 
         <div className="grid grid-cols-4 gap-3">
@@ -102,10 +102,10 @@ export default function DialogueClassicConfig({ onStart }: DialogueClassicConfig
             >
               <div className="text-xl font-bold">{lvl}</div>
               <div className="mt-1 text-[10px] opacity-80">
-                {lvl === "A1" && "Початківець"}
-                {lvl === "A2" && "Базовий"}
-                {lvl === "B1" && "Середній"}
-                {lvl === "B2" && "Просунутий"}
+                {lvl === "A1" && t.workbook.levelA1}
+                {lvl === "A2" && t.workbook.levelA2}
+                {lvl === "B1" && t.workbook.levelB1}
+                {lvl === "B2" && t.workbook.levelB2}
               </div>
             </button>
           ))}
@@ -117,10 +117,9 @@ export default function DialogueClassicConfig({ onStart }: DialogueClassicConfig
         <div className="flex items-start gap-3">
           <Sparkle size={20} weight="fill" className="text-gold flex-shrink-0 mt-0.5" />
           <div>
-            <p className="text-xs font-semibold text-gold mb-1">Порада</p>
+            <p className="text-xs font-semibold text-gold mb-1">{t.workbook.landingTip}</p>
             <p className="text-xs text-ink/70">
-              Уявіть себе у реальній ситуації. Відповідайте так, як би ви справді говорили.
-              Це допоможе краще запам&apos;ятати корисні фрази для повсякденного спілкування.
+              {t.workbook.dialogueConfigTip}
             </p>
           </div>
         </div>
@@ -132,7 +131,7 @@ export default function DialogueClassicConfig({ onStart }: DialogueClassicConfig
           onClick={handleStart}
           className="inline-flex items-center gap-2 rounded-full bg-gold px-8 py-3 text-sm font-semibold text-paper transition hover:bg-gold/90"
         >
-          <span>Почати діалог</span>
+          <span>{t.workbook.configStartPractice}</span>
           <span>→</span>
         </button>
       </div>

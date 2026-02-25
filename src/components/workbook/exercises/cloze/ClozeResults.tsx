@@ -5,12 +5,6 @@ import { Circle, X, Trophy, Sparkle, CheckCircle } from "@phosphor-icons/react";
 import { useLocale } from "@/components/LocaleProvider";
 import VocabSuggestions from "../../shared/VocabSuggestions";
 
-const VERDICT_STYLES = {
-  ok: { icon: "text-moss", label: "Правильно" },
-  weak: { icon: "text-gold", label: "Частково" },
-  bad: { icon: "text-terracotta", label: "Неправильно" },
-};
-
 interface ClozeResultsProps {
   results: {
     mode: "classic" | "ai";
@@ -27,6 +21,13 @@ interface ClozeResultsProps {
 export default function ClozeResults({ results, onClose }: ClozeResultsProps) {
   const { t } = useLocale();
   const { mode, totalGaps, correctCount, score, aiCheck, topic, level } = results;
+
+  const VERDICT_STYLES = {
+    ok: { icon: "text-moss", label: t.workbook.verdictCorrect },
+    weak: { icon: "text-gold", label: t.workbook.verdictPartial },
+    bad: { icon: "text-terracotta", label: t.workbook.verdictIncorrect },
+  };
+
   const suggested = (aiCheck?.suggestedVocab || [])
     .map((item: any) => ({
       pl: String(item.lemma || item.pl || "").trim(),
@@ -235,9 +236,11 @@ export default function ClozeResults({ results, onClose }: ClozeResultsProps) {
                 <div>
                   <p className="text-xs font-semibold text-gold mb-1">{t.workbook.excellentWork}</p>
                   <p className="text-xs text-ink/70">
-                    Ви заповнили {totalGaps} {totalGaps === 1 ? "пропуск" : "пропусків"},
-                    з них {correctCount || 0} правильно ({scorePercent !== null ? `${scorePercent}%` : "\u2014"}).
-                    Продовжуйте практикуватися!
+                    {t.workbook.clozeResultsSummaryText
+                      .replace("{gaps}", String(totalGaps))
+                      .replace("{correct}", String(correctCount || 0))
+                      .replace("{percent}", scorePercent !== null ? `${scorePercent}%` : "\u2014")}
+                    {" "}{t.workbook.clozeResultsContinuePractice}
                   </p>
                 </div>
               </div>

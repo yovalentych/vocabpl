@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { GlobeHemisphereWest, LinkSimple, Star } from "@phosphor-icons/react/dist/ssr";
-import { getServerLocale } from "@/lib/i18n-server";
-import { getDb } from "@/lib/db";
-import { defaultCompendiumContent, type CompendiumContent } from "@/lib/compendium-content";
+import Link from "next/link";
+import { GlobeHemisphereWest, LinkSimple, Star, ArrowLeft } from "@phosphor-icons/react/dist/ssr";
+import { getDictionary } from "@/lib/i18n-server";
+import { loadCompendiumContent } from "@/lib/compendium-loader";
 import { renderSimpleMarkdown } from "@/components/markdown";
 import { requireCompendiumAccess } from "@/lib/compendium-access";
 
@@ -15,18 +15,25 @@ export const metadata: Metadata = {
 
 export default async function CompendiumUsefulSitesPage() {
   await requireCompendiumAccess();
-  const locale = getServerLocale();
+  const { locale, t } = getDictionary();
   const pick = (uk: string, pl: string) => (locale === "pl" && pl ? pl : uk);
-  const db = await getDb();
-  const doc = await db.collection("settings").findOne({ key: "compendium_content" });
-  const content = (doc?.value || defaultCompendiumContent).usefulSites as CompendiumContent["usefulSites"];
+  const all = await loadCompendiumContent();
+  const content = all.usefulSites;
 
   return (
     <main className="mx-auto w-full max-w-6xl px-5 sm:px-6 py-10 sm:py-14 pb-24">
+      <Link
+        href="/compendium"
+        className="mb-6 inline-flex items-center gap-2 text-sm text-ink/50 transition hover:text-ink"
+      >
+        <ArrowLeft size={16} />
+        {t.compendium.back}
+      </Link>
+
       <section className="rounded-[36px] border border-ink/10 bg-gradient-to-br from-terracotta/10 via-paper to-gold/10 p-8 sm:p-10 shadow-soft">
         <div className="flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-ink/50">
           <GlobeHemisphereWest size={18} />
-          {locale === "pl" ? "Przydatne strony" : "Корисні сайти"}
+          {t.compendium.sitesLabel}
         </div>
         <h1 className="mt-3 text-3xl sm:text-4xl font-semibold text-ink">
           {pick(content.hero.titleUk, content.hero.titlePl)}
@@ -71,13 +78,10 @@ export default async function CompendiumUsefulSitesPage() {
         <aside className="rounded-[28px] border border-ink/10 bg-paper/80 p-6 shadow-soft">
           <div className="flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-ink/50">
             <Star size={16} />
-            {locale === "pl" ? "Чернетка" : "Чернетка"}
+            {t.compendium.draftLabel}
           </div>
           <div className="mt-3 text-sm text-ink/70">
             {renderSimpleMarkdown(pick(content.sidebarNoteUk, content.sidebarNotePl))}
-          </div>
-          <div className="mt-4 rounded-2xl border border-ink/10 bg-paper/60 px-4 py-3 text-xs text-ink/60">
-            {renderSimpleMarkdown(pick(content.sidebarPlanUk, content.sidebarPlanPl))}
           </div>
         </aside>
       </section>

@@ -5,12 +5,6 @@ import { Circle, X, Trophy, Sparkle, CheckCircle } from "@phosphor-icons/react";
 import { useLocale } from "@/components/LocaleProvider";
 import VocabSuggestions from "../../shared/VocabSuggestions";
 
-const VERDICT_STYLES = {
-  correct: { icon: "text-moss", label: "Правильно" },
-  partial: { icon: "text-gold", label: "Частково" },
-  incorrect: { icon: "text-terracotta", label: "Неправильно" },
-};
-
 interface MatchResultsProps {
   results: {
     mode: "classic" | "ai";
@@ -28,6 +22,13 @@ interface MatchResultsProps {
 export default function MatchResults({ results, onClose }: MatchResultsProps) {
   const { t } = useLocale();
   const { mode, totalPairs, correctMatches, score, aiCheck, topic, level, pairType } = results;
+
+  const VERDICT_STYLES = {
+    correct: { icon: "text-moss", label: t.workbook.verdictCorrect },
+    partial: { icon: "text-gold", label: t.workbook.verdictPartial },
+    incorrect: { icon: "text-terracotta", label: t.workbook.verdictIncorrect },
+  };
+
   const suggested = (aiCheck?.suggestedVocab || [])
     .map((item: any) => ({
       pl: String(item.lemma || item.pl || "").trim(),
@@ -238,9 +239,12 @@ export default function MatchResults({ results, onClose }: MatchResultsProps) {
                 <div>
                   <p className="text-xs font-semibold text-terracotta mb-1">{t.workbook.excellentWork}</p>
                   <p className="text-xs text-ink/70">
-                    Ви з&apos;єднали {totalPairs} {totalPairs === 1 ? "пару" : "пар"},
-                    з них {correctMatches || 0} правильно ({scorePercent !== null ? `${scorePercent}%` : "\u2014"}).
-                    {pairType && ` Тип пар: ${getPairTypeLabel(pairType)}.`} Продовжуйте практикуватися!
+                    {t.workbook.matchResultsSummaryText
+                      .replace("{pairs}", String(totalPairs))
+                      .replace("{correct}", String(correctMatches || 0))
+                      .replace("{percent}", scorePercent !== null ? `${scorePercent}%` : "\u2014")}
+                    {pairType && ` ${t.workbook.matchResultsPairType}: ${getPairTypeLabel(pairType)}.`}
+                    {" "}{t.workbook.matchResultsContinuePractice}
                   </p>
                 </div>
               </div>

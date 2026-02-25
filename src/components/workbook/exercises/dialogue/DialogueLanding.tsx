@@ -62,7 +62,7 @@ export default function DialogueLanding({ onSelectMode }: DialogueLandingProps) 
       {/* Skills trained */}
       <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
         <p className="text-xs uppercase tracking-[0.3em] text-ink/40 mb-4">
-          Навички що тренуються
+          {t.workbook.landingSkillsTitle}
         </p>
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="flex items-start gap-3 rounded-2xl border border-ink/10 bg-fog p-4">
@@ -70,9 +70,9 @@ export default function DialogueLanding({ onSelectMode }: DialogueLandingProps) 
               <span className="text-lg">💬</span>
             </div>
             <div>
-              <p className="text-sm font-semibold text-ink">Розмовна практика</p>
+              <p className="text-sm font-semibold text-ink">{t.workbook.dialogueLandingSkill1}</p>
               <p className="mt-1 text-xs text-ink/60">
-                Природні діалоги та фрази для спілкування
+                {t.workbook.dialogueLandingSkill1Desc}
               </p>
             </div>
           </div>
@@ -82,9 +82,9 @@ export default function DialogueLanding({ onSelectMode }: DialogueLandingProps) 
               <span className="text-lg">🎭</span>
             </div>
             <div>
-              <p className="text-sm font-semibold text-ink">Рольова гра</p>
+              <p className="text-sm font-semibold text-ink">{t.workbook.dialogueLandingSkill2}</p>
               <p className="mt-1 text-xs text-ink/60">
-                Практика реальних життєвих ситуацій
+                {t.workbook.dialogueLandingSkill2Desc}
               </p>
             </div>
           </div>
@@ -94,9 +94,9 @@ export default function DialogueLanding({ onSelectMode }: DialogueLandingProps) 
               <span className="text-lg">🗣️</span>
             </div>
             <div>
-              <p className="text-sm font-semibold text-ink">Швидка реакція</p>
+              <p className="text-sm font-semibold text-ink">{t.workbook.dialogueLandingSkill3}</p>
               <p className="mt-1 text-xs text-ink/60">
-                Формування відповідей у реальному часі
+                {t.workbook.dialogueLandingSkill3Desc}
               </p>
             </div>
           </div>
@@ -106,9 +106,9 @@ export default function DialogueLanding({ onSelectMode }: DialogueLandingProps) 
               <span className="text-lg">📱</span>
             </div>
             <div>
-              <p className="text-sm font-semibold text-ink">Практичні фрази</p>
+              <p className="text-sm font-semibold text-ink">{t.workbook.dialogueLandingSkill4}</p>
               <p className="mt-1 text-xs text-ink/60">
-                Вивчення корисних виразів для повсякдення
+                {t.workbook.dialogueLandingSkill4Desc}
               </p>
             </div>
           </div>
@@ -119,26 +119,26 @@ export default function DialogueLanding({ onSelectMode }: DialogueLandingProps) 
       {!loading && stats.totalAttempts > 0 && (
         <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
           <p className="text-xs uppercase tracking-[0.3em] text-ink/40 mb-4">
-            Ваша статистика
+            {t.workbook.landingYourStats}
           </p>
           <div className="grid gap-4 sm:grid-cols-4">
             <div className="rounded-2xl border border-ink/10 bg-fog p-4 text-center">
               <div className="text-2xl font-bold text-gold">{stats.totalAttempts}</div>
-              <div className="mt-1 text-xs text-ink/60">Спроб</div>
+              <div className="mt-1 text-xs text-ink/60">{t.workbook.landingAttempts}</div>
             </div>
             <div className="rounded-2xl border border-ink/10 bg-fog p-4 text-center">
               <div className="text-2xl font-bold text-moss">
                 {Math.round(stats.averageScore * 100)}%
               </div>
-              <div className="mt-1 text-xs text-ink/60">Середній бал</div>
+              <div className="mt-1 text-xs text-ink/60">{t.workbook.landingAvgScore}</div>
             </div>
             <div className="rounded-2xl border border-ink/10 bg-fog p-4 text-center">
               <div className="text-2xl font-bold text-terracotta">{stats.totalDialogues}</div>
-              <div className="mt-1 text-xs text-ink/60">Діалогів завершено</div>
+              <div className="mt-1 text-xs text-ink/60">{t.workbook.dialogueLandingStat}</div>
             </div>
             <div className="rounded-2xl border border-ink/10 bg-fog p-4 text-center">
               <div className="text-2xl font-bold text-gold">{stats.bestStreak}</div>
-              <div className="mt-1 text-xs text-ink/60">Найкраща серія</div>
+              <div className="mt-1 text-xs text-ink/60">{t.workbook.landingBestStreak}</div>
             </div>
           </div>
         </div>
@@ -156,32 +156,31 @@ export default function DialogueLanding({ onSelectMode }: DialogueLandingProps) 
               <BookOpen size={24} weight="fill" className="text-gold" />
             </div>
             <div className="rounded-full bg-gold/10 px-3 py-1 text-xs font-semibold text-gold">
-              Класичний
+              {t.workbook.landingClassicTab}
             </div>
           </div>
 
           <h3 className="mt-4 text-xl font-semibold text-ink">
-            Класичний режим
+            {t.workbook.classicMode}
           </h3>
           <p className="mt-2 text-sm text-ink/60">
-            Доповнюйте готові діалоги своїми відповідями.
-            Практикуйте типові ситуації: магазин, ресторан, вокзал.
+            {t.workbook.dialogueLandingClassicDesc}
           </p>
 
           <div className="mt-4 flex flex-wrap gap-2">
             <span className="rounded-full bg-fog px-3 py-1 text-xs text-ink/70">
-              ✓ Готові сценарії
+              {t.workbook.featureReadyScenarios}
             </span>
             <span className="rounded-full bg-fog px-3 py-1 text-xs text-ink/70">
-              ✓ Типові ситуації
+              {t.workbook.featureTypicalSituations}
             </span>
             <span className="rounded-full bg-fog px-3 py-1 text-xs text-ink/70">
-              ✓ Швидко
+              {t.workbook.featureFast}
             </span>
           </div>
 
           <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-gold transition group-hover:gap-3">
-            Почати
+            {t.workbook.landingStart}
             <span className="transition">→</span>
           </div>
         </button>
@@ -196,32 +195,31 @@ export default function DialogueLanding({ onSelectMode }: DialogueLandingProps) 
               <Sparkle size={24} weight="fill" className="text-moss" />
             </div>
             <div className="rounded-full bg-moss/10 px-3 py-1 text-xs font-semibold text-moss">
-              AI режим
+              {t.workbook.aiMode}
             </div>
           </div>
 
           <h3 className="mt-4 text-xl font-semibold text-ink">
-            Режим з AI
+            {t.workbook.landingAIModeFull}
           </h3>
           <p className="mt-2 text-sm text-ink/60">
-            AI створить унікальний діалог на вашу тему та рівень.
-            Практикуйте розмови з AI співрозмовником та отримуйте фідбек.
+            {t.workbook.dialogueLandingAIDesc}
           </p>
 
           <div className="mt-4 flex flex-wrap gap-2">
             <span className="rounded-full bg-fog px-3 py-1 text-xs text-ink/70">
-              ✓ AI співрозмовник
+              {t.workbook.featureAIPartnerTag}
             </span>
             <span className="rounded-full bg-fog px-3 py-1 text-xs text-ink/70">
-              ✓ Унікальні діалоги
+              {t.workbook.featureUniqueDialogues}
             </span>
             <span className="rounded-full bg-fog px-3 py-1 text-xs text-ink/70">
-              ✓ Детальний фідбек
+              {t.workbook.featureDetailFeedback}
             </span>
           </div>
 
           <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-moss transition group-hover:gap-3">
-            Почати
+            {t.workbook.landingStart}
             <span className="transition">→</span>
           </div>
         </button>
@@ -232,10 +230,9 @@ export default function DialogueLanding({ onSelectMode }: DialogueLandingProps) 
         <div className="flex items-start gap-3">
           <TrendUp size={20} weight="fill" className="text-gold flex-shrink-0 mt-0.5" />
           <div>
-            <p className="text-xs font-semibold text-gold mb-1">Порада</p>
+            <p className="text-xs font-semibold text-gold mb-1">{t.workbook.landingTip}</p>
             <p className="text-xs text-ink/70">
-              При створенні діалогів думайте про реальні ситуації. Використовуйте фрази,
-              які ви б дійсно сказали у розмові. Це допоможе краще запам&apos;ятати матеріал!
+              {t.workbook.dialogueLandingTip}
             </p>
           </div>
         </div>

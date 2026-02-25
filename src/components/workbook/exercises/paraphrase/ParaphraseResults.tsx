@@ -2,6 +2,7 @@
 "use client";
 
 import { Circle, CheckCircle, X, Trophy, Sparkle } from "@phosphor-icons/react";
+import { useLocale } from "@/components/LocaleProvider";
 
 interface ParaphraseResultsProps {
   results: {
@@ -17,6 +18,7 @@ interface ParaphraseResultsProps {
 }
 
 export default function ParaphraseResults({ results, onClose }: ParaphraseResultsProps) {
+  const { t } = useLocale();
   const { mode, totalSentences, completedSentences, totalPoints, aiCheck, topic, level } = results;
 
   return (
@@ -32,9 +34,9 @@ export default function ParaphraseResults({ results, onClose }: ParaphraseResult
               <Trophy size={24} weight="fill" className="text-terracotta" />
             </div>
             <div>
-              <h3 className="text-xl font-semibold text-ink">Вправу завершено!</h3>
+              <h3 className="text-xl font-semibold text-ink">{t.workbook.exerciseComplete}</h3>
               <p className="mt-1 text-sm text-ink/60">
-                {mode === "classic" ? "Класичний режим" : "Режим з AI"}
+                {mode === "classic" ? t.workbook.classicMode : t.workbook.aiMode}
                 {topic && ` · ${topic}`}
               </p>
             </div>
@@ -53,11 +55,11 @@ export default function ParaphraseResults({ results, onClose }: ParaphraseResult
           <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
             <div className="rounded-2xl border border-ink/10 bg-fog p-4 text-center">
               <div className="text-2xl font-bold text-terracotta">{totalSentences}</div>
-              <div className="mt-1 text-xs text-ink/60">Всього речень</div>
+              <div className="mt-1 text-xs text-ink/60">{t.workbook.paraphraseResultsTotalSentences}</div>
             </div>
             <div className="rounded-2xl border border-ink/10 bg-fog p-4 text-center">
               <div className="text-2xl font-bold text-moss">{completedSentences}</div>
-              <div className="mt-1 text-xs text-ink/60">Перефразовано</div>
+              <div className="mt-1 text-xs text-ink/60">{t.workbook.paraphraseResultsParaphrased}</div>
             </div>
             <div className="rounded-2xl border border-ink/10 bg-fog p-4 text-center">
               {mode === "classic" && totalPoints !== undefined ? (
@@ -65,19 +67,19 @@ export default function ParaphraseResults({ results, onClose }: ParaphraseResult
                   <div className="text-2xl font-bold text-gold">
                     {totalPoints}
                   </div>
-                  <div className="mt-1 text-xs text-ink/60">Балів зароблено</div>
+                  <div className="mt-1 text-xs text-ink/60">{t.workbook.paraphraseResultsPointsEarned}</div>
                 </>
               ) : aiCheck?.overall?.qualityScore !== undefined ? (
                 <>
                   <div className="text-2xl font-bold text-moss">
                     {Math.round(aiCheck.overall.qualityScore * 100)}%
                   </div>
-                  <div className="mt-1 text-xs text-ink/60">Якість</div>
+                  <div className="mt-1 text-xs text-ink/60">{t.workbook.paraphraseResultsQuality}</div>
                 </>
               ) : (
                 <>
                   <div className="text-2xl font-bold text-moss">✓</div>
-                  <div className="mt-1 text-xs text-ink/60">Завершено</div>
+                  <div className="mt-1 text-xs text-ink/60">{t.workbook.paraphraseResultsCompleted}</div>
                 </>
               )}
             </div>
@@ -87,7 +89,7 @@ export default function ParaphraseResults({ results, onClose }: ParaphraseResult
           {aiCheck?.overall?.qualityScore !== undefined && aiCheck.overall.qualityScore < 0.3 && (
             <div className="rounded-2xl border border-gold/20 bg-gold/5 p-4 text-center">
               <p className="text-sm text-ink/70">
-                Не зупиняйтесь! Навіть перші спроби цінні для навчання. Спробуйте ще раз!
+                {t.workbook.encouragement}
               </p>
             </div>
           )}
@@ -101,7 +103,7 @@ export default function ParaphraseResults({ results, onClose }: ParaphraseResult
                   <div className="flex items-start justify-between gap-4 mb-4">
                     <div>
                       <p className="text-xs uppercase tracking-[0.3em] text-moss/70">
-                        Загальна оцінка
+                        {t.workbook.overallScore}
                       </p>
                       <div className="mt-2 flex items-center gap-3">
                         <span className="text-3xl font-bold text-moss">
@@ -126,7 +128,7 @@ export default function ParaphraseResults({ results, onClose }: ParaphraseResult
               {aiCheck.items && aiCheck.items.length > 0 && (
                 <div>
                   <p className="text-xs uppercase tracking-[0.3em] text-ink/40 mb-4">
-                    Детальний фідбек
+                    {t.workbook.detailedFeedback}
                   </p>
                   <div className="space-y-4">
                     {aiCheck.items.map((item: any, idx: number) => {
@@ -144,7 +146,7 @@ export default function ParaphraseResults({ results, onClose }: ParaphraseResult
                             {/* Original */}
                             <div>
                               <p className="text-[10px] uppercase tracking-[0.2em] text-ink/40 mb-1">
-                                Оригінал
+                                {t.workbook.paraphraseResultsOriginal}
                               </p>
                               <p className="text-sm text-ink">{item.original}</p>
                             </div>
@@ -152,7 +154,7 @@ export default function ParaphraseResults({ results, onClose }: ParaphraseResult
                             {/* Your paraphrase */}
                             <div>
                               <p className="text-[10px] uppercase tracking-[0.2em] text-ink/40 mb-1">
-                                Ваше перефразування
+                                {t.workbook.paraphraseResultsYourParaphrase}
                               </p>
                               <div className="flex items-start gap-2">
                                 <Circle
@@ -176,7 +178,7 @@ export default function ParaphraseResults({ results, onClose }: ParaphraseResult
                               <div className="grid gap-2 grid-cols-1 sm:grid-cols-3">
                                 {item.synonymsUsed !== undefined && (
                                   <div className="rounded-lg border border-ink/10 bg-paper p-2 text-center">
-                                    <p className="text-xs text-ink/50">Синоніми</p>
+                                    <p className="text-xs text-ink/50">{t.workbook.paraphraseResultsSynonyms}</p>
                                     <p className="text-sm font-semibold text-moss">
                                       {item.synonymsUsed ? "✓" : "—"}
                                     </p>
@@ -184,7 +186,7 @@ export default function ParaphraseResults({ results, onClose }: ParaphraseResult
                                 )}
                                 {item.structureChanged !== undefined && (
                                   <div className="rounded-lg border border-ink/10 bg-paper p-2 text-center">
-                                    <p className="text-xs text-ink/50">Структура</p>
+                                    <p className="text-xs text-ink/50">{t.workbook.paraphraseResultsStructure}</p>
                                     <p className="text-sm font-semibold text-moss">
                                       {item.structureChanged ? "✓" : "—"}
                                     </p>
@@ -192,7 +194,7 @@ export default function ParaphraseResults({ results, onClose }: ParaphraseResult
                                 )}
                                 {item.meaningPreserved !== undefined && (
                                   <div className="rounded-lg border border-ink/10 bg-paper p-2 text-center">
-                                    <p className="text-xs text-ink/50">Смисл</p>
+                                    <p className="text-xs text-ink/50">{t.workbook.paraphraseResultsMeaning}</p>
                                     <p className="text-sm font-semibold text-moss">
                                       {item.meaningPreserved ? "✓" : "—"}
                                     </p>
@@ -205,7 +207,7 @@ export default function ParaphraseResults({ results, onClose }: ParaphraseResult
                             {item.alternative && item.alternative !== item.paraphrase && (
                               <div className="rounded-lg border border-moss/20 bg-moss/5 px-3 py-2">
                                 <p className="text-[10px] uppercase tracking-[0.2em] text-moss/70 mb-1">
-                                  Альтернативний варіант
+                                  {t.workbook.paraphraseResultsAlternative}
                                 </p>
                                 <p className="text-sm text-moss">{item.alternative}</p>
                               </div>
@@ -226,10 +228,12 @@ export default function ParaphraseResults({ results, onClose }: ParaphraseResult
               <div className="flex items-start gap-3">
                 <CheckCircle size={20} weight="fill" className="text-terracotta flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-xs font-semibold text-terracotta mb-1">Відмінна робота!</p>
+                  <p className="text-xs font-semibold text-terracotta mb-1">{t.workbook.excellentWork}</p>
                   <p className="text-xs text-ink/70">
-                    Ви перефразували {completedSentences} з {totalSentences} речень.
-                    Продовжуйте практикуватися для покращення навичок перефразування!
+                    {t.workbook.paraphraseResultsSummaryText
+                      .replace("{count}", String(completedSentences))
+                      .replace("{total}", String(totalSentences))}
+                    {" "}{t.workbook.paraphraseResultsContinuePractice}
                   </p>
                 </div>
               </div>
@@ -241,11 +245,11 @@ export default function ParaphraseResults({ results, onClose }: ParaphraseResult
             <div className="flex items-start gap-3">
               <Sparkle size={20} weight="fill" className="text-moss flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-xs font-semibold text-ink mb-1">Порада для наступного разу</p>
+                <p className="text-xs font-semibold text-ink mb-1">{t.workbook.tipNextTime}</p>
                 <p className="text-xs text-ink/70">
                   {mode === "ai"
-                    ? "Звертайте увагу на фідбек AI щодо використання синонімів та зміни структури речень."
-                    : "Спробуйте AI режим для отримання детального фідбеку з альтернативними варіантами!"}
+                    ? t.workbook.paraphraseResultsTipAI
+                    : t.workbook.paraphraseResultsTipClassic}
                 </p>
               </div>
             </div>
@@ -258,7 +262,7 @@ export default function ParaphraseResults({ results, onClose }: ParaphraseResult
             onClick={onClose}
             className="w-full rounded-full bg-terracotta px-6 py-3 text-sm font-semibold text-paper transition hover:bg-terracotta/90"
           >
-            Завершити
+            {t.workbook.finishButton}
           </button>
         </div>
       </div>
