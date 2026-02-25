@@ -69,15 +69,13 @@ export default function StoryExercisePage() {
         <div className="space-y-6">
           <div className="rounded-3xl border border-moss/20 bg-moss/5 p-6 shadow-soft">
             <p className="text-xs uppercase tracking-[0.3em] text-moss/70 mb-2">
-              Крок 1: Налаштування
+              {t.workbook.step1Setup}
             </p>
             <h2 className="text-2xl font-semibold text-ink">
-              {useAI ? "Режим з AI" : "Класичний режим"}
+              {useAI ? t.workbook.storyAIMode : t.workbook.storyClassicMode}
             </h2>
             <p className="mt-2 text-sm text-ink/60">
-              {useAI
-                ? "AI допоможе створити початок історії на вашу тему"
-                : "Напишіть історію на обрану тему"}
+              {useAI ? t.workbook.storyAIConfigDesc : t.workbook.storyClassicDesc}
             </p>
           </div>
 
@@ -93,7 +91,7 @@ export default function StoryExercisePage() {
               onClick={handleConfigDone}
               className="inline-flex items-center gap-2 rounded-full bg-moss px-8 py-3 text-sm font-semibold text-paper transition hover:bg-moss/90"
             >
-              <span>Почати писати</span>
+              <span>{t.workbook.storyStartWriting}</span>
               <span>→</span>
             </button>
           </div>

@@ -577,7 +577,7 @@ export default function TestsClient() {
 
             <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
               {aiLoading && (
-                <div className="text-sm text-ink/60">Завантаження історії...</div>
+                <div className="text-sm text-ink/60">{t.common.loading}</div>
               )}
               {!aiLoading && aiHistory.length === 0 && (
                 <div className="text-center text-sm text-ink/60">

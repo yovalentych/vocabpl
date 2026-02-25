@@ -126,7 +126,7 @@ export default function DictWordCard({
               <p className="text-lg font-semibold text-ink">
                 {sortField === "uk" ? word.uk : word.pl}
               </p>
-              <SpeakButton text={word.pl} label="Озвучити польське слово" />
+              <SpeakButton text={word.pl} />
               <span className="text-xs text-ink/30">·</span>
               <p className="text-sm text-ink/60">
                 {hideTranslations && !revealedMap[word.id]

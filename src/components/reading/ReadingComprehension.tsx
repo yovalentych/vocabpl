@@ -5,6 +5,7 @@ import { CheckCircle, XCircle, Lightning, BookOpen, Sparkle, X } from "@phosphor
 import { useReadingComprehension, type ComprehensionQuestion, type UserAnswer } from "./hooks/useReadingComprehension";
 import Loader from "@/components/ui/Loader";
 import ErrorFeedbackModal from "@/components/ui/ErrorFeedbackModal";
+import { useLocale } from "@/components/LocaleProvider";
 
 interface ReadingComprehensionProps {
   text: string;
@@ -25,6 +26,7 @@ export default function ReadingComprehension({
   textTitle,
   textTopic
 }: ReadingComprehensionProps) {
+  const { t } = useLocale();
   const {
     questions,
     answers,
@@ -67,7 +69,6 @@ export default function ReadingComprehension({
     const success = await checkAnswers(text, textId, locale);
     if (success) {
       setShowResultModal(true);
-      // Auto-save session after successful check
       await handleSaveSession();
     } else if (error) {
       setErrorDetails({
@@ -99,7 +100,7 @@ export default function ReadingComprehension({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           textId,
-          textTitle: textTitle || { pl: "Unknown", uk: "Невідомо" },
+          textTitle: textTitle || { pl: "Unknown", uk: "Unknown" },
           textLevel: level,
           textTopic: textTopic || "",
           questions,
@@ -140,7 +141,7 @@ export default function ReadingComprehension({
         } else if (res.status === 409) {
           skipped += 1;
         } else if (res.status === 403) {
-          setVocabMessage("Доступ до словника доступний лише для активної підписки.");
+          setVocabMessage(t.reading.dictAccessLocked);
           setAddingVocab(false);
           return;
         } else {
@@ -151,19 +152,18 @@ export default function ReadingComprehension({
       setVocabAdded(true);
 
       if (added > 0) {
-        setVocabMessage(`✓ Додано ${added} ${added === 1 ? "слово" : added < 5 ? "слова" : "слів"} до словника!`);
+        setVocabMessage("✓ " + t.common.added + " " + added);
       } else if (skipped > 0) {
-        setVocabMessage("Ці слова вже в словнику або не знайдені");
+        setVocabMessage(t.reading.wordsAlreadyInDict);
       }
     } catch (err) {
       console.error("Add vocabulary error:", err);
-      setVocabMessage("Помилка додавання слів");
+      setVocabMessage(t.reading.addWordError);
     } finally {
       setAddingVocab(false);
     }
   }
 
-  // Check if all questions are answered
   function isAnswered(answer: UserAnswer): boolean {
     switch (answer.type) {
       case "open":
@@ -180,7 +180,6 @@ export default function ReadingComprehension({
 
   const allAnswered = answers.length > 0 && answers.every(isAnswered);
 
-  // Render question based on type
   function renderQuestion(question: ComprehensionQuestion, idx: number) {
     const displayLang = viewMode === "uk" ? "uk" : "pl";
     const questionText = question.question[displayLang];
@@ -196,31 +195,28 @@ export default function ReadingComprehension({
           <div className="flex-1">
             <p className="text-sm font-medium text-ink/90">{questionText}</p>
 
-            {/* Open-ended question */}
             {question.type === "open" && (
               <textarea
                 value={answer?.textValue || ""}
                 onChange={(e) => updateAnswer(idx, { textValue: e.target.value })}
-                placeholder="Ваша відповідь..."
+                placeholder={t.reading.yourAnswerPlaceholder}
                 rows={3}
                 disabled={isDisabled}
                 className="mt-3 w-full rounded-xl border border-ink/20 bg-paper px-3 py-2 text-sm resize-none focus:border-moss/40 focus:outline-none"
               />
             )}
 
-            {/* Short answer question */}
             {question.type === "short" && (
               <input
                 type="text"
                 value={answer?.textValue || ""}
                 onChange={(e) => updateAnswer(idx, { textValue: e.target.value })}
-                placeholder="Коротка відповідь (1-3 слова)..."
+                placeholder={t.reading.shortAnswerPlaceholder}
                 disabled={isDisabled}
                 className="mt-3 w-full rounded-xl border border-ink/20 bg-paper px-3 py-2 text-sm focus:border-moss/40 focus:outline-none"
               />
             )}
 
-            {/* True/False question */}
             {question.type === "truefalse" && (
               <div className="mt-3 flex gap-3">
                 <button
@@ -232,7 +228,7 @@ export default function ReadingComprehension({
                       : "border-ink/20 text-ink/70 hover:border-moss/40"
                   }`}
                 >
-                  ✓ Правда
+                  {"✓ " + t.reading.trueLabel}
                 </button>
                 <button
                   onClick={() => updateAnswer(idx, { boolValue: false })}
@@ -243,12 +239,11 @@ export default function ReadingComprehension({
                       : "border-ink/20 text-ink/70 hover:border-terracotta/40"
                   }`}
                 >
-                  ✗ Неправда
+                  {"✗ " + t.reading.falseLabel}
                 </button>
               </div>
             )}
 
-            {/* Multiple choice question */}
             {question.type === "multiple" && question.options && (
               <div className="mt-3 space-y-2">
                 {question.options.map((option, optIdx) => (
@@ -276,16 +271,15 @@ export default function ReadingComprehension({
     );
   }
 
-  // Show generate button if no questions yet
   if (!questions) {
     return (
       <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
         <div className="flex items-center gap-2">
           <BookOpen size={24} weight="duotone" className="text-moss" />
-          <h3 className="text-xl font-semibold">Перевірка розуміння</h3>
+          <h3 className="text-xl font-semibold">{t.reading.comprehensionCheck}</h3>
         </div>
         <p className="mt-2 text-sm text-ink/60">
-          Згенеруйте питання до тексту і перевірте своє розуміння
+          {t.reading.comprehensionHint}
         </p>
 
         <button
@@ -296,12 +290,12 @@ export default function ReadingComprehension({
           {generating ? (
             <>
               <Loader label="" />
-              Генерую питання...
+              {t.reading.generatingQuestions}
             </>
           ) : (
             <>
               <Lightning size={18} weight="fill" />
-              Згенерувати питання (2 кредити)
+              {t.reading.generateQuestions}
             </>
           )}
         </button>
@@ -313,7 +307,7 @@ export default function ReadingComprehension({
               onClick={handleGenerate}
               className="mt-3 text-xs font-semibold text-terracotta underline hover:no-underline"
             >
-              Спробувати ще раз
+              {t.common.retry}
             </button>
           </div>
         )}
@@ -327,8 +321,8 @@ export default function ReadingComprehension({
       <ErrorFeedbackModal
         isOpen={showErrorModal}
         onClose={() => setShowErrorModal(false)}
-        error={error || "Невідома помилка"}
-        context={retryAction === "generate" ? "Генерація питань" : "Перевірка розуміння"}
+        error={error || t.reading.unknownError}
+        context="Reading comprehension"
         onRetry={() => {
           setShowErrorModal(false);
           if (retryAction === "generate") {
@@ -344,18 +338,17 @@ export default function ReadingComprehension({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <BookOpen size={24} weight="duotone" className="text-moss" />
-            <h3 className="text-xl font-semibold">Питання до тексту</h3>
+            <h3 className="text-xl font-semibold">{t.reading.questionsToText}</h3>
           </div>
           <button
             onClick={handleReset}
             className="rounded-full px-3 py-1 text-xs font-medium text-ink/40 transition hover:bg-ink/5 hover:text-ink/60"
           >
-            Скинути
+            {t.common.reset}
           </button>
         </div>
 
         <div className="mt-6 space-y-4">
-          {/* Multiple choice questions in 2 columns */}
           <div className="grid gap-4 md:grid-cols-2">
             {questions.questions
               .map((question, idx) => ({ question, idx }))
@@ -363,7 +356,6 @@ export default function ReadingComprehension({
               .map(({ question, idx }) => renderQuestion(question, idx))}
           </div>
 
-          {/* Other question types */}
           <div className="space-y-4">
             {questions.questions
               .map((question, idx) => ({ question, idx }))
@@ -381,12 +373,12 @@ export default function ReadingComprehension({
             {checking ? (
               <>
                 <Loader label="" />
-                Перевіряю відповіді...
+                {t.reading.checkingAnswers}
               </>
             ) : (
               <>
                 <Lightning size={18} weight="fill" />
-                Перевірити відповіді (2 кредити)
+                {t.reading.checkAnswers}
               </>
             )}
           </button>
@@ -399,7 +391,7 @@ export default function ReadingComprehension({
               onClick={handleCheck}
               className="mt-3 text-xs font-semibold text-terracotta underline hover:no-underline"
             >
-              Спробувати ще раз
+              {t.common.retry}
             </button>
           </div>
         )}
@@ -414,7 +406,7 @@ export default function ReadingComprehension({
                 <Sparkle size={32} weight="fill" className="text-gold" />
                 <div>
                   <h3 className="text-2xl font-bold">
-                    {Math.round(result.overall.pointsForRating)}/10 балів
+                    {Math.round(result.overall.pointsForRating)}/10 {t.common.points}
                   </h3>
                   <p className="text-sm text-ink/60">{result.overall.feedback}</p>
                 </div>
@@ -427,11 +419,10 @@ export default function ReadingComprehension({
               </button>
             </div>
 
-            {/* Points Awarded */}
             {points !== null && (
               <div className="mt-4 rounded-2xl border border-gold/20 bg-gold/10 p-4">
                 <p className="text-sm font-semibold text-gold">
-                  ✨ Нараховано {points} балів!
+                  {"✨ +" + points + " " + t.common.points}
                 </p>
               </div>
             )}
@@ -439,7 +430,7 @@ export default function ReadingComprehension({
             {/* Detailed Feedback */}
             <div className="mt-6 space-y-4">
               <h4 className="text-sm font-semibold uppercase tracking-[0.2em] text-ink/40">
-                Детальний feedback
+                {t.common.detailedFeedback}
               </h4>
               {result.items.map((item, idx) => (
                 <div
@@ -458,14 +449,14 @@ export default function ReadingComprehension({
                     )}
                     <div className="flex-1">
                       <p className="text-sm font-medium text-ink/80">
-                        Питання {item.questionIndex + 1}
+                        {t.common.question} {item.questionIndex + 1}
                       </p>
                       <p className="mt-1 text-sm text-ink/60">
-                        Ваша відповідь: <span className="font-medium">{item.userAnswer}</span>
+                        {t.common.yourAnswer}: <span className="font-medium">{item.userAnswer}</span>
                       </p>
                       {!item.correct && item.expectedAnswer && (
                         <p className="mt-1 text-sm text-ink/60">
-                          Очікувана відповідь: <span className="font-medium">{item.expectedAnswer}</span>
+                          {t.common.expectedAnswer}: <span className="font-medium">{item.expectedAnswer}</span>
                         </p>
                       )}
                       <p className="mt-2 text-sm text-ink/70">{item.feedback}</p>
@@ -479,7 +470,7 @@ export default function ReadingComprehension({
             {result.suggestedVocab && result.suggestedVocab.length > 0 && (
               <div className="mt-6">
                 <h4 className="text-sm font-semibold uppercase tracking-[0.2em] text-ink/40">
-                  📚 Рекомендовані слова
+                  {t.common.suggestedWords}
                 </h4>
                 <div className="mt-4 space-y-3">
                   {result.suggestedVocab.map((word, idx) => (
@@ -504,12 +495,12 @@ export default function ReadingComprehension({
                   {addingVocab ? (
                     <span className="flex items-center justify-center gap-2">
                       <Loader label="" />
-                      Додаю...
+                      {t.common.addingToDict}
                     </span>
                   ) : vocabAdded ? (
-                    "✓ Додано до словника"
+                    "✓ " + t.common.addedToDict
                   ) : (
-                    "Додати всі до словника"
+                    t.common.addAllToDict
                   )}
                 </button>
                 {vocabMessage && (
@@ -520,11 +511,10 @@ export default function ReadingComprehension({
               </div>
             )}
 
-            {/* Auto-saved notification */}
             {sessionSaved && (
               <div className="mt-4 rounded-2xl border border-gold/20 bg-gold/10 p-3 text-center">
                 <p className="text-sm font-semibold text-gold">
-                  ✓ Результати автоматично збережено!
+                  {"✓ " + t.common.autoSaved}
                 </p>
               </div>
             )}
@@ -540,20 +530,20 @@ export default function ReadingComprehension({
                 className="flex w-full items-center justify-center gap-2 rounded-full bg-moss px-4 py-3 text-sm font-semibold text-paper transition hover:bg-moss/90"
               >
                 <Lightning size={18} weight="fill" />
-                Згенерувати нові питання
+                {t.reading.generateNewQuestions}
               </button>
               <div className="flex gap-3">
                 <button
                   onClick={handleReset}
                   className="flex-1 rounded-full border border-ink/20 px-4 py-2 text-sm font-semibold text-ink transition hover:bg-ink/5"
                 >
-                  Спробувати знову
+                  {t.common.retry}
                 </button>
                 <button
                   onClick={() => setShowResultModal(false)}
                   className="flex-1 rounded-full bg-ink px-4 py-2 text-sm font-semibold text-paper transition hover:bg-ink/90"
                 >
-                  Закрити
+                  {t.common.close}
                 </button>
               </div>
             </div>

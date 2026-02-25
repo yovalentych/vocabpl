@@ -7,6 +7,7 @@ import Loader from "@/components/ui/Loader";
 import ErrorFeedbackModal from "@/components/ui/ErrorFeedbackModal";
 import { safeJSONParse } from "@/lib/json-utils";
 import { validateGeneratedContent } from "@/lib/difficulty";
+import { useLocale } from "@/components/LocaleProvider";
 
 export interface TestQuestion {
   id: string;
@@ -39,6 +40,7 @@ type FocusArea = "grammar" | "vocabulary" | "orthography" | "word-formation";
 type QuestionType = "single" | "multiple" | "fillgap" | "open";
 
 export default function TestAIGenerator({ onTestGenerated, locale = "uk" }: TestAIGeneratorProps) {
+  const { t } = useLocale();
   const [topic, setTopic] = useState("");
   const [focus, setFocus] = useState<FocusArea>("grammar");
   const [grammarTopics, setGrammarTopics] = useState<string[]>([]);
@@ -364,12 +366,12 @@ export default function TestAIGenerator({ onTestGenerated, locale = "uk" }: Test
             {generating ? (
               <>
                 <Loader label="" />
-                Генерую тест...
+                {t.tests.generatingTest}
               </>
             ) : (
               <>
                 <Lightning size={18} weight="fill" />
-                Згенерувати тест (3 кредити)
+                {t.tests.generateTest}
               </>
             )}
           </button>
@@ -382,7 +384,7 @@ export default function TestAIGenerator({ onTestGenerated, locale = "uk" }: Test
                   onClick={handleGenerate}
                   className="mt-3 text-xs font-semibold text-terracotta underline hover:no-underline"
                 >
-                  Спробувати ще раз
+                  {t.common.retry}
                 </button>
               )}
             </div>

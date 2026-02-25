@@ -5,6 +5,7 @@ import { ArrowLeft, ArrowRight, CheckCircle, Sparkle } from "@phosphor-icons/rea
 import TestAIGenerator from "./TestAIGenerator";
 import TestAISession from "./TestAISession";
 import type { GeneratedTest, TestQuestion } from "./TestAIGenerator";
+import { useLocale } from "@/components/LocaleProvider";
 
 type Step = "config" | "test";
 
@@ -13,6 +14,7 @@ interface TestAIWizardProps {
 }
 
 export default function TestAIWizard({ locale = "uk" }: TestAIWizardProps) {
+  const { t } = useLocale();
   const [step, setStep] = useState<Step>("config");
   const [currentTest, setCurrentTest] = useState<GeneratedTest | null>(null);
   const [allQuestions, setAllQuestions] = useState<TestQuestion[]>([]);
@@ -110,7 +112,7 @@ export default function TestAIWizard({ locale = "uk" }: TestAIWizardProps) {
           className="flex items-center gap-2 text-sm font-semibold text-ink/60 transition hover:text-ink"
         >
           <ArrowLeft size={16} />
-          Назад до налаштувань
+          {t.tests.backToSettings}
         </button>
 
         {totalPages > 1 && (
@@ -124,7 +126,7 @@ export default function TestAIWizard({ locale = "uk" }: TestAIWizardProps) {
             </button>
 
             <span className="text-sm font-semibold text-ink">
-              Сторінка {currentPage + 1} з {totalPages}
+              {t.tests.pageOf.replace("{current}", String(currentPage + 1)).replace("{total}", String(totalPages))}
             </span>
 
             <button

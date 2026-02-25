@@ -560,7 +560,7 @@ export default function DictBrowse() {
         className="inline-flex items-center gap-2 text-sm text-ink/60 transition hover:text-ink"
       >
         <ArrowLeft size={16} weight="bold" />
-        <span>Назад до словника</span>
+        <span>{t.common.back}</span>
       </Link>
 
       {/* Filters */}
@@ -822,7 +822,6 @@ export default function DictBrowse() {
                     </h3>
                     <SpeakButton
                       text={trainerQueue[trainerIndex].pl}
-                      label="Озвучити польське слово"
                     />
                   </div>
                   {trainerMode === "typing" && (

@@ -4,6 +4,7 @@ import { X, Lightbulb, Plus, Check } from "@phosphor-icons/react";
 import { useState } from "react";
 import type { AIExplanation } from "./hooks/useReadingAI";
 import Loader from "@/components/ui/Loader";
+import { useLocale } from "@/components/LocaleProvider";
 
 interface ReadingExplainerProps {
   isOpen: boolean;
@@ -24,6 +25,7 @@ export default function ReadingExplainer({
   onClose,
   onRetry
 }: ReadingExplainerProps) {
+  const { t } = useLocale();
   const [addedExamples, setAddedExamples] = useState<Set<number>>(new Set());
   const [addingExample, setAddingExample] = useState<number | null>(null);
 
@@ -34,15 +36,12 @@ export default function ReadingExplainer({
 
     setAddingExample(idx);
     try {
-      // Extract potential vocabulary from example
-      // This is a simple implementation - could be enhanced
       const words = example.match(/\b[a-ząćęłńóśźż]+\b/gi) || [];
 
-      // For now, we'll just add the fragment itself
       const res = await fetch("/api/user/vocabulary/add", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pl: fragment, uk: "" }) // Translation would need to come from explanation
+        body: JSON.stringify({ pl: fragment, uk: "" })
       });
 
       if (res.ok) {
@@ -64,7 +63,7 @@ export default function ReadingExplainer({
               <Lightbulb size={24} weight="fill" className="text-gold" />
             </div>
             <div>
-              <h2 className="text-xl font-semibold">Пояснення</h2>
+              <h2 className="text-xl font-semibold">{t.reading.explanation}</h2>
               <p className="text-sm text-ink/60">&quot;{fragment}&quot;</p>
             </div>
           </div>
@@ -79,7 +78,7 @@ export default function ReadingExplainer({
         {/* Loading State */}
         {loading && (
           <div className="mt-8 text-center">
-            <Loader label="Отримую пояснення..." />
+            <Loader label={t.reading.gettingExplanation} />
           </div>
         )}
 
@@ -92,7 +91,7 @@ export default function ReadingExplainer({
                 onClick={onRetry}
                 className="mt-3 text-xs font-semibold text-terracotta underline hover:no-underline"
               >
-                Спробувати ще раз
+                {t.common.retry}
               </button>
             )}
           </div>
@@ -104,7 +103,7 @@ export default function ReadingExplainer({
             {/* Overall Explanation */}
             <div className="rounded-2xl border border-gold/20 bg-gold/5 p-4">
               <p className="text-sm font-semibold uppercase tracking-[0.2em] text-gold/70">
-                Загальне пояснення
+                {t.reading.overallExplanation}
               </p>
               <p className="mt-3 text-sm leading-relaxed text-ink/80">
                 {explanation.explanation}
@@ -119,7 +118,7 @@ export default function ReadingExplainer({
                   <div className="flex items-center gap-2">
                     <div className="h-2 w-2 rounded-full bg-moss"></div>
                     <p className="text-sm font-semibold uppercase tracking-[0.2em] text-ink/40">
-                      Граматика
+                      {t.reading.grammar}
                     </p>
                   </div>
                   <p className="mt-2 text-sm text-ink/70">
@@ -134,7 +133,7 @@ export default function ReadingExplainer({
                   <div className="flex items-center gap-2">
                     <div className="h-2 w-2 rounded-full bg-gold"></div>
                     <p className="text-sm font-semibold uppercase tracking-[0.2em] text-ink/40">
-                      Лексика
+                      {t.reading.vocabulary}
                     </p>
                   </div>
                   <p className="mt-2 text-sm text-ink/70">
@@ -149,7 +148,7 @@ export default function ReadingExplainer({
                   <div className="flex items-center gap-2">
                     <div className="h-2 w-2 rounded-full bg-terracotta"></div>
                     <p className="text-sm font-semibold uppercase tracking-[0.2em] text-ink/40">
-                      Контекст
+                      {t.reading.context}
                     </p>
                   </div>
                   <p className="mt-2 text-sm text-ink/70">
@@ -163,7 +162,7 @@ export default function ReadingExplainer({
             {explanation.examples && explanation.examples.length > 0 && (
               <div className="rounded-2xl border border-moss/20 bg-moss/5 p-4">
                 <p className="text-sm font-semibold uppercase tracking-[0.2em] text-moss/70">
-                  📝 Приклади використання
+                  {t.reading.usageExamples}
                 </p>
                 <div className="mt-4 space-y-3">
                   {explanation.examples.map((example, idx) => (
@@ -175,25 +174,6 @@ export default function ReadingExplainer({
                         <span className="mr-2 font-semibold text-moss">{idx + 1}.</span>
                         {example}
                       </p>
-                      {/* Optional: Add button to save examples
-                      <button
-                        onClick={() => handleAddExample(example, idx)}
-                        disabled={addedExamples.has(idx) || addingExample === idx}
-                        className={`flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full transition ${
-                          addedExamples.has(idx)
-                            ? "bg-moss text-paper"
-                            : "border border-ink/20 text-ink/40 hover:border-moss/30 hover:bg-moss/10 hover:text-moss"
-                        }`}
-                      >
-                        {addingExample === idx ? (
-                          <Loader label="" size="sm" />
-                        ) : addedExamples.has(idx) ? (
-                          <Check size={14} weight="bold" />
-                        ) : (
-                          <Plus size={14} weight="bold" />
-                        )}
-                      </button>
-                      */}
                     </div>
                   ))}
                 </div>
@@ -208,7 +188,7 @@ export default function ReadingExplainer({
             onClick={onClose}
             className="w-full rounded-full bg-ink px-6 py-3 text-sm font-semibold text-paper transition hover:bg-ink/90"
           >
-            Зрозуміло
+            {t.common.understood}
           </button>
         </div>
       </div>

@@ -25,7 +25,7 @@ interface VideoItem {
 }
 
 export default function VideoList({ categoryId, onSelectVideo }: VideoListProps) {
-  const { locale } = useLocale();
+  const { t, locale } = useLocale();
   const [videos, setVideos] = useState<VideoItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [categoryName, setCategoryName] = useState("");
@@ -59,7 +59,7 @@ export default function VideoList({ categoryId, onSelectVideo }: VideoListProps)
       <div className="flex min-h-[400px] items-center justify-center">
         <div className="text-center">
           <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-terracotta border-t-transparent" />
-          <p className="text-sm text-ink/60">Завантаження відео...</p>
+          <p className="text-sm text-ink/60">{t.common.loading}</p>
         </div>
       </div>
     );

@@ -14,14 +14,14 @@ export default function StoryConfig({ level, onLevelChange, topic, onTopicChange
   const { t } = useLocale();
 
   const topicSuggestions = [
-    "Пригоди в Польщі",
-    "Перший день на роботі",
-    "Незвичайна подорож",
-    "Зустріч зі старим другом",
-    "Загублений у місті",
-    "Вихідні на природі",
-    "Смішна ситуація",
-    "Мій ідеальний день"
+    "Przygody w Polsce",
+    "Pierwszy dzień w pracy",
+    "Niezwykła podróż",
+    "Spotkanie ze starym przyjacielem",
+    "Zagubiony w mieście",
+    "Weekend na łonie natury",
+    "Zabawna sytuacja",
+    "Mój idealny dzień"
   ];
 
   return (

@@ -26,7 +26,7 @@ interface TranslateAIPracticeProps {
 }
 
 export default function TranslateAIPractice({ config, onComplete }: TranslateAIPracticeProps) {
-  const { locale } = useLocale();
+  const { t, locale } = useLocale();
   const [sentences, setSentences] = useState<Sentence[]>([]);
   const [isGenerating, setIsGenerating] = useState(true);
   const [isChecking, setIsChecking] = useState(false);
@@ -230,7 +230,7 @@ export default function TranslateAIPractice({ config, onComplete }: TranslateAIP
           onClick={onComplete}
           className="mt-4 inline-flex items-center gap-2 rounded-full border border-ink/20 px-4 py-2 text-xs font-semibold text-ink transition hover:bg-ink/5"
         >
-          Спробувати знову
+          {t.common.retry}
         </button>
       </div>
     );

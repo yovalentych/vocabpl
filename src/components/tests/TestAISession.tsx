@@ -6,6 +6,7 @@ import type { TestQuestion, GeneratedTest } from "./TestAIGenerator";
 import Loader from "@/components/ui/Loader";
 import ErrorFeedbackModal from "@/components/ui/ErrorFeedbackModal";
 import { safeJSONParse } from "@/lib/json-utils";
+import { useLocale } from "@/components/LocaleProvider";
 
 interface TestAISessionProps {
   test: GeneratedTest;
@@ -47,6 +48,7 @@ export default function TestAISession({
   onNewTest,
   locale = "uk"
 }: TestAISessionProps) {
+  const { t } = useLocale();
   const [answers, setAnswers] = useState<Record<string, string | string[]>>({});
   const [checking, setChecking] = useState(false);
   const [result, setResult] = useState<CheckResult | null>(null);
@@ -389,7 +391,7 @@ export default function TestAISession({
               <textarea
                 value={answer as string || ""}
                 onChange={(e) => updateAnswer(question.id, e.target.value)}
-                placeholder="Ваша відповідь..."
+                placeholder={t.reading.yourAnswerPlaceholder}
                 rows={3}
                 disabled={isDisabled}
                 className="mt-3 w-full rounded-xl border border-ink/20 bg-paper px-3 py-2 text-sm resize-none focus:border-gold/40 focus:outline-none"
@@ -440,12 +442,12 @@ export default function TestAISession({
             {continuing ? (
               <>
                 <Loader label="" />
-                Генерую...
+                {t.common.generating}
               </>
             ) : (
               <>
                 <Plus size={18} weight="bold" />
-                Згенерувати ще 6 питань (3 кредити)
+                {t.tests.generateMore}
               </>
             )}
           </button>
@@ -459,19 +461,19 @@ export default function TestAISession({
             {checking ? (
               <>
                 <Loader label="" />
-                Перевіряю...
+                {t.common.checking}
               </>
             ) : (
               <>
                 <Lightning size={18} weight="fill" />
-                Перевірити відповіді (3 кредити)
+                {t.tests.checkAnswers}
               </>
             )}
           </button>
 
           {!allAnswered && (
             <p className="text-xs text-ink/50">
-              Відповідайте на всі питання, щоб розблокувати перевірку
+              {t.common.answerAllToCheck}
             </p>
           )}
         </div>
@@ -507,7 +509,7 @@ export default function TestAISession({
             <div className="flex items-start justify-between">
               <div>
                 <h3 className="text-2xl font-bold">
-                  {Math.round(result.overall.pointsForRating)}/10 балів
+                  {Math.round(result.overall.pointsForRating)}/10 {t.common.points}
                 </h3>
                 <p className="mt-1 text-sm text-ink/60">{result.overall.feedback}</p>
               </div>
@@ -521,14 +523,14 @@ export default function TestAISession({
 
             {sessionSaved && (
               <div className="mt-4 rounded-2xl border border-gold/20 bg-gold/10 p-3 text-center">
-                <p className="text-sm font-semibold text-gold">✓ Результати автоматично збережено!</p>
+                <p className="text-sm font-semibold text-gold">{"✓ " + t.common.autoSaved}</p>
               </div>
             )}
 
             {/* Detailed Results */}
             <div className="mt-6 space-y-3">
               <h4 className="text-sm font-semibold uppercase tracking-[0.2em] text-ink/40">
-                Детальні результати
+                {t.common.detailedResults}
               </h4>
               {result.items.map((item) => (
                 <div
@@ -546,10 +548,10 @@ export default function TestAISession({
                       <XCircle size={24} weight="fill" className="text-terracotta flex-shrink-0" />
                     )}
                     <div className="flex-1">
-                      <p className="text-sm font-medium">Питання {item.questionIndex + 1}</p>
-                      <p className="mt-1 text-sm text-ink/60">Ваша відповідь: {item.userAnswer}</p>
+                      <p className="text-sm font-medium">{t.common.question} {item.questionIndex + 1}</p>
+                      <p className="mt-1 text-sm text-ink/60">{t.common.yourAnswer}: {item.userAnswer}</p>
                       {!item.correct && (
-                        <p className="mt-1 text-sm text-ink/60">Правильна відповідь: {item.expectedAnswer}</p>
+                        <p className="mt-1 text-sm text-ink/60">{t.tests.correctAnswer}: {item.expectedAnswer}</p>
                       )}
                       <p className="mt-2 text-sm text-ink/70">{item.feedback}</p>
                       {!item.correct && (
@@ -559,10 +561,10 @@ export default function TestAISession({
                             disabled={appealSentFor.has(item.questionId)}
                             className="rounded-full border border-ink/20 px-3 py-1 text-xs font-semibold text-ink/70 transition hover:bg-ink/5 disabled:opacity-50"
                           >
-                            {appealSentFor.has(item.questionId) ? "Оскаржено ✓" : "Оскаржити"}
+                            {appealSentFor.has(item.questionId) ? t.tests.appealed + " ✓" : t.tests.appeal}
                           </button>
                           <span className="text-[11px] text-ink/40">
-                            Якщо відповідь коректна — надішли апеляцію.
+                            {t.tests.appealHint}
                           </span>
                         </div>
                       )}
@@ -577,14 +579,14 @@ export default function TestAISession({
               <div className="mt-6">
                 <div className="flex items-center justify-between">
                   <h4 className="text-sm font-semibold uppercase tracking-[0.2em] text-ink/40">
-                    📚 Рекомендовані слова
+                    {t.common.suggestedWords}
                   </h4>
                   <button
                     onClick={addAllWords}
                     disabled={addingWord !== null || result.suggestedVocab.every(w => addedWords.has(w.lemma))}
                     className="text-xs font-semibold text-moss transition hover:text-moss/80 disabled:text-ink/30"
                   >
-                    {result.suggestedVocab.every(w => addedWords.has(w.lemma)) ? "✓ Всі додані" : "Додати всі"}
+                    {result.suggestedVocab.every(w => addedWords.has(w.lemma)) ? "✓ " + t.common.allAdded : t.common.addAll}
                   </button>
                 </div>
                 <div className="mt-3 space-y-2">
@@ -610,7 +612,7 @@ export default function TestAISession({
                           disabled={isAdded || isAdding}
                           className="flex-shrink-0 rounded-full bg-moss/10 px-3 py-1 text-xs font-semibold text-moss transition hover:bg-moss/20 disabled:bg-ink/5 disabled:text-ink/30"
                         >
-                          {isAdding ? "..." : isAdded ? "✓" : "Додати"}
+                          {isAdding ? "..." : isAdded ? "✓" : t.common.add}
                         </button>
                       </div>
                     );
@@ -629,12 +631,12 @@ export default function TestAISession({
                 {continuing ? (
                   <>
                     <Loader label="" />
-                    Генерую...
+                    {t.common.generating}
                   </>
                 ) : (
                   <>
                     <Plus size={18} weight="bold" />
-                    Згенерувати ще 6 питань (3 кредити)
+                    {t.tests.generateMore}
                   </>
                 )}
               </button>
@@ -646,14 +648,14 @@ export default function TestAISession({
                 >
                   <span className="flex items-center justify-center gap-2">
                     <ArrowClockwise size={18} />
-                    Завершити тест
+                    {t.tests.finishTest}
                   </span>
                 </button>
                 <button
                   onClick={() => setShowResultModal(false)}
                   className="flex-1 rounded-full bg-ink px-4 py-2 text-sm font-semibold text-paper transition hover:bg-ink/90"
                 >
-                  Закрити
+                  {t.common.close}
                 </button>
               </div>
             </div>
@@ -684,10 +686,10 @@ export default function TestAISession({
 
             <div className="mt-4 rounded-2xl border border-ink/10 bg-paper/70 p-3 text-sm text-ink/70">
               <p>
-                <span className="font-semibold">Ваша відповідь:</span> {appealItem.userAnswer}
+                <span className="font-semibold">{t.common.yourAnswer}:</span> {appealItem.userAnswer}
               </p>
               <p className="mt-1">
-                <span className="font-semibold">AI вважає правильним:</span> {appealItem.expectedAnswer}
+                <span className="font-semibold">{t.tests.correctAnswer}:</span> {appealItem.expectedAnswer}
               </p>
             </div>
 

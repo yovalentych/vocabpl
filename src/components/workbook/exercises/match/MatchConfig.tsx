@@ -17,15 +17,8 @@ interface MatchConfigProps {
   }) => void;
 }
 
-const typeOptions = [
-  { id: "verbs", label: "Czasowniki" },
-  { id: "adverbs", label: "Przysłówki" },
-  { id: "adjectives", label: "Przymiotniki" },
-  { id: "nouns", label: "Rzeczowniki" }
-];
-
 export default function MatchConfig({ onStartPractice }: MatchConfigProps) {
-  const { t, locale } = useLocale();
+  const { t } = useLocale();
   const {
     materials,
     activeMaterialId,
@@ -39,6 +32,13 @@ export default function MatchConfig({ onStartPractice }: MatchConfigProps) {
     setAutoTypes
   } = useMatch();
 
+  const typeOptions = [
+    { id: "verbs", label: t.workbook.typeVerbs },
+    { id: "adverbs", label: t.workbook.typeAdverbs },
+    { id: "adjectives", label: t.workbook.typeAdjectives },
+    { id: "nouns", label: t.workbook.typeNouns }
+  ];
+
   const [mode, setMode] = useState<"auto" | "material" | "ai">("auto");
   const [aiTopic, setAiTopic] = useState("");
   const [pairType, setPairType] = useState<"translation" | "semantic" | "definition">("translation");
@@ -46,10 +46,6 @@ export default function MatchConfig({ onStartPractice }: MatchConfigProps) {
   useEffect(() => {
     if (mode === "material") {
       loadMaterials();
-    }
-    const stored = localStorage.getItem("match_auto_last_used");
-    if (stored) {
-      // Could restore autoLastUsed here if needed
     }
   }, [mode, loadMaterials]);
 
@@ -65,11 +61,7 @@ export default function MatchConfig({ onStartPractice }: MatchConfigProps) {
 
   const handleStartAIMode = () => {
     if (!aiTopic.trim()) return;
-    onStartPractice({
-      aiMode: true,
-      aiTopic,
-      pairType
-    });
+    onStartPractice({ aiMode: true, aiTopic, pairType });
   };
 
   const toggleType = (typeId: string) => {
@@ -80,52 +72,39 @@ export default function MatchConfig({ onStartPractice }: MatchConfigProps) {
 
   return (
     <div className="space-y-6">
-      {/* Mode Selection */}
       <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
         <h3 className="text-xl font-semibold">{t.workbook.matchMode}</h3>
         <div className="mt-4 grid gap-2 md:grid-cols-3">
           <button
             onClick={() => setMode("auto")}
-            className={`rounded-2xl border px-4 py-3 text-sm transition ${
-              mode === "auto" ? "border-ink bg-ink/5" : "border-ink/10 bg-paper hover:border-ink/30"
-            }`}
+            className={`rounded-2xl border px-4 py-3 text-sm transition ${mode === "auto" ? "border-ink bg-ink/5" : "border-ink/10 bg-paper hover:border-ink/30"}`}
           >
             <div className="font-semibold">{t.workbook.matchAutoTitle}</div>
-            <div className="mt-1 text-xs text-ink/60">Випадкові слова</div>
+            <div className="mt-1 text-xs text-ink/60">{t.workbook.matchAutoDesc}</div>
           </button>
           <button
             onClick={() => setMode("ai")}
-            className={`rounded-2xl border px-4 py-3 text-sm transition ${
-              mode === "ai" ? "border-ink bg-ink/5" : "border-ink/10 bg-paper hover:border-ink/30"
-            }`}
+            className={`rounded-2xl border px-4 py-3 text-sm transition ${mode === "ai" ? "border-ink bg-ink/5" : "border-ink/10 bg-paper hover:border-ink/30"}`}
           >
-            <div className="font-semibold">AI Generation</div>
-            <div className="mt-1 text-xs text-ink/60">За темою</div>
+            <div className="font-semibold">{t.workbook.matchAIGenTitle}</div>
+            <div className="mt-1 text-xs text-ink/60">{t.workbook.matchAIGenDesc}</div>
           </button>
           <button
             onClick={() => setMode("material")}
-            className={`rounded-2xl border px-4 py-3 text-sm transition ${
-              mode === "material" ? "border-ink bg-ink/5" : "border-ink/10 bg-paper hover:border-ink/30"
-            }`}
+            className={`rounded-2xl border px-4 py-3 text-sm transition ${mode === "material" ? "border-ink bg-ink/5" : "border-ink/10 bg-paper hover:border-ink/30"}`}
           >
             <div className="font-semibold">{t.workbook.matchMaterial}</div>
-            <div className="mt-1 text-xs text-ink/60">Готові набори</div>
+            <div className="mt-1 text-xs text-ink/60">{t.workbook.matchMaterialDesc}</div>
           </button>
         </div>
       </div>
 
-      {/* Auto-Generation Mode */}
       {mode === "auto" && (
         <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
-            <h3 className="text-xl font-semibold">{t.workbook.matchAutoTitle}</h3>
-          <p className="mt-2 text-sm text-ink/60">
-              {t.workbook.matchAutoHint}
-          </p>
-
+          <h3 className="text-xl font-semibold">{t.workbook.matchAutoTitle}</h3>
+          <p className="mt-2 text-sm text-ink/60">{t.workbook.matchAutoHint}</p>
           <div className="mt-4">
-            <p className="text-[10px] uppercase tracking-[0.3em] text-ink/40">
-              {t.workbook.matchAutoTypesLabel}
-            </p>
+            <p className="text-[10px] uppercase tracking-[0.3em] text-ink/40">{t.workbook.matchAutoTypesLabel}</p>
             <div className="mt-2 flex flex-wrap gap-2">
               {typeOptions.map((option) => {
                 const active = autoTypes.includes(option.id);
@@ -133,9 +112,7 @@ export default function MatchConfig({ onStartPractice }: MatchConfigProps) {
                   <button
                     key={option.id}
                     onClick={() => toggleType(option.id)}
-                    className={`rounded-full border px-3 py-1 text-xs transition ${
-                      active ? "border-ink bg-ink/5" : "border-ink/10 bg-paper/80 hover:border-ink/30"
-                    }`}
+                    className={`rounded-full border px-3 py-1 text-xs transition ${active ? "border-ink bg-ink/5" : "border-ink/10 bg-paper/80 hover:border-ink/30"}`}
                   >
                     {option.label}
                   </button>
@@ -143,115 +120,67 @@ export default function MatchConfig({ onStartPractice }: MatchConfigProps) {
               })}
             </div>
           </div>
-
           {autoLastUsed && (
             <p className="mt-3 text-[11px] text-ink/50">
-              {t.workbook.matchAutoLastUsed}:{" "}
-              {new Date(autoLastUsed).toLocaleString()}
+              {t.workbook.matchAutoLastUsed}: {new Date(autoLastUsed).toLocaleString()}
             </p>
           )}
-
           <button
             onClick={handleStartAutoMode}
             disabled={autoLoading}
             className="mt-4 rounded-full bg-ink px-6 py-2 text-sm font-semibold text-paper shadow-soft transition hover:bg-ink/90 disabled:opacity-50"
           >
-            {autoLoading
-              ? t.common.loading
-              : t.workbook.matchAutoButton} →
+            {autoLoading ? t.common.loading : t.workbook.matchAutoButton} →
           </button>
         </div>
       )}
 
-      {/* AI Mode */}
       {mode === "ai" && (
-        <>
-          <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
-            <h3 className="text-xl font-semibold">{t.workbook.matchPairType}</h3>
-            <p className="mt-2 text-sm text-ink/60">
-              Виберіть тип зв&apos;язків між парами
-            </p>
-
-            <div className="mt-4 space-y-3">
-              <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-ink/10 p-4 transition hover:border-ink/30">
-                <input
-                  type="radio"
-                  name="pairType"
-                  checked={pairType === "translation"}
-                  onChange={() => setPairType("translation")}
-                  className="mt-0.5 h-4 w-4 accent-ink"
-                />
-                <div>
-                  <span className="text-sm font-semibold">[Переклад]</span>
-                  <p className="mt-1 text-xs text-ink/60">
-                    Польське слово ↔ Український переклад
-                  </p>
-                  <p className="mt-1 text-xs text-ink/50 italic">
-                    kupić ↔ купити
-                  </p>
-                </div>
-              </label>
-
-              <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-ink/10 p-4 transition hover:border-ink/30">
-                <input
-                  type="radio"
-                  name="pairType"
-                  checked={pairType === "semantic"}
-                  onChange={() => setPairType("semantic")}
-                  className="mt-0.5 h-4 w-4 accent-ink"
-                />
-                <div>
-                  <span className="text-sm font-semibold">[Семантичні зв&apos;язки]</span>
-                  <p className="mt-1 text-xs text-ink/60">
-                    Синоніми, антоніми, пов&apos;язані концепти (польська)
-                  </p>
-                  <p className="mt-1 text-xs text-ink/50 italic">
-                    duży ↔ wielki (синоніми)
-                  </p>
-                </div>
-              </label>
-
-              <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-ink/10 p-4 transition hover:border-ink/30">
-                <input
-                  type="radio"
-                  name="pairType"
-                  checked={pairType === "definition"}
-                  onChange={() => setPairType("definition")}
-                  className="mt-0.5 h-4 w-4 accent-ink"
-                />
-                <div>
-                  <span className="text-sm font-semibold">[Визначення]</span>
-                  <p className="mt-1 text-xs text-ink/60">
-                    Польське слово ↔ Українське визначення
-                  </p>
-                  <p className="mt-1 text-xs text-ink/50 italic">
-                    sklep ↔ місце де можна купити товари
-                  </p>
-                </div>
-              </label>
-            </div>
-
-            <div className="mt-4 flex justify-end">
-              <button
-                onClick={handleStartAIMode}
-                disabled={!aiTopic.trim()}
-                className="rounded-full bg-ink px-6 py-3 text-sm font-semibold text-paper shadow-soft transition hover:bg-ink/90 disabled:opacity-50"
-              >
-                {t.workbook.startPractice || "Почати практику"} →
-              </button>
-            </div>
+        <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
+          <h3 className="text-xl font-semibold">{t.workbook.matchPairType}</h3>
+          <p className="mt-2 text-sm text-ink/60">{t.workbook.matchSelectPairTypeHint}</p>
+          <div className="mt-4 space-y-3">
+            <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-ink/10 p-4 transition hover:border-ink/30">
+              <input type="radio" name="pairType" checked={pairType === "translation"} onChange={() => setPairType("translation")} className="mt-0.5 h-4 w-4 accent-ink" />
+              <div>
+                <span className="text-sm font-semibold">{t.workbook.matchPairTranslation}</span>
+                <p className="mt-1 text-xs text-ink/60">{t.workbook.matchPairTranslationDesc}</p>
+                <p className="mt-1 text-xs text-ink/50 italic">kupić ↔ купити</p>
+              </div>
+            </label>
+            <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-ink/10 p-4 transition hover:border-ink/30">
+              <input type="radio" name="pairType" checked={pairType === "semantic"} onChange={() => setPairType("semantic")} className="mt-0.5 h-4 w-4 accent-ink" />
+              <div>
+                <span className="text-sm font-semibold">{t.workbook.matchPairSemantic}</span>
+                <p className="mt-1 text-xs text-ink/60">{t.workbook.matchPairSemanticDesc}</p>
+                <p className="mt-1 text-xs text-ink/50 italic">duży ↔ wielki</p>
+              </div>
+            </label>
+            <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-ink/10 p-4 transition hover:border-ink/30">
+              <input type="radio" name="pairType" checked={pairType === "definition"} onChange={() => setPairType("definition")} className="mt-0.5 h-4 w-4 accent-ink" />
+              <div>
+                <span className="text-sm font-semibold">{t.workbook.matchPairDefinition}</span>
+                <p className="mt-1 text-xs text-ink/60">{t.workbook.matchPairDefinitionDesc}</p>
+                <p className="mt-1 text-xs text-ink/50 italic">sklep ↔ ...</p>
+              </div>
+            </label>
           </div>
-        </>
+          <div className="mt-4 flex justify-end">
+            <button
+              onClick={handleStartAIMode}
+              disabled={!aiTopic.trim()}
+              className="rounded-full bg-ink px-6 py-3 text-sm font-semibold text-paper shadow-soft transition hover:bg-ink/90 disabled:opacity-50"
+            >
+              {t.workbook.startPractice} →
+            </button>
+          </div>
+        </div>
       )}
 
-      {/* Material Selection */}
       {mode === "material" && (
         <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
-          <h3 className="text-xl font-semibold">{t.workbook.contentTitle || "Матеріали"}</h3>
-          <p className="mt-2 text-sm text-ink/60">
-            {t.workbook.matchConfigHint}
-          </p>
-
+          <h3 className="text-xl font-semibold">{t.workbook.contentTitle}</h3>
+          <p className="mt-2 text-sm text-ink/60">{t.workbook.matchConfigHint}</p>
           <div className="mt-4">
             {loading ? (
               <div className="grid gap-3 md:grid-cols-2">
@@ -261,24 +190,19 @@ export default function MatchConfig({ onStartPractice }: MatchConfigProps) {
               </div>
             ) : (
               <MaterialSelector
-                materials={materials.map((m) => ({
-                  _id: m._id,
-                  title: m.title,
-                  level: m.level
-                }))}
+                materials={materials.map((m) => ({ _id: m._id, title: m.title, level: m.level }))}
                 selectedId={activeMaterialId}
                 onSelect={selectMaterial}
               />
             )}
           </div>
-
           <div className="mt-4 flex justify-end">
             <button
               onClick={handleStartWithMaterial}
               disabled={!activeMaterialId}
               className="rounded-full bg-ink px-6 py-2 text-sm font-semibold text-paper shadow-soft transition hover:bg-ink/90 disabled:opacity-50"
             >
-              {t.workbook.startPractice || "Почати практику"} →
+              {t.workbook.startPractice} →
             </button>
           </div>
         </div>

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { ClockCounterClockwise, TrendUp, Target, Lightning, CaretDown, CheckCircle, XCircle } from "@phosphor-icons/react";
 import Loader from "@/components/ui/Loader";
+import { useLocale } from "@/components/LocaleProvider";
 
 interface ComprehensionQuestion {
   type: "open" | "truefalse" | "multiple" | "short";
@@ -60,6 +61,7 @@ interface HistoryStats {
 }
 
 export default function ReadingHistory() {
+  const { t } = useLocale();
   const [sessions, setSessions] = useState<HistorySession[]>([]);
   const [stats, setStats] = useState<HistoryStats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -88,7 +90,7 @@ export default function ReadingHistory() {
   if (loading) {
     return (
       <div className="rounded-3xl border border-ink/10 bg-paper/80 p-12 shadow-soft text-center">
-        <Loader label="Завантаження історії..." />
+        <Loader label={t.common.loading} />
       </div>
     );
   }

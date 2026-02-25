@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { X, Sparkle, Lightbulb } from "@phosphor-icons/react";
 import { Word } from "@/lib/types";
+import { useLocale } from "@/components/LocaleProvider";
 
 interface Example {
   sentence: string;
@@ -27,6 +28,7 @@ interface WordAIModalProps {
 }
 
 export default function WordAIModal({ word, isOpen, onClose }: WordAIModalProps) {
+  const { t } = useLocale();
   const [activeTab, setActiveTab] = useState<"examples" | "grammar">("examples");
   const [examples, setExamples] = useState<Example[]>([]);
   const [grammar, setGrammar] = useState<GrammarExplanation | null>(null);
@@ -197,7 +199,7 @@ export default function WordAIModal({ word, isOpen, onClose }: WordAIModalProps)
             <button
               onClick={onClose}
               className="rounded-full border border-ink/20 p-2 text-ink/60 transition hover:border-ink/30 hover:bg-ink/5 hover:text-ink"
-              aria-label="Закрити"
+              aria-label={t.common.close}
             >
               <X size={20} weight="bold" />
             </button>
@@ -238,7 +240,7 @@ export default function WordAIModal({ word, isOpen, onClose }: WordAIModalProps)
                 <div className="flex items-center justify-center py-12">
                   <div className="text-center">
                     <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-moss border-t-transparent" />
-                    <p className="text-sm text-ink/60">Генеруємо приклади...</p>
+                    <p className="text-sm text-ink/60">{t.common.generating}</p>
                   </div>
                 </div>
               )}
@@ -250,7 +252,7 @@ export default function WordAIModal({ word, isOpen, onClose }: WordAIModalProps)
                     onClick={generateExamples}
                     className="mt-2 rounded-full border border-terracotta/20 px-3 py-1 text-xs font-semibold text-terracotta hover:bg-terracotta/10"
                   >
-                    Спробувати знову
+                    {t.common.retry}
                   </button>
                 </div>
               )}
@@ -292,7 +294,7 @@ export default function WordAIModal({ word, isOpen, onClose }: WordAIModalProps)
                 <div className="flex items-center justify-center py-12">
                   <div className="text-center">
                     <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-gold border-t-transparent" />
-                    <p className="text-sm text-ink/60">Генеруємо пояснення...</p>
+                    <p className="text-sm text-ink/60">{t.common.generating}</p>
                   </div>
                 </div>
               )}
@@ -304,7 +306,7 @@ export default function WordAIModal({ word, isOpen, onClose }: WordAIModalProps)
                     onClick={generateGrammar}
                     className="mt-2 rounded-full border border-terracotta/20 px-3 py-1 text-xs font-semibold text-terracotta hover:bg-terracotta/10"
                   >
-                    Спробувати знову
+                    {t.common.retry}
                   </button>
                 </div>
               )}

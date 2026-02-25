@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { X, WarningCircle, PaperPlaneRight, CheckCircle } from "@phosphor-icons/react";
 import Loader from "./Loader";
+import { useLocale } from "@/components/LocaleProvider";
 
 interface ErrorFeedbackModalProps {
   isOpen: boolean;
@@ -25,6 +26,7 @@ export default function ErrorFeedbackModal({
   onRetry,
   errorDetails
 }: ErrorFeedbackModalProps) {
+  const { t } = useLocale();
   const [showFeedbackForm, setShowFeedbackForm] = useState(false);
   const [feedbackText, setFeedbackText] = useState("");
   const [email, setEmail] = useState("");
@@ -81,7 +83,7 @@ export default function ErrorFeedbackModal({
           <div className="flex items-start gap-3">
             <WarningCircle size={32} weight="fill" className="text-terracotta flex-shrink-0" />
             <div>
-              <h3 className="text-xl font-bold text-ink">Виникла помилка</h3>
+              <h3 className="text-xl font-bold text-ink">{t.errorModal.title}</h3>
               <p className="mt-1 text-sm text-ink/60">{context}</p>
             </div>
           </div>
@@ -102,21 +104,12 @@ export default function ErrorFeedbackModal({
               </div>
 
               <div className="mt-6 space-y-3 text-sm text-ink/70">
-                <p className="font-semibold text-ink">Чому це могло статися?</p>
+                <p className="font-semibold text-ink">{t.errorModal.whyHappened}</p>
                 <ul className="space-y-2 pl-5">
-                  <li className="list-disc">
-                    <strong>Затримки сервера AI</strong> — іноді сервери OpenAI можуть бути перевантажені,
-                    що призводить до тимчасових помилок
-                  </li>
-                  <li className="list-disc">
-                    <strong>Проблеми з мережею</strong> — нестабільне з&apos;єднання може перервати запит
-                  </li>
-                  <li className="list-disc">
-                    <strong>Некоректна відповідь AI</strong> — іноді AI може повернути невалідний формат даних
-                  </li>
-                  <li className="list-disc">
-                    <strong>Тимчасові технічні проблеми</strong> — сервіси можуть бути недоступні через оновлення
-                  </li>
+                  <li className="list-disc">{t.errorModal.reasonAI}</li>
+                  <li className="list-disc">{t.errorModal.reasonNetwork}</li>
+                  <li className="list-disc">{t.errorModal.reasonFormat}</li>
+                  <li className="list-disc">{t.errorModal.reasonMaintenance}</li>
                 </ul>
               </div>
 
@@ -131,7 +124,7 @@ export default function ErrorFeedbackModal({
                     className="flex w-full items-center justify-center gap-2 rounded-full bg-moss px-6 py-3 text-sm font-semibold text-paper transition hover:bg-moss/90"
                   >
                     <WarningCircle size={18} weight="fill" />
-                    Спробувати ще раз
+                    {t.common.retry}
                   </button>
                 )}
 
@@ -140,14 +133,14 @@ export default function ErrorFeedbackModal({
                   className="flex w-full items-center justify-center gap-2 rounded-full border border-ink/20 px-6 py-3 text-sm font-semibold text-ink transition hover:bg-ink/5"
                 >
                   <PaperPlaneRight size={18} />
-                  Повідомити розробника про проблему
+                  {t.errorModal.reportDev}
                 </button>
 
                 <button
                   onClick={onClose}
                   className="w-full rounded-full px-6 py-2 text-sm text-ink/60 transition hover:text-ink"
                 >
-                  Закрити
+                  {t.common.close}
                 </button>
               </div>
             </>
@@ -156,23 +149,23 @@ export default function ErrorFeedbackModal({
               {sent ? (
                 <div className="py-12 text-center">
                   <CheckCircle size={64} weight="fill" className="mx-auto text-moss" />
-                  <p className="mt-4 text-lg font-semibold text-moss">Дякуємо за звернення!</p>
+                  <p className="mt-4 text-lg font-semibold text-moss">{t.errorModal.thankYou}</p>
                   <p className="mt-2 text-sm text-ink/60">
-                    Ми отримали ваше повідомлення і працюємо над вирішенням проблеми
+                    {t.errorModal.receivedMsg}
                   </p>
                 </div>
               ) : (
                 <>
-                  <h4 className="text-lg font-semibold">Повідомити розробника</h4>
+                  <h4 className="text-lg font-semibold">{t.errorModal.reportTitle}</h4>
                   <p className="mt-2 text-sm text-ink/60">
-                    Опишіть що ви робили коли виникла помилка. Це допоможе нам швидше знайти і виправити проблему.
+                    {t.errorModal.reportHint}
                   </p>
 
                   <div className="mt-6 space-y-4">
                     {/* Error Info (readonly) */}
                     <div>
                       <label className="block text-xs font-semibold uppercase tracking-[0.2em] text-ink/40">
-                        Помилка
+                        {t.errorModal.errorLabel}
                       </label>
                       <div className="mt-2 rounded-2xl border border-ink/10 bg-ink/5 px-4 py-3 text-sm text-ink/70">
                         {error}
@@ -182,12 +175,12 @@ export default function ErrorFeedbackModal({
                     {/* User Feedback */}
                     <div>
                       <label className="block text-xs font-semibold uppercase tracking-[0.2em] text-ink/40">
-                        Опис проблеми *
+                        {t.errorModal.descriptionLabel}
                       </label>
                       <textarea
                         value={feedbackText}
                         onChange={(e) => setFeedbackText(e.target.value)}
-                        placeholder="Що ви робили коли виникла помилка? Чи траплялося це раніше?"
+                        placeholder={t.errorModal.descriptionPlaceholder}
                         rows={4}
                         className="mt-2 w-full rounded-2xl border border-ink/20 bg-paper px-4 py-3 text-sm resize-none focus:border-moss/40 focus:outline-none"
                       />
@@ -196,13 +189,13 @@ export default function ErrorFeedbackModal({
                     {/* Email (optional) */}
                     <div>
                       <label className="block text-xs font-semibold uppercase tracking-[0.2em] text-ink/40">
-                        Email (опціонально)
+                        {t.errorModal.emailLabel}
                       </label>
                       <input
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Ваш email, якщо хочете отримати відповідь"
+                        placeholder={t.errorModal.emailPlaceholder}
                         className="mt-2 w-full rounded-2xl border border-ink/20 bg-paper px-4 py-3 text-sm focus:border-moss/40 focus:outline-none"
                       />
                     </div>
@@ -217,12 +210,12 @@ export default function ErrorFeedbackModal({
                         {sending ? (
                           <>
                             <Loader label="" />
-                            Надсилаю...
+                            {t.common.sending}
                           </>
                         ) : (
                           <>
                             <PaperPlaneRight size={18} weight="fill" />
-                            Надіслати
+                            {t.errorModal.send}
                           </>
                         )}
                       </button>
@@ -231,7 +224,7 @@ export default function ErrorFeedbackModal({
                         disabled={sending}
                         className="rounded-full border border-ink/20 px-6 py-3 text-sm font-semibold text-ink transition hover:bg-ink/5"
                       >
-                        Назад
+                        {t.common.back}
                       </button>
                     </div>
                   </div>

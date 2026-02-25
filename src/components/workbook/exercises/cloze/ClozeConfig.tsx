@@ -127,8 +127,8 @@ export default function ClozeConfig({ onStartPractice }: ClozeConfigProps) {
                   className="h-4 w-4 rounded border-ink/20 accent-ink"
                 />
                 <div>
-                  <span className="text-sm font-semibold">[Слово в дужках]</span>
-                  <p className="text-xs text-ink/60">Підказка: (kupić)</p>
+                  <span className="text-sm font-semibold">{t.workbook.matchHintWord}</span>
+                  <p className="text-xs text-ink/60">{t.workbook.matchHintWordExample}</p>
                 </div>
               </label>
 
@@ -140,8 +140,8 @@ export default function ClozeConfig({ onStartPractice }: ClozeConfigProps) {
                   className="h-4 w-4 rounded border-ink/20 accent-ink"
                 />
                 <div>
-                  <span className="text-sm font-semibold">[Український переклад]</span>
-                  <p className="text-xs text-ink/60">Підказка: (купити)</p>
+                  <span className="text-sm font-semibold">{t.workbook.matchHintTranslation}</span>
+                  <p className="text-xs text-ink/60">{t.workbook.matchHintTranslationExample}</p>
                 </div>
               </label>
 
@@ -153,8 +153,8 @@ export default function ClozeConfig({ onStartPractice }: ClozeConfigProps) {
                   className="h-4 w-4 rounded border-ink/20 accent-ink"
                 />
                 <div>
-                  <span className="text-sm font-semibold">[Контекст]</span>
-                  <p className="text-xs text-ink/60">Підказка: (дієслово, що означає придбати щось)</p>
+                  <span className="text-sm font-semibold">{t.workbook.matchHintContext}</span>
+                  <p className="text-xs text-ink/60">{t.workbook.matchHintContextExample}</p>
                 </div>
               </label>
             </div>
@@ -189,7 +189,7 @@ export default function ClozeConfig({ onStartPractice }: ClozeConfigProps) {
           }
           className="rounded-full bg-ink px-6 py-3 text-sm font-semibold text-paper shadow-soft transition hover:bg-ink/90 disabled:opacity-50"
         >
-          {t.workbook.startPractice || "Почати практику"} →
+          {t.workbook.startPractice} →
         </button>
       </div>
     </div>

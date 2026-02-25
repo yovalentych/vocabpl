@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Sparkle, ArrowRight } from "@phosphor-icons/react";
 import { useRouter } from "next/navigation";
 import type { Route } from "next";
+import { useLocale } from "@/components/LocaleProvider";
 
 interface RecommendedWord {
   word: string;
@@ -22,6 +23,7 @@ export default function DictAIRecommendations({
   learnedWords,
   level
 }: DictAIRecommendationsProps) {
+  const { t } = useLocale();
   const router = useRouter();
   const [recommendations, setRecommendations] = useState<RecommendedWord[]>([]);
   const [loading, setLoading] = useState(false);
@@ -128,7 +130,7 @@ export default function DictAIRecommendations({
             onClick={generateRecommendations}
             className="mt-2 rounded-full border border-terracotta/20 px-3 py-1 text-xs font-semibold text-terracotta hover:bg-terracotta/10"
           >
-            Спробувати знову
+            {t.common.retry}
           </button>
         </div>
       )}

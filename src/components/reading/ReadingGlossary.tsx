@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Book, Lightning, Plus, Check } from "@phosphor-icons/react";
 import { useReadingAI, type AIGlossaryWord } from "./hooks/useReadingAI";
 import Loader from "@/components/ui/Loader";
+import { useLocale } from "@/components/LocaleProvider";
 
 interface ReadingGlossaryProps {
   text: string;
@@ -12,6 +13,7 @@ interface ReadingGlossaryProps {
 }
 
 export default function ReadingGlossary({ text, level, locale = "uk" }: ReadingGlossaryProps) {
+  const { t } = useLocale();
   const { glossary, loading, error, generateGlossary, clearGlossary } = useReadingAI();
   const [addedWords, setAddedWords] = useState<Set<string>>(new Set());
   const [addingWord, setAddingWord] = useState<string | null>(null);
@@ -54,10 +56,10 @@ export default function ReadingGlossary({ text, level, locale = "uk" }: ReadingG
       <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
         <div className="flex items-center gap-2">
           <Book size={24} weight="duotone" className="text-gold" />
-          <h3 className="text-xl font-semibold">AI Глосарій</h3>
+          <h3 className="text-xl font-semibold">{t.reading.aiGlossary}</h3>
         </div>
         <p className="mt-2 text-sm text-ink/60">
-          Згенеруйте словник ключових слів з тексту
+          {t.reading.aiGlossaryHint}
         </p>
 
         <button
@@ -68,12 +70,12 @@ export default function ReadingGlossary({ text, level, locale = "uk" }: ReadingG
           {loading ? (
             <>
               <Loader label="" />
-              Генерую глосарій...
+              {t.reading.generatingGlossary}
             </>
           ) : (
             <>
               <Lightning size={18} weight="fill" />
-              Згенерувати глосарій (1 кредит)
+              {t.reading.generateGlossary}
             </>
           )}
         </button>
@@ -85,7 +87,7 @@ export default function ReadingGlossary({ text, level, locale = "uk" }: ReadingG
               onClick={handleGenerate}
               className="mt-3 text-xs font-semibold text-terracotta underline hover:no-underline"
             >
-              Спробувати ще раз
+              {t.common.retry}
             </button>
           </div>
         )}
@@ -93,12 +95,18 @@ export default function ReadingGlossary({ text, level, locale = "uk" }: ReadingG
     );
   }
 
+  const difficultyLabels: Record<string, string> = {
+    easy: t.reading.difficultyEasy,
+    medium: t.reading.difficultyMedium,
+    hard: t.reading.difficultyHard
+  };
+
   return (
     <div className="rounded-3xl border border-gold/20 bg-gold/5 p-6 shadow-soft">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Book size={24} weight="duotone" className="text-gold" />
-          <h3 className="text-xl font-semibold">Глосарій ({glossary.length} слів)</h3>
+          <h3 className="text-xl font-semibold">{t.reading.glossaryCount.replace("{count}", String(glossary.length))}</h3>
         </div>
         <div className="flex gap-2">
           <button
@@ -106,13 +114,13 @@ export default function ReadingGlossary({ text, level, locale = "uk" }: ReadingG
             disabled={glossary.every(w => addedWords.has(w.pl))}
             className="rounded-full border border-gold/30 px-4 py-2 text-xs font-semibold text-gold transition hover:bg-gold/10 disabled:opacity-50"
           >
-            Додати всі
+            {t.common.addAll}
           </button>
           <button
             onClick={clearGlossary}
             className="rounded-full px-3 py-1 text-xs font-medium text-ink/40 transition hover:bg-ink/5 hover:text-ink/60"
           >
-            Закрити
+            {t.common.close}
           </button>
         </div>
       </div>
@@ -122,17 +130,10 @@ export default function ReadingGlossary({ text, level, locale = "uk" }: ReadingG
           const isAdded = addedWords.has(word.pl);
           const isAdding = addingWord === word.pl;
 
-          // Difficulty badge colors
           const difficultyColors = {
             easy: "bg-moss/10 text-moss",
             medium: "bg-gold/10 text-gold",
             hard: "bg-terracotta/10 text-terracotta"
-          };
-
-          const difficultyLabels = {
-            easy: "Легке",
-            medium: "Середнє",
-            hard: "Складне"
           };
 
           return (

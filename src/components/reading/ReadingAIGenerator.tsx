@@ -6,6 +6,7 @@ import { useReadingAI } from "./hooks/useReadingAI";
 import Loader from "@/components/ui/Loader";
 import ReadingComprehension from "./ReadingComprehension";
 import ErrorFeedbackModal from "@/components/ui/ErrorFeedbackModal";
+import { useLocale } from "@/components/LocaleProvider";
 
 interface ReadingAIGeneratorProps {
   onTextGenerated?: (text: { title: { pl: string; uk: string }; text: { pl: string; uk: string }; topic: string; level: string }) => void;
@@ -15,6 +16,7 @@ interface ReadingAIGeneratorProps {
 type ViewMode = "pl" | "uk" | "dual";
 
 export default function ReadingAIGenerator({ onTextGenerated, locale = "uk" }: ReadingAIGeneratorProps) {
+  const { t } = useLocale();
   const { generating, generatedText, error, generateText } = useReadingAI();
   const [topic, setTopic] = useState("");
   const [level, setLevel] = useState<"A1" | "A2" | "B1" | "B2">("A2");
@@ -41,21 +43,27 @@ export default function ReadingAIGenerator({ onTextGenerated, locale = "uk" }: R
     }
   }
 
+  const sizeOptions = [
+    { label: t.reading.textSizeMini, value: 100 },
+    { label: t.reading.textSizeSmall, value: 150 },
+    { label: t.reading.textSizeMedium, value: 200 },
+    { label: t.reading.textSizeLarge, value: 300 }
+  ];
+
   return (
     <div className="space-y-6">
       {/* Generator Form */}
       <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
         <div className="flex items-center gap-2">
           <Sparkle size={24} weight="fill" className="text-gold" />
-          <h3 className="text-xl font-semibold">Згенерувати текст для читання</h3>
+          <h3 className="text-xl font-semibold">{t.reading.generateReadingText}</h3>
         </div>
-        <p className="mt-2 text-sm text-ink/60">AI створить текст польською мовою з перекладом українською</p>
+        <p className="mt-2 text-sm text-ink/60">{t.reading.aiReadingTextHint}</p>
 
         {/* Info about AI content */}
         <div className="mt-4 rounded-2xl border border-gold/20 bg-gold/5 p-3">
           <p className="text-xs text-ink/70">
-            ℹ️ <strong>Важливо:</strong> AI тексти зберігаються лише в історії ваших сесій.
-            Тільки матеріали, опубліковані адміністратором, доступні в розділі &quot;Статичні тексти&quot;.
+            {t.reading.aiReadingImportant}
           </p>
         </div>
 
@@ -63,13 +71,13 @@ export default function ReadingAIGenerator({ onTextGenerated, locale = "uk" }: R
           {/* Topic Input */}
           <div>
             <label className="block text-xs uppercase tracking-[0.2em] text-ink/40">
-              Тема
+              {t.reading.topic}
             </label>
             <input
               type="text"
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
-              placeholder="Наприклад: Shopping, Travel, Family..."
+              placeholder={t.reading.topicPlaceholder}
               className="mt-2 w-full rounded-2xl border border-ink/20 bg-paper px-4 py-2 text-sm"
               disabled={generating}
             />
@@ -78,7 +86,7 @@ export default function ReadingAIGenerator({ onTextGenerated, locale = "uk" }: R
           {/* Level Selection */}
           <div>
             <label className="block text-xs uppercase tracking-[0.2em] text-ink/40">
-              Рівень
+              {t.reading.level}
             </label>
             <div className="mt-2 flex flex-wrap gap-2">
               {(["A1", "A2", "B1", "B2"] as const).map((lvl) => (
@@ -101,15 +109,10 @@ export default function ReadingAIGenerator({ onTextGenerated, locale = "uk" }: R
           {/* Length Selection */}
           <div>
             <label className="block text-xs uppercase tracking-[0.2em] text-ink/40">
-              Розмір тексту
+              {t.reading.textSize}
             </label>
             <div className="mt-2 flex flex-wrap gap-2">
-              {[
-                { label: "Міні", value: 100 },
-                { label: "Маленький", value: 150 },
-                { label: "Середній", value: 200 },
-                { label: "Великий", value: 300 }
-              ].map((size) => (
+              {sizeOptions.map((size) => (
                 <button
                   key={size.value}
                   onClick={() => setLength(size.value)}
@@ -135,12 +138,12 @@ export default function ReadingAIGenerator({ onTextGenerated, locale = "uk" }: R
             {generating ? (
               <>
                 <Loader label="" />
-                Генерую...
+                {t.common.generating}
               </>
             ) : (
               <>
                 <Lightning size={18} weight="fill" />
-                Згенерувати текст (2 кредити)
+                {t.reading.generateText}
               </>
             )}
           </button>
@@ -152,7 +155,7 @@ export default function ReadingAIGenerator({ onTextGenerated, locale = "uk" }: R
                 onClick={handleGenerate}
                 className="mt-3 text-xs font-semibold text-terracotta underline hover:no-underline"
               >
-                Спробувати ще раз
+                {t.common.retry}
               </button>
             </div>
           )}
@@ -163,8 +166,8 @@ export default function ReadingAIGenerator({ onTextGenerated, locale = "uk" }: R
       <ErrorFeedbackModal
         isOpen={showErrorModal}
         onClose={() => setShowErrorModal(false)}
-        error={error || "Невідома помилка"}
-        context="Генерація тексту для читання"
+        error={error || t.reading.unknownError}
+        context="Reading text generation"
         onRetry={() => {
           setShowErrorModal(false);
           handleGenerate();
@@ -183,7 +186,7 @@ export default function ReadingAIGenerator({ onTextGenerated, locale = "uk" }: R
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Sparkle size={20} weight="fill" className="text-moss" />
-                <p className="text-xs uppercase tracking-[0.2em] text-moss">Згенеровано</p>
+                <p className="text-xs uppercase tracking-[0.2em] text-moss">{t.reading.generated}</p>
               </div>
 
               {/* View Mode Switcher */}
@@ -191,7 +194,7 @@ export default function ReadingAIGenerator({ onTextGenerated, locale = "uk" }: R
                 {[
                   { id: "pl", label: "PL" },
                   { id: "uk", label: "UKR" },
-                  { id: "dual", label: "Обидві" }
+                  { id: "dual", label: t.reading.bothColumns }
                 ].map((mode) => (
                   <button
                     key={mode.id}

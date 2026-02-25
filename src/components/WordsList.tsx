@@ -980,7 +980,6 @@ export default function WordsList() {
                     </h3>
                     <SpeakButton
                       text={trainerQueue[trainerIndex].pl}
-                      label="Озвучити польське слово"
                     />
                   </div>
                   {trainerMode === "typing" && (

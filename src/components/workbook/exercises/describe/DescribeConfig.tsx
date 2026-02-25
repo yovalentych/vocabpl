@@ -17,14 +17,14 @@ export default function DescribeConfig({ onStartPractice }: DescribeConfigProps)
   const [level, setLevel] = useState<"A1" | "A2" | "B1" | "B2">("A1");
 
   const suggestions = [
-    "Парк восени",
-    "Вулиця Кракова",
-    "Ранок у кав'ярні",
-    "Родина на пікніку",
-    "Ринок старого міста",
-    "Зимовий пейзаж",
-    "Кухня ресторану",
-    "Пляж влітку"
+    "Park jesienią",
+    "Ulica Krakowa",
+    "Poranek w kawiarni",
+    "Rodzina na pikniku",
+    "Rynek starego miasta",
+    "Zimowy pejzaż",
+    "Kuchnia restauracji",
+    "Plaża latem"
   ];
 
   const handleStart = () => {

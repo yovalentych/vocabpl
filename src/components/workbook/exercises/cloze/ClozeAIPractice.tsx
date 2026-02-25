@@ -207,7 +207,7 @@ export default function ClozeAIPractice({ config, onComplete }: ClozeAIPracticeP
           onClick={onComplete}
           className="mt-4 inline-flex items-center gap-2 rounded-full border border-ink/20 px-4 py-2 text-xs font-semibold text-ink transition hover:bg-ink/5"
         >
-          Спробувати знову
+          {t.common.retry}
         </button>
       </div>
     );

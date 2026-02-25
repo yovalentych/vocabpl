@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { SpeakerHigh } from "@phosphor-icons/react";
+import { useLocale } from "@/components/LocaleProvider";
 
 type SpeakButtonProps = {
   text: string;
@@ -10,6 +11,7 @@ type SpeakButtonProps = {
 };
 
 export default function SpeakButton({ text, className, label }: SpeakButtonProps) {
+  const { t } = useLocale();
   const [supported, setSupported] = useState(false);
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
 
@@ -59,8 +61,8 @@ export default function SpeakButton({ text, className, label }: SpeakButtonProps
         className ||
         "rounded-full border border-ink/20 bg-paper px-2 py-1 text-ink/60 transition hover:border-ink/30 hover:bg-ink/5"
       }
-      aria-label={label || "Озвучити польською"}
-      title={label || "Озвучити польською"}
+      aria-label={label || t.common.speakPolish}
+      title={label || t.common.speakPolish}
     >
       <SpeakerHigh size={14} weight="fill" />
     </button>

@@ -267,7 +267,7 @@ export default function ParaphraseClassicPractice({ config, onComplete }: Paraph
     return (
       <div className="rounded-3xl border border-ink/10 bg-paper/80 p-8 shadow-soft text-center">
         <div className="h-8 w-8 animate-spin rounded-full border-2 border-terracotta/20 border-t-terracotta mx-auto" />
-        <p className="mt-4 text-sm text-ink/60">Завантаження речень...</p>
+        <p className="mt-4 text-sm text-ink/60">{t.common.loading}</p>
       </div>
     );
   }

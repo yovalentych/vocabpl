@@ -17,14 +17,14 @@ export default function DialogueAIConfig({ onStart }: DialogueAIConfigProps) {
   const [level, setLevel] = useState<"A1" | "A2" | "B1" | "B2">("A2");
 
   const situationSuggestions = [
-    "Замовлення каві в кав&apos;ярні",
-    "Питання про дорогу до музею",
-    "Скарга на шумних сусідів",
-    "Запис до перукарні",
-    "Обговорення планів на вихідні",
-    "Проблема з інтернетом",
-    "Повернення товару в магазині",
-    "Планування зустрічі з другом"
+    "Zamówienie kawy w kawiarni",
+    "Pytanie o drogę do muzeum",
+    "Skarga na hałaśliwych sąsiadów",
+    "Wizyta u fryzjera",
+    "Plany na weekend",
+    "Problem z internetem",
+    "Zwrot towaru w sklepie",
+    "Planowanie spotkania z przyjacielem"
   ];
 
   const handleStart = () => {
@@ -70,10 +70,11 @@ export default function DialogueAIConfig({ onStart }: DialogueAIConfigProps) {
             {situationSuggestions.map((suggestion) => (
               <button
                 key={suggestion}
-                onClick={() => setSituation(suggestion.replace("&apos;", "'"))}
+                onClick={() => setSituation(suggestion)}
                 className="rounded-full border border-ink/20 px-3 py-1 text-xs text-ink transition hover:bg-ink/5"
-                dangerouslySetInnerHTML={{ __html: suggestion }}
-              />
+              >
+                {suggestion}
+              </button>
             ))}
           </div>
         </div>
