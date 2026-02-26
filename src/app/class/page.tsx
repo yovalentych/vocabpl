@@ -173,7 +173,7 @@ export default async function ClassDashboard() {
         <div className="mb-6 flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-semibold">{t.dashboard.aiExercises}</h2>
-            <p className="mt-1 text-sm text-ink/60">Оберіть вправу для старту</p>
+            <p className="mt-1 text-sm text-ink/60">{t.dashboard.chooseExercise}</p>
           </div>
         </div>
 
@@ -222,7 +222,7 @@ export default async function ClassDashboard() {
               tone: "bg-moss/10 text-moss border-moss/20"
             },
             {
-              title: "Опиши картинку",
+              title: t.dashboard.describeImage,
               href: "/class/workbook/describe",
               icon: BookOpen,
               tone: "bg-gold/10 text-gold border-gold/20"
@@ -249,35 +249,35 @@ export default async function ClassDashboard() {
       {/* Traditional Features + Leaderboard + Activity */}
       <section className="mt-16">
         <div className="mb-6">
-          <h2 className="text-2xl font-semibold">Основні розділи</h2>
+          <h2 className="text-2xl font-semibold">{t.dashboard.mainSections}</h2>
         </div>
 
         <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-5">
           {[
             {
               title: t.home.cards.dictionary,
-              text: "Вивчай слова з інтерактивного словника",
+              text: t.dashboard.dictDesc,
               href: "/class/dict",
               icon: BookBookmark,
               tone: "bg-terracotta/10 text-terracotta"
             },
             {
               title: t.home.cards.tests,
-              text: "Перевір свої знання на тестах",
+              text: t.dashboard.testsDesc,
               href: "/class/tests",
               icon: TestTube,
               tone: "bg-moss/10 text-moss"
             },
             {
               title: t.home.cards.reading,
-              text: "Читай тексти польською мовою",
+              text: t.dashboard.readingDesc,
               href: "/class/reading",
               icon: BookOpen,
               tone: "bg-gold/20 text-gold"
             },
             {
-              title: "Рейтинг",
-              text: "Подивись своє місце у таблиці лідерів",
+              title: t.dashboard.leaderboard,
+              text: t.dashboard.leaderboardDesc,
               href: "/class/leaderboard",
               icon: RankingIcon,
               tone: "bg-moss/10 text-moss"
@@ -301,7 +301,7 @@ export default async function ClassDashboard() {
               <h3 className="mt-4 text-lg font-semibold">{card.title}</h3>
               <p className="mt-2 text-xs text-ink/60">{card.text}</p>
               <div className="mt-3 flex items-center gap-1 text-sm font-semibold text-terracotta">
-                <span>Відкрити</span>
+                <span>{t.dashboard.open}</span>
                 <span className="transition group-hover:translate-x-1">→</span>
               </div>
             </Link>
@@ -359,14 +359,14 @@ export default async function ClassDashboard() {
         <section className="mt-16">
           <div className="rounded-[32px] border border-ink/10 bg-paper/80 p-12 text-center shadow-soft">
             <Shuffle size={48} weight="fill" className="mx-auto text-gold" />
-            <h3 className="mt-4 text-2xl font-semibold">Немає активності</h3>
-            <p className="mt-2 text-ink/70">Розпочни свою першу вправу!</p>
+            <h3 className="mt-4 text-2xl font-semibold">{t.dashboard.noActivityTitle}</h3>
+            <p className="mt-2 text-ink/70">{t.dashboard.startFirstExercise}</p>
             <Link
               href={randomExercise.href as Route}
               className="mt-6 inline-flex items-center gap-2 rounded-full bg-ink px-8 py-3 text-sm font-semibold text-paper shadow-soft transition hover:bg-ink/90"
             >
               <Shuffle size={18} weight="fill" />
-              Випадкова вправа
+              {t.dashboard.randomExercise}
             </Link>
           </div>
         </section>

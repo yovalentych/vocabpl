@@ -58,7 +58,7 @@ export default function SentencesClassicPractice({ config, onComplete }: Sentenc
         if (cancelled) return;
 
         if (!res.ok) {
-          setError("Помилка завантаження слів");
+          setError(t.workbook.sentencesLoadError);
           return;
         }
 
@@ -73,7 +73,7 @@ export default function SentencesClassicPractice({ config, onComplete }: Sentenc
       } catch (err) {
         if (!cancelled) {
           console.error("Failed to load words:", err);
-          setError("Помилка мережі при завантаженні слів");
+          setError(t.workbook.sentencesNetworkError);
         }
       } finally {
         if (!cancelled) setIsLoading(false);
@@ -109,7 +109,7 @@ export default function SentencesClassicPractice({ config, onComplete }: Sentenc
     const completed = words.filter((word) => countSentences(word.sentences) > 0);
 
     if (completed.length === 0) {
-      setError("Будь ласка, напишіть хоча б одне речення");
+      setError(t.workbook.sentencesWriteAtLeastOne);
       return;
     }
 
@@ -143,10 +143,10 @@ export default function SentencesClassicPractice({ config, onComplete }: Sentenc
         const errorCode = data?.code;
         const message =
           errorCode === "ai_quota"
-            ? "Ліміт AI кредитів вичерпано"
+            ? t.workbook.classicAiQuotaError
             : errorCode === "pvs_unavailable"
-              ? "Потрібен AI план"
-              : data?.error || "Помилка AI";
+              ? t.workbook.classicAiPlanRequired
+              : data?.error || t.workbook.classicAiError;
         setError(message);
         return;
       }
@@ -155,7 +155,7 @@ export default function SentencesClassicPractice({ config, onComplete }: Sentenc
       const result = safeParseAIResponse(data?.text);
 
       if (!result || !result.items) {
-        setError("AI повернула неправильний формат відповіді. Спробуйте ще раз.");
+        setError(t.workbook.classicAiFormatError);
         return;
       }
 
@@ -182,7 +182,7 @@ export default function SentencesClassicPractice({ config, onComplete }: Sentenc
       setShowResults(true);
     } catch (err) {
       console.error("Failed to check with AI:", err);
-      setError("Помилка перевірки");
+      setError(t.workbook.classicCheckError);
     } finally {
       setIsCheckingAI(false);
     }
@@ -192,7 +192,7 @@ export default function SentencesClassicPractice({ config, onComplete }: Sentenc
     const completed = words.filter((word) => countSentences(word.sentences) > 0);
 
     if (completed.length === 0) {
-      setError("Будь ласка, напишіть хоча б одне речення");
+      setError(t.workbook.sentencesWriteAtLeastOne);
       return;
     }
 
@@ -216,7 +216,7 @@ export default function SentencesClassicPractice({ config, onComplete }: Sentenc
       if (!res.ok) {
         let data = {};
         try { data = await res.json(); } catch {}
-        setError(data?.error || "Помилка надсилання");
+        setError(data?.error || t.workbook.classicSubmitError);
         return;
       }
 
@@ -231,11 +231,11 @@ export default function SentencesClassicPractice({ config, onComplete }: Sentenc
         })
       });
 
-      setSuccessMessage("Вправу надіслано на перевірку! Очікуйте фідбек від викладача.");
+      setSuccessMessage(t.workbook.classicSubmitSuccess);
       setTimeout(() => onComplete(), 2000);
     } catch (err) {
       console.error("Failed to submit:", err);
-      setError("Помилка надсилання");
+      setError(t.workbook.classicSubmitError);
     } finally {
       setIsSubmitting(false);
     }
@@ -254,13 +254,13 @@ export default function SentencesClassicPractice({ config, onComplete }: Sentenc
     return (
       <div className="rounded-3xl border border-ink/10 bg-paper/80 p-8 shadow-soft text-center">
         <p className="text-sm text-ink/60 mb-4">
-          Слова не знайдено. Спробуйте інші налаштування.
+          {t.workbook.sentencesNoWords}
         </p>
         <button
           onClick={onComplete}
           className="inline-flex items-center gap-2 rounded-full border border-ink/20 px-4 py-2 text-xs font-semibold text-ink transition hover:bg-ink/5"
         >
-          Повернутися
+          {t.workbook.classicGoBack}
         </button>
       </div>
     );
@@ -273,7 +273,7 @@ export default function SentencesClassicPractice({ config, onComplete }: Sentenc
         <div className="rounded-3xl border border-ink/10 bg-paper/80 p-4 shadow-soft">
           <div className="flex items-center justify-between mb-4">
             <p className="text-xs uppercase tracking-[0.3em] text-ink/40">
-              Слова
+              {t.workbook.sentencesWordsLabel}
             </p>
             <div className="text-xs text-ink/50">
               {activeIndex + 1} / {words.length}
@@ -318,7 +318,7 @@ export default function SentencesClassicPractice({ config, onComplete }: Sentenc
 
                   {/* Sentence count */}
                   <div className="mt-2 flex items-center gap-2 text-xs text-ink/50">
-                    <span>{sentenceCount} / 3 речень</span>
+                    <span>{sentenceCount} / 3 {t.workbook.sentencesSentencesOf}</span>
                     {score > 0 && (
                       <span className="text-gold">+{score} pts</span>
                     )}
@@ -332,7 +332,7 @@ export default function SentencesClassicPractice({ config, onComplete }: Sentenc
           <div className="mt-4 rounded-2xl border border-ink/10 bg-fog p-3">
             <div className="flex items-center justify-between">
               <span className="text-xs uppercase tracking-[0.2em] text-ink/40">
-                Всього
+                {t.workbook.classicTotal}
               </span>
               <span className="text-lg font-bold text-gold">
                 {totalPoints.toFixed(1)} pts
@@ -359,7 +359,7 @@ export default function SentencesClassicPractice({ config, onComplete }: Sentenc
               {/* Progress */}
               <div className="text-right">
                 <p className="text-xs text-ink/50">
-                  Слово {activeIndex + 1} з {words.length}
+                  {t.workbook.sentencesWordOf.replace("{current}", String(activeIndex + 1)).replace("{total}", String(words.length))}
                 </p>
               </div>
             </div>
@@ -368,19 +368,19 @@ export default function SentencesClassicPractice({ config, onComplete }: Sentenc
           {/* Sentence inputs */}
           <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
             <p className="text-xs uppercase tracking-[0.3em] text-ink/40 mb-4">
-              Напишіть речення
+              {t.workbook.sentencesWriteSentences}
             </p>
 
             <div className="space-y-4">
               {activeWord.sentences.map((sentence, index) => (
                 <div key={index}>
                   <label className="block text-xs text-ink/60 mb-2">
-                    Речення {index + 1}
+                    {t.workbook.sentencesSentenceN.replace("{n}", String(index + 1))}
                   </label>
                   <textarea
                     value={sentence}
                     onChange={(e) => updateSentence(activeWord.id, index, e.target.value)}
-                    placeholder="Напишіть речення польською..."
+                    placeholder={t.workbook.sentencesPlaceholder}
                     rows={3}
                     maxLength={500}
                     className="w-full rounded-2xl border border-ink/20 bg-paper px-4 py-3 text-sm text-ink placeholder:text-ink/40 focus:border-moss/40 focus:outline-none focus:ring-0"
@@ -415,12 +415,12 @@ export default function SentencesClassicPractice({ config, onComplete }: Sentenc
                 {isCheckingAI ? (
                   <>
                     <span className="h-4 w-4 animate-spin rounded-full border-2 border-paper/20 border-t-paper" />
-                    <span>AI перевіряє...</span>
+                    <span>{t.workbook.classicAiChecking}</span>
                   </>
                 ) : (
                   <>
                     <Sparkle size={18} weight="fill" />
-                    <span>Перевірити з AI</span>
+                    <span>{t.workbook.classicCheckWithAI}</span>
                   </>
                 )}
               </button>
@@ -433,12 +433,12 @@ export default function SentencesClassicPractice({ config, onComplete }: Sentenc
                 {isSubmitting ? (
                   <>
                     <span className="h-4 w-4 animate-spin rounded-full border-2 border-paper/20 border-t-paper" />
-                    <span>Надсилання...</span>
+                    <span>{t.workbook.classicSubmitting}</span>
                   </>
                 ) : (
                   <>
                     <PaperPlaneRight size={18} weight="fill" />
-                    <span>Надіслати на перевірку</span>
+                    <span>{t.workbook.classicSubmitForReview}</span>
                   </>
                 )}
               </button>
@@ -454,13 +454,13 @@ export default function SentencesClassicPractice({ config, onComplete }: Sentenc
                 disabled={activeIndex === words.length - 1}
                 className="inline-flex items-center gap-2 rounded-full border border-ink/20 px-6 py-3 text-sm font-semibold text-ink transition hover:bg-ink/5 disabled:cursor-not-allowed disabled:opacity-40"
               >
-                <span>Наступне слово</span>
+                <span>{t.workbook.sentencesNextWord}</span>
                 <span>→</span>
               </button>
             </div>
 
             <p className="text-xs text-ink/50">
-              Перевірка з AI дає детальний фідбек та оцінку. Відправка на перевірку — для ручного review від викладача.
+              {t.workbook.classicCheckHint}
             </p>
           </div>
         </div>

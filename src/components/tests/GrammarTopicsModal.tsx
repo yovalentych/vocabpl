@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { X, MagnifyingGlass, Check } from "@phosphor-icons/react";
+import { useLocale } from "@/components/LocaleProvider";
 
 interface GrammarTopic {
   id: string;
@@ -95,6 +96,7 @@ export default function GrammarTopicsModal({
   onSelectAll,
   maxSelection = 5
 }: GrammarTopicsModalProps) {
+  const { t } = useLocale();
   const [searchQuery, setSearchQuery] = useState("");
 
   const canSelectMore = selectedTopics.length < maxSelection;
@@ -127,11 +129,11 @@ export default function GrammarTopicsModal({
         {/* Header */}
         <div className="flex items-center justify-between border-b border-ink/10 p-6">
           <div>
-            <h3 className="text-2xl font-bold">Граматичні теми</h3>
+            <h3 className="text-2xl font-bold">{t.tests.grammarTopicsTitle}</h3>
             <p className="mt-1 text-sm text-ink/60">
-              Обрано: {selectedTopics.length} / {maxSelection}
+              {t.tests.grammarSelected}: {selectedTopics.length} / {maxSelection}
               {selectedTopics.length >= maxSelection && (
-                <span className="ml-2 text-terracotta">(максимум досягнуто)</span>
+                <span className="ml-2 text-terracotta">{t.tests.grammarMaxReached}</span>
               )}
             </p>
           </div>
@@ -151,7 +153,7 @@ export default function GrammarTopicsModal({
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Пошук тем..."
+              placeholder={t.tests.grammarSearch}
               className="w-full rounded-2xl border border-ink/20 bg-paper py-2 pl-12 pr-4 text-sm focus:border-moss/40 focus:outline-none"
             />
           </div>
@@ -161,13 +163,13 @@ export default function GrammarTopicsModal({
               onClick={onSelectAll}
               className="rounded-full border border-ink/20 px-4 py-1.5 text-xs font-semibold text-ink transition hover:bg-ink/5"
             >
-              Обрати всі
+              {t.tests.grammarSelectAll}
             </button>
             <button
               onClick={onClearAll}
               className="rounded-full border border-ink/20 px-4 py-1.5 text-xs font-semibold text-ink transition hover:bg-ink/5"
             >
-              Скасувати всі
+              {t.tests.grammarClearAll}
             </button>
           </div>
         </div>
@@ -175,7 +177,7 @@ export default function GrammarTopicsModal({
         {/* Topics List */}
         <div className="max-h-[50vh] overflow-y-auto p-6">
           {categorizedTopics.length === 0 ? (
-            <p className="text-center text-sm text-ink/60">Нічого не знайдено</p>
+            <p className="text-center text-sm text-ink/60">{t.tests.grammarNotFound}</p>
           ) : (
             <div className="space-y-6">
               {categorizedTopics.map(([category, topics]) => (
@@ -224,20 +226,14 @@ export default function GrammarTopicsModal({
         <div className="flex items-center justify-between border-t border-ink/10 p-6">
           <p className="text-sm text-ink/60">
             {selectedTopics.length > 0
-              ? `Обрано ${selectedTopics.length} з ${maxSelection} ${
-                  selectedTopics.length === 1
-                    ? "теми"
-                    : selectedTopics.length < 5
-                    ? "тем"
-                    : "тем"
-                }`
-              : `Оберіть до ${maxSelection} граматичних тем для тесту`}
+              ? t.tests.grammarSelectedOf.replace("{count}", String(selectedTopics.length)).replace("{max}", String(maxSelection))
+              : t.tests.grammarChooseUpTo.replace("{max}", String(maxSelection))}
           </p>
           <button
             onClick={onClose}
             className="rounded-full bg-ink px-6 py-2.5 text-sm font-semibold text-paper transition hover:bg-ink/90"
           >
-            Готово
+            {t.tests.grammarDone}
           </button>
         </div>
       </div>

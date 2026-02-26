@@ -125,7 +125,7 @@ export default function ParaphraseClassicPractice({ config, onComplete }: Paraph
     const completed = sentences.filter((s) => s.paraphrase.trim());
 
     if (completed.length === 0) {
-      setError("Будь ласка, перефразуйте хоча б одне речення");
+      setError(t.workbook.paraphraseAtLeastOne);
       return;
     }
 
@@ -158,10 +158,10 @@ export default function ParaphraseClassicPractice({ config, onComplete }: Paraph
         const errorCode = data?.code;
         const message =
           errorCode === "ai_quota"
-            ? "Ліміт AI кредитів вичерпано"
+            ? t.workbook.classicAiQuotaError
             : errorCode === "pvs_unavailable"
-              ? "Потрібен AI план"
-              : data?.error || "Помилка AI";
+              ? t.workbook.classicAiPlanRequired
+              : data?.error || t.workbook.classicAiError;
         setError(message);
         return;
       }
@@ -169,7 +169,7 @@ export default function ParaphraseClassicPractice({ config, onComplete }: Paraph
       const result = safeParseAIResponse(data?.text);
 
       if (!result) {
-        setError("AI повернула неправильний формат відповіді. Спробуйте ще раз.");
+        setError(t.workbook.classicAiFormatError);
         return;
       }
 
@@ -195,13 +195,13 @@ export default function ParaphraseClassicPractice({ config, onComplete }: Paraph
         totalSentences: sentences.length,
         completedSentences: completed.length,
         aiCheck: result,
-        topic: "Різні теми",
+        topic: t.workbook.paraphraseMixedTopics,
         level: config.level
       });
       setShowResults(true);
     } catch (error) {
       console.error("Failed to check with AI:", error);
-      setError("Помилка перевірки");
+      setError(t.workbook.classicCheckError);
     } finally {
       setIsCheckingAI(false);
     }
@@ -211,7 +211,7 @@ export default function ParaphraseClassicPractice({ config, onComplete }: Paraph
     const completed = sentences.filter((s) => s.paraphrase.trim());
 
     if (completed.length === 0) {
-      setError("Будь ласка, перефразуйте хоча б одне речення");
+      setError(t.workbook.paraphraseAtLeastOne);
       return;
     }
 
@@ -235,7 +235,7 @@ export default function ParaphraseClassicPractice({ config, onComplete }: Paraph
       if (!res.ok) {
         let data = {};
         try { data = await res.json(); } catch {}
-        setError(data?.error || "Помилка надсилання");
+        setError(data?.error || t.workbook.classicSubmitError);
         return;
       }
 
@@ -253,11 +253,11 @@ export default function ParaphraseClassicPractice({ config, onComplete }: Paraph
         console.error("Failed to save points:", err);
       }
 
-      setSuccessMessage("Вправу надіслано на перевірку! Очікуйте фідбек від викладача.");
+      setSuccessMessage(t.workbook.classicSubmitSuccess);
       setTimeout(() => onComplete(), 2000);
     } catch (error) {
       console.error("Failed to submit:", error);
-      setError("Помилка надсилання");
+      setError(t.workbook.classicSubmitError);
     } finally {
       setIsSubmitting(false);
     }
@@ -276,7 +276,7 @@ export default function ParaphraseClassicPractice({ config, onComplete }: Paraph
     return (
       <div className="rounded-3xl border border-ink/10 bg-paper/80 p-8 shadow-soft text-center">
         <p className="text-sm text-ink/60">
-          Речення не знайдено. Спробуйте інші налаштування.
+          {t.workbook.paraphraseNoSentences}
         </p>
       </div>
     );
@@ -289,7 +289,7 @@ export default function ParaphraseClassicPractice({ config, onComplete }: Paraph
         <div className="rounded-3xl border border-ink/10 bg-paper/80 p-4 shadow-soft">
           <div className="flex items-center justify-between mb-4">
             <p className="text-xs uppercase tracking-[0.3em] text-ink/40">
-              Речення
+              {t.workbook.paraphraseSentencesLabel}
             </p>
             <div className="text-xs text-ink/50">
               {activeIndex + 1} / {sentences.length}
@@ -313,7 +313,7 @@ export default function ParaphraseClassicPractice({ config, onComplete }: Paraph
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs text-ink/50 mb-1">Речення {idx + 1}</p>
+                      <p className="text-xs text-ink/50 mb-1">{t.workbook.paraphraseSentenceN.replace("{n}", String(idx + 1))}</p>
                       <p className="text-sm text-ink/80 truncate">
                         {sentence.original}
                       </p>
@@ -337,7 +337,7 @@ export default function ParaphraseClassicPractice({ config, onComplete }: Paraph
           <div className="mt-4 rounded-2xl border border-ink/10 bg-fog p-3">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs uppercase tracking-[0.2em] text-ink/40">
-                Прогрес
+                {t.workbook.classicProgress}
               </span>
               <span className="text-sm font-bold text-terracotta">
                 {completedCount} / {sentences.length}
@@ -357,14 +357,14 @@ export default function ParaphraseClassicPractice({ config, onComplete }: Paraph
           {/* Level badge */}
           <div className="rounded-2xl border border-terracotta/20 bg-terracotta/5 px-4 py-2 inline-flex items-center gap-2">
             <span className="text-xs font-semibold text-terracotta">
-              Рівень: {config.level}
+              {t.workbook.classicLevel}: {config.level}
             </span>
           </div>
 
           {/* Original sentence */}
           <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
             <p className="text-xs uppercase tracking-[0.3em] text-ink/40 mb-4">
-              Оригінальне речення
+              {t.workbook.paraphraseOriginal}
             </p>
             <p className="text-lg text-ink leading-relaxed">
               {activeSentence.original}
@@ -374,20 +374,20 @@ export default function ParaphraseClassicPractice({ config, onComplete }: Paraph
           {/* Paraphrase input */}
           <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
             <p className="text-xs uppercase tracking-[0.3em] text-ink/40 mb-4">
-              Ваше перефразування
+              {t.workbook.paraphraseYours}
             </p>
 
             <textarea
               value={activeSentence.paraphrase}
               onChange={(e) => updateParaphrase(activeSentence.id, e.target.value)}
-              placeholder="Напишіть це речення іншими словами..."
+              placeholder={t.workbook.paraphraseClassicPlaceholder}
               rows={5}
               maxLength={500}
               className="w-full rounded-2xl border border-ink/20 bg-paper px-4 py-3 text-sm text-ink placeholder:text-ink/40 focus:border-terracotta/40 focus:outline-none focus:ring-0"
             />
 
             <p className="mt-2 text-xs text-ink/50">
-              Спробуйте змінити структуру та використати синоніми
+              {t.workbook.paraphraseClassicHint}
             </p>
           </div>
 
@@ -416,12 +416,12 @@ export default function ParaphraseClassicPractice({ config, onComplete }: Paraph
                 {isCheckingAI ? (
                   <>
                     <span className="h-4 w-4 animate-spin rounded-full border-2 border-paper/20 border-t-paper" />
-                    <span>AI перевіряє...</span>
+                    <span>{t.workbook.classicAiChecking}</span>
                   </>
                 ) : (
                   <>
                     <Sparkle size={18} weight="fill" />
-                    <span>Перевірити з AI</span>
+                    <span>{t.workbook.classicCheckWithAI}</span>
                   </>
                 )}
               </button>
@@ -434,12 +434,12 @@ export default function ParaphraseClassicPractice({ config, onComplete }: Paraph
                 {isSubmitting ? (
                   <>
                     <span className="h-4 w-4 animate-spin rounded-full border-2 border-paper/20 border-t-paper" />
-                    <span>Надсилання...</span>
+                    <span>{t.workbook.classicSubmitting}</span>
                   </>
                 ) : (
                   <>
                     <PaperPlaneRight size={18} weight="fill" />
-                    <span>Надіслати на перевірку</span>
+                    <span>{t.workbook.classicSubmitForReview}</span>
                   </>
                 )}
               </button>
@@ -455,13 +455,13 @@ export default function ParaphraseClassicPractice({ config, onComplete }: Paraph
                 disabled={activeIndex === sentences.length - 1}
                 className="inline-flex items-center gap-2 rounded-full border border-ink/20 px-6 py-3 text-sm font-semibold text-ink transition hover:bg-ink/5 disabled:cursor-not-allowed disabled:opacity-40"
               >
-                <span>Наступне речення</span>
+                <span>{t.workbook.paraphraseNextSentence}</span>
                 <span>→</span>
               </button>
             </div>
 
             <p className="text-xs text-ink/50">
-              💡 Перевірка з AI дає детальний фідбек та оцінку. Відправка на перевірку — для ручного review від викладача.
+              {t.workbook.classicCheckHint}
             </p>
           </div>
         </div>

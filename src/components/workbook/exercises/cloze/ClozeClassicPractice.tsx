@@ -69,7 +69,7 @@ export default function ClozeClassicPractice({ config, onComplete }: ClozeClassi
     const filledAnswers = Object.entries(answers).filter(([_, value]) => value.trim());
 
     if (filledAnswers.length === 0) {
-      setError("Будь ласка, заповніть хоча б один пропуск");
+      setError(t.workbook.clozeAtLeastOne);
       return;
     }
 
@@ -108,10 +108,10 @@ export default function ClozeClassicPractice({ config, onComplete }: ClozeClassi
         const errorCode = data?.code;
         const message =
           errorCode === "ai_quota"
-            ? "Ліміт AI кредитів вичерпано"
+            ? t.workbook.classicAiQuotaError
             : errorCode === "pvs_unavailable"
-              ? "Потрібен AI план"
-              : data?.error || "Помилка AI";
+              ? t.workbook.classicAiPlanRequired
+              : data?.error || t.workbook.classicAiError;
         setError(message);
         return;
       }
@@ -119,7 +119,7 @@ export default function ClozeClassicPractice({ config, onComplete }: ClozeClassi
       const result = safeParseAIResponse(data?.text);
 
       if (!result || !result.items) {
-        setError("AI повернула неправильний формат відповіді. Спробуйте ще раз.");
+        setError(t.workbook.classicAiFormatError);
         return;
       }
 
@@ -144,7 +144,7 @@ export default function ClozeClassicPractice({ config, onComplete }: ClozeClassi
       setShowResults(true);
     } catch (err) {
       console.error("Failed to check with AI:", err);
-      setError("Помилка перевірки");
+      setError(t.workbook.classicCheckError);
     } finally {
       setIsCheckingAI(false);
     }
@@ -154,7 +154,7 @@ export default function ClozeClassicPractice({ config, onComplete }: ClozeClassi
     const filledAnswers = Object.entries(answers).filter(([_, value]) => value.trim());
 
     if (filledAnswers.length === 0) {
-      setError("Будь ласка, заповніть хоча б один пропуск");
+      setError(t.workbook.clozeAtLeastOne);
       return;
     }
 
@@ -185,7 +185,7 @@ export default function ClozeClassicPractice({ config, onComplete }: ClozeClassi
       if (!res.ok) {
         let data = {};
         try { data = await res.json(); } catch {}
-        setError(data?.error || "Помилка надсилання");
+        setError(data?.error || t.workbook.classicSubmitError);
         return;
       }
 
@@ -203,11 +203,11 @@ export default function ClozeClassicPractice({ config, onComplete }: ClozeClassi
         console.error("Failed to save points:", err);
       }
 
-      setSuccessMessage("Вправу надіслано на перевірку! Очікуйте фідбек від викладача.");
+      setSuccessMessage(t.workbook.classicSubmitSuccess);
       setTimeout(() => onComplete(), 2000);
     } catch (err) {
       console.error("Failed to submit:", err);
-      setError("Помилка надсилання");
+      setError(t.workbook.classicSubmitError);
     } finally {
       setIsSubmitting(false);
     }
@@ -224,18 +224,18 @@ export default function ClozeClassicPractice({ config, onComplete }: ClozeClassi
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs uppercase tracking-[0.3em] text-gold/70 mb-2">
-                Класичний режим
+                {t.workbook.classicMode}
               </p>
               <h2 className="text-xl font-semibold text-ink">
-                Заповніть пропуски
+                {t.workbook.clozeFillGaps}
               </h2>
               <p className="mt-1 text-sm text-ink/60">
-                Рівень: {config.level} · {items.length} речень
+                {t.workbook.clozeLevelAndCount.replace("{level}", config.level).replace("{count}", String(items.length))}
               </p>
             </div>
             <div className="text-right">
               <div className="text-2xl font-bold text-gold">{filledCount}/{items.length}</div>
-              <div className="text-xs text-ink/50">заповнено</div>
+              <div className="text-xs text-ink/50">{t.workbook.clozeFilled}</div>
             </div>
           </div>
         </div>
@@ -276,7 +276,7 @@ export default function ClozeClassicPractice({ config, onComplete }: ClozeClassi
                     {/* Hint */}
                     <div className="rounded-xl border border-gold/20 bg-gold/5 px-3 py-2">
                       <p className="text-xs text-ink/70">
-                        <span className="font-semibold text-gold">Підказка:</span> {item.hint}
+                        <span className="font-semibold text-gold">{t.workbook.clozeHintLabel}</span> {item.hint}
                       </p>
                     </div>
 
@@ -289,7 +289,7 @@ export default function ClozeClassicPractice({ config, onComplete }: ClozeClassi
                           <Circle size={16} weight="fill" className="text-terracotta" />
                         )}
                         <span className={`text-xs ${status === "correct" ? "text-moss" : "text-terracotta"}`}>
-                          {status === "correct" ? "Правильно!" : "Перевірте відповідь"}
+                          {status === "correct" ? t.workbook.clozeCorrect : t.workbook.clozeCheckAnswer}
                         </span>
                       </div>
                     )}
@@ -325,12 +325,12 @@ export default function ClozeClassicPractice({ config, onComplete }: ClozeClassi
               {isCheckingAI ? (
                 <>
                   <span className="h-4 w-4 animate-spin rounded-full border-2 border-paper/20 border-t-paper" />
-                  <span>AI перевіряє...</span>
+                  <span>{t.workbook.classicAiChecking}</span>
                 </>
               ) : (
                 <>
                   <Sparkle size={18} weight="fill" />
-                  <span>Перевірити з AI</span>
+                  <span>{t.workbook.classicCheckWithAI}</span>
                 </>
               )}
             </button>
@@ -343,23 +343,23 @@ export default function ClozeClassicPractice({ config, onComplete }: ClozeClassi
               {isSubmitting ? (
                 <>
                   <span className="h-4 w-4 animate-spin rounded-full border-2 border-paper/20 border-t-paper" />
-                  <span>Надсилання...</span>
+                  <span>{t.workbook.classicSubmitting}</span>
                 </>
               ) : (
                 <>
                   <PaperPlaneRight size={18} weight="fill" />
-                  <span>Надіслати на перевірку</span>
+                  <span>{t.workbook.classicSubmitForReview}</span>
                 </>
               )}
             </button>
           </div>
 
           <p className="text-center text-xs text-ink/50">
-            Перевірка з AI дає детальний фідбек та оцінку. Відправка на перевірку — для ручного review від викладача.
+            {t.workbook.classicCheckHint}
           </p>
 
           <div className="text-center text-sm text-ink/60">
-            Заповнено: {filledCount} з {items.length}
+            {t.workbook.clozeFilledOf.replace("{filled}", String(filledCount)).replace("{total}", String(items.length))}
           </div>
         </div>
       </div>

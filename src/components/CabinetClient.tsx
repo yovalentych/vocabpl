@@ -146,14 +146,14 @@ export default function CabinetClient({ username }: { username: string }) {
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) {
-      setBillingMessage({ tone: "error", text: data?.error || "Не вдалося створити оплату" });
+      setBillingMessage({ tone: "error", text: data?.error || t.cabinet.paymentCreateError });
       return;
     }
     if (data?.pageUrl) {
       window.location.href = data.pageUrl;
       return;
     }
-    setBillingMessage({ tone: "error", text: "Не отримано посилання на оплату" });
+    setBillingMessage({ tone: "error", text: t.cabinet.paymentLinkError });
   }
 
   async function cancelSubscription() {
@@ -161,7 +161,7 @@ export default function CabinetClient({ username }: { username: string }) {
     const res = await csrfFetch("/api/subscription/cancel", { method: "POST" });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) {
-      setBillingMessage({ tone: "error", text: data?.error || "Не вдалося скасувати" });
+      setBillingMessage({ tone: "error", text: data?.error || t.cabinet.cancelError });
       return;
     }
     setBillingMessage({ tone: "success", text: t.cabinet.billingCancelInfo });
@@ -173,7 +173,7 @@ export default function CabinetClient({ username }: { username: string }) {
     const res = await csrfFetch("/api/subscription/resume", { method: "POST" });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) {
-      setBillingMessage({ tone: "error", text: data?.error || "Не вдалося відновити" });
+      setBillingMessage({ tone: "error", text: data?.error || t.cabinet.resumeError });
       return;
     }
     setBillingMessage({ tone: "success", text: t.cabinet.billingAutoRenew });
@@ -347,7 +347,7 @@ export default function CabinetClient({ username }: { username: string }) {
             {isActive && (
               <div className="inline-flex items-center gap-2 rounded-full border border-moss/20 bg-moss/10 px-4 py-2">
                 <CheckCircle size={16} weight="fill" className="text-moss" />
-                <span className="text-xs font-semibold text-moss">Premium Active</span>
+                <span className="text-xs font-semibold text-moss">{t.cabinet.premiumActive}</span>
               </div>
             )}
           </div>
@@ -369,7 +369,7 @@ export default function CabinetClient({ username }: { username: string }) {
                 <Brain size={24} weight="fill" />
               </div>
               <div className="flex-1">
-                <p className="text-xs uppercase tracking-[0.2em] text-ink/50">AI Status</p>
+                <p className="text-xs uppercase tracking-[0.2em] text-ink/50">{t.cabinet.aiStatusLabel}</p>
                 <p className="mt-1 text-lg font-semibold">
                   {hasAiAccess ? t.cabinet.aiStatusConnected : t.cabinet.aiStatusDisconnected}
                 </p>
@@ -389,7 +389,7 @@ export default function CabinetClient({ username }: { username: string }) {
                   <p className="mt-1 text-2xl font-semibold text-terracotta">
                     {Math.max(0, aiUsageSummary.limit - aiUsageSummary.usedCredits)}
                   </p>
-                  <p className="text-xs text-ink/60">з {aiUsageSummary.limit} доступних</p>
+                  <p className="text-xs text-ink/60">{t.cabinet.creditsOf.replace("{limit}", String(aiUsageSummary.limit))}</p>
                 </div>
               </div>
             </div>
@@ -403,9 +403,9 @@ export default function CabinetClient({ username }: { username: string }) {
                   <ChartLineUp size={24} weight="fill" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-xs uppercase tracking-[0.2em] text-ink/50">Використано</p>
+                  <p className="text-xs uppercase tracking-[0.2em] text-ink/50">{t.cabinet.usedLabel}</p>
                   <p className="mt-1 text-2xl font-semibold text-ink">{aiUsageHistory.length}</p>
-                  <p className="text-xs text-ink/60">AI запитів</p>
+                  <p className="text-xs text-ink/60">{t.cabinet.aiRequests}</p>
                 </div>
               </div>
             </div>
@@ -416,15 +416,15 @@ export default function CabinetClient({ username }: { username: string }) {
                   <Warning size={24} weight="fill" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-xs uppercase tracking-[0.2em] text-ink/50">AI доступ</p>
+                  <p className="text-xs uppercase tracking-[0.2em] text-ink/50">{t.cabinet.aiAccessLabel}</p>
                   <p className="mt-1 text-sm text-ink/70">
-                    AI‑кредити та історія доступні після оплати або активації промокоду.
+                    {t.cabinet.aiAccessHint}
                   </p>
                   <a
                     href="#billing"
                     className="mt-3 inline-flex items-center gap-2 rounded-full border border-ink/20 bg-paper px-4 py-2 text-xs font-semibold text-ink/70 hover:bg-ink/5"
                   >
-                    Перейти до оплати
+                    {t.cabinet.goToBilling}
                   </a>
                 </div>
               </div>
@@ -437,11 +437,11 @@ export default function CabinetClient({ username }: { username: string }) {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs uppercase tracking-[0.2em] text-ink/50">{t.cabinet.aiUsageTitle}</p>
-                <p className="mt-1 text-sm text-ink/60">Топ-10 найбільш використаних AI функцій</p>
+                <p className="mt-1 text-sm text-ink/60">{t.cabinet.aiTopUsed}</p>
               </div>
               <div className="text-right">
                 <p className="text-2xl font-semibold text-ink">{aiUsageHistory.length}</p>
-                <p className="text-xs text-ink/50">всього запитів</p>
+                <p className="text-xs text-ink/50">{t.cabinet.totalRequests}</p>
               </div>
             </div>
 
@@ -464,7 +464,7 @@ export default function CabinetClient({ username }: { username: string }) {
                           <span className="font-medium text-ink">{item.label}</span>
                         </div>
                         <div className="flex items-center gap-3">
-                          <span className="text-xs text-ink/60">{item.count} раз{item.count > 1 ? "ів" : ""}</span>
+                          <span className="text-xs text-ink/60">{item.count} {t.cabinet.timesUsed}</span>
                           <span className="text-xs font-semibold text-terracotta">-{item.credits}</span>
                         </div>
                       </div>
@@ -489,19 +489,19 @@ export default function CabinetClient({ username }: { username: string }) {
             {aiUsageHistory.length > 0 && (
               <div className="mt-6 grid grid-cols-3 gap-4 rounded-2xl border border-ink/5 bg-fog/50 p-4">
                 <div className="text-center">
-                  <p className="text-xs text-ink/50">Всього кредитів</p>
+                  <p className="text-xs text-ink/50">{t.cabinet.totalCredits}</p>
                   <p className="mt-1 text-lg font-semibold text-terracotta">
                     {aiUsageHistory.reduce((sum, log) => sum + log.credits, 0)}
                   </p>
                 </div>
                 <div className="text-center">
-                  <p className="text-xs text-ink/50">Середня вартість</p>
+                  <p className="text-xs text-ink/50">{t.cabinet.avgCost}</p>
                   <p className="mt-1 text-lg font-semibold text-ink">
                     {(aiUsageHistory.reduce((sum, log) => sum + log.credits, 0) / aiUsageHistory.length).toFixed(1)}
                   </p>
                 </div>
                 <div className="text-center">
-                  <p className="text-xs text-ink/50">Типів вправ</p>
+                  <p className="text-xs text-ink/50">{t.cabinet.exerciseTypes}</p>
                   <p className="mt-1 text-lg font-semibold text-moss">
                     {Object.keys(aiUsageByMode).length}
                   </p>
@@ -518,7 +518,7 @@ export default function CabinetClient({ username }: { username: string }) {
       <section id="billing">
         <div className="mb-6 flex items-center gap-3">
           <Lock size={24} weight="fill" className="text-ink" />
-          <h2 className="text-2xl font-semibold">Налаштування акаунту</h2>
+          <h2 className="text-2xl font-semibold">{t.cabinet.accountSettings}</h2>
         </div>
 
         <div className="space-y-4">
@@ -534,7 +534,7 @@ export default function CabinetClient({ username }: { username: string }) {
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold">{t.cabinet.changePassword}</h3>
-                  <p className="text-xs text-ink/60">Змінити пароль через email</p>
+                  <p className="text-xs text-ink/60">{t.cabinet.changePasswordDesc}</p>
                 </div>
               </div>
               <div className={`transition ${showPasswordForm ? "rotate-180" : ""}`}>
@@ -635,10 +635,10 @@ export default function CabinetClient({ username }: { username: string }) {
                     {isActive ? (
                       <>
                         <CheckCircle size={14} weight="fill" className="text-moss" />
-                        <span className="text-xs text-moss">Активний промокод</span>
+                        <span className="text-xs text-moss">{t.cabinet.activePromo}</span>
                       </>
                     ) : (
-                      <span className="text-xs text-ink/60">Активувати промокод</span>
+                      <span className="text-xs text-ink/60">{t.cabinet.activatePromo}</span>
                     )}
                   </div>
                 </div>
@@ -753,7 +753,7 @@ export default function CabinetClient({ username }: { username: string }) {
                 {isActive ? (
                   <span className="inline-flex items-center gap-2 rounded-full border border-moss/30 bg-moss/10 px-4 py-2 text-xs font-semibold text-moss">
                     <Trophy size={16} weight="fill" />
-                    Активний план
+                    {t.cabinet.activePlan}
                   </span>
                 ) : (
                   <span className="inline-flex items-center gap-2 rounded-full border border-ink/20 bg-paper/70 px-4 py-2 text-xs font-semibold text-ink/60">
@@ -885,7 +885,7 @@ export default function CabinetClient({ username }: { username: string }) {
                     {isCurrentPlan && (
                       <div className="mt-4 rounded-2xl border border-moss/10 bg-moss/5 px-3 py-2 text-xs">
                         <span className="font-semibold text-moss">{remaining}</span>
-                        <span className="text-ink/60"> / {planInfo.aiCreditsMonthly} залишилось</span>
+                        <span className="text-ink/60"> / {planInfo.aiCreditsMonthly} {t.cabinet.remaining}</span>
                       </div>
                     )}
 
@@ -898,7 +898,7 @@ export default function CabinetClient({ username }: { username: string }) {
                       }`}
                       disabled={isCurrentPlan}
                     >
-                      {isCurrentPlan ? "Active" : t.cabinet.billingPayMono}
+                      {isCurrentPlan ? t.cabinet.activePlan : t.cabinet.billingPayMono}
                     </button>
                   </div>
                 );

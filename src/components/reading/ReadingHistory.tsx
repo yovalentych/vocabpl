@@ -100,8 +100,8 @@ export default function ReadingHistory() {
       <div className="rounded-3xl border border-ink/10 bg-paper/80 p-12 shadow-soft text-center">
         <ClockCounterClockwise size={48} weight="thin" className="mx-auto text-ink/20" />
         <p className="mt-4 text-sm text-ink/60">
-          Ще немає збережених результатів.<br />
-          Пройдіть перевірку розуміння та збережіть результати!
+          {t.reading.historyEmpty}<br />
+          {t.reading.historyEmptyHint}
         </p>
       </div>
     );
@@ -115,7 +115,7 @@ export default function ReadingHistory() {
           <div className="rounded-2xl border border-moss/20 bg-moss/5 p-4">
             <div className="flex items-center gap-2 text-moss">
               <Lightning size={20} weight="fill" />
-              <p className="text-xs uppercase tracking-[0.2em]">Спроб</p>
+              <p className="text-xs uppercase tracking-[0.2em]">{t.reading.historyAttempts}</p>
             </div>
             <p className="mt-2 text-2xl font-bold text-ink">{stats.totalAttempts}</p>
           </div>
@@ -123,7 +123,7 @@ export default function ReadingHistory() {
           <div className="rounded-2xl border border-gold/20 bg-gold/5 p-4">
             <div className="flex items-center gap-2 text-gold">
               <Target size={20} weight="fill" />
-              <p className="text-xs uppercase tracking-[0.2em]">Середній бал</p>
+              <p className="text-xs uppercase tracking-[0.2em]">{t.reading.historyAvgScore}</p>
             </div>
             <p className="mt-2 text-2xl font-bold text-ink">
               {stats.averagePoints.toFixed(1)}/10
@@ -133,7 +133,7 @@ export default function ReadingHistory() {
           <div className="rounded-2xl border border-terracotta/20 bg-terracotta/5 p-4">
             <div className="flex items-center gap-2 text-terracotta">
               <TrendUp size={20} weight="fill" />
-              <p className="text-xs uppercase tracking-[0.2em]">Найкращий</p>
+              <p className="text-xs uppercase tracking-[0.2em]">{t.reading.historyBest}</p>
             </div>
             <p className="mt-2 text-2xl font-bold text-ink">{stats.bestPoints}/10</p>
           </div>
@@ -141,7 +141,7 @@ export default function ReadingHistory() {
           <div className="rounded-2xl border border-ink/20 bg-ink/5 p-4">
             <div className="flex items-center gap-2 text-ink">
               <ClockCounterClockwise size={20} weight="fill" />
-              <p className="text-xs uppercase tracking-[0.2em]">Точність</p>
+              <p className="text-xs uppercase tracking-[0.2em]">{t.reading.historyAccuracy}</p>
             </div>
             <p className="mt-2 text-2xl font-bold text-ink">
               {Math.round(stats.averageScore * 100)}%
@@ -154,7 +154,7 @@ export default function ReadingHistory() {
       <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
         <div className="flex items-center gap-2 mb-6">
           <ClockCounterClockwise size={24} weight="duotone" className="text-ink/60" />
-          <h3 className="text-xl font-semibold">Історія перевірок</h3>
+          <h3 className="text-xl font-semibold">{t.reading.historyTitle}</h3>
         </div>
 
         <div className="space-y-3">
@@ -206,7 +206,7 @@ export default function ReadingHistory() {
                           {session.points}/10
                         </div>
                         <p className="text-xs text-ink/50">
-                          {session.questionsCount} {session.questionsCount === 1 ? "питання" : "питань"}
+                          {session.questionsCount} {session.questionsCount === 1 ? t.reading.historyQuestionsSingle : t.reading.historyQuestionsPlural}
                         </p>
                       </div>
                       <CaretDown
@@ -228,14 +228,14 @@ export default function ReadingHistory() {
                   <div className="mt-4 space-y-4 border-t border-ink/10 pt-4">
                     {/* Overall Feedback */}
                     <div className="rounded-2xl border border-gold/20 bg-gold/5 p-4">
-                      <p className="text-sm font-semibold text-gold">📊 Загальний результат</p>
+                      <p className="text-sm font-semibold text-gold">{t.reading.historyOverall}</p>
                       <p className="mt-2 text-sm text-ink/70">{session.feedback}</p>
                     </div>
 
                     {/* Questions & Answers */}
                     <div>
                       <p className="text-xs font-semibold uppercase tracking-[0.2em] text-ink/40 mb-3">
-                        Питання та відповіді
+                        {t.reading.historyQA}
                       </p>
                       <div className="space-y-3">
                         {session.questions.map((question, idx) => {
@@ -267,16 +267,16 @@ export default function ReadingHistory() {
                                     <div className="mt-2">
                                       {answer.type === "open" || answer.type === "short" ? (
                                         <p className="text-sm text-ink/70">
-                                          <span className="font-medium">Ваша відповідь:</span> {answer.textValue}
+                                          <span className="font-medium">{t.common.yourAnswer}:</span> {answer.textValue}
                                         </p>
                                       ) : answer.type === "truefalse" ? (
                                         <p className="text-sm text-ink/70">
-                                          <span className="font-medium">Ваша відповідь:</span>{" "}
-                                          {answer.boolValue ? "Правда" : "Неправда"}
+                                          <span className="font-medium">{t.common.yourAnswer}:</span>{" "}
+                                          {answer.boolValue ? t.reading.historyTrueAnswer : t.reading.historyFalseAnswer}
                                         </p>
                                       ) : answer.type === "multiple" && question.options && answer.optionIndex !== undefined ? (
                                         <p className="text-sm text-ink/70">
-                                          <span className="font-medium">Ваша відповідь:</span>{" "}
+                                          <span className="font-medium">{t.common.yourAnswer}:</span>{" "}
                                           {question.options[answer.optionIndex]?.[displayLang]}
                                         </p>
                                       ) : null}
@@ -289,7 +289,7 @@ export default function ReadingHistory() {
                                       <p className="text-sm text-ink/70">{resultItem.feedback}</p>
                                       {!resultItem.correct && resultItem.expectedAnswer && (
                                         <p className="mt-1 text-sm text-ink/60">
-                                          <span className="font-medium">Очікувана відповідь:</span> {resultItem.expectedAnswer}
+                                          <span className="font-medium">{t.common.expectedAnswer}:</span> {resultItem.expectedAnswer}
                                         </p>
                                       )}
                                     </div>
@@ -306,7 +306,7 @@ export default function ReadingHistory() {
                     {session.suggestedVocab && session.suggestedVocab.length > 0 && (
                       <div>
                         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-ink/40 mb-3">
-                          📚 Рекомендовані слова
+                          {t.common.suggestedWords}
                         </p>
                         <div className="space-y-2">
                           {session.suggestedVocab.map((word, idx) => (

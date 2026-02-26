@@ -93,7 +93,7 @@ export default function TranslateClassicPractice({ config, onComplete }: Transla
     const completed = sentences.filter((s) => s.userTranslation.trim());
 
     if (completed.length === 0) {
-      setError("Будь ласка, перекладіть хоча б одне речення");
+      setError(t.workbook.translateAtLeastOne);
       return;
     }
 
@@ -129,10 +129,10 @@ export default function TranslateClassicPractice({ config, onComplete }: Transla
         const errorCode = data?.code;
         const message =
           errorCode === "ai_quota"
-            ? "Ліміт AI кредитів вичерпано"
+            ? t.workbook.classicAiQuotaError
             : errorCode === "pvs_unavailable"
-              ? "Потрібен AI план"
-              : data?.error || "Помилка AI";
+              ? t.workbook.classicAiPlanRequired
+              : data?.error || t.workbook.classicAiError;
         setError(message);
         return;
       }
@@ -140,7 +140,7 @@ export default function TranslateClassicPractice({ config, onComplete }: Transla
       const result = safeParseAIResponse(data?.text);
 
       if (!result || !result.items) {
-        setError("AI повернула неправильний формат відповіді. Спробуйте ще раз.");
+        setError(t.workbook.classicAiFormatError);
         return;
       }
 
@@ -176,7 +176,7 @@ export default function TranslateClassicPractice({ config, onComplete }: Transla
       setShowResults(true);
     } catch (err) {
       console.error("Failed to check with AI:", err);
-      setError("Помилка перевірки");
+      setError(t.workbook.classicCheckError);
     } finally {
       setIsCheckingAI(false);
     }
@@ -186,7 +186,7 @@ export default function TranslateClassicPractice({ config, onComplete }: Transla
     const completed = sentences.filter((s) => s.userTranslation.trim());
 
     if (completed.length === 0) {
-      setError("Будь ласка, перекладіть хоча б одне речення");
+      setError(t.workbook.translateAtLeastOne);
       return;
     }
 
@@ -211,7 +211,7 @@ export default function TranslateClassicPractice({ config, onComplete }: Transla
       if (!res.ok) {
         let data = {};
         try { data = await res.json(); } catch {}
-        setError(data?.error || "Помилка надсилання");
+        setError(data?.error || t.workbook.classicSubmitError);
         return;
       }
 
@@ -229,11 +229,11 @@ export default function TranslateClassicPractice({ config, onComplete }: Transla
         console.error("Failed to save points:", err);
       }
 
-      setSuccessMessage("Вправу надіслано на перевірку! Очікуйте фідбек від викладача.");
+      setSuccessMessage(t.workbook.classicSubmitSuccess);
       setTimeout(() => onComplete(), 2000);
     } catch (err) {
       console.error("Failed to submit:", err);
-      setError("Помилка надсилання");
+      setError(t.workbook.classicSubmitError);
     } finally {
       setIsSubmitting(false);
     }
@@ -245,24 +245,24 @@ export default function TranslateClassicPractice({ config, onComplete }: Transla
         {/* Header */}
         <div className="rounded-3xl border border-moss/20 bg-moss/5 p-6 shadow-soft">
           <p className="text-xs uppercase tracking-[0.3em] text-moss/70 mb-2">
-            Крок 2: Практика
+            {t.workbook.translateStep2}
           </p>
           <h2 className="text-2xl font-semibold text-ink">
-            Переклад речень
+            {t.workbook.translateSentencesTitle}
           </h2>
           <p className="mt-2 text-sm text-ink/60">
             {config.direction === "uk_to_pl"
-              ? "Перекладіть речення з української на польську"
-              : "Перекладіть речення з польської на українську"}
+              ? t.workbook.translateFromUkToPl
+              : t.workbook.translateFromPlToUk}
             {" · "}
-            Рівень: {config.level}
+            {t.workbook.classicLevel}: {config.level}
           </p>
         </div>
 
         {/* Progress */}
         <div className="rounded-3xl border border-ink/10 bg-paper/80 p-4 shadow-soft">
           <div className="flex items-center justify-between mb-2">
-            <p className="text-xs uppercase tracking-[0.3em] text-ink/40">Прогрес</p>
+            <p className="text-xs uppercase tracking-[0.3em] text-ink/40">{t.workbook.classicProgress}</p>
             <p className="text-sm font-semibold text-ink">
               {completedCount} / {sentences.length}
             </p>
@@ -294,7 +294,7 @@ export default function TranslateClassicPractice({ config, onComplete }: Transla
                     {/* Source sentence */}
                     <div>
                       <p className="text-xs uppercase tracking-[0.3em] text-ink/40 mb-2">
-                        {config.direction === "uk_to_pl" ? "Українська" : "Польська"}
+                        {config.direction === "uk_to_pl" ? t.workbook.translateUkrainian : t.workbook.translatePolish}
                       </p>
                       <p className="text-base font-medium text-ink">{sentence.source}</p>
                     </div>
@@ -302,15 +302,15 @@ export default function TranslateClassicPractice({ config, onComplete }: Transla
                     {/* Translation input */}
                     <div>
                       <p className="text-xs uppercase tracking-[0.3em] text-ink/40 mb-2">
-                        {config.direction === "uk_to_pl" ? "Польська" : "Українська"}
+                        {config.direction === "uk_to_pl" ? t.workbook.translatePolish : t.workbook.translateUkrainian}
                       </p>
                       <textarea
                         value={sentence.userTranslation}
                         onChange={(e) => updateTranslation(sentence.id, e.target.value)}
                         placeholder={
                           config.direction === "uk_to_pl"
-                            ? "Введіть переклад польською..."
-                            : "Введіть переклад українською..."
+                            ? t.workbook.translatePlaceholderPl
+                            : t.workbook.translatePlaceholderUk
                         }
                         rows={2}
                         maxLength={500}
@@ -358,12 +358,12 @@ export default function TranslateClassicPractice({ config, onComplete }: Transla
               {isCheckingAI ? (
                 <>
                   <span className="h-4 w-4 animate-spin rounded-full border-2 border-paper/20 border-t-paper" />
-                  <span>AI перевіряє...</span>
+                  <span>{t.workbook.classicAiChecking}</span>
                 </>
               ) : (
                 <>
                   <Sparkle size={18} weight="fill" />
-                  <span>Перевірити з AI</span>
+                  <span>{t.workbook.classicCheckWithAI}</span>
                 </>
               )}
             </button>
@@ -376,19 +376,19 @@ export default function TranslateClassicPractice({ config, onComplete }: Transla
               {isSubmitting ? (
                 <>
                   <span className="h-4 w-4 animate-spin rounded-full border-2 border-paper/20 border-t-paper" />
-                  <span>Надсилання...</span>
+                  <span>{t.workbook.classicSubmitting}</span>
                 </>
               ) : (
                 <>
                   <PaperPlaneRight size={18} weight="fill" />
-                  <span>Надіслати на перевірку</span>
+                  <span>{t.workbook.classicSubmitForReview}</span>
                 </>
               )}
             </button>
           </div>
 
           <p className="text-center text-xs text-ink/50">
-            Перевірка з AI дає детальний фідбек та оцінку. Відправка на перевірку — для ручного review від викладача.
+            {t.workbook.classicCheckHint}
           </p>
         </div>
       </div>

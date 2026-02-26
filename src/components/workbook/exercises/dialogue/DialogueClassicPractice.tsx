@@ -228,7 +228,7 @@ export default function DialogueClassicPractice({ config, onComplete }: Dialogue
     const filledResponses = userTurns.filter(t => t.userResponse?.trim()).length;
 
     if (filledResponses === 0) {
-      setError("Будь ласка, заповніть хоча б одну відповідь");
+      setError(t.workbook.dialogueAtLeastOne);
       return;
     }
 
@@ -263,10 +263,10 @@ export default function DialogueClassicPractice({ config, onComplete }: Dialogue
         const errorCode = data?.code;
         const message =
           errorCode === "ai_quota"
-            ? "Ліміт AI кредитів вичерпано"
+            ? t.workbook.classicAiQuotaError
             : errorCode === "pvs_unavailable"
-              ? "Потрібен AI план"
-              : data?.error || "Помилка AI";
+              ? t.workbook.classicAiPlanRequired
+              : data?.error || t.workbook.classicAiError;
         setError(message);
         return;
       }
@@ -274,7 +274,7 @@ export default function DialogueClassicPractice({ config, onComplete }: Dialogue
       const result = safeParseAIResponse(data?.text);
 
       if (!result) {
-        setError("AI повернула неправильний формат відповіді. Спробуйте ще раз.");
+        setError(t.workbook.classicAiFormatError);
         return;
       }
 
@@ -300,7 +300,7 @@ export default function DialogueClassicPractice({ config, onComplete }: Dialogue
       setShowResults(true);
     } catch (error) {
       console.error("Failed to check with AI:", error);
-      setError("Помилка перевірки");
+      setError(t.workbook.classicCheckError);
     } finally {
       setIsCheckingAI(false);
     }
@@ -311,7 +311,7 @@ export default function DialogueClassicPractice({ config, onComplete }: Dialogue
     const filledResponses = userTurns.filter(t => t.userResponse?.trim()).length;
 
     if (filledResponses === 0) {
-      setError("Будь ласка, заповніть хоча б одну відповідь");
+      setError(t.workbook.dialogueAtLeastOne);
       return;
     }
 
@@ -337,7 +337,7 @@ export default function DialogueClassicPractice({ config, onComplete }: Dialogue
       if (!res.ok) {
         let data = {};
         try { data = await res.json(); } catch {}
-        setError(data?.error || "Помилка надсилання");
+        setError(data?.error || t.workbook.classicSubmitError);
         return;
       }
 
@@ -355,11 +355,11 @@ export default function DialogueClassicPractice({ config, onComplete }: Dialogue
         console.error("Failed to save points:", err);
       }
 
-      setSuccessMessage("Вправу надіслано на перевірку! Очікуйте фідбек від викладача.");
+      setSuccessMessage(t.workbook.classicSubmitSuccess);
       setTimeout(() => onComplete(), 2000);
     } catch (error) {
       console.error("Failed to submit:", error);
-      setError("Помилка надсилання");
+      setError(t.workbook.classicSubmitError);
     } finally {
       setIsSubmitting(false);
     }
@@ -370,11 +370,11 @@ export default function DialogueClassicPractice({ config, onComplete }: Dialogue
   const progress = userTurns.length > 0 ? (filledCount / userTurns.length) * 100 : 0;
 
   const scenarioLabels: Record<string, string> = {
-    shop: "Магазин",
-    restaurant: "Ресторан",
-    station: "Вокзал",
-    hotel: "Готель",
-    doctor: "Лікар"
+    shop: t.workbook.dialogueShop,
+    restaurant: t.workbook.dialogueRestaurant,
+    station: t.workbook.dialogueStation,
+    hotel: t.workbook.dialogueHotel,
+    doctor: t.workbook.dialogueDoctor
   };
 
   return (
@@ -385,18 +385,18 @@ export default function DialogueClassicPractice({ config, onComplete }: Dialogue
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="text-xs uppercase tracking-[0.3em] text-gold/70 mb-2">
-                Класичний режим
+                {t.workbook.classicMode}
               </p>
               <h2 className="text-2xl font-semibold text-ink">
                 {scenarioLabels[config.scenario]} · {config.level}
               </h2>
               <p className="mt-2 text-sm text-ink/60">
-                Заповніть свої відповіді у діалозі
+                {t.workbook.dialogueFillAnswers}
               </p>
             </div>
             <div className="rounded-2xl border border-ink/10 bg-paper p-3 text-center">
               <div className="text-lg font-bold text-gold">{filledCount}/{userTurns.length}</div>
-              <div className="text-[10px] text-ink/60">відповідей</div>
+              <div className="text-[10px] text-ink/60">{t.workbook.dialogueAnswersLabel}</div>
             </div>
           </div>
 
@@ -421,7 +421,7 @@ export default function DialogueClassicPractice({ config, onComplete }: Dialogue
                     <span className="text-lg">👤</span>
                   </div>
                   <div className="flex-1">
-                    <p className="text-xs font-semibold text-moss mb-1">Співрозмовник</p>
+                    <p className="text-xs font-semibold text-moss mb-1">{t.workbook.dialoguePartner}</p>
                     <div className="rounded-2xl border border-moss/20 bg-moss/5 px-4 py-3">
                       <p className="text-sm text-ink">{turn.text}</p>
                     </div>
@@ -433,13 +433,13 @@ export default function DialogueClassicPractice({ config, onComplete }: Dialogue
                     <User size={20} weight="fill" className="text-gold" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-xs font-semibold text-gold mb-1">Ви</p>
+                    <p className="text-xs font-semibold text-gold mb-1">{t.workbook.dialogueClassicYou}</p>
                     <div className="rounded-2xl border border-ink/20 bg-paper p-3">
                       <p className="text-xs text-ink/60 mb-2">{turn.text}</p>
                       <textarea
                         value={turn.userResponse || ""}
                         onChange={(e) => handleResponseChange(turn.id, e.target.value)}
-                        placeholder="Напишіть вашу відповідь польською..."
+                        placeholder={t.workbook.dialogueClassicPlaceholder}
                         rows={3}
                         maxLength={500}
                         className="w-full rounded-xl border border-ink/20 bg-fog px-3 py-2 text-sm text-ink placeholder:text-ink/40 focus:border-gold/40 focus:outline-none focus:ring-0"
@@ -477,12 +477,12 @@ export default function DialogueClassicPractice({ config, onComplete }: Dialogue
               {isCheckingAI ? (
                 <>
                   <span className="h-4 w-4 animate-spin rounded-full border-2 border-paper/20 border-t-paper" />
-                  <span>AI перевіряє...</span>
+                  <span>{t.workbook.classicAiChecking}</span>
                 </>
               ) : (
                 <>
                   <Sparkle size={18} weight="fill" />
-                  <span>Перевірити з AI</span>
+                  <span>{t.workbook.classicCheckWithAI}</span>
                 </>
               )}
             </button>
@@ -495,19 +495,19 @@ export default function DialogueClassicPractice({ config, onComplete }: Dialogue
               {isSubmitting ? (
                 <>
                   <span className="h-4 w-4 animate-spin rounded-full border-2 border-paper/20 border-t-paper" />
-                  <span>Надсилання...</span>
+                  <span>{t.workbook.classicSubmitting}</span>
                 </>
               ) : (
                 <>
                   <PaperPlaneRight size={18} weight="fill" />
-                  <span>Надіслати на перевірку</span>
+                  <span>{t.workbook.classicSubmitForReview}</span>
                 </>
               )}
             </button>
           </div>
 
           <p className="text-center text-xs text-ink/50">
-            💡 Перевірка з AI дає детальний фідбек та оцінку. Відправка на перевірку — для ручного review від викладача.
+            {t.workbook.classicCheckHint}
           </p>
         </div>
       </div>

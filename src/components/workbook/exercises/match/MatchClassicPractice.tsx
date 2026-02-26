@@ -164,7 +164,7 @@ export default function MatchClassicPractice({ config, onComplete }: MatchClassi
 
   const handleCheckWithAI = async () => {
     if (Object.keys(matches).length === 0) {
-      setError("Будь ласка, створіть хоча б одну пару");
+      setError(t.workbook.matchAtLeastOne);
       return;
     }
 
@@ -204,10 +204,10 @@ export default function MatchClassicPractice({ config, onComplete }: MatchClassi
         const errorCode = data?.code;
         const message =
           errorCode === "ai_quota"
-            ? "Ліміт AI кредитів вичерпано"
+            ? t.workbook.classicAiQuotaError
             : errorCode === "pvs_unavailable"
-              ? "Потрібен AI план"
-              : data?.error || "Помилка AI";
+              ? t.workbook.classicAiPlanRequired
+              : data?.error || t.workbook.classicAiError;
         setError(message);
         return;
       }
@@ -215,7 +215,7 @@ export default function MatchClassicPractice({ config, onComplete }: MatchClassi
       const result = safeParseAIResponse(data?.text);
 
       if (!result || !result.pairs) {
-        setError("AI повернула неправильний формат відповіді. Спробуйте ще раз.");
+        setError(t.workbook.classicAiFormatError);
         return;
       }
 
@@ -240,7 +240,7 @@ export default function MatchClassicPractice({ config, onComplete }: MatchClassi
       setShowResults(true);
     } catch (err) {
       console.error("Failed to check with AI:", err);
-      setError("Помилка перевірки");
+      setError(t.workbook.classicCheckError);
     } finally {
       setIsCheckingAI(false);
     }
@@ -248,7 +248,7 @@ export default function MatchClassicPractice({ config, onComplete }: MatchClassi
 
   const handleSubmitForReview = async () => {
     if (Object.keys(matches).length === 0) {
-      setError("Будь ласка, створіть хоча б одну пару");
+      setError(t.workbook.matchAtLeastOne);
       return;
     }
 
@@ -280,7 +280,7 @@ export default function MatchClassicPractice({ config, onComplete }: MatchClassi
       if (!res.ok) {
         let data = {};
         try { data = await res.json(); } catch {}
-        setError(data?.error || "Помилка надсилання");
+        setError(data?.error || t.workbook.classicSubmitError);
         return;
       }
 
@@ -298,11 +298,11 @@ export default function MatchClassicPractice({ config, onComplete }: MatchClassi
         console.error("Failed to save points:", err);
       }
 
-      setSuccessMessage("Вправу надіслано на перевірку! Очікуйте фідбек від викладача.");
+      setSuccessMessage(t.workbook.classicSubmitSuccess);
       setTimeout(() => onComplete(), 2000);
     } catch (err) {
       console.error("Failed to submit:", err);
-      setError("Помилка надсилання");
+      setError(t.workbook.classicSubmitError);
     } finally {
       setIsSubmitting(false);
     }
@@ -319,20 +319,20 @@ export default function MatchClassicPractice({ config, onComplete }: MatchClassi
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs uppercase tracking-[0.3em] text-terracotta/70 mb-2">
-                Класичний режим
+                {t.workbook.classicMode}
               </p>
               <h2 className="text-xl font-semibold text-ink">
-                Знайдіть пари
+                {t.workbook.matchFindPairs}
               </h2>
               <p className="mt-1 text-sm text-ink/60">
-                {config.pairType === "translation" && "Переклад"}
-                {config.pairType === "semantic" && "Семантичні пари"}
-                {config.pairType === "definition" && "Визначення"} · {config.level} · {pairs.length} пар
+                {config.pairType === "translation" && t.workbook.matchTranslation}
+                {config.pairType === "semantic" && t.workbook.matchSemantic}
+                {config.pairType === "definition" && t.workbook.matchDefinition} · {config.level} · {pairs.length} {t.workbook.matchPairsCount}
               </p>
             </div>
             <div className="text-right">
               <div className="text-2xl font-bold text-terracotta">{matchedCount}/{pairs.length}</div>
-              <div className="text-xs text-ink/50">з&apos;єднано</div>
+              <div className="text-xs text-ink/50">{t.workbook.matchConnected}</div>
             </div>
           </div>
         </div>
@@ -340,8 +340,7 @@ export default function MatchClassicPractice({ config, onComplete }: MatchClassi
         {/* Instructions */}
         <div className="rounded-2xl border border-gold/20 bg-gold/5 p-4">
           <p className="text-xs text-ink/70">
-            <span className="font-semibold text-gold">Інструкція:</span> Натисніть на елемент зліва,
-            потім натисніть відповідний елемент справа, щоб створити пару.
+            <span className="font-semibold text-gold">{t.workbook.matchInstructionLabel}</span> {t.workbook.matchInstructionText}
           </p>
         </div>
 
@@ -350,7 +349,7 @@ export default function MatchClassicPractice({ config, onComplete }: MatchClassi
           {/* Left column */}
           <div className="rounded-3xl border border-ink/10 bg-paper/80 p-4 shadow-soft">
             <p className="text-xs uppercase tracking-[0.3em] text-ink/40 mb-4">
-              Ліва колонка
+              {t.workbook.matchLeftColumn}
             </p>
             <div className="space-y-2">
               {pairs.map((pair) => {
@@ -396,7 +395,7 @@ export default function MatchClassicPractice({ config, onComplete }: MatchClassi
           {/* Right column */}
           <div className="rounded-3xl border border-ink/10 bg-paper/80 p-4 shadow-soft">
             <p className="text-xs uppercase tracking-[0.3em] text-ink/40 mb-4">
-              Права колонка
+              {t.workbook.matchRightColumn}
             </p>
             <div className="space-y-2">
               {rightItems.map((pair) => {
@@ -465,12 +464,12 @@ export default function MatchClassicPractice({ config, onComplete }: MatchClassi
               {isCheckingAI ? (
                 <>
                   <span className="h-4 w-4 animate-spin rounded-full border-2 border-paper/20 border-t-paper" />
-                  <span>AI перевіряє...</span>
+                  <span>{t.workbook.classicAiChecking}</span>
                 </>
               ) : (
                 <>
                   <Sparkle size={18} weight="fill" />
-                  <span>Перевірити з AI</span>
+                  <span>{t.workbook.classicCheckWithAI}</span>
                 </>
               )}
             </button>
@@ -483,23 +482,23 @@ export default function MatchClassicPractice({ config, onComplete }: MatchClassi
               {isSubmitting ? (
                 <>
                   <span className="h-4 w-4 animate-spin rounded-full border-2 border-paper/20 border-t-paper" />
-                  <span>Надсилання...</span>
+                  <span>{t.workbook.classicSubmitting}</span>
                 </>
               ) : (
                 <>
                   <PaperPlaneRight size={18} weight="fill" />
-                  <span>Надіслати на перевірку</span>
+                  <span>{t.workbook.classicSubmitForReview}</span>
                 </>
               )}
             </button>
           </div>
 
           <p className="text-center text-xs text-ink/50">
-            Перевірка з AI дає детальний фідбек та оцінку. Відправка на перевірку — для ручного review від викладача.
+            {t.workbook.classicCheckHint}
           </p>
 
           <div className="text-center text-sm text-ink/60">
-            З&apos;єднано: {matchedCount} з {pairs.length}
+            {t.workbook.matchConnectedOf.replace("{matched}", String(matchedCount)).replace("{total}", String(pairs.length))}
           </div>
         </div>
       </div>
