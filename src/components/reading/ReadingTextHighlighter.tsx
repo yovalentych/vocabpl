@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Lightbulb } from "@phosphor-icons/react";
+import { useLocale } from "@/components/LocaleProvider";
 
 interface ReadingTextHighlighterProps {
   text: string;
@@ -18,6 +19,7 @@ export default function ReadingTextHighlighter({
   onExplainRequest,
   viewMode = "pl"
 }: ReadingTextHighlighterProps) {
+  const { t } = useLocale();
   const [selectedText, setSelectedText] = useState("");
   const [tooltipPos, setTooltipPos] = useState<{ x: number; y: number } | null>(null);
 
@@ -90,7 +92,7 @@ export default function ReadingTextHighlighter({
             className="flex items-center gap-2 rounded-full border border-gold/30 bg-gold px-4 py-2 text-sm font-semibold text-paper shadow-lg transition hover:bg-gold/90"
           >
             <Lightbulb size={16} weight="fill" />
-            Пояснити
+            {t.reading.explainButton}
           </button>
         </div>
       )}

@@ -1034,6 +1034,16 @@ export const dictionary = {
       paraphraseAICheckWithAI: "Sprawdź z AI",
       paraphraseAINextSentence: "Następne zdanie",
       paraphraseAIError: "Błąd",
+      // WorkbookDashboard
+      timeEstimate1015: "10-15 min",
+      timeEstimate510: "5-10 min",
+      timeEstimate35: "3-5 min",
+      timeEstimate1520: "15-20 min",
+      timeEstimate1530: "15-30 min",
+      videoTitle: "Wideo",
+      videoDescription: "Ucz się polskiego przez materiały wideo.",
+      historyFallback: "Historia",
+      startButton: "Start"
     },
     messages: {
       title: "Wiadomości",
@@ -1389,7 +1399,8 @@ export const dictionary = {
       historyQA: "Pytania i odpowiedzi",
       historySuggestedWords: "Rekomendowane słowa",
       historyTrueAnswer: "Prawda",
-      historyFalseAnswer: "Fałsz"
+      historyFalseAnswer: "Fałsz",
+      explainButton: "Wyjaśnij"
     },
     admin: {
       title: "Panel admina",
@@ -2013,7 +2024,45 @@ export const dictionary = {
       grammarUsage: "UŻYCIE",
       grammarNotes: "UWAGI",
       grammarForms: "FORMY",
-      grammarExamples: "PRZYKŁADY"
+      grammarExamples: "PRZYKŁADY",
+      // DictLanding
+      browseDictionary: "Przeglądaj słownik",
+      learnFromCards: "Ucz się słów z kart",
+      wordTrainer: "Trener słów",
+      interactiveExercises: "Interaktywne ćwiczenia",
+      myWords: "Moje słowa",
+      personalDictionary: "Osobisty słownik",
+      loadStatsFailed: "Nie udało się załadować statystyki",
+      yourPersonalDictionary: "Twój osobisty słownik",
+      wordsAvailable: "słów dostępnych",
+      learned: "nauczonych",
+      inFavorites: "w ulubionych",
+      yourStats: "Twoje statystyki",
+      quickActions: "Szybkie akcje",
+      openAction: "Otwórz",
+      recentlyStudied: "Ostatnio studiowane słowa",
+      recentlyStudiedEmpty: "Tutaj pojawią się słowa, które ostatnio studiowałeś",
+      readyToRepeat: "Gotowe do powtórki",
+      wordsWaitingForYou: "słów czeka na ciebie",
+      repeatNow: "Powtórz je teraz, aby utrwalić wiedzę",
+      startRepetition: "Rozpocznij powtórkę",
+      // DictStats
+      learnedWords: "Nauczone słowa",
+      learnedOf: "z {total} ({percentage}%)",
+      currentStreak: "Obecna seria",
+      bestStreak: "najlepsza:",
+      accuracy: "Dokładność",
+      overall: "ogólna",
+      favorites: "Ulubione",
+      myFavorites: "moje:",
+      weeklyProgress: "Tygodniowy postęp",
+      daysShort: ["Pn", "Wt", "Śr", "Cz", "Pt", "Sb", "Nd"],
+      categoryDistribution: "Rozkład według kategorii",
+      readyForRepetition: "Gotowe do powtórki",
+      wordsNeedRepetition: "słów wymaga powtórki",
+      startRepetitionButton: "Rozpocznij powtórkę",
+      // DictWordCard
+      aiExamplesGrammar: "Przykłady i gramatyka AI"
     },
     paywall: {
       title: "Dostęp ograniczony",
@@ -3101,6 +3150,16 @@ export const dictionary = {
       paraphraseAICheckWithAI: "Перевірити з AI",
       paraphraseAINextSentence: "Наступне речення",
       paraphraseAIError: "Помилка",
+      // WorkbookDashboard
+      timeEstimate1015: "10-15 хв",
+      timeEstimate510: "5-10 хв",
+      timeEstimate35: "3-5 хв",
+      timeEstimate1520: "15-20 хв",
+      timeEstimate1530: "15-30 хв",
+      videoTitle: "Відео",
+      videoDescription: "Вивчайте польську через відео матеріали.",
+      historyFallback: "Історія",
+      startButton: "Почати"
     },
     messages: {
       title: "Повідомлення",
@@ -3456,7 +3515,8 @@ export const dictionary = {
       historyQA: "Питання та відповіді",
       historySuggestedWords: "Рекомендовані слова",
       historyTrueAnswer: "Правда",
-      historyFalseAnswer: "Неправда"
+      historyFalseAnswer: "Неправда",
+      explainButton: "Пояснити"
     },
     admin: {
       title: "Адмін панель",
@@ -4080,7 +4140,45 @@ export const dictionary = {
       grammarUsage: "ВИКОРИСТАННЯ",
       grammarNotes: "ПРИМІТКИ",
       grammarForms: "ФОРМИ",
-      grammarExamples: "ПРИКЛАДИ"
+      grammarExamples: "ПРИКЛАДИ",
+      // DictLanding
+      browseDictionary: "Переглянути словник",
+      learnFromCards: "Вивчай слова з карток",
+      wordTrainer: "Тренажер слів",
+      interactiveExercises: "Інтерактивні вправи",
+      myWords: "Мої слова",
+      personalDictionary: "Власний словник",
+      loadStatsFailed: "Не вдалося завантажити статистику",
+      yourPersonalDictionary: "Твій особистий словник",
+      wordsAvailable: "слів доступно",
+      learned: "вивчено",
+      inFavorites: "в обраному",
+      yourStats: "Твоя статистика",
+      quickActions: "Швидкі дії",
+      openAction: "Відкрити",
+      recentlyStudied: "Нещодавно вивчені слова",
+      recentlyStudiedEmpty: "Тут з'являться слова, які ти нещодавно вивчав",
+      readyToRepeat: "Готово до повторення",
+      wordsWaitingForYou: "слів чекають на тебе",
+      repeatNow: "Повтори їх зараз, щоб закріпити знання",
+      startRepetition: "Почати повторення",
+      // DictStats
+      learnedWords: "Вивчено слів",
+      learnedOf: "з {total} ({percentage}%)",
+      currentStreak: "Поточна серія",
+      bestStreak: "найкраща:",
+      accuracy: "Точність",
+      overall: "загальна",
+      favorites: "Улюблені",
+      myFavorites: "мої:",
+      weeklyProgress: "Тижневий прогрес",
+      daysShort: ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"],
+      categoryDistribution: "Розподіл по категоріях",
+      readyForRepetition: "Готово до повторення",
+      wordsNeedRepetition: "слів потребують повторення",
+      startRepetitionButton: "Почати повторення",
+      // DictWordCard
+      aiExamplesGrammar: "AI приклади та граматика"
     },
     paywall: {
       title: "Доступ обмежено",

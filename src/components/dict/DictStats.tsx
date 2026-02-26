@@ -62,12 +62,12 @@ export default function DictStats({ stats }: DictStatsProps) {
         <div className="rounded-3xl border border-moss/20 bg-gradient-to-br from-moss/10 to-moss/5 p-6 shadow-soft">
           <div className="flex items-start justify-between">
             <div className="flex-1">
-              <p className="text-sm text-ink/60">Вивчено слів</p>
+              <p className="text-sm text-ink/60">{t.dict.learnedWords}</p>
               <p className="mt-2 text-3xl font-bold text-ink">
                 {stats.learnedWords}
               </p>
               <p className="mt-1 text-xs text-ink/50">
-                з {stats.totalWords} ({learnedPercentage}%)
+                {t.dict.learnedOf.replace("{total}", String(stats.totalWords)).replace("{percentage}", String(learnedPercentage))}
               </p>
             </div>
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-moss/20">
@@ -80,12 +80,12 @@ export default function DictStats({ stats }: DictStatsProps) {
         <div className="rounded-3xl border border-gold/20 bg-gradient-to-br from-gold/10 to-gold/5 p-6 shadow-soft">
           <div className="flex items-start justify-between">
             <div className="flex-1">
-              <p className="text-sm text-ink/60">Поточна серія</p>
+              <p className="text-sm text-ink/60">{t.dict.currentStreak}</p>
               <p className="mt-2 text-3xl font-bold text-ink">
                 {stats.currentStreak}
               </p>
               <p className="mt-1 text-xs text-ink/50">
-                найкраща: {stats.longestStreak}
+                {t.dict.bestStreak}: {stats.longestStreak}
               </p>
             </div>
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gold/20">
@@ -98,11 +98,11 @@ export default function DictStats({ stats }: DictStatsProps) {
         <div className="rounded-3xl border border-terracotta/20 bg-gradient-to-br from-terracotta/10 to-terracotta/5 p-6 shadow-soft">
           <div className="flex items-start justify-between">
             <div className="flex-1">
-              <p className="text-sm text-ink/60">Точність</p>
+              <p className="text-sm text-ink/60">{t.dict.accuracy}</p>
               <p className="mt-2 text-3xl font-bold text-ink">
                 {stats.accuracy}%
               </p>
-              <p className="mt-1 text-xs text-ink/50">загальна</p>
+              <p className="mt-1 text-xs text-ink/50">{t.dict.overall}</p>
             </div>
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-terracotta/20">
               <Target size={24} weight="fill" className="text-terracotta" />
@@ -114,12 +114,12 @@ export default function DictStats({ stats }: DictStatsProps) {
         <div className="rounded-3xl border border-amber-400/20 bg-gradient-to-br from-amber-200/20 to-amber-200/5 p-6 shadow-soft">
           <div className="flex items-start justify-between">
             <div className="flex-1">
-              <p className="text-sm text-ink/60">Улюблені</p>
+              <p className="text-sm text-ink/60">{t.dict.favorites}</p>
               <p className="mt-2 text-3xl font-bold text-ink">
                 {stats.favoriteWords}
               </p>
               <p className="mt-1 text-xs text-ink/50">
-                мої: {stats.customWords}
+                {t.dict.myFavorites}: {stats.customWords}
               </p>
             </div>
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-200/30">
@@ -136,14 +136,14 @@ export default function DictStats({ stats }: DictStatsProps) {
           <div className="mb-4 flex items-center gap-3">
             <ChartLineUp size={24} weight="bold" className="text-moss" />
             <h3 className="text-lg font-semibold text-ink">
-              Тижневий прогрес
+              {t.dict.weeklyProgress}
             </h3>
           </div>
 
           <div className="flex items-end justify-between gap-2">
             {stats.weeklyProgress.map((count, index) => {
               const height = maxWeekly > 0 ? (count / maxWeekly) * 100 : 0;
-              const days = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"];
+              const days = t.dict.daysShort;
 
               return (
                 <div key={index} className="flex flex-1 flex-col items-center">
@@ -171,7 +171,7 @@ export default function DictStats({ stats }: DictStatsProps) {
           <div className="mb-4 flex items-center gap-3">
             <BookOpen size={24} weight="bold" className="text-terracotta" />
             <h3 className="text-lg font-semibold text-ink">
-              Розподіл по категоріях
+              {t.dict.categoryDistribution}
             </h3>
           </div>
 
@@ -215,15 +215,15 @@ export default function DictStats({ stats }: DictStatsProps) {
               </div>
               <div>
                 <h3 className="text-lg font-semibold text-ink">
-                  Готово до повторення
+                  {t.dict.readyForRepetition}
                 </h3>
                 <p className="text-sm text-ink/60">
-                  {stats.dueForReview} слів потребують повторення
+                  {stats.dueForReview} {t.dict.wordsNeedRepetition}
                 </p>
               </div>
             </div>
             <button className="rounded-full bg-terracotta px-6 py-3 text-sm font-semibold text-paper transition hover:bg-terracotta/90">
-              Почати повторення
+              {t.dict.startRepetitionButton}
             </button>
           </div>
         </div>

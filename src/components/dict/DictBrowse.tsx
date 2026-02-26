@@ -516,7 +516,7 @@ export default function DictBrowse() {
     setBulkError("");
     const items = parseBulkInput(bulkText);
     if (items.length === 0) {
-      setBulkError(t.words.bulkAddEmpty || "Немає валідних рядків.");
+      setBulkError(t.words.bulkAddEmpty);
       return;
     }
 
@@ -540,7 +540,7 @@ export default function DictBrowse() {
         continue;
       }
       if (res && res.status === 403) {
-        setBulkError(t.words.bulkAddLocked || "Доступ до словника доступний лише для активної підписки.");
+        setBulkError(t.paywall.dictionary);
         setBulkStatus("error");
         return;
       }

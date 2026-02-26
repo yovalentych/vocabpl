@@ -40,7 +40,7 @@ export default function WorkbookDashboard() {
       description: t.workbook.exercises.sentences.description,
       icon: PencilLine,
       color: "moss",
-      timeEstimate: "10-15 хв"
+      timeEstimate: t.workbook.timeEstimate1015
     },
     {
       id: "cloze",
@@ -49,7 +49,7 @@ export default function WorkbookDashboard() {
       description: t.workbook.exercises.cloze.description,
       icon: PuzzlePiece,
       color: "gold",
-      timeEstimate: "5-10 хв"
+      timeEstimate: t.workbook.timeEstimate510
     },
     {
       id: "match",
@@ -58,7 +58,7 @@ export default function WorkbookDashboard() {
       description: t.workbook.exercises.match.description,
       icon: ShuffleSimple,
       color: "terracotta",
-      timeEstimate: "3-5 хв"
+      timeEstimate: t.workbook.timeEstimate35
     },
     {
       id: "translate",
@@ -67,7 +67,7 @@ export default function WorkbookDashboard() {
       description: t.workbook.exercises.translate.description,
       icon: Translate,
       color: "moss",
-      timeEstimate: "10-15 хв"
+      timeEstimate: t.workbook.timeEstimate1015
     },
     {
       id: "dialogue",
@@ -76,7 +76,7 @@ export default function WorkbookDashboard() {
       description: t.workbook.exercises.dialogue.description,
       icon: ChatCircleText,
       color: "gold",
-      timeEstimate: "15-20 хв"
+      timeEstimate: t.workbook.timeEstimate1520
     },
     {
       id: "paraphrase",
@@ -85,7 +85,7 @@ export default function WorkbookDashboard() {
       description: t.workbook.exercises.rewrite.description,
       icon: ArrowsLeftRight,
       color: "terracotta",
-      timeEstimate: "10-15 хв"
+      timeEstimate: t.workbook.timeEstimate1015
     },
     {
       id: "story",
@@ -94,7 +94,7 @@ export default function WorkbookDashboard() {
       description: t.workbook.exercises.story.description,
       icon: BookOpen,
       color: "moss",
-      timeEstimate: "15-20 хв"
+      timeEstimate: t.workbook.timeEstimate1520
     },
     {
       id: "describe",
@@ -103,16 +103,16 @@ export default function WorkbookDashboard() {
       description: t.workbook.exercises.describe.description,
       icon: Image,
       color: "gold",
-      timeEstimate: "10-15 хв"
+      timeEstimate: t.workbook.timeEstimate1015
     },
     {
       id: "video",
       href: "/class/workbook/video",
-      title: "Відео",
-      description: "Вивчайте польську через відео матеріали.",
+      title: t.workbook.videoTitle,
+      description: t.workbook.videoDescription,
       icon: Video,
       color: "terracotta",
-      timeEstimate: "15-30 хв"
+      timeEstimate: t.workbook.timeEstimate1530
     }
   ];
 
@@ -135,7 +135,7 @@ export default function WorkbookDashboard() {
           className="inline-flex items-center gap-2 rounded-full border border-ink/20 px-4 py-2 text-xs font-semibold text-ink transition hover:bg-ink/5"
         >
           <ClockClockwise size={16} weight="bold" />
-          <span>{t.workbook.tabs?.history || "Історія"}</span>
+          <span>{t.workbook.tabs?.history || t.workbook.historyFallback}</span>
         </button>
       </div>
 
@@ -172,7 +172,7 @@ export default function WorkbookDashboard() {
               </p>
 
               <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold transition group-hover:gap-3">
-                Почати
+                {t.workbook.startButton}
                 <span className="transition">→</span>
               </div>
             </Link>

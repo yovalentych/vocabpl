@@ -173,7 +173,7 @@ export default function DictWordCard({
                 onOpenAI(word);
               }}
               className="group rounded-full border border-moss/20 bg-moss/5 p-2 text-moss transition hover:border-moss/30 hover:bg-moss/10"
-              aria-label="AI приклади та граматика"
+              aria-label={t.dict.aiExamplesGrammar}
             >
               <Sparkle
                 size={16}

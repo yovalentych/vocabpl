@@ -103,24 +103,24 @@ export default function DictLanding({ onNavigate }: DictLandingProps) {
   const quickActions = [
     {
       id: "browse",
-      title: "Переглянути словник",
-      description: "Вивчай слова з карток",
+      title: t.dict.browseDictionary,
+      description: t.dict.learnFromCards,
       icon: BookOpen,
       color: "moss",
       path: "/class/dict/browse"
     },
     {
       id: "trainer",
-      title: "Тренажер слів",
-      description: "Інтерактивні вправи",
+      title: t.dict.wordTrainer,
+      description: t.dict.interactiveExercises,
       icon: Lightning,
       color: "gold",
       path: "/class/dict/trainer"
     },
     {
       id: "my-words",
-      title: "Мої слова",
-      description: "Власний словник",
+      title: t.dict.myWords,
+      description: t.dict.personalDictionary,
       icon: BookBookmark,
       color: "terracotta",
       path: "/class/dict/my-words"
@@ -142,7 +142,7 @@ export default function DictLanding({ onNavigate }: DictLandingProps) {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
         <div className="text-center">
-          <p className="text-ink/60">Не вдалося завантажити статистику</p>
+          <p className="text-ink/60">{t.dict.loadStatsFailed}</p>
           <button
             onClick={() => window.location.reload()}
             className="mt-4 rounded-full border border-ink/20 px-4 py-2 text-sm font-semibold text-ink transition hover:bg-ink/5"
@@ -168,23 +168,23 @@ export default function DictLanding({ onNavigate }: DictLandingProps) {
           </div>
 
           {/* Heading */}
-          <h1 className="text-4xl font-bold text-ink">Твій особистий словник</h1>
+          <h1 className="text-4xl font-bold text-ink">{t.dict.yourPersonalDictionary}</h1>
 
           {/* Quick Stats */}
           <div className="flex flex-wrap items-center gap-4 text-sm text-ink/70">
             <div className="flex items-center gap-2">
               <span className="font-semibold text-ink">{stats.totalWords}</span>
-              <span>слів доступно</span>
+              <span>{t.dict.wordsAvailable}</span>
             </div>
             <span className="text-ink/30">•</span>
             <div className="flex items-center gap-2">
               <span className="font-semibold text-moss">{stats.learnedWords}</span>
-              <span>вивчено</span>
+              <span>{t.dict.learned}</span>
             </div>
             <span className="text-ink/30">•</span>
             <div className="flex items-center gap-2">
               <span className="font-semibold text-gold">{stats.favoriteWords}</span>
-              <span>в обраному</span>
+              <span>{t.dict.inFavorites}</span>
             </div>
           </div>
         </div>
@@ -192,13 +192,13 @@ export default function DictLanding({ onNavigate }: DictLandingProps) {
 
       {/* Stats Dashboard */}
       <div>
-        <h2 className="mb-4 text-xl font-semibold text-ink">Твоя статистика</h2>
+        <h2 className="mb-4 text-xl font-semibold text-ink">{t.dict.yourStats}</h2>
         <DictStats stats={stats} />
       </div>
 
       {/* Quick Actions */}
       <div>
-        <h2 className="mb-4 text-xl font-semibold text-ink">Швидкі дії</h2>
+        <h2 className="mb-4 text-xl font-semibold text-ink">{t.dict.quickActions}</h2>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {quickActions.map((action) => {
             const Icon = action.icon;
@@ -227,7 +227,7 @@ export default function DictLanding({ onNavigate }: DictLandingProps) {
                 <p className="mt-2 text-sm text-ink/60">{action.description}</p>
 
                 <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold transition group-hover:gap-3">
-                  Відкрити
+                  {t.dict.openAction}
                   <ArrowRight size={16} weight="bold" className="transition" />
                 </div>
               </button>
@@ -247,11 +247,11 @@ export default function DictLanding({ onNavigate }: DictLandingProps) {
       {/* Recent Words Section */}
       <div>
         <h2 className="mb-4 text-xl font-semibold text-ink">
-          Нещодавно вивчені слова
+          {t.dict.recentlyStudied}
         </h2>
         <div className="rounded-3xl border border-ink/10 bg-paper/95 p-6 shadow-soft">
           <p className="text-center text-sm text-ink/60">
-            Тут з&apos;являться слова, які ти нещодавно вивчав
+            {t.dict.recentlyStudiedEmpty}
           </p>
         </div>
       </div>
@@ -260,23 +260,23 @@ export default function DictLanding({ onNavigate }: DictLandingProps) {
       {stats.dueForReview > 0 && (
         <div>
           <h2 className="mb-4 text-xl font-semibold text-ink">
-            Готово до повторення
+            {t.dict.readyToRepeat}
           </h2>
           <div className="rounded-3xl border border-terracotta/20 bg-gradient-to-br from-terracotta/10 to-terracotta/5 p-6 shadow-soft">
             <div className="flex items-center justify-between gap-4">
               <div>
                 <h3 className="text-lg font-semibold text-ink">
-                  {stats.dueForReview} слів чекають на тебе
+                  {stats.dueForReview} {t.dict.wordsWaitingForYou}
                 </h3>
                 <p className="mt-1 text-sm text-ink/60">
-                  Повтори їх зараз, щоб закріпити знання
+                  {t.dict.repeatNow}
                 </p>
               </div>
               <button
                 onClick={() => navigate("/class/dict/trainer")}
                 className="rounded-full bg-terracotta px-6 py-3 text-sm font-semibold text-paper transition hover:bg-terracotta/90"
               >
-                Почати повторення
+                {t.dict.startRepetition}
               </button>
             </div>
           </div>
