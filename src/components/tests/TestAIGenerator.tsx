@@ -67,12 +67,12 @@ export default function TestAIGenerator({ onTestGenerated, locale = "uk" }: Test
 
   async function handleGenerate() {
     if (!topic.trim()) {
-      setError("Будь ласка, введіть тему тесту");
+      setError(t.tests.enterTopic);
       return;
     }
 
     if (questionTypes.length === 0) {
-      setError("Оберіть хоча б один тип питань");
+      setError(t.tests.selectAtLeastOneType);
       return;
     }
 
@@ -101,13 +101,13 @@ export default function TestAIGenerator({ onTestGenerated, locale = "uk" }: Test
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.error || "Помилка генерації тесту");
+        throw new Error(errorData.error || t.tests.generateError);
       }
 
       const data = await res.json();
 
       if (!data.text) {
-        throw new Error("Порожня відповідь від AI");
+        throw new Error(t.tests.emptyAIResponse);
       }
 
       // Use safe JSON parser with error recovery
@@ -116,17 +116,17 @@ export default function TestAIGenerator({ onTestGenerated, locale = "uk" }: Test
       if (!parseResult.success) {
         console.error("JSON parse error:", parseResult.error);
         console.error("Received text:", data.text);
-        throw new Error(`Невірний формат JSON від AI: ${parseResult.error}`);
+        throw new Error(t.tests.invalidJSONFromAI.replace("{error}", parseResult.error || "Unknown"));
       }
 
       const parsed = parseResult.data;
 
       if (!parsed.questions || !Array.isArray(parsed.questions)) {
-        throw new Error("Невірний формат відповіді: відсутні питання");
+        throw new Error(t.tests.invalidResponseMissingQuestions);
       }
 
       if (parsed.questions.length === 0) {
-        throw new Error("AI не згенерував жодного питання");
+        throw new Error(t.tests.noQuestionsGenerated);
       }
 
       // Validate content quality
@@ -170,7 +170,7 @@ export default function TestAIGenerator({ onTestGenerated, locale = "uk" }: Test
           })
         }).catch(() => null);
 
-        throw new Error(`Якість згенерованого тесту недостатня (score: ${(validation.score * 100).toFixed(0)}%). Спробуйте ще раз.`);
+        throw new Error(t.tests.qualityTooLow.replace("{score}", (validation.score * 100).toFixed(0)));
       }
 
       const generatedTest: GeneratedTest = {
@@ -192,7 +192,7 @@ export default function TestAIGenerator({ onTestGenerated, locale = "uk" }: Test
       }
     } catch (err) {
       console.error("Generate test error:", err);
-      const errorMessage = err instanceof Error ? err.message : "Помилка генерації тесту";
+      const errorMessage = err instanceof Error ? err.message : t.tests.generateError;
       setError(errorMessage);
 
       // Show error modal on second attempt
@@ -212,17 +212,17 @@ export default function TestAIGenerator({ onTestGenerated, locale = "uk" }: Test
   }
 
   const focusOptions: { id: FocusArea; label: string; icon: string }[] = [
-    { id: "grammar", label: "Граматика", icon: "📚" },
-    { id: "vocabulary", label: "Лексика", icon: "📖" },
-    { id: "orthography", label: "Ортографія", icon: "✍️" },
-    { id: "word-formation", label: "Словотвір", icon: "🔤" }
+    { id: "grammar", label: t.tests.focusGrammar, icon: "📚" },
+    { id: "vocabulary", label: t.tests.focusVocabulary, icon: "📖" },
+    { id: "orthography", label: t.tests.focusOrthography, icon: "✍️" },
+    { id: "word-formation", label: t.tests.focusWordFormation, icon: "🔤" }
   ];
 
   const questionTypeOptions: { id: QuestionType; label: string; desc: string }[] = [
-    { id: "single", label: "Один варіант", desc: "Вибір однієї правильної відповіді" },
-    { id: "multiple", label: "Кілька варіантів", desc: "Вибір кількох правильних відповідей" },
-    { id: "fillgap", label: "Заповнити пропуски", desc: "Вставити слова у речення" },
-    { id: "open", label: "Відкрита відповідь", desc: "Написати власну відповідь" }
+    { id: "single", label: t.tests.typesSingleLabel, desc: t.tests.typesSingleDesc },
+    { id: "multiple", label: t.tests.typesMultipleLabel, desc: t.tests.typesMultipleDesc },
+    { id: "fillgap", label: t.tests.typesFillgapLabel, desc: t.tests.typesFillgapDesc },
+    { id: "open", label: t.tests.typesOpenLabel, desc: t.tests.typesOpenDesc }
   ];
 
   return (
@@ -231,17 +231,16 @@ export default function TestAIGenerator({ onTestGenerated, locale = "uk" }: Test
       <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
         <div className="flex items-center gap-2">
           <Sparkle size={24} weight="fill" className="text-gold" />
-          <h3 className="text-xl font-semibold">AI Генератор тестів</h3>
+          <h3 className="text-xl font-semibold">{t.tests.aiGeneratorTitle}</h3>
         </div>
         <p className="mt-2 text-sm text-ink/60">
-          Створіть персоналізований тест з польської мови
+          {t.tests.aiGeneratorSubtitle}
         </p>
 
         {/* Info about AI content */}
         <div className="mt-4 rounded-2xl border border-gold/20 bg-gold/5 p-3">
           <p className="text-xs text-ink/70">
-            ℹ️ <strong>Важливо:</strong> AI контент зберігається лише в історії ваших сесій.
-            Тільки матеріали, опубліковані адміністратором, доступні в розділі &quot;Всі тести&quot;.
+            {t.tests.aiContentInfo}
           </p>
         </div>
 
@@ -249,13 +248,13 @@ export default function TestAIGenerator({ onTestGenerated, locale = "uk" }: Test
           {/* Topic Input */}
           <div>
             <label className="block text-xs uppercase tracking-[0.2em] text-ink/40">
-              Тема тесту *
+              {t.tests.topicLabel}
             </label>
             <input
               type="text"
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
-              placeholder="Наприклад: Daily routines, Past tense, Shopping..."
+              placeholder={t.tests.topicPlaceholder}
               className="mt-2 w-full rounded-2xl border border-ink/20 bg-paper px-4 py-2.5 text-sm focus:border-moss/40 focus:outline-none"
               disabled={generating}
             />
@@ -264,7 +263,7 @@ export default function TestAIGenerator({ onTestGenerated, locale = "uk" }: Test
           {/* Focus Area */}
           <div>
             <label className="block text-xs uppercase tracking-[0.2em] text-ink/40">
-              Фокус * (50% тесту буде з цієї теми)
+              {t.tests.focusLabel}
             </label>
             <div className="mt-2 flex flex-wrap gap-2">
               {focusOptions.map((option) => (
@@ -284,14 +283,14 @@ export default function TestAIGenerator({ onTestGenerated, locale = "uk" }: Test
               ))}
             </div>
             <p className="mt-2 text-xs text-ink/50">
-              💡 Обраний фокус визначить половину питань тесту, решта будуть змішаними
+              {t.tests.focusHint}
             </p>
           </div>
 
           {/* Grammar Topics */}
           <div>
             <label className="block text-xs uppercase tracking-[0.2em] text-ink/40">
-              Граматичні теми (опціонально, max 5)
+              {t.tests.grammarTopicsLabel}
             </label>
             <button
               onClick={() => setShowGrammarModal(true)}
@@ -301,8 +300,8 @@ export default function TestAIGenerator({ onTestGenerated, locale = "uk" }: Test
               <span className="flex items-center gap-2 text-ink/70">
                 <Book size={18} />
                 {grammarTopics.length > 0
-                  ? `Обрано ${grammarTopics.length} з 5 ${grammarTopics.length === 1 ? "теми" : "тем"}`
-                  : "Обрати граматичні теми"}
+                  ? t.tests.grammarTopicsSelected.replace("{count}", String(grammarTopics.length)).replace("{max}", "5")
+                  : t.tests.grammarTopicsSelect}
               </span>
               <Sliders size={18} className="text-ink/40" />
             </button>
@@ -311,7 +310,7 @@ export default function TestAIGenerator({ onTestGenerated, locale = "uk" }: Test
           {/* Question Types */}
           <div>
             <label className="block text-xs uppercase tracking-[0.2em] text-ink/40">
-              Типи питань *
+              {t.tests.questionTypesLabel}
             </label>
             <div className="mt-2 grid gap-3 md:grid-cols-2">
               {questionTypeOptions.map((option) => (
@@ -337,7 +336,7 @@ export default function TestAIGenerator({ onTestGenerated, locale = "uk" }: Test
           {/* Level Selection */}
           <div>
             <label className="block text-xs uppercase tracking-[0.2em] text-ink/40">
-              Рівень
+              {t.tests.levelLabel}
             </label>
             <div className="mt-2 flex flex-wrap gap-2">
               {(["A1", "A2", "B1", "B2", "C1"] as const).map((lvl) => (
@@ -397,7 +396,7 @@ export default function TestAIGenerator({ onTestGenerated, locale = "uk" }: Test
         isOpen={showErrorModal}
         onClose={() => setShowErrorModal(false)}
         error={error}
-        context="Генерація AI тесту"
+        context={t.tests.contextLabel}
         onRetry={() => {
           setShowErrorModal(false);
           handleGenerate();

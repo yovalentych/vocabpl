@@ -85,8 +85,8 @@ export default function TestAIWizard({ locale = "uk" }: TestAIWizardProps) {
             <Sparkle size={20} weight="fill" className="text-gold" />
           </div>
           <div>
-            <h2 className="text-xl font-bold">AI Генератор тестів</h2>
-            <p className="text-sm text-ink/60">Налаштуйте параметри тесту</p>
+            <h2 className="text-xl font-bold">{t.tests.aiWizardTitle}</h2>
+            <p className="text-sm text-ink/60">{t.tests.aiWizardSubtitle}</p>
           </div>
         </div>
 
@@ -154,7 +154,7 @@ export default function TestAIWizard({ locale = "uk" }: TestAIWizardProps) {
                   ? "bg-moss/50"
                   : "bg-ink/10"
               }`}
-              title={`Сторінка ${idx + 1}`}
+              title={t.tests.aiWizardPage.replace("{n}", String(idx + 1))}
             />
           ))}
         </div>
@@ -165,19 +165,19 @@ export default function TestAIWizard({ locale = "uk" }: TestAIWizardProps) {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-base font-bold text-ink">
-              Питання {currentPage * questionsPerPage + 1}—{Math.min((currentPage + 1) * questionsPerPage, allQuestions.length)} <span className="text-ink/40">з {allQuestions.length}</span>
+              {t.tests.aiWizardQuestionsRange.replace("{from}", String(currentPage * questionsPerPage + 1)).replace("{to}", String(Math.min((currentPage + 1) * questionsPerPage, allQuestions.length))).replace("{total}", String(allQuestions.length))}
             </p>
             <p className="mt-1 text-xs font-medium uppercase tracking-wider text-ink/50">
-              {currentPage === 0 ? "Перша партія" : `Партія ${currentPage + 1}`}
+              {currentPage === 0 ? t.tests.aiWizardFirstBatch : t.tests.aiWizardBatchN.replace("{n}", String(currentPage + 1))}
             </p>
           </div>
           {currentPage < totalPages - 1 && (
             <div className="flex flex-col items-end gap-1">
               <div className="flex items-center gap-2 text-xs font-semibold text-moss">
                 <CheckCircle size={18} weight="fill" />
-                Завершено
+                {t.tests.aiWizardCompleted}
               </div>
-              <p className="text-xs text-ink/50">Перейдіть далі →</p>
+              <p className="text-xs text-ink/50">{t.tests.aiWizardContinue}</p>
             </div>
           )}
         </div>

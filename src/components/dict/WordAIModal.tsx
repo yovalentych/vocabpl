@@ -74,10 +74,10 @@ export default function WordAIModal({ word, isOpen, onClose }: WordAIModalProps)
         const errorCode = data?.code;
         const message =
           errorCode === "ai_quota"
-            ? "Ліміт AI кредитів вичерпано"
+            ? t.workbook.classicAiQuotaError
             : errorCode === "pvs_unavailable"
-              ? "Потрібен AI план"
-              : data?.error || "Помилка генерації";
+              ? t.workbook.classicAiPlanRequired
+              : data?.error || t.dict.generationError;
         setErrorExamples(message);
         return;
       }
@@ -86,7 +86,7 @@ export default function WordAIModal({ word, isOpen, onClose }: WordAIModalProps)
       setExamples(result.examples || []);
     } catch (err) {
       console.error("Failed to generate examples:", err);
-      setErrorExamples("Помилка мережі");
+      setErrorExamples(t.dict.networkError);
     } finally {
       setLoadingExamples(false);
     }
@@ -118,10 +118,10 @@ export default function WordAIModal({ word, isOpen, onClose }: WordAIModalProps)
         const errorCode = data?.code;
         const message =
           errorCode === "ai_quota"
-            ? "Ліміт AI кредитів вичерпано"
+            ? t.workbook.classicAiQuotaError
             : errorCode === "pvs_unavailable"
-              ? "Потрібен AI план"
-              : data?.error || "Помилка генерації";
+              ? t.workbook.classicAiPlanRequired
+              : data?.error || t.dict.generationError;
         setErrorGrammar(message);
         return;
       }
@@ -130,7 +130,7 @@ export default function WordAIModal({ word, isOpen, onClose }: WordAIModalProps)
       setGrammar(result.explanation || null);
     } catch (err) {
       console.error("Failed to generate grammar:", err);
-      setErrorGrammar("Помилка мережі");
+      setErrorGrammar(t.dict.networkError);
     } finally {
       setLoadingGrammar(false);
     }
@@ -149,11 +149,11 @@ export default function WordAIModal({ word, isOpen, onClose }: WordAIModalProps)
   const getDifficultyLabel = (difficulty: string) => {
     switch (difficulty) {
       case "easy":
-        return "ЛЕГКО";
+        return t.dict.difficultyEasy;
       case "medium":
-        return "СЕРЕДНЬО";
+        return t.dict.difficultyMedium;
       case "hard":
-        return "ВАЖКО";
+        return t.dict.difficultyHard;
       default:
         return difficulty.toUpperCase();
     }
@@ -188,9 +188,9 @@ export default function WordAIModal({ word, isOpen, onClose }: WordAIModalProps)
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1">
               <p className="text-[10px] uppercase tracking-[0.3em] text-ink/40">
-                {word.pos === "verb" ? "ДІЄСЛОВО" :
-                 word.pos === "adjective" ? "ПРИКМЕТНИК" :
-                 word.pos === "noun" ? "ІМЕННИК" : "СЛОВО"}
+                {word.pos === "verb" ? t.dict.posVerb :
+                 word.pos === "adjective" ? t.dict.posAdjective :
+                 word.pos === "noun" ? t.dict.posNoun : t.dict.posWord}
               </p>
               <h2 className="mt-2 text-3xl font-bold text-ink">{word.pl}</h2>
               <p className="mt-1 text-lg text-ink/60">{word.uk}</p>
@@ -216,7 +216,7 @@ export default function WordAIModal({ word, isOpen, onClose }: WordAIModalProps)
               }`}
             >
               <Sparkle size={16} weight="fill" />
-              AI приклади
+              {t.dict.aiExamples}
             </button>
             <button
               onClick={() => handleTabChange("grammar")}
@@ -227,7 +227,7 @@ export default function WordAIModal({ word, isOpen, onClose }: WordAIModalProps)
               }`}
             >
               <Lightbulb size={16} weight="fill" />
-              AI граматика
+              {t.dict.aiGrammar}
             </button>
           </div>
         </div>
@@ -259,7 +259,7 @@ export default function WordAIModal({ word, isOpen, onClose }: WordAIModalProps)
 
               {!loadingExamples && !errorExamples && examples.length === 0 && (
                 <div className="py-12 text-center">
-                  <p className="text-sm text-ink/60">Приклади з&apos;являться тут</p>
+                  <p className="text-sm text-ink/60">{t.dict.examplesWillAppear}</p>
                 </div>
               )}
 
@@ -313,7 +313,7 @@ export default function WordAIModal({ word, isOpen, onClose }: WordAIModalProps)
 
               {!loadingGrammar && !errorGrammar && !grammar && (
                 <div className="py-12 text-center">
-                  <p className="text-sm text-ink/60">Граматичні пояснення з&apos;являться тут</p>
+                  <p className="text-sm text-ink/60">{t.dict.grammarWillAppear}</p>
                 </div>
               )}
 
@@ -323,7 +323,7 @@ export default function WordAIModal({ word, isOpen, onClose }: WordAIModalProps)
                   {grammar.type && (
                     <div className="rounded-3xl border border-gold/20 bg-gold/5 p-5">
                       <p className="text-xs uppercase tracking-[0.3em] text-gold/80 font-semibold mb-2">
-                        ТИП
+                        {t.dict.grammarType}
                       </p>
                       <p className="text-base text-ink">{grammar.type}</p>
                     </div>
@@ -333,7 +333,7 @@ export default function WordAIModal({ word, isOpen, onClose }: WordAIModalProps)
                   {grammar.usage && (
                     <div className="rounded-3xl border border-ink/10 bg-paper/80 p-5">
                       <p className="text-xs uppercase tracking-[0.3em] text-ink/40 font-semibold mb-2">
-                        ВИКОРИСТАННЯ
+                        {t.dict.grammarUsage}
                       </p>
                       <p className="text-sm text-ink/80 leading-relaxed">{grammar.usage}</p>
                     </div>
@@ -343,7 +343,7 @@ export default function WordAIModal({ word, isOpen, onClose }: WordAIModalProps)
                   {grammar.notes && (
                     <div className="rounded-3xl border border-moss/20 bg-moss/5 p-5">
                       <p className="text-xs uppercase tracking-[0.3em] text-moss/80 font-semibold mb-2">
-                        ПРИМІТКИ
+                        {t.dict.grammarNotes}
                       </p>
                       <p className="text-sm text-ink/80 leading-relaxed">{grammar.notes}</p>
                     </div>
@@ -353,7 +353,7 @@ export default function WordAIModal({ word, isOpen, onClose }: WordAIModalProps)
                   {grammar.forms && grammar.forms.length > 0 && (
                     <div className="rounded-3xl border border-ink/10 bg-paper/80 p-5">
                       <p className="text-xs uppercase tracking-[0.3em] text-ink/40 font-semibold mb-3">
-                        ФОРМИ
+                        {t.dict.grammarForms}
                       </p>
                       <div className="flex flex-wrap gap-2">
                         {grammar.forms.map((form, idx) => (
@@ -372,7 +372,7 @@ export default function WordAIModal({ word, isOpen, onClose }: WordAIModalProps)
                   {grammar.examples && grammar.examples.length > 0 && (
                     <div className="rounded-3xl border border-ink/10 bg-paper/80 p-5">
                       <p className="text-xs uppercase tracking-[0.3em] text-ink/40 font-semibold mb-3">
-                        ПРИКЛАДИ
+                        {t.dict.grammarExamples}
                       </p>
                       <ul className="space-y-2">
                         {grammar.examples.map((example, idx) => {

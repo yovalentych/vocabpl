@@ -526,8 +526,8 @@ export default function TestsClient() {
             { id: "all", label: t.tests.tabs.all, icon: null },
             { id: "inProgress", label: t.tests.tabs.inProgress, icon: null },
             { id: "history", label: t.tests.tabs.history, icon: null },
-            { id: "ai", label: "AI Тести", icon: <Sparkle size={16} weight="fill" /> },
-            { id: "aiHistory", label: "Історія AI", icon: <ClockCounterClockwise size={16} /> }
+            { id: "ai", label: t.tests.aiTestsTab, icon: <Sparkle size={16} weight="fill" /> },
+            { id: "aiHistory", label: t.tests.aiHistoryTab, icon: <ClockCounterClockwise size={16} /> }
           ].map((item) => (
             <button
               key={item.id}
@@ -550,25 +550,25 @@ export default function TestsClient() {
           <div className="space-y-6">
             <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
               <div className="flex items-center justify-between">
-                <p className="text-xs uppercase tracking-[0.3em] text-ink/40">AI Історія</p>
+                <p className="text-xs uppercase tracking-[0.3em] text-ink/40">{t.tests.aiHistoryTitle}</p>
                 <span className="text-xs text-ink/40">{aiHistory.length}</span>
               </div>
               {aiStats && (
                 <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                   <div className="rounded-2xl border border-ink/10 bg-paper/60 p-3">
-                    <p className="text-xs text-ink/50">Спроби</p>
+                    <p className="text-xs text-ink/50">{t.tests.aiHistoryAttempts}</p>
                     <p className="text-lg font-semibold">{aiStats.totalAttempts}</p>
                   </div>
                   <div className="rounded-2xl border border-ink/10 bg-paper/60 p-3">
-                    <p className="text-xs text-ink/50">Середній бал</p>
+                    <p className="text-xs text-ink/50">{t.tests.aiHistoryAverageScore}</p>
                     <p className="text-lg font-semibold">{Math.round(aiStats.averagePoints || 0)}/10</p>
                   </div>
                   <div className="rounded-2xl border border-ink/10 bg-paper/60 p-3">
-                    <p className="text-xs text-ink/50">Найкращий бал</p>
+                    <p className="text-xs text-ink/50">{t.tests.aiHistoryBestScore}</p>
                     <p className="text-lg font-semibold">{Math.round(aiStats.bestPoints || 0)}/10</p>
                   </div>
                   <div className="rounded-2xl border border-ink/10 bg-paper/60 p-3">
-                    <p className="text-xs text-ink/50">Середній %</p>
+                    <p className="text-xs text-ink/50">{t.tests.aiHistoryAveragePercent}</p>
                     <p className="text-lg font-semibold">{Math.round((aiStats.averageScore || 0) * 100)}%</p>
                   </div>
                 </div>
@@ -582,7 +582,7 @@ export default function TestsClient() {
               {!aiLoading && aiHistory.length === 0 && (
                 <div className="text-center text-sm text-ink/60">
                   <ClockCounterClockwise size={48} weight="thin" className="mx-auto text-ink/20" />
-                  <p className="mt-4">Поки що немає завершених AI тестів.</p>
+                  <p className="mt-4">{t.tests.aiHistoryNoAttempts}</p>
                 </div>
               )}
               {!aiLoading && aiHistory.length > 0 && (
@@ -596,7 +596,7 @@ export default function TestsClient() {
                         <div>
                           <p className="text-sm font-semibold">{entry.testTopic}</p>
                           <p className="text-xs text-ink/50">
-                            {entry.testLevel} · {entry.questionsCount} питань · {new Date(entry.createdAt).toLocaleDateString()}
+                            {entry.testLevel} · {entry.questionsCount} {t.tests.aiHistoryQuestions} · {new Date(entry.createdAt).toLocaleDateString()}
                           </p>
                         </div>
                         <span className="rounded-full border border-ink/10 bg-paper px-3 py-1 text-xs font-semibold text-ink/70">

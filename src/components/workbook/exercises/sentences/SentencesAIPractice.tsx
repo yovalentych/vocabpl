@@ -64,10 +64,10 @@ export default function SentencesAIPractice({ config, onComplete }: SentencesAIP
           const errorCode = data?.code;
           const message =
             errorCode === "ai_quota"
-              ? "Ліміт AI кредитів вичерпано"
+              ? t.workbook.classicAiQuotaError
               : errorCode === "pvs_unavailable"
-                ? "Потрібен AI план"
-                : data?.error || "Помилка AI";
+                ? t.workbook.classicAiPlanRequired
+                : data?.error || t.workbook.classicAiError;
           setError(message);
           setIsGenerating(false);
           return;
@@ -77,7 +77,7 @@ export default function SentencesAIPractice({ config, onComplete }: SentencesAIP
         const result = safeParseAIResponse(data?.text);
 
         if (!result || !result.words || result.words.length === 0) {
-          setError("AI не змогла згенерувати слова. Спробуйте іншу тему.");
+          setError(t.workbook.sentencesAINoWords);
           setIsGenerating(false);
           return;
         }
@@ -93,7 +93,7 @@ export default function SentencesAIPractice({ config, onComplete }: SentencesAIP
           }));
 
         if (generatedWords.length === 0) {
-          setError("Всі згенеровані слова були невалідні. Спробуйте ще раз.");
+          setError(t.workbook.sentencesAIAllInvalid);
           setIsGenerating(false);
           return;
         }
@@ -103,7 +103,7 @@ export default function SentencesAIPractice({ config, onComplete }: SentencesAIP
       } catch (err) {
         if (!cancelled) {
           console.error("Failed to generate words:", err);
-          setError("Помилка мережі");
+          setError(t.dict.networkError);
         }
       } finally {
         if (!cancelled) setIsGenerating(false);
@@ -134,7 +134,7 @@ export default function SentencesAIPractice({ config, onComplete }: SentencesAIP
 
   const handleCheckWithAI = async () => {
     if (totalSentences === 0) {
-      setError("Напишіть хоча б одне речення перед перевіркою");
+      setError(t.workbook.sentencesAIWriteAtLeastOne);
       return;
     }
 
@@ -172,10 +172,10 @@ export default function SentencesAIPractice({ config, onComplete }: SentencesAIP
         const errorCode = data?.code;
         const message =
           errorCode === "ai_quota"
-            ? "Ліміт AI кредитів вичерпано"
+            ? t.workbook.classicAiQuotaError
             : errorCode === "pvs_unavailable"
-              ? "Потрібен AI план"
-              : data?.error || "Помилка AI";
+              ? t.workbook.classicAiPlanRequired
+              : data?.error || t.workbook.classicAiError;
         setError(message);
         setIsChecking(false);
         return;
@@ -185,7 +185,7 @@ export default function SentencesAIPractice({ config, onComplete }: SentencesAIP
       const result = safeParseAIResponse(data?.text);
 
       if (!result || !result.items) {
-        setError("AI повернула неправильний формат відповіді. Спробуйте ще раз.");
+        setError(t.workbook.sentencesAIInvalidFormat);
         setIsChecking(false);
         return;
       }
@@ -212,7 +212,7 @@ export default function SentencesAIPractice({ config, onComplete }: SentencesAIP
       setShowResults(true);
     } catch (err) {
       console.error("Failed to check with AI:", err);
-      setError("Помилка мережі");
+      setError(t.dict.networkError);
     } finally {
       setIsChecking(false);
     }
@@ -225,9 +225,9 @@ export default function SentencesAIPractice({ config, onComplete }: SentencesAIP
           <Sparkle size={24} weight="fill" className="text-gold animate-pulse" />
           <div className="h-8 w-8 animate-spin rounded-full border-2 border-gold/20 border-t-gold" />
         </div>
-        <p className="text-sm font-semibold text-ink mb-2">AI генерує завдання...</p>
+        <p className="text-sm font-semibold text-ink mb-2">{t.workbook.sentencesAIGenerating}</p>
         <p className="text-xs text-ink/60">
-          Тема: <span className="font-medium">{config.topic}</span> · Рівень: <span className="font-medium">{config.level}</span>
+          {t.workbook.sentencesAIGeneratingHint.replace("{topic}", config.topic).replace("{level}", config.level)}
         </p>
       </div>
     );
@@ -236,7 +236,7 @@ export default function SentencesAIPractice({ config, onComplete }: SentencesAIP
   if (error && words.length === 0) {
     return (
       <div className="rounded-3xl border border-terracotta/20 bg-terracotta/5 p-8 shadow-soft text-center">
-        <p className="text-sm font-semibold text-terracotta mb-2">Помилка</p>
+        <p className="text-sm font-semibold text-terracotta mb-2">{t.workbook.sentencesAIError}</p>
         <p className="text-sm text-ink/70">{error}</p>
         <button
           onClick={onComplete}
@@ -252,7 +252,7 @@ export default function SentencesAIPractice({ config, onComplete }: SentencesAIP
     return (
       <div className="rounded-3xl border border-ink/10 bg-paper/80 p-8 shadow-soft text-center">
         <p className="text-sm text-ink/60">
-          Слова не згенеровано. Спробуйте ще раз.
+          {t.workbook.sentencesAINotGenerated}
         </p>
       </div>
     );
@@ -265,7 +265,7 @@ export default function SentencesAIPractice({ config, onComplete }: SentencesAIP
         <div className="rounded-3xl border border-ink/10 bg-paper/80 p-4 shadow-soft">
           <div className="flex items-center justify-between mb-4">
             <p className="text-xs uppercase tracking-[0.3em] text-ink/40">
-              Слова AI
+              {t.workbook.sentencesAIWords}
             </p>
             <div className="text-xs text-ink/50">
               {activeIndex + 1} / {words.length}
@@ -309,7 +309,7 @@ export default function SentencesAIPractice({ config, onComplete }: SentencesAIP
 
                   {/* Sentence count */}
                   <div className="mt-2 text-xs text-ink/50">
-                    {sentenceCount} / 3 речень
+                    {sentenceCount} / 3 {t.workbook.sentencesAISentencesOf}
                   </div>
                 </button>
               );
@@ -320,7 +320,7 @@ export default function SentencesAIPractice({ config, onComplete }: SentencesAIP
           <div className="mt-4 rounded-2xl border border-ink/10 bg-fog p-3">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs uppercase tracking-[0.2em] text-ink/40">
-                Прогрес
+                {t.workbook.sentencesAIProgress}
               </span>
               <span className="text-sm font-bold text-gold">
                 {totalSentences} / {words.length * 3}
@@ -341,7 +341,7 @@ export default function SentencesAIPractice({ config, onComplete }: SentencesAIP
           <div className="rounded-2xl border border-gold/20 bg-gold/5 px-4 py-2 inline-flex items-center gap-2">
             <Sparkle size={16} weight="fill" className="text-gold" />
             <span className="text-xs font-semibold text-gold">
-              Тема: {config.topic} · {config.level}
+              {t.workbook.sentencesAITopicAndLevel.replace("{topic}", config.topic).replace("{level}", config.level)}
             </span>
           </div>
 
@@ -361,7 +361,7 @@ export default function SentencesAIPractice({ config, onComplete }: SentencesAIP
               {/* Progress */}
               <div className="text-right">
                 <p className="text-xs text-ink/50">
-                  Слово {activeIndex + 1} з {words.length}
+                  {t.workbook.sentencesAIWordNofTotal.replace("{current}", String(activeIndex + 1)).replace("{total}", String(words.length))}
                 </p>
               </div>
             </div>
@@ -370,19 +370,19 @@ export default function SentencesAIPractice({ config, onComplete }: SentencesAIP
           {/* Sentence inputs */}
           <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
             <p className="text-xs uppercase tracking-[0.3em] text-ink/40 mb-4">
-              Напишіть речення
+              {t.workbook.sentencesAIWriteSentences}
             </p>
 
             <div className="space-y-4">
               {activeWord.sentences.map((sentence, index) => (
                 <div key={index}>
                   <label className="block text-xs text-ink/60 mb-2">
-                    Речення {index + 1}
+                    {t.workbook.sentencesAISentenceN.replace("{n}", String(index + 1))}
                   </label>
                   <textarea
                     value={sentence}
                     onChange={(e) => updateSentence(activeWord.id, index, e.target.value)}
-                    placeholder="Напишіть речення польською..."
+                    placeholder={t.workbook.sentencesAIPlaceholder}
                     rows={3}
                     maxLength={500}
                     className="w-full rounded-2xl border border-ink/20 bg-paper px-4 py-3 text-sm text-ink placeholder:text-ink/40 focus:border-gold/40 focus:outline-none focus:ring-0"
@@ -409,12 +409,12 @@ export default function SentencesAIPractice({ config, onComplete }: SentencesAIP
               {isChecking ? (
                 <>
                   <span className="h-4 w-4 animate-spin rounded-full border-2 border-paper/20 border-t-paper" />
-                  <span>Перевірка AI...</span>
+                  <span>{t.workbook.sentencesAICheckingAI}</span>
                 </>
               ) : (
                 <>
                   <Sparkle size={18} weight="fill" />
-                  <span>Перевірити з AI</span>
+                  <span>{t.workbook.sentencesAICheckWithAI}</span>
                 </>
               )}
             </button>
@@ -430,7 +430,7 @@ export default function SentencesAIPractice({ config, onComplete }: SentencesAIP
               disabled={activeIndex === words.length - 1}
               className="inline-flex items-center gap-2 rounded-full border border-ink/20 px-6 py-3 text-sm font-semibold text-ink transition hover:bg-ink/5 disabled:cursor-not-allowed disabled:opacity-40"
             >
-              <span>Наступне слово</span>
+              <span>{t.workbook.sentencesAINextWord}</span>
               <span>→</span>
             </button>
           </div>

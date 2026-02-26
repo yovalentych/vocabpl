@@ -62,10 +62,10 @@ export default function ParaphraseAIPractice({ config, onComplete }: ParaphraseA
           const errorCode = data?.code;
           const message =
             errorCode === "ai_quota"
-              ? "Ліміт AI кредитів вичерпано"
+              ? t.workbook.classicAiQuotaError
               : errorCode === "pvs_unavailable"
-                ? "Потрібен AI план"
-                : data?.error || "Помилка AI";
+                ? t.workbook.classicAiPlanRequired
+                : data?.error || t.workbook.classicAiError;
           if (!cancelled) setError(message);
           if (!cancelled) setIsGenerating(false);
           return;
@@ -74,7 +74,7 @@ export default function ParaphraseAIPractice({ config, onComplete }: ParaphraseA
         const result = safeParseAIResponse(data?.text);
 
         if (!result || !result.task?.items || result.task.items.length === 0) {
-          if (!cancelled) setError("AI не змогла згенерувати завдання. Спробуйте іншу тему.");
+          if (!cancelled) setError(t.workbook.paraphraseAINoSentences);
           if (!cancelled) setIsGenerating(false);
           return;
         }
@@ -92,7 +92,7 @@ export default function ParaphraseAIPractice({ config, onComplete }: ParaphraseA
       } catch (error) {
         if (!cancelled) {
           console.error("Failed to generate sentences:", error);
-          setError("Помилка мережі");
+          setError(t.dict.networkError);
         }
       } finally {
         if (!cancelled) setIsGenerating(false);
@@ -121,7 +121,7 @@ export default function ParaphraseAIPractice({ config, onComplete }: ParaphraseA
   const handleCheckWithAI = async () => {
     // Check if we have any paraphrases
     if (completedCount === 0) {
-      setError("Перефразуйте хоча б одне речення перед перевіркою");
+      setError(t.workbook.paraphraseAIWriteAtLeastOne);
       return;
     }
 
@@ -159,10 +159,10 @@ export default function ParaphraseAIPractice({ config, onComplete }: ParaphraseA
         const errorCode = data?.code;
         const message =
           errorCode === "ai_quota"
-            ? "Ліміт AI кредитів вичерпано"
+            ? t.workbook.classicAiQuotaError
             : errorCode === "pvs_unavailable"
-              ? "Потрібен AI план"
-              : data?.error || "Помилка AI";
+              ? t.workbook.classicAiPlanRequired
+              : data?.error || t.workbook.classicAiError;
         setError(message);
         setIsChecking(false);
         return;
@@ -171,7 +171,7 @@ export default function ParaphraseAIPractice({ config, onComplete }: ParaphraseA
       // Parse result
       const result = safeParseAIResponse(data?.text);
       if (!result) {
-        setError("AI повернула неправильний формат відповіді. Спробуйте ще раз.");
+        setError(t.workbook.paraphraseAIInvalidFormat);
         setIsChecking(false);
         return;
       }
@@ -197,7 +197,7 @@ export default function ParaphraseAIPractice({ config, onComplete }: ParaphraseA
       setShowResults(true);
     } catch (error) {
       console.error("Failed to check with AI:", error);
-      setError("Помилка мережі");
+      setError(t.dict.networkError);
     } finally {
       setIsChecking(false);
     }
@@ -210,9 +210,9 @@ export default function ParaphraseAIPractice({ config, onComplete }: ParaphraseA
           <Sparkle size={24} weight="fill" className="text-moss animate-pulse" />
           <div className="h-8 w-8 animate-spin rounded-full border-2 border-moss/20 border-t-moss" />
         </div>
-        <p className="text-sm font-semibold text-ink mb-2">AI генерує завдання...</p>
+        <p className="text-sm font-semibold text-ink mb-2">{t.workbook.paraphraseAIGenerating}</p>
         <p className="text-xs text-ink/60">
-          Тема: <span className="font-medium">{config.topic}</span> · Рівень: <span className="font-medium">{config.level}</span>
+          {t.workbook.paraphraseAIGeneratingHint.replace("{topic}", config.topic).replace("{level}", config.level)}
         </p>
       </div>
     );
@@ -221,7 +221,7 @@ export default function ParaphraseAIPractice({ config, onComplete }: ParaphraseA
   if (error && sentences.length === 0) {
     return (
       <div className="rounded-3xl border border-terracotta/20 bg-terracotta/5 p-8 shadow-soft text-center">
-        <p className="text-sm font-semibold text-terracotta mb-2">Помилка</p>
+        <p className="text-sm font-semibold text-terracotta mb-2">{t.workbook.paraphraseAIError}</p>
         <p className="text-sm text-ink/70">{error}</p>
         <button
           onClick={onComplete}
@@ -237,7 +237,7 @@ export default function ParaphraseAIPractice({ config, onComplete }: ParaphraseA
     return (
       <div className="rounded-3xl border border-ink/10 bg-paper/80 p-8 shadow-soft text-center">
         <p className="text-sm text-ink/60">
-          Речення не згенеровано. Спробуйте ще раз.
+          {t.workbook.paraphraseAINotGenerated}
         </p>
       </div>
     );
@@ -250,7 +250,7 @@ export default function ParaphraseAIPractice({ config, onComplete }: ParaphraseA
         <div className="rounded-3xl border border-ink/10 bg-paper/80 p-4 shadow-soft">
           <div className="flex items-center justify-between mb-4">
             <p className="text-xs uppercase tracking-[0.3em] text-ink/40">
-              Речення AI
+              {t.workbook.paraphraseAISentences}
             </p>
             <div className="text-xs text-ink/50">
               {activeIndex + 1} / {sentences.length}
@@ -274,7 +274,7 @@ export default function ParaphraseAIPractice({ config, onComplete }: ParaphraseA
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs text-ink/50 mb-1">Речення {idx + 1}</p>
+                      <p className="text-xs text-ink/50 mb-1">{t.workbook.paraphraseAISentenceN.replace("{n}", String(idx + 1))}</p>
                       <p className="text-sm text-ink/80 truncate">
                         {sentence.original}
                       </p>
@@ -298,7 +298,7 @@ export default function ParaphraseAIPractice({ config, onComplete }: ParaphraseA
           <div className="mt-4 rounded-2xl border border-ink/10 bg-fog p-3">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs uppercase tracking-[0.2em] text-ink/40">
-                Прогрес
+                {t.workbook.paraphraseAIProgress}
               </span>
               <span className="text-sm font-bold text-moss">
                 {completedCount} / {sentences.length}
@@ -319,14 +319,14 @@ export default function ParaphraseAIPractice({ config, onComplete }: ParaphraseA
           <div className="rounded-2xl border border-moss/20 bg-moss/5 px-4 py-2 inline-flex items-center gap-2">
             <Sparkle size={16} weight="fill" className="text-moss" />
             <span className="text-xs font-semibold text-moss">
-              Тема: {config.topic} · {config.level}
+              {t.workbook.paraphraseAITopicAndLevel.replace("{topic}", config.topic).replace("{level}", config.level)}
             </span>
           </div>
 
           {/* Original sentence */}
           <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
             <p className="text-xs uppercase tracking-[0.3em] text-ink/40 mb-4">
-              Оригінальне речення
+              {t.workbook.paraphraseAIOriginal}
             </p>
             <p className="text-lg text-ink leading-relaxed">
               {activeSentence.original}
@@ -336,20 +336,20 @@ export default function ParaphraseAIPractice({ config, onComplete }: ParaphraseA
           {/* Paraphrase input */}
           <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
             <p className="text-xs uppercase tracking-[0.3em] text-ink/40 mb-4">
-              Ваше перефразування
+              {t.workbook.paraphraseAIYours}
             </p>
 
             <textarea
               value={activeSentence.paraphrase}
               onChange={(e) => updateParaphrase(activeSentence.id, e.target.value)}
-              placeholder="Напишіть це речення іншими словами..."
+              placeholder={t.workbook.paraphraseAIPlaceholder}
               rows={5}
               maxLength={500}
               className="w-full rounded-2xl border border-ink/20 bg-paper px-4 py-3 text-sm text-ink placeholder:text-ink/40 focus:border-moss/40 focus:outline-none focus:ring-0"
             />
 
             <p className="mt-2 text-xs text-ink/50">
-              AI оцінить якість перефразування та запропонує альтернативи
+              {t.workbook.paraphraseAIHint}
             </p>
           </div>
 
@@ -370,12 +370,12 @@ export default function ParaphraseAIPractice({ config, onComplete }: ParaphraseA
               {isChecking ? (
                 <>
                   <span className="h-4 w-4 animate-spin rounded-full border-2 border-paper/20 border-t-paper" />
-                  <span>Перевірка AI...</span>
+                  <span>{t.workbook.paraphraseAICheckingAI}</span>
                 </>
               ) : (
                 <>
                   <Sparkle size={18} weight="fill" />
-                  <span>Перевірити з AI</span>
+                  <span>{t.workbook.paraphraseAICheckWithAI}</span>
                 </>
               )}
             </button>
@@ -391,7 +391,7 @@ export default function ParaphraseAIPractice({ config, onComplete }: ParaphraseA
               disabled={activeIndex === sentences.length - 1}
               className="inline-flex items-center gap-2 rounded-full border border-ink/20 px-6 py-3 text-sm font-semibold text-ink transition hover:bg-ink/5 disabled:cursor-not-allowed disabled:opacity-40"
             >
-              <span>Наступне речення</span>
+              <span>{t.workbook.paraphraseAINextSentence}</span>
               <span>→</span>
             </button>
           </div>
