@@ -2107,7 +2107,74 @@ export const dictionary = {
       focusRule3: "Zapisuj przykłady pełnym zdaniem.",
       navigatorLabel: "Nawigator",
       tempoLabel: "Tempo",
-      draftLabel: "Szkic"
+      draftLabel: "Szkic",
+      sections: {
+        grammar: {
+          title: "Gramatyka",
+          body: "Zbiór reguł, konstrukcji i przykładów do szybkiego rozpoznawania struktur.",
+          detail: "Szybki dostęp do najważniejszych reguł: przypadki, czasy i logika budowy zdań.",
+          highlights: [
+            "Sprinty z krótkimi podpowiedziami",
+            "Reguły z przykładami",
+            "Słowa-markery dla przypadków",
+            "Wyjaśnienia A1–B2"
+          ]
+        },
+        sites: {
+          title: "Przydatne strony",
+          body: "Sprawdzone zasoby, słowniki i narzędzia do codziennej praktyki.",
+          detail: "Zbiory według kategorii: słowniki, praktyka, media i społeczności.",
+          highlights: [
+            "Filtry według typu i poziomu",
+            "Krótkie opisy i wskazówki",
+            "Szybkie linki",
+            "Zbiory do codziennej rutyny"
+          ]
+        },
+        facts: {
+          title: "Ciekawe fakty",
+          body: "Krótkie historie i ciekawostki, które przybliżają polską kulturę.",
+          detail: "Krótkie bloki do codziennego czytania. Język przez historie i kontekst.",
+          highlights: [
+            "1 fakt = 1 blok",
+            "Kontekst historyczny i kulturowy",
+            "Wyjaśnienia pojęć",
+            "Polecane materiały"
+          ]
+        },
+        culture: {
+          title: "Kultura",
+          body: "Scena, tradycje, miejskie rytmy i współczesny kontekst.",
+          detail: "Krótkie przewodniki o etykiecie, mieście i tradycjach.",
+          highlights: [
+            "Etykieta i zwroty",
+            "Rytm miast i codzienność",
+            "Tradycje i święta",
+            "Współczesne kody kultury"
+          ]
+        }
+      }
+    },
+    metadata: {
+      // Page titles and descriptions
+      compendiumTitle: "Kompendium",
+      compendiumDescription: "Kompendium gramatyki, kultury, faktów i przydatnych zasobów.",
+      grammarTitle: "Gramatyka",
+      grammarDescription: "Gramatyka języka polskiego: struktury, zasady, przykłady.",
+      pvsTitle: "O projekcie",
+      pvsDescription: "Polish Vocab Studio — darmowy trener języka polskiego dla Ukraińców. Historia, misja i zespół projektu.",
+      readingTitle: "Czytanie",
+      readingDescription: "Czytanie po polsku z tłumaczeniem, audio i ćwiczeniami rozumienia tekstu.",
+      dictTitle: "Słownik",
+      dictDescription: "Słownik polsko-ukraiński z transkrypcją, przykładami i trenerem zapamiętywania słów.",
+      workbookTitle: "Zeszyt ćwiczeń",
+      workbookDescription: "Ćwiczenia AI z języka polskiego: zdania, tłumaczenie, parafraza, dialogi, opis obrazków, mikrohistorie i inne.",
+      loadingLabel: "Ładowanie…"
+    },
+    pvs: {
+      explore: "Odkrywaj",
+      exploreDescription: "Wybierz tempo, mieszaj tryby, próbuj nowych ćwiczeń. PVS jest stworzony do samodzielnych odkryć.",
+      exploreTip: "Wskazówka: najszybszy progres daje regularna, krótka praktyka."
     },
     leaderboard: {
       title: "Ranking",
@@ -4223,7 +4290,74 @@ export const dictionary = {
       focusRule3: "Фіксуй приклади повним реченням.",
       navigatorLabel: "Навігатор",
       tempoLabel: "Темп",
-      draftLabel: "Чернетка"
+      draftLabel: "Чернетка",
+      sections: {
+        grammar: {
+          title: "Граматика",
+          body: "Короткі правила, конструкції, приклади й підказки, щоб швидше впізнавати структури.",
+          detail: "Швидкий доступ до найважливіших правил: відмінки, часи, вид дієслова та базова логіка побудови речення.",
+          highlights: [
+            "Спринти з короткими підказками",
+            "Правила з прикладами",
+            "Маркерні слова для швидкого вибору відмінка",
+            "Пояснення на рівні A1–B2"
+          ]
+        },
+        sites: {
+          title: "Корисні сайти",
+          body: "Перевірені ресурси, словники, тренажери та блоги для щоденної практики.",
+          detail: "Підбірки за категоріями: словники, практика, медіа й спільноти. Кожен ресурс має короткий опис.",
+          highlights: [
+            "Фільтри за типом і рівнем",
+            "Короткі описи та підказки",
+            "Швидкі посилання",
+            "Добірки для щоденної рутини"
+          ]
+        },
+        facts: {
+          title: "Цікаві факти",
+          body: "Невеликі історії, контексти і деталі, що роблять польську культуру ближчою.",
+          detail: "Формат коротких блоків для щоденного читання. Пояснюємо мову через історії, звички й контекст.",
+          highlights: [
+            "1 факт = 1 блок",
+            "Історичний і культурний контекст",
+            "Пояснення термінів",
+            "Рекомендоване читання"
+          ]
+        },
+        culture: {
+          title: "Культура",
+          body: "Сцена, традиції, міські ритми, поведінкові коди та сучасний контекст.",
+          detail: "Короткі гіди про етикет, місто, традиції та сучасну польську культуру, щоб краще розуміти мову.",
+          highlights: [
+            "Етикет і звертання",
+            "Міські ритми і побут",
+            "Традиції та свята",
+            "Сучасні культурні коди"
+          ]
+        }
+      }
+    },
+    metadata: {
+      // Page titles and descriptions
+      compendiumTitle: "Довідник",
+      compendiumDescription: "Довідник з граматики, культури, фактів та корисних ресурсів.",
+      grammarTitle: "Граматика",
+      grammarDescription: "Граматика польської мови: структури, правила, приклади.",
+      pvsTitle: "Про проєкт",
+      pvsDescription: "Polish Vocab Studio — безкоштовний тренажер польської мови для українців. Історія, місія та команда проєкту.",
+      readingTitle: "Читання",
+      readingDescription: "Читання польською мовою з перекладом, аудіо та вправами на розуміння тексту.",
+      dictTitle: "Словник",
+      dictDescription: "Польсько-український словник з транскрипцією, прикладами та тренажером запам'ятовування слів.",
+      workbookTitle: "Робочий зошит",
+      workbookDescription: "AI вправи з польської мови: речення, переклад, парафраз, діалоги, опис зображень, мікроісторії та інше.",
+      loadingLabel: "Завантаження…"
+    },
+    pvs: {
+      explore: "Досліджуй",
+      exploreDescription: "Обирай темп, змішуй режими, пробуй нові вправи. PVS створений для самостійних відкриттів.",
+      exploreTip: "Порада: найшвидший прогрес — регулярні короткі сесії."
     },
     leaderboard: {
       title: "Рейтинг",

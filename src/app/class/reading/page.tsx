@@ -4,11 +4,13 @@ import { getAuthUser } from "@/lib/auth";
 import { getDictionary } from "@/lib/i18n-server";
 import ReadingClient from "@/components/ReadingClient";
 
-export const metadata: Metadata = {
-  title: "Читання",
-  description:
-    "Читання польською мовою з перекладом, аудіо та вправами на розуміння тексту."
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = getDictionary();
+  return {
+    title: t.metadata.readingTitle,
+    description: t.metadata.readingDescription
+  };
+}
 
 export default async function ReadingPage() {
   const user = await getAuthUser();

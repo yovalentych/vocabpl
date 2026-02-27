@@ -8,10 +8,13 @@ import { requireCompendiumAccess } from "@/lib/compendium-access";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "Compendium · Grammar",
-  description: "Граматика польської мови: структури, правила, приклади."
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = getDictionary();
+  return {
+    title: `Compendium · ${t.metadata.grammarTitle}`,
+    description: t.metadata.grammarDescription
+  };
+}
 
 export default async function CompendiumGrammarPage() {
   await requireCompendiumAccess();

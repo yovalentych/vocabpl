@@ -26,109 +26,69 @@ type SectionDef = {
   iconKey: "grammar" | "sites" | "facts" | "culture";
 };
 
-const SECTIONS: SectionDef[] = [
-  {
-    id: "grammar",
-    href: "/compendium/grammar",
-    tone: "from-moss/15 via-paper to-moss/5",
-    titleUk: "Граматика",
-    titlePl: "Gramatyka",
-    bodyUk: "Короткі правила, конструкції, приклади й підказки, щоб швидше впізнавати структури.",
-    bodyPl: "Zbiór reguł, konstrukcji i przykładów do szybkiego rozpoznawania struktur.",
-    detailUk: "Швидкий доступ до найважливіших правил: відмінки, часи, вид дієслова та базова логіка побудови речення.",
-    detailPl: "Szybki dostęp do najważniejszych reguł: przypadki, czasy i logika budowy zdań.",
-    highlightsUk: [
-      "Спринти з короткими підказками",
-      "Правила з прикладами",
-      "Маркерні слова для швидкого вибору відмінка",
-      "Пояснення на рівні A1–B2"
-    ],
-    highlightsPl: [
-      "Sprinty z krótkimi podpowiedziami",
-      "Reguły z przykładami",
-      "Słowa-markery dla przypadków",
-      "Wyjaśnienia A1–B2"
-    ],
-    iconKey: "grammar"
-  },
-  {
-    id: "sites",
-    href: "/compendium/useful-sites",
-    tone: "from-terracotta/15 via-paper to-gold/10",
-    titleUk: "Корисні сайти",
-    titlePl: "Przydatne strony",
-    bodyUk: "Перевірені ресурси, словники, тренажери та блоги для щоденної практики.",
-    bodyPl: "Sprawdzone zasoby, słowniki i narzędzia do codziennej praktyki.",
-    detailUk: "Підбірки за категоріями: словники, практика, медіа й спільноти. Кожен ресурс має короткий опис.",
-    detailPl: "Zbiory według kategorii: słowniki, praktyka, media i społeczności.",
-    highlightsUk: [
-      "Фільтри за типом і рівнем",
-      "Короткі описи та підказки",
-      "Швидкі посилання",
-      "Добірки для щоденної рутини"
-    ],
-    highlightsPl: [
-      "Filtry według typu i poziomu",
-      "Krótkie opisy i wskazówki",
-      "Szybkie linki",
-      "Zbiory do codziennej rutyny"
-    ],
-    iconKey: "sites"
-  },
-  {
-    id: "facts",
-    href: "/compendium/facts",
-    tone: "from-gold/15 via-paper to-moss/10",
-    titleUk: "Цікаві факти",
-    titlePl: "Ciekawe fakty",
-    bodyUk: "Невеликі історії, контексти і деталі, що роблять польську культуру ближчою.",
-    bodyPl: "Krótkie historie i ciekawostki, które przybliżają polską kulturę.",
-    detailUk: "Формат коротких блоків для щоденного читання. Пояснюємо мову через історії, звички й контекст.",
-    detailPl: "Krótkie bloki do codziennego czytania. Język przez historie i kontekst.",
-    highlightsUk: [
-      "1 факт = 1 блок",
-      "Історичний і культурний контекст",
-      "Пояснення термінів",
-      "Рекомендоване читання"
-    ],
-    highlightsPl: [
-      "1 fakt = 1 blok",
-      "Kontekst historyczny i kulturowy",
-      "Wyjaśnienia pojęć",
-      "Polecane materiały"
-    ],
-    iconKey: "facts"
-  },
-  {
-    id: "culture",
-    href: "/compendium/culture",
-    tone: "from-ink/10 via-paper to-moss/10",
-    titleUk: "Культура",
-    titlePl: "Kultura",
-    bodyUk: "Сцена, традиції, міські ритми, поведінкові коди та сучасний контекст.",
-    bodyPl: "Scena, tradycje, miejskie rytmy i współczesny kontekst.",
-    detailUk: "Короткі гіди про етикет, місто, традиції та сучасну польську культуру, щоб краще розуміти мову.",
-    detailPl: "Krótkie przewodniki o etykiecie, mieście i tradycjach.",
-    highlightsUk: [
-      "Етикет і звертання",
-      "Міські ритми і побут",
-      "Традиції та свята",
-      "Сучасні культурні коди"
-    ],
-    highlightsPl: [
-      "Etykieta i zwroty",
-      "Rytm miast i codzienność",
-      "Tradycje i święta",
-      "Współczesne kody kultury"
-    ],
-    iconKey: "culture"
-  }
-];
-
 export default async function CompendiumPage() {
   await requireCompendiumAccess();
   const { locale, t } = getDictionary();
   const pick = (uk: string, pl: string) => (locale === "pl" && pl ? pl : uk);
+
+  const SECTIONS: SectionDef[] = [
+    {
+      id: "grammar",
+      href: "/compendium/grammar",
+      tone: "from-moss/15 via-paper to-moss/5",
+      titleUk: t.compendium.sections.grammar.title,
+      titlePl: t.compendium.sections.grammar.title,
+      bodyUk: t.compendium.sections.grammar.body,
+      bodyPl: t.compendium.sections.grammar.body,
+      detailUk: t.compendium.sections.grammar.detail,
+      detailPl: t.compendium.sections.grammar.detail,
+      highlightsUk: [...t.compendium.sections.grammar.highlights],
+      highlightsPl: [...t.compendium.sections.grammar.highlights],
+      iconKey: "grammar"
+    },
+    {
+      id: "sites",
+      href: "/compendium/useful-sites",
+      tone: "from-terracotta/15 via-paper to-gold/10",
+      titleUk: t.compendium.sections.sites.title,
+      titlePl: t.compendium.sections.sites.title,
+      bodyUk: t.compendium.sections.sites.body,
+      bodyPl: t.compendium.sections.sites.body,
+      detailUk: t.compendium.sections.sites.detail,
+      detailPl: t.compendium.sections.sites.detail,
+      highlightsUk: [...t.compendium.sections.sites.highlights],
+      highlightsPl: [...t.compendium.sections.sites.highlights],
+      iconKey: "sites"
+    },
+    {
+      id: "facts",
+      href: "/compendium/facts",
+      tone: "from-gold/15 via-paper to-moss/10",
+      titleUk: t.compendium.sections.facts.title,
+      titlePl: t.compendium.sections.facts.title,
+      bodyUk: t.compendium.sections.facts.body,
+      bodyPl: t.compendium.sections.facts.body,
+      detailUk: t.compendium.sections.facts.detail,
+      detailPl: t.compendium.sections.facts.detail,
+      highlightsUk: [...t.compendium.sections.facts.highlights],
+      highlightsPl: [...t.compendium.sections.facts.highlights],
+      iconKey: "facts"
+    },
+    {
+      id: "culture",
+      href: "/compendium/culture",
+      tone: "from-ink/10 via-paper to-moss/10",
+      titleUk: t.compendium.sections.culture.title,
+      titlePl: t.compendium.sections.culture.title,
+      bodyUk: t.compendium.sections.culture.body,
+      bodyPl: t.compendium.sections.culture.body,
+      detailUk: t.compendium.sections.culture.detail,
+      detailPl: t.compendium.sections.culture.detail,
+      highlightsUk: [...t.compendium.sections.culture.highlights],
+      highlightsPl: [...t.compendium.sections.culture.highlights],
+      iconKey: "culture"
+    }
+  ];
 
   const sections = SECTIONS.map((s) => ({
     id: s.id,

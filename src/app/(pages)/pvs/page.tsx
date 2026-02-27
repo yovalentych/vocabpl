@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getServerLocale } from "@/lib/i18n-server";
+import { getDictionary } from "@/lib/i18n-server";
 import { getDb } from "@/lib/db";
 import { defaultAboutContent, AboutContent } from "@/lib/about-content";
 import { Heart, Sparkle, BookOpen, Brain, MapPin } from "@phosphor-icons/react/dist/ssr";
@@ -19,6 +20,7 @@ const ACCENT_CLASSES = {
 } as const;
 
 export default async function AboutPvsPage() {
+  const { locale: dictLocale, t } = getDictionary();
   const locale = getServerLocale();
   const db = await getDb();
   const doc = await db.collection("settings").findOne({ key: "about_pvs" });
@@ -97,17 +99,13 @@ export default async function AboutPvsPage() {
         <div className="rounded-[28px] border border-ink/10 bg-paper/80 p-6 sm:p-8 shadow-soft">
           <div className="flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-ink/60">
             <Sparkle size={16} weight="fill" className="text-gold" />
-            {locale === "uk" ? "Досліджуй" : "Odkrywaj"}
+            {t.pvs.explore}
           </div>
           <p className="mt-3 text-sm sm:text-base text-ink/70">
-            {locale === "uk"
-              ? "Обирай темп, змішуй режими, пробуй нові вправи. PVS створений для самостійних відкриттів."
-              : "Wybierz tempo, mieszaj tryby, próbuj nowych ćwiczeń. PVS jest stworzony do samodzielnych odkryć."}
+            {t.pvs.exploreDescription}
           </p>
           <div className="mt-5 rounded-2xl border border-ink/10 bg-paper/60 px-4 py-3 text-xs text-ink/60">
-            {locale === "uk"
-              ? "Порада: найшвидший прогрес — регулярні короткі сесії."
-              : "Wskazówka: najszybszy progres daje regularna, krótka praktyka."}
+            {t.pvs.exploreTip}
           </div>
         </div>
       </section>
