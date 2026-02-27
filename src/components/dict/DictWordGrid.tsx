@@ -82,19 +82,19 @@ export default function DictWordGrid({
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
               {pairs.map((pair) => {
                 const imperfectiveWord: Word = {
-                  id: pair.imperfective_id || `${pair.id}-imp`,
-                  pl: pair.imperfective || "",
-                  uk: pair.imperfective_uk || "",
-                  pos: "verb",
+                  id: pair.id ? `${pair.id}-imp` : `imp-${pair.imp?.pl}`,
+                  pl: pair.imp?.pl || "",
+                  uk: pair.imp?.uk || "",
+                  pos: pair.pos || "verb",
                   type: "aspect_pairs",
                   source: "aspect_pairs"
                 };
 
                 const perfectiveWord: Word = {
-                  id: pair.perfective_id || `${pair.id}-perf`,
-                  pl: pair.perfective || "",
-                  uk: pair.perfective_uk || "",
-                  pos: "verb",
+                  id: pair.id ? `${pair.id}-perf` : `perf-${pair.perf?.pl}`,
+                  pl: pair.perf?.pl || "",
+                  uk: pair.perf?.uk || "",
+                  pos: pair.pos || "verb",
                   type: "aspect_pairs",
                   source: "aspect_pairs"
                 };
@@ -102,76 +102,103 @@ export default function DictWordGrid({
                 return (
                   <div
                     key={pair.id}
-                    className="space-y-3 rounded-3xl border border-ink/10 bg-paper/95 p-4 shadow-soft transition hover:-translate-y-[2px] hover:border-ink/20 hover:shadow-md"
+                    className="group relative overflow-hidden rounded-[28px] border border-ink/10 bg-gradient-to-br from-paper to-moss/5 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:border-moss/30 hover:shadow-lg"
                   >
-                    {/* Imperfective */}
-                    <div className="space-y-2">
-                      <p className="text-[11px] uppercase tracking-[0.3em] text-moss/80">
-                        Niedokonany
-                      </p>
-                      <div className="flex flex-wrap items-center gap-3">
-                        <p className="text-lg font-semibold text-ink">
-                          {sortField === "uk"
-                            ? imperfectiveWord.uk
-                            : imperfectiveWord.pl}
-                        </p>
-                        <span className="text-xs text-ink/30">·</span>
-                        <p className="text-sm text-ink/60">
-                          {hideTranslations &&
-                          !revealedMap[imperfectiveWord.id]
-                            ? "•••••"
-                            : sortField === "uk"
-                              ? imperfectiveWord.pl
-                              : imperfectiveWord.uk}
-                        </p>
+                    {/* Gradient background accent */}
+                    <div className="absolute -right-12 -top-12 h-32 w-32 rounded-full bg-moss/10 blur-3xl transition-opacity group-hover:opacity-80" />
+                    <div className="absolute -left-12 -bottom-12 h-32 w-32 rounded-full bg-terracotta/10 blur-3xl transition-opacity group-hover:opacity-80" />
+
+                    <div className="relative space-y-4 p-6">
+                      {/* Imperfective - Process */}
+                      <div className="space-y-2 rounded-2xl border border-moss/20 bg-moss/5 p-4 transition-colors group-hover:border-moss/30 group-hover:bg-moss/10">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-base">🔄</span>
+                          <p className="text-[10px] uppercase tracking-[0.3em] text-moss font-bold">
+                            Niedokonany
+                          </p>
+                          <span className="text-[10px] text-moss/60">(процес)</span>
+                        </div>
+                        <div className="space-y-1">
+                          <p className="text-xl font-bold text-ink">
+                            {sortField === "uk"
+                              ? imperfectiveWord.uk
+                              : imperfectiveWord.pl}
+                          </p>
+                          <p className="text-sm text-ink/70">
+                            {hideTranslations &&
+                            !revealedMap[imperfectiveWord.id]
+                              ? "•••••"
+                              : sortField === "uk"
+                                ? imperfectiveWord.pl
+                                : imperfectiveWord.uk}
+                          </p>
+                        </div>
                       </div>
-                    </div>
 
-                    {/* Separator */}
-                    <div className="border-t border-ink/10" />
-
-                    {/* Perfective */}
-                    <div className="space-y-2">
-                      <p className="text-[11px] uppercase tracking-[0.3em] text-terracotta/80">
-                        Dokonany
-                      </p>
-                      <div className="flex flex-wrap items-center gap-3">
-                        <p className="text-lg font-semibold text-ink">
-                          {sortField === "uk"
-                            ? perfectiveWord.uk
-                            : perfectiveWord.pl}
-                        </p>
-                        <span className="text-xs text-ink/30">·</span>
-                        <p className="text-sm text-ink/60">
-                          {hideTranslations && !revealedMap[perfectiveWord.id]
-                            ? "•••••"
-                            : sortField === "uk"
-                              ? perfectiveWord.pl
-                              : perfectiveWord.uk}
-                        </p>
+                      {/* Visual connector */}
+                      <div className="flex items-center justify-center">
+                        <div className="h-px w-full bg-gradient-to-r from-moss/30 via-ink/20 to-terracotta/30" />
+                        <div className="flex-shrink-0 rounded-full bg-paper px-3 py-1 text-xs font-semibold text-ink/50 border border-ink/10 mx-2">
+                          ↓
+                        </div>
+                        <div className="h-px w-full bg-gradient-to-r from-terracotta/30 via-ink/20 to-moss/30" />
                       </div>
-                    </div>
 
-                    {/* Favorite button for pair */}
-                    <div className="flex justify-end pt-2">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onToggleFavorite(imperfectiveWord.id);
-                        }}
-                        className={`rounded-full border px-2 py-1 text-xs transition ${
-                          favoriteIds.has(imperfectiveWord.id)
-                            ? "border-amber-400 bg-amber-200/60 text-amber-900"
-                            : "border-ink/10 text-ink/50 hover:border-ink/20 hover:bg-ink/5"
-                        }`}
-                        aria-label={
-                          favoriteIds.has(imperfectiveWord.id)
-                            ? "Remove from favorites"
-                            : "Add to favorites"
-                        }
-                      >
-                        {favoriteIds.has(imperfectiveWord.id) ? "★" : "☆"}
-                      </button>
+                      {/* Perfective - Result */}
+                      <div className="space-y-2 rounded-2xl border border-terracotta/20 bg-terracotta/5 p-4 transition-colors group-hover:border-terracotta/30 group-hover:bg-terracotta/10">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-base">✅</span>
+                          <p className="text-[10px] uppercase tracking-[0.3em] text-terracotta font-bold">
+                            Dokonany
+                          </p>
+                          <span className="text-[10px] text-terracotta/60">(результат)</span>
+                        </div>
+                        <div className="space-y-1">
+                          <p className="text-xl font-bold text-ink">
+                            {sortField === "uk"
+                              ? perfectiveWord.uk
+                              : perfectiveWord.pl}
+                          </p>
+                          <p className="text-sm text-ink/70">
+                            {hideTranslations && !revealedMap[perfectiveWord.id]
+                              ? "•••••"
+                              : sortField === "uk"
+                                ? perfectiveWord.pl
+                                : perfectiveWord.uk}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Actions */}
+                      <div className="flex items-center justify-between pt-2 border-t border-ink/10">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onRevealToggle(imperfectiveWord.id);
+                          }}
+                          className="text-xs text-ink/50 hover:text-moss transition-colors"
+                        >
+                          {hideTranslations && !revealedMap[imperfectiveWord.id] ? "Показати переклад" : "Приховати"}
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onToggleFavorite(imperfectiveWord.id);
+                          }}
+                          className={`rounded-full border px-3 py-1.5 text-sm transition-all ${
+                            favoriteIds.has(imperfectiveWord.id)
+                              ? "border-amber-400 bg-amber-200/60 text-amber-900 shadow-sm"
+                              : "border-ink/10 text-ink/50 hover:border-amber-300 hover:bg-amber-100/30"
+                          }`}
+                          aria-label={
+                            favoriteIds.has(imperfectiveWord.id)
+                              ? "Видалити з улюблених"
+                              : "Додати до улюблених"
+                          }
+                        >
+                          {favoriteIds.has(imperfectiveWord.id) ? "★" : "☆"}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 );
