@@ -533,7 +533,81 @@ export const defaultCompendiumContent: CompendiumContent = {
         titleUk: "Минулий час",
         titlePl: "Czas przeszły",
         bodyUk: "Форми залежать від роду: _zrobiłem_ / _zrobiłam_. У множині: _zrobiliśmy_.",
-        bodyPl: "Formy zależą od rodzaju: _zrobiłem_ / _zrobiłam_. W liczbie mnogiej: _zrobiliśmy_."
+        bodyPl: "Formy zależą od rodzaju: _zrobiłem_ / _zrobiłam_. W liczbie mnogiej: _zrobiliśmy_.",
+        detailedUk: "Минулий час утворюється додаванням закінчень до основи дієслова. КЛЮЧОВА особливість: закінчення змінюються залежно від РОДУ (чоловічий, жіночий, середній) та ЧИСЛА. Використовуються обидва види: недоконаний (процес) та доконаний (результат).",
+        detailedPl: "Czas przeszły tworzy się przez dodanie końcówek do tematu czasownika. KLUCZOWA cecha: końcówki zmieniają się w zależności od RODZAJU (męski, żeński, nijaki) i LICZBY. Używa się obu aspektów: niedokonany (proces) i dokonany (rezultat).",
+        examplesUk: [
+          "**robić** (чол.): (ja) robiłem, (ty) robiłeś, (on) robił",
+          "**robić** (жін.): (ja) robiłam, (ty) robiłaś, (ona) robiła",
+          "**robić** (множ.): (my) robiliśmy, (wy) robiliście, (oni) robili",
+          "**zrobić** (доконаний): zrobiłem (завершив), zrobiłam (завершила)",
+          "Вчора **robiłem** (робив, процес) vs **zrobiłem** (зробив, готово)"
+        ],
+        examplesPl: [
+          "**robić** (męski): (ja) robiłem, (ty) robiłeś, (on) robił",
+          "**robić** (żeński): (ja) robiłam, (ty) robiłaś, (ona) robiła",
+          "**robić** (l.mn.): (my) robiliśmy, (wy) robiliście, (oni) robili",
+          "**zrobić** (dokonany): zrobiłem (ukończyłem), zrobiłam (ukończyłam)",
+          "Wczoraj **robiłem** (robiłem, proces) vs **zrobiłem** (zrobiłem, gotowe)"
+        ],
+        exampleExplanationsUk: [
+          "**Чоловічий рід -łem/-łeś/-ł**: Закінчення для я/ти/він. robiłem (я робив), robiłeś (ти робив), robił (він робив)",
+          "**Жіночий рід -łam/-łaś/-ła**: Закінчення для я/ти/вона. Зверніть увагу на **-a-** в закінченні!",
+          "**Множина -liśmy/-liście/-li**: Для всіх родів у множині. -śmy (ми), -ście (ви), -li (вони)",
+          "**Доконаний вид**: zrobiłem = ЗАВЕРШИВ дію. Одноразова, закінчена подія в минулому.",
+          "**Недоконаний vs доконаний**: robiłem (робив довго, процес) ≠ zrobiłem (зробив і закінчив, результат)"
+        ],
+        exampleExplanationsPl: [
+          "**Rodzaj męski -łem/-łeś/-ł**: Końcówki dla ja/ty/on. robiłem, robiłeś, robił",
+          "**Rodzaj żeński -łam/-łaś/-ła**: Końcówki dla ja/ty/ona. Uwaga na **-a-** w końcówce!",
+          "**Liczba mnoga -liśmy/-liście/-li**: Dla wszystkich rodzajów w l.mn. -śmy (my), -ście (wy), -li (oni)",
+          "**Aspekt dokonany**: zrobiłem = UKOŃCZYŁEM czynność. Jednorazowe, zakończone wydarzenie w przeszłości.",
+          "**Niedokonany vs dokonany**: robiłem (robiłem długo, proces) ≠ zrobiłem (zrobiłem i skończyłem, rezultat)"
+        ],
+        counterExamplesUk: [
+          "❌ **robiłem** (жін.) → ✅ **robiłam** (потрібно -łam для жіночого!)",
+          "❌ **piszłem** → ✅ **pisałem** (основа не змінюється: pisać → pisał-)",
+          "❌ Wczoraj **robię** → ✅ **robiłem** (минуле, не теперішнє!)"
+        ],
+        counterExamplesPl: [
+          "❌ **robiłem** (żeński) → ✅ **robiłam** (trzeba -łam dla żeńskiego!)",
+          "❌ **piszłem** → ✅ **pisałem** (temat się nie zmienia: pisać → pisał-)",
+          "❌ Wczoraj **robię** → ✅ **robiłem** (przeszły, nie teraźniejszy!)"
+        ],
+        mnemonicUk: "🧠 **Чоловічий -łem → Жіночий -łam → Множина -liśmy**. Запам'ятай: жіночий має додаткове **-a-**!",
+        mnemonicPl: "🧠 **Męski -łem → Żeński -łam → Mnoga -liśmy**. Zapamiętaj: żeński ma dodatkowe **-a-**!",
+        difficulty: "A1",
+        category: "verbs",
+        relatedRules: ["present", "aspect"],
+        quizQuestions: [
+          {
+            id: "q1",
+            questionUk: "Жіночий рід від 'robić' (я): Wczoraj ___ zadanie",
+            questionPl: "Rodzaj żeński od 'robić' (ja): Wczoraj ___ zadanie",
+            options: ["robiłem", "robiłam", "robiła", "robił"],
+            correctIndex: 1,
+            explanationUk: "Жіночий рід → **-łam**! Wczoraj **robiłam** zadanie (я-жін. робила)",
+            explanationPl: "Rodzaj żeński → **-łam**! Wczoraj **robiłam** zadanie"
+          },
+          {
+            id: "q2",
+            questionUk: "Завершена дія: 'Wczoraj ___ książkę' (дочитав)",
+            questionPl: "Zakończona czynność: 'Wczoraj ___ książkę'",
+            options: ["czytałem", "przeczytałem", "czytam", "przeczytam"],
+            correctIndex: 1,
+            explanationUk: "Завершена дія → доконаний вид! **przeczytałem** = дочитав (і закінчив)",
+            explanationPl: "Zakończona czynność → aspekt dokonany! **przeczytałem** = przeczytałem (i skończyłem)"
+          },
+          {
+            id: "q3",
+            questionUk: "Множина (ми): 'My ___ do domu'",
+            questionPl: "Liczba mnoga (my): 'My ___ do domu'",
+            options: ["szedł", "szła", "szliśmy", "szedłem"],
+            correctIndex: 2,
+            explanationUk: "Множина (ми) → **-liśmy**! My **szliśmy** do domu (ми йшли)",
+            explanationPl: "Liczba mnoga (my) → **-liśmy**! My **szliśmy** do domu"
+          }
+        ]
       },
       {
         id: "cases-short",
@@ -542,14 +616,160 @@ export const defaultCompendiumContent: CompendiumContent = {
         bodyUk:
           "Швидка логіка:\n- **kogo? czego?** → родовий\n- **komu? czemu?** → давальний\n- **kogo? co?** → знахідний",
         bodyPl:
-          "Szybka logika:\n- **kogo? czego?** → dopełniacz\n- **komu? czemu?** → celownik\n- **kogo? co?** → biernik"
+          "Szybka logika:\n- **kogo? czego?** → dopełniacz\n- **komu? czemu?** → celownik\n- **kogo? co?** → biernik",
+        detailedUk: "Відмінки — це зміна закінчення слова залежно від його ролі в реченні. Кожен відмінок відповідає на конкретне питання. Найпростіший спосіб визначити відмінок — запитати до слова.",
+        detailedPl: "Przypadki to zmiana końcówki słowa w zależności od jego roli w zdaniu. Każdy przypadek odpowiada na konkretne pytanie. Najprostszy sposób określić przypadek — zadać pytanie do słowa.",
+        examplesUk: [
+          "**Mianownik** (хто? що?): To jest **kot**",
+          "**Dopełniacz** (кого? чого?): Nie ma **kota**",
+          "**Celownik** (кому? чому?): Daję **kotu**",
+          "**Biernik** (кого? що?): Widzę **kota** (живе) / **stół** (неживе)",
+          "**Narzędnik** (ким? чим?): z **kotem**",
+          "**Miejscownik** (про кого? про що? / де?): o **kocie**, w **domu**",
+          "**Wołacz** (звертання): **Kocie!**, **Mamo!**"
+        ],
+        examplesPl: [
+          "**Mianownik** (kto? co?): To jest **kot**",
+          "**Dopełniacz** (kogo? czego?): Nie ma **kota**",
+          "**Celownik** (komu? czemu?): Daję **kotu**",
+          "**Biernik** (kogo? co?): Widzę **kota** (żywy) / **stół** (nieżywy)",
+          "**Narzędnik** (kim? czym?): z **kotem**",
+          "**Miejscownik** (o kim? o czym? / gdzie?): o **kocie**, w **domu**",
+          "**Wołacz** (zawołanie): **Kocie!**, **Mamo!**"
+        ],
+        exampleExplanationsUk: [
+          "**Mianownik** — словникова форма. Підмет речення. То є (хто?) **кіт**.",
+          "**Dopełniacz** — після nie ma, do, od, z (звідки), bez. Немає (кого?) **кота**. Закінчення часто -a/-u/-y.",
+          "**Celownik** — непрямий об'єкт. Даю (кому?) **коту**. Після dziękuję, pomagam. Закінчення -owi/-u/-ie.",
+          "**Biernik** — прямий об'єкт. Бачу (кого?) **кота**. Для неживих = називний. Для живих = родовий.",
+          "**Narzędnik** — інструмент, компанія. З (ким?) **котом**. Після z, przed, nad, pod. Закінчення -em/-ą.",
+          "**Miejscownik** — локація, тема. Про (кого?) **кота**, в (де?) **домі**. Завжди з прийменником! Закінчення -e/-u.",
+          "**Wołacz** — звертання. Гей, **коте**! Часто = називний, але є винятки: Mamo! Tato!"
+        ],
+        exampleExplanationsPl: [
+          "**Mianownik** — forma słownikowa. Podmiot zdania. To jest (kto?) **kot**.",
+          "**Dopełniacz** — po nie ma, do, od, z (skąd), bez. Nie ma (kogo?) **kota**. Końcówki często -a/-u/-y.",
+          "**Celownik** — dopełnienie dalsze. Daję (komu?) **kotu**. Po dziękuję, pomagam. Końcówki -owi/-u/-ie.",
+          "**Biernik** — dopełnienie bliższe. Widzę (kogo?) **kota**. Dla nieżywych = mianownik. Dla żywych = dopełniacz.",
+          "**Narzędnik** — narzędzie, towarzystwo. Z (kim?) **kotem**. Po z, przed, nad, pod. Końcówki -em/-ą.",
+          "**Miejscownik** — lokalizacja, temat. O (kim?) **kocie**, w (gdzie?) **domu**. Zawsze z przyimkiem! Końcówki -e/-u.",
+          "**Wołacz** — wołanie. Hej, **kocie**! Często = mianownik, ale są wyjątki: Mamo! Tato!"
+        ],
+        mnemonicUk: "🧠 **M-D-C-B-N-M-W** → **Mianownik-Dopełniacz-Celownik-Biernik-Narzędnik-Miejscownik-Wołacz**. Питання допомагають!",
+        mnemonicPl: "🧠 **M-D-C-B-N-M-W** → Pytania pomagają określić przypadek!",
+        difficulty: "A2",
+        category: "cases",
+        relatedRules: ["present"],
+        quizQuestions: [
+          {
+            id: "q1",
+            questionUk: "Який відмінок: 'Nie ma ___' (чого?)",
+            questionPl: "Jaki przypadek: 'Nie ma ___' (czego?)",
+            options: ["Mianownik", "Dopełniacz", "Celownik", "Biernik"],
+            correctIndex: 1,
+            explanationUk: "Після 'nie ma' → **Dopełniacz** (родовий). Nie ma **czasu** (чого?)",
+            explanationPl: "Po 'nie ma' → **Dopełniacz**. Nie ma **czasu** (czego?)"
+          },
+          {
+            id: "q2",
+            questionUk: "Який відмінок: 'z przyjacielem' (з ким?)",
+            questionPl: "Jaki przypadek: 'z przyjacielem'?",
+            options: ["Dopełniacz", "Celownik", "Narzędnik", "Miejscownik"],
+            correctIndex: 2,
+            explanationUk: "'z' (з ким?) → **Narzędnik** (орудний). z **przyjacielem**",
+            explanationPl: "'z' (z kim?) → **Narzędnik**. z **przyjacielem**"
+          },
+          {
+            id: "q3",
+            questionUk: "Який відмінок: 'Widzę kota' (кого?)",
+            questionPl: "Jaki przypadek: 'Widzę kota'?",
+            options: ["Mianownik", "Dopełniacz", "Biernik", "Narzędnik"],
+            correctIndex: 2,
+            explanationUk: "Після 'widzę' (кого?) → **Biernik** (знахідний). Для живих = як родовий!",
+            explanationPl: "Po 'widzę' → **Biernik**. Dla żywych = jak dopełniacz!"
+          }
+        ]
       },
       {
         id: "negation",
         titleUk: "Заперечення",
         titlePl: "Negacja",
         bodyUk: "Після заперечення часто переходять у родовий: _nie mam czasu_.",
-        bodyPl: "Po negacji często pojawia się dopełniacz: _nie mam czasu_."
+        bodyPl: "Po negacji często pojawia się dopełniacz: _nie mam czasu_.",
+        detailedUk: "Заперечення в польській утворюється за допомогою частки **nie** перед дієсловом. ВАЖЛИВА особливість: після заперечення прямий додаток (знахідний) часто змінюється на родовий відмінок.",
+        detailedPl: "Negacja w polskim tworzy się przez dodanie partykuły **nie** przed czasownikiem. WAŻNA cecha: po negacji dopełnienie bliższe (biernik) często zmienia się na dopełniacz.",
+        examplesUk: [
+          "**Mam czas** (знахідний) → **Nie mam czasu** (родовий!)",
+          "**Widzę kota** (знахідний) → **Nie widzę kota** (родовий)",
+          "**Lubię kawę** (знахідний) → **Nie lubię kawy** (родовий!)",
+          "**Jest kot** → **Nie ma kota** (nie ma завжди + родовий)",
+          "**Znam język** → **Nie znam języka** (родовий)"
+        ],
+        examplesPl: [
+          "**Mam czas** (biernik) → **Nie mam czasu** (dopełniacz!)",
+          "**Widzę kota** (biernik) → **Nie widzę kota** (dopełniacz)",
+          "**Lubię kawę** (biernik) → **Nie lubię kawy** (dopełniacz!)",
+          "**Jest kot** → **Nie ma kota** (nie ma zawsze + dopełniacz)",
+          "**Znam język** → **Nie znam języka** (dopełniacz)"
+        ],
+        exampleExplanationsUk: [
+          "**Mam czas** (B) → **Nie mam czasu** (D). Після 'nie' знахідний **czas** → родовий **czasu**!",
+          "**Widzę kota** — 'kota' вже родовий (живе), тому після 'nie' залишається: **Nie widzę kota**.",
+          "**Lubię kawę** (B) → **Nie lubię kawy** (D). kawę → kawy (зміна закінчення -ę → -y).",
+          "**Nie ma** — спеціальна конструкція. ЗАВЖДИ + родовий! Jest **kot** → Nie ma **kota**.",
+          "**Znam język** (B) → **Nie znam języka** (D). język → języka (родовий після заперечення)."
+        ],
+        exampleExplanationsPl: [
+          "**Mam czas** (B) → **Nie mam czasu** (D). Po 'nie' biernik **czas** → dopełniacz **czasu**!",
+          "**Widzę kota** — 'kota' już dopełniacz (żywy), więc po 'nie' zostaje: **Nie widzę kota**.",
+          "**Lubię kawę** (B) → **Nie lubię kawy** (D). kawę → kawy (zmiana końcówki -ę → -y).",
+          "**Nie ma** — specjalna konstrukcja. ZAWSZE + dopełniacz! Jest **kot** → Nie ma **kota**.",
+          "**Znam język** (B) → **Nie znam języka** (D). język → języka (dopełniacz po negacji)."
+        ],
+        counterExamplesUk: [
+          "❌ **Nie mam czas** → ✅ **Nie mam czasu** (родовий!)",
+          "❌ **Nie lubię kawa** → ✅ **Nie lubię kawy** (kawy, не kawa)",
+          "❌ **Nie jest kot** → ✅ **Nie ma kota** (nie ma, не nie jest!)"
+        ],
+        counterExamplesPl: [
+          "❌ **Nie mam czas** → ✅ **Nie mam czasu** (dopełniacz!)",
+          "❌ **Nie lubię kawa** → ✅ **Nie lubię kawy** (kawy, nie kawa)",
+          "❌ **Nie jest kot** → ✅ **Nie ma kota** (nie ma, nie nie jest!)"
+        ],
+        mnemonicUk: "🧠 **NIE + дієслово = Biernik → Dopełniacz**. Після 'nie' об'єкт стає родовим!",
+        mnemonicPl: "🧠 **NIE + czasownik = Biernik → Dopełniacz**. Po 'nie' przedmiot staje się dopełniaczem!",
+        difficulty: "A2",
+        category: "syntax",
+        relatedRules: ["cases-short"],
+        quizQuestions: [
+          {
+            id: "q1",
+            questionUk: "Доповни: 'Nie lubię ___' (кава)",
+            questionPl: "Uzupełnij: 'Nie lubię ___' (kawa)",
+            options: ["kawa", "kawę", "kawy", "kawie"],
+            correctIndex: 2,
+            explanationUk: "Після 'nie lubię' → родовий! kawę (B) → **kawy** (D)",
+            explanationPl: "Po 'nie lubię' → dopełniacz! kawę (B) → **kawy** (D)"
+          },
+          {
+            id: "q2",
+            questionUk: "'Jest kot' → Заперечення?",
+            questionPl: "'Jest kot' → Negacja?",
+            options: ["Nie jest kot", "Nie ma kot", "Nie ma kota", "Nie kota"],
+            correctIndex: 2,
+            explanationUk: "**Nie ma** + родовий! Jest **kot** → Nie ma **kota**",
+            explanationPl: "**Nie ma** + dopełniacz! Jest **kot** → Nie ma **kota**"
+          },
+          {
+            id: "q3",
+            questionUk: "Чому 'Nie mam czasu', а не 'czas'?",
+            questionPl: "Dlaczego 'Nie mam czasu', a nie 'czas'?",
+            options: ["Помилка в питанні", "Родовий після nie", "Знахідний після nie", "Орудний після nie"],
+            correctIndex: 1,
+            explanationUk: "Після **nie** знахідний → **родовий**! czas (B) → **czasu** (D)",
+            explanationPl: "Po **nie** biernik → **dopełniacz**! czas (B) → **czasu** (D)"
+          }
+        ]
       },
       {
         id: "aspect",
@@ -558,7 +778,207 @@ export const defaultCompendiumContent: CompendiumContent = {
         bodyUk:
           "Пара прикладів:\n- **robić** (недокон.) → процес\n- **zrobić** (докон.) → результат",
         bodyPl:
-          "Para przykładów:\n- **robić** (niedokon.) → proces\n- **zrobić** (dokon.) → rezultat"
+          "Para przykładów:\n- **robić** (niedokon.) → proces\n- **zrobić** (dokon.) → rezultat",
+        detailedUk: "Аспект (вид) — найважливіша категорія польських дієслів. Майже кожне дієслово має ДВІ форми: **niedokonany** (процес, звичка, повтор) та **dokonany** (завершення, результат, одноразова дія). Вибір виду залежить від ХАРАКТЕРУ дії, а не від часу!",
+        detailedPl: "Aspekt to najważniejsza kategoria polskich czasowników. Prawie każdy czasownik ma DWA formy: **niedokonany** (proces, nawyk, powtarzanie) i **dokonany** (ukończenie, rezultat, jednorazowa czynność). Wybór aspektu zależy od CHARAKTERU czynności, nie od czasu!",
+        examplesUk: [
+          "**Niedokonany**: Czytam książkę (читаю зараз, процес)",
+          "**Dokonany**: Przeczytam książkę (прочитаю до кінця, результат)",
+          "**Pary**: pisać/napisać, robić/zrobić, kupować/kupić",
+          "**Nawyk** (недокон.): Codziennie **czytam** (щодня читаю)",
+          "**Jednorazowa** (докон.): Wczoraj **przeczytałem** (вчора прочитав)"
+        ],
+        examplesPl: [
+          "**Niedokonany**: Czytam książkę (czytam teraz, proces)",
+          "**Dokonany**: Przeczytam książkę (przeczytam do końca, rezultat)",
+          "**Pary**: pisać/napisać, robić/zrobić, kupować/kupić",
+          "**Nawyk** (niedokonany): Codziennie **czytam** (czytam codziennie)",
+          "**Jednorazowa** (dokonany): Wczoraj **przeczytałem** (wczoraj przeczytałem)"
+        ],
+        exampleExplanationsUk: [
+          "**Czytam** (niedokonany) — ПРОЦЕС читання. Не важливо чи закінчу. Фокус на дії, що відбувається.",
+          "**Przeczytam** (dokonany, префікс **prze-**) — РЕЗУЛЬТАТ. Прочитаю ДО КІНЦЯ. Фокус на завершенні.",
+          "**Парний принцип**: недоконаний → **префікс** або **суфікс** → доконаний. robić → **z**robić, kupować → kupi**ć**.",
+          "**Nawyk/powtór** → недоконаний. Codziennie **czytam** (щодня, багато разів). Звичка = процес!",
+          "**Одноразова дія** → доконаний. Wczoraj **przeczytałem** (один раз, завершив). Результат важливий!"
+        ],
+        exampleExplanationsPl: [
+          "**Czytam** (niedokonany) — PROCES czytania. Nieważne czy skończę. Fokus na czynności trwającej.",
+          "**Przeczytam** (dokonany, prefiks **prze-**) — REZULTAT. Przeczytam DO KOŃCA. Fokus na ukończeniu.",
+          "**Zasada par**: niedokonany → **prefiks** lub **sufiks** → dokonany. robić → **z**robić, kupować → kupi**ć**.",
+          "**Nawyk/powtórzenie** → niedokonany. Codziennie **czytam** (codziennie, wiele razy). Nawyk = proces!",
+          "**Jednorazowa czynność** → dokonany. Wczoraj **przeczytałem** (raz, ukończyłem). Rezultat ważny!"
+        ],
+        counterExamplesUk: [
+          "❌ Teraz **zrobię** → ✅ Teraz **robię** (теперішній тільки недоконаний!)",
+          "❌ Wczoraj **pisałem list** (одноразово) → ✅ **napisałem list** (завершив)",
+          "❌ Jutro **robię** → ✅ **zrobię** (майбутнє = доконаний для результату)"
+        ],
+        counterExamplesPl: [
+          "❌ Teraz **zrobię** → ✅ Teraz **robię** (teraźniejszy tylko niedokonany!)",
+          "❌ Wczoraj **pisałem list** (jednorazowo) → ✅ **napisałem list** (ukończyłem)",
+          "❌ Jutro **robię** → ✅ **zrobię** (przyszły = dokonany dla rezultatu)"
+        ],
+        mnemonicUk: "🧠 **Процес/Звичка = Niedokonany → Результат/Раз = Dokonany**. Теперішній = тільки niedokonany!",
+        mnemonicPl: "🧠 **Proces/Nawyk = Niedokonany → Rezultat/Raz = Dokonany**. Teraźniejszy = tylko niedokonany!",
+        difficulty: "A2",
+        category: "verbs",
+        relatedRules: ["present", "past"],
+        quizQuestions: [
+          {
+            id: "q1",
+            questionUk: "Який вид: 'Teraz czytam książkę'?",
+            questionPl: "Jaki aspekt: 'Teraz czytam książkę'?",
+            options: ["Niedokonany", "Dokonany", "Obydwa", "Żaden"],
+            correctIndex: 0,
+            explanationUk: "Теперішній час → тільки **niedokonany**! czytam = процес зараз",
+            explanationPl: "Czas teraźniejszy → tylko **niedokonany**! czytam = proces teraz"
+          },
+          {
+            id: "q2",
+            questionUk: "'Wczoraj napisałem list' — чому dokonany?",
+            questionPl: "'Wczoraj napisałem list' — dlaczego dokonany?",
+            options: ["Минулий час", "Завершена дія", "Одне слово", "Помилка"],
+            correctIndex: 1,
+            explanationUk: "**Dokonany** = завершена дія! Написав І ЗАКІНЧИВ. Результат важливий.",
+            explanationPl: "**Dokonany** = zakończona czynność! Napisałem I SKOŃCZYŁEM. Rezultat ważny."
+          },
+          {
+            id: "q3",
+            questionUk: "Звичка/повтор: 'Codziennie ___ kawę'",
+            questionPl: "Nawyk/powtórzenie: 'Codziennie ___ kawę'",
+            options: ["piję", "wypiję", "pił", "wypił"],
+            correctIndex: 0,
+            explanationUk: "Звичка → **niedokonany**! Codziennie **piję** (щодня, багато разів)",
+            explanationPl: "Nawyk → **niedokonany**! Codziennie **piję** (codziennie, wiele razy)"
+          }
+        ]
+      },
+      {
+        id: "future",
+        titleUk: "Майбутній час",
+        titlePl: "Czas przyszły",
+        bodyUk: "Два способи: **доконаний** (zrobię) або **być + інфінітив** (będę robić).",
+        bodyPl: "Dwa sposoby: **dokonany** (zrobię) lub **być + bezokolicznik** (będę robić).",
+        detailedUk: "Майбутній час має ДВА варіанти: 1) **Доконаний вид** = проста форма (zrobię, напишу). 2) **będę + недоконаний інфінітив** = складена форма (będę robić, буду робити). Вибір залежить від виду дії!",
+        detailedPl: "Czas przyszły ma DWA warianty: 1) **Aspekt dokonany** = forma prosta (zrobię, napiszę). 2) **być + bezokolicznik niedokonany** = forma złożona (będę robić). Wybór zależy od aspektu czynności!",
+        examplesUk: [
+          "**Dokonany** (проста форма): **Zrobię** to jutro (зроблю, результат)",
+          "**Dokonany**: **Napiszę** list (напишу листа, завершу)",
+          "**Niedokonany** (być + інфінітив): **Będę robić** (буду робити, процес)",
+          "**Niedokonany**: **Będę pisać** (буду писати, без акценту на завершення)",
+          "Відмінювання: będę, będziesz, będzie, będziemy, będziecie, będą"
+        ],
+        examplesPl: [
+          "**Dokonany** (forma prosta): **Zrobię** to jutro (zrobię, rezultat)",
+          "**Dokonany**: **Napiszę** list (napiszę list, ukończę)",
+          "**Niedokonany** (być + bezokolicznik): **Będę robić** (będę robić, proces)",
+          "**Niedokonany**: **Będę pisać** (będę pisać, bez akcentu na ukończenie)",
+          "Odmiana: będę, będziesz, będzie, będziemy, będziecie, będą"
+        ],
+        exampleExplanationsUk: [
+          "**Zrobię** (доконаний) = проста форма майбутнього. Акцент на РЕЗУЛЬТАТІ. Зроблю і завершу!",
+          "**Napiszę** (доконаний) = напишу ДО КІНЦЯ. Префікс **na-** показує завершення.",
+          "**Będę robić** (niedokonany) = складена форма. Акцент на ПРОЦЕСІ. Буду робити (але чи закінчу?).",
+          "**Będę pisać** = буду писати. Процес важливіший за результат. Можливо, не завершу.",
+          "**Відмінювання być**: będę (я), będziesz (ти), będzie (він/вона), będziemy (ми), będziecie (ви), będą (вони)"
+        ],
+        exampleExplanationsPl: [
+          "**Zrobię** (dokonany) = forma prosta przyszłego. Akcent na REZULTACIE. Zrobię i ukończę!",
+          "**Napiszę** (dokonany) = napiszę DO KOŃCA. Prefiks **na-** pokazuje ukończenie.",
+          "**Będę robić** (niedokonany) = forma złożona. Akcent na PROCESIE. Będę robić (ale czy skończę?).",
+          "**Będę pisać** = będę pisać. Proces ważniejszy niż rezultat. Możliwe, że nie skończę.",
+          "**Odmiana być**: będę (ja), będziesz (ty), będzie (on/ona), będziemy (my), będziecie (wy), będą (oni)"
+        ],
+        counterExamplesUk: [
+          "❌ **Będę zrobić** → ✅ **Zrobię** (доконаний = проста форма!)",
+          "❌ **Robię jutro** → ✅ **Będę robić** / **Zrobię** (майбутнє, не теперішнє)",
+          "❌ **Będę napisać** → ✅ **Napiszę** (доконаний без być!)"
+        ],
+        counterExamplesPl: [
+          "❌ **Będę zrobić** → ✅ **Zrobię** (dokonany = forma prosta!)",
+          "❌ **Robię jutro** → ✅ **Będę robić** / **Zrobię** (przyszły, nie teraźniejszy)",
+          "❌ **Będę napisać** → ✅ **Napiszę** (dokonany bez być!)"
+        ],
+        mnemonicUk: "🧠 **Dokonany = prosta (zrobię) → Niedokonany = być + інфінітив (będę robić)**",
+        mnemonicPl: "🧠 **Dokonany = prosta (zrobię) → Niedokonany = być + bezokolicznik (będę robić)**",
+        difficulty: "A2",
+        category: "verbs",
+        relatedRules: ["present", "past", "aspect"],
+        quizQuestions: [
+          {
+            id: "q1",
+            questionUk: "Майбутнє від dokonany 'napisać': Jutro ___ list",
+            questionPl: "Przyszły od dokonany 'napisać': Jutro ___ list",
+            options: ["będę napisać", "napiszę", "piszę", "będę pisać"],
+            correctIndex: 1,
+            explanationUk: "Доконаний → проста форма! Jutro **napiszę** list (напишу, результат)",
+            explanationPl: "Dokonany → forma prosta! Jutro **napiszę** list"
+          },
+          {
+            id: "q2",
+            questionUk: "Майбутнє від niedokonany 'robić': Jutro ___ to",
+            questionPl: "Przyszły od niedokonany 'robić': Jutro ___ to",
+            options: ["zrobię", "będę robić", "robię", "będę zrobić"],
+            correctIndex: 1,
+            explanationUk: "Недоконаний → być + інфінітив! Jutro **będę robić** (буду робити, процес)",
+            explanationPl: "Niedokonany → być + bezokolicznik! Jutro **będę robić**"
+          },
+          {
+            id: "q3",
+            questionUk: "Помилка: 'Będę napisać'",
+            questionPl: "Błąd: 'Będę napisać'",
+            options: ["Правильно", "Треба 'napiszę'", "Треба 'piszę'", "Треба 'pisałem'"],
+            correctIndex: 1,
+            explanationUk: "❌ Доконаний НЕ вживається з być! ✅ **Napiszę** (проста форма)",
+            explanationPl: "❌ Dokonany NIE używa być! ✅ **Napiszę** (forma prosta)"
+          }
+        ]
+      },
+      {
+        id: "gender",
+        titleUk: "Рід іменників",
+        titlePl: "Rodzaj rzeczowników",
+        bodyUk: "Три роди: **męski** (-∅, -a), **żeński** (-a), **nijaki** (-o, -e).",
+        bodyPl: "Trzy rodzaje: **męski** (-∅, -a), **żeński** (-a), **nijaki** (-o, -e).",
+        detailedUk: "Кожен іменник має рід: чоловічий, жіночий або середній. Рід визначає закінчення прикметників, дієслів минулого часу та відмінкові форми. Часто рід можна визначити за закінченням слова.",
+        detailedPl: "Każdy rzeczownik ma rodzaj: męski, żeński lub nijaki. Rodzaj określa końcówki przymiotników, czasowników w czasie przeszłym i formy przypadków. Często rodzaj można określić po końcówce słowa.",
+        examplesUk: [
+          "**Męski** (приголосна або -a для осіб): **kot**, **stół**, **tata**",
+          "**Żeński** (зазвичай -a): **kawa**, **książka**, **mama**",
+          "**Nijaki** (зазвичай -o, -e, -ę): **okno**, **pole**, **imię**",
+          "Вплив на прикметник: **dobry** kot (м), **dobra** kawa (ж), **dobre** okno (с)",
+          "Вплив на минулий: **czytałem** (м), **czytałam** (ж), **czytało** (с)"
+        ],
+        examplesPl: [
+          "**Męski** (spółgłoska lub -a dla osób): **kot**, **stół**, **tata**",
+          "**Żeński** (zazwyczaj -a): **kawa**, **książka**, **mama**",
+          "**Nijaki** (zazwyczaj -o, -e, -ę): **okno**, **pole**, **imię**",
+          "Wpływ na przymiotnik: **dobry** kot (m), **dobra** kawa (ż), **dobre** okno (n)",
+          "Wpływ na przeszły: **czytałem** (m), **czytałam** (ż), **czytało** (n)"
+        ],
+        difficulty: "A1",
+        category: "other",
+        quizQuestions: [
+          {
+            id: "q1",
+            questionUk: "Який рід: 'kawa'?",
+            questionPl: "Jaki rodzaj: 'kawa'?",
+            options: ["Męski", "Żeński", "Nijaki"],
+            correctIndex: 1,
+            explanationUk: "Закінчення **-a** → зазвичай **żeński**! kawa (ж)",
+            explanationPl: "Końcówka **-a** → zazwyczaj **żeński**! kawa"
+          },
+          {
+            id: "q2",
+            questionUk: "Який рід: 'okno'?",
+            questionPl: "Jaki rodzaj: 'okno'?",
+            options: ["Męski", "Żeński", "Nijaki"],
+            correctIndex: 2,
+            explanationUk: "Закінчення **-o** → **nijaki** (середній)! okno",
+            explanationPl: "Końcówka **-o** → **nijaki**! okno"
+          }
+        ]
       }
     ]
   },
