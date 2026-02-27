@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
+import { useSearchParams } from "next/navigation";
 import { useLocale } from "@/components/LocaleProvider";
 import { Word } from "@/lib/types";
 import { hasConsent, readPrefs, writePrefs } from "@/lib/prefs";
@@ -18,9 +19,10 @@ import SpeakButton from "@/components/ui/SpeakButton";
 
 export default function DictBrowse() {
   const { t } = useLocale();
+  const searchParams = useSearchParams();
 
-  // All state from WordsList.tsx
-  const [type, setType] = useState<
+  // Define type for clarity
+  type DictType =
     | "all"
     | "verbs"
     | "adverbs"
@@ -32,8 +34,13 @@ export default function DictBrowse() {
     | "abbreviations"
     | "aspect_pairs"
     | "favorites"
-    | "my_words"
-  >("all");
+    | "my_words";
+
+  // Read initial type from URL or default to "all"
+  const initialType: DictType = (searchParams.get("type") as DictType) || "all";
+
+  // All state from WordsList.tsx
+  const [type, setType] = useState<DictType>(initialType);
   const [sort, setSort] = useState<"plAsc" | "plDesc" | "ukAsc" | "ukDesc">("plAsc");
   const [search, setSearch] = useState("");
   const [items, setItems] = useState<(Word & { duplicate?: boolean })[]>([]);

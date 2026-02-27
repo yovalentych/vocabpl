@@ -9,7 +9,13 @@ import {
   BookOpen,
   BookBookmark,
   Lightning,
-  ArrowRight
+  ArrowRight,
+  Lightning as VerbIcon,
+  PaintBrush as AdjectiveIcon,
+  Chats as SlangIcon,
+  ArrowsClockwise as AspectIcon,
+  Heart as FavoritesIcon,
+  Smiley as EmotionIcon
 } from "@phosphor-icons/react/dist/ssr";
 import DictStats from "./DictStats";
 import DictAIRecommendations from "./DictAIRecommendations";
@@ -100,7 +106,7 @@ export default function DictLanding({ onNavigate }: DictLandingProps) {
     fetchStats();
   }, []);
 
-  const quickActions = [
+  const mainActions = [
     {
       id: "browse",
       title: t.dict.browseDictionary,
@@ -110,20 +116,57 @@ export default function DictLanding({ onNavigate }: DictLandingProps) {
       path: "/class/dict/browse"
     },
     {
-      id: "trainer",
-      title: t.dict.wordTrainer,
-      description: t.dict.interactiveExercises,
-      icon: Lightning,
-      color: "gold",
-      path: "/class/dict/trainer"
-    },
-    {
       id: "my-words",
       title: t.dict.myWords,
       description: t.dict.personalDictionary,
       icon: BookBookmark,
       color: "terracotta",
       path: "/class/dict/my-words"
+    }
+  ];
+
+  const categoryActions = [
+    {
+      id: "verbs",
+      title: t.deck.verbs,
+      icon: VerbIcon,
+      count: stats?.categoryBreakdown?.["Czasowniki"]?.total || 0,
+      path: "/class/dict/browse?type=verbs"
+    },
+    {
+      id: "adjectives",
+      title: t.deck.adjectives,
+      icon: AdjectiveIcon,
+      count: stats?.categoryBreakdown?.["Przymiotniki"]?.total || 0,
+      path: "/class/dict/browse?type=adjectives"
+    },
+    {
+      id: "aspect-pairs",
+      title: t.deck.aspectPairs,
+      icon: AspectIcon,
+      count: 0,
+      path: "/class/dict/browse?type=aspect_pairs"
+    },
+    {
+      id: "slang",
+      title: t.deck.slang,
+      icon: SlangIcon,
+      count: 0,
+      path: "/class/dict/browse?type=slang"
+    },
+    {
+      id: "emotions",
+      title: t.deck.cleanEmotions,
+      icon: EmotionIcon,
+      count: 0,
+      path: "/class/dict/browse?type=clean_emotions"
+    },
+    {
+      id: "favorites",
+      title: t.deck.favorites,
+      icon: FavoritesIcon,
+      count: stats?.favoriteWords || 0,
+      path: "/class/dict/browse?type=favorites"
     }
   ];
 
@@ -196,15 +239,55 @@ export default function DictLanding({ onNavigate }: DictLandingProps) {
         <DictStats stats={stats} />
       </div>
 
-      {/* Quick Actions */}
+      {/* Featured: Word Trainer */}
+      <div>
+        <h2 className="mb-4 text-xl font-semibold text-ink">{t.dict.wordTrainer}</h2>
+        <button
+          onClick={() => navigate("/class/dict/trainer")}
+          className="group relative w-full overflow-hidden rounded-3xl border border-gold/30 bg-gradient-to-br from-gold/20 via-gold/10 to-gold/5 p-8 text-left shadow-lg transition hover:shadow-xl hover:scale-[1.02]"
+        >
+          {/* Background decoration */}
+          <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gold/20 blur-3xl" />
+          <div className="absolute -left-8 -bottom-8 h-32 w-32 rounded-full bg-lightning/10 blur-3xl" />
+
+          <div className="relative flex items-center justify-between">
+            <div className="flex-1">
+              <div className="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-paper/80 px-4 py-2 mb-4">
+                <Lightning size={16} weight="fill" className="text-gold" />
+                <span className="text-xs font-semibold text-gold">
+                  Інтерактивний тренажер
+                </span>
+              </div>
+
+              <h3 className="text-2xl font-bold text-ink mb-2">
+                {t.dict.interactiveExercises}
+              </h3>
+              <p className="text-ink/70 max-w-xl">
+                Вивчайте слова через різні типи вправ: вибір варіантів, введення тексту або флешкартки.
+                Персоналізовані тренування для швидшого запам&apos;ятовування.
+              </p>
+
+              <div className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-gold transition group-hover:gap-3">
+                Почати тренування
+                <ArrowRight size={16} weight="bold" />
+              </div>
+            </div>
+
+            <div className="hidden lg:flex h-24 w-24 items-center justify-center rounded-3xl bg-gold/20 transition group-hover:scale-110 group-hover:rotate-6">
+              <Lightning size={48} weight="fill" className="text-gold" />
+            </div>
+          </div>
+        </button>
+      </div>
+
+      {/* Main Actions */}
       <div>
         <h2 className="mb-4 text-xl font-semibold text-ink">{t.dict.quickActions}</h2>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {quickActions.map((action) => {
+        <div className="grid gap-6 sm:grid-cols-2">
+          {mainActions.map((action) => {
             const Icon = action.icon;
             const colorClasses = {
               moss: "border-moss/20 bg-moss/5 hover:border-moss/30 hover:bg-moss/10 text-moss",
-              gold: "border-gold/20 bg-gold/5 hover:border-gold/30 hover:bg-gold/10 text-gold",
               terracotta:
                 "border-terracotta/20 bg-terracotta/5 hover:border-terracotta/30 hover:bg-terracotta/10 text-terracotta"
             }[action.color];
@@ -213,7 +296,7 @@ export default function DictLanding({ onNavigate }: DictLandingProps) {
               <button
                 key={action.id}
                 onClick={() => navigate(action.path)}
-                className={`group rounded-3xl border p-6 text-left shadow-soft transition ${colorClasses}`}
+                className={`group rounded-3xl border p-6 text-left shadow-soft transition hover:-translate-y-1 ${colorClasses}`}
               >
                 <div className="flex items-start justify-between">
                   <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-paper/80 transition group-hover:scale-110">
@@ -230,6 +313,41 @@ export default function DictLanding({ onNavigate }: DictLandingProps) {
                   {t.dict.openAction}
                   <ArrowRight size={16} weight="bold" className="transition" />
                 </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Browse by Category */}
+      <div>
+        <h2 className="mb-4 text-xl font-semibold text-ink">Категорії словника</h2>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {categoryActions.map((category) => {
+            const Icon = category.icon;
+
+            return (
+              <button
+                key={category.id}
+                onClick={() => navigate(category.path)}
+                className="group flex items-center gap-4 rounded-2xl border border-ink/10 bg-paper/95 p-4 text-left shadow-soft transition hover:border-moss/30 hover:bg-moss/5 hover:-translate-y-0.5"
+              >
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-moss/10 text-moss transition group-hover:scale-110">
+                  <Icon size={20} weight="fill" />
+                </div>
+
+                <div className="flex-1">
+                  <h3 className="text-sm font-semibold text-ink">
+                    {category.title}
+                  </h3>
+                  {category.count > 0 && (
+                    <p className="text-xs text-ink/50">
+                      {category.count} слів
+                    </p>
+                  )}
+                </div>
+
+                <ArrowRight size={16} weight="bold" className="text-ink/30 transition group-hover:text-moss group-hover:translate-x-1" />
               </button>
             );
           })}
