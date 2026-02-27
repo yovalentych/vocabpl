@@ -12,6 +12,7 @@ import { ArrowLeft } from "@phosphor-icons/react";
 import DictFilters from "./DictFilters";
 import DictAlphabetNav from "./DictAlphabetNav";
 import DictWordGrid from "./DictWordGrid";
+import AspectPairsView from "./AspectPairsView";
 import WordAIModal from "./WordAIModal";
 import SpeakButton from "@/components/ui/SpeakButton";
 
@@ -604,6 +605,22 @@ export default function DictBrowse() {
       {/* Loading or Words Grid */}
       {loading ? (
         <Loader label={t.common.loading} />
+      ) : type === "aspect_pairs" ? (
+        <AspectPairsView
+          pairs={pairItems}
+          activeLetter={activeLetter}
+          sortField={sortField}
+          hideTranslations={hideTranslations}
+          revealedMap={revealedMap}
+          favoriteIds={favoriteIds}
+          onToggleFavorite={toggleFavorite}
+          onRevealToggle={(wordId) =>
+            setRevealedMap((prev) => ({
+              ...prev,
+              [wordId]: !prev[wordId]
+            }))
+          }
+        />
       ) : (
         <DictWordGrid
           type={type}
