@@ -13,6 +13,18 @@ export type CompendiumSprint = {
   titlePl: string;
   hintUk: string;
   hintPl: string;
+  // Extended fields for deep learning
+  detailedUk?: string; // Detailed explanation
+  detailedPl?: string;
+  examplesUk?: string[]; // Practical examples
+  examplesPl?: string[];
+  commonMistakesUk?: string; // Common mistakes to avoid
+  commonMistakesPl?: string;
+  tipsUk?: string; // Learning tips
+  tipsPl?: string;
+  difficulty?: 'A1' | 'A2' | 'B1' | 'B2' | 'C1'; // CEFR level
+  relatedTopics?: string[]; // IDs of related sprints/rules
+  estimatedMinutes?: number; // Study time estimate
 };
 
 export type CompendiumRule = {
@@ -21,6 +33,19 @@ export type CompendiumRule = {
   titlePl: string;
   bodyUk: string;
   bodyPl: string;
+  // Extended fields for deep learning
+  detailedUk?: string; // Detailed explanation with edge cases
+  detailedPl?: string;
+  examplesUk?: string[]; // Multiple examples with translations
+  examplesPl?: string[];
+  counterExamplesUk?: string[]; // What NOT to do
+  counterExamplesPl?: string[];
+  mnemonicUk?: string; // Memory tricks
+  mnemonicPl?: string;
+  difficulty?: 'A1' | 'A2' | 'B1' | 'B2' | 'C1';
+  category?: 'cases' | 'verbs' | 'adjectives' | 'syntax' | 'other'; // Topic category
+  relatedRules?: string[]; // IDs of related rules
+  practiceUrl?: string; // Link to practice exercises (optional)
 };
 
 export type CompendiumSiteItem = {
@@ -107,14 +132,62 @@ export const defaultCompendiumContent: CompendiumContent = {
         titleUk: "Відмінки",
         titlePl: "Przypadki",
         hintUk: "- **do** → родовий\n- **w/na** → місцевий\n- **przez** → знахідний",
-        hintPl: "- **do** → dopełniacz\n- **w/na** → miejscownik\n- **przez** → biernik"
+        hintPl: "- **do** → dopełniacz\n- **w/na** → miejscownik\n- **przez** → biernik",
+        detailedUk: "Польська має 7 відмінків, але на практиці найчастіше використовуються 4-5. Кожен відмінок відповідає на певне питання і використовується з конкретними прийменниками. Ключ до успіху — запамʼятати прийменники-маркери.",
+        detailedPl: "Polski ma 7 przypadków, ale w praktyce najczęściej używa się 4-5. Każdy przypadek odpowiada na konkretne pytanie i występuje z określonymi przyimkami. Klucz do sukcesu to zapamiętanie przyimków-markerów.",
+        examplesUk: [
+          "**Mianownik** (називний): To jest **kot** (Це кіт)",
+          "**Dopełniacz** (родовий): Nie ma **kota** (Немає кота) — після **nie ma, do, od, bez, z**",
+          "**Celownik** (давальний): Daję **kotu** mleko (Даю коту молоко)",
+          "**Biernik** (знахідний): Widzę **kota** (Бачу кота) — після **przez, na, w** (рух)",
+          "**Narzędnik** (орудний): Idę z **kotem** (Йду з котом) — після **z, przed, nad, pod**",
+          "**Miejscownik** (місцевий): Myślę o **kocie** (Думаю про кота) — після **w, na, o, po, przy**"
+        ],
+        examplesPl: [
+          "**Mianownik**: To jest **kot**",
+          "**Dopełniacz**: Nie ma **kota** — po **nie ma, do, od, bez, z**",
+          "**Celownik**: Daję **kotu** mleko",
+          "**Biernik**: Widzę **kota** — po **przez, na, w** (ruch)",
+          "**Narzędnik**: Idę z **kotem** — po **z, przed, nad, pod**",
+          "**Miejscownik**: Myślę o **kocie** — po **w, na, o, po, przy**"
+        ],
+        commonMistakesUk: "❌ **w szkole** (місцевий, де?) vs ✅ **do szkoły** (родовий, куди?)\n❌ **z domu** (родовий, звідки?) плутають з **w domu** (місцевий, де?)",
+        commonMistakesPl: "❌ **w szkole** (miejscownik, gdzie?) vs ✅ **do szkoły** (dopełniacz, dokąd?)\n❌ **z domu** (dopełniacz, skąd?) mylą z **w domu** (miejscownik, gdzie?)",
+        tipsUk: "💡 Створи таблицю прийменників з відмінками. Практикуй на 5-10 словах щодня, міняючи відмінки.",
+        tipsPl: "💡 Stwórz tabelę przyimków z przypadkami. Ćwicz na 5-10 słowach dziennie, zmieniając przypadki.",
+        difficulty: "A2",
+        relatedTopics: ["prepositions"],
+        estimatedMinutes: 15
       },
       {
         id: "verbs",
         titleUk: "Дієслова",
         titlePl: "Czasowniki",
         hintUk: "Знайди пару **dokonany/niedokonany** і тримай її поруч у нотатках.",
-        hintPl: "Znajdź parę **dokonany/niedokonany** i trzymaj ją pod ręką."
+        hintPl: "Znajdź parę **dokonany/niedokonany** i trzymaj ją pod ręką.",
+        detailedUk: "Система видів (aspektów) — найважливіша особливість польських дієслів. **Недоконаний вид** (robić) описує процес, звичку. **Доконаний вид** (zrobić) — завершену дію, результат. Більшість дієслів мають обидва види.",
+        detailedPl: "System aspektów to najważniejsza cecha polskich czasowników. **Aspekt niedokonany** (robić) opisuje proces, nawyk. **Aspekt dokonany** (zrobić) — zakończoną czynność, wynik. Większość czasowników ma oba aspekty.",
+        examplesUk: [
+          "**Niedokonany**: Czytam książkę (Читаю книгу — процес)",
+          "**Dokonany**: Przeczytam książkę (Прочитаю книгу — завершу)",
+          "**Niedokonany**: Piszę list (Пишу листа — зараз)",
+          "**Dokonany**: Napiszę list (Напишу листа — закінчу)",
+          "**Pary**: robić/zrobić, pisać/napisać, czytać/przeczytać"
+        ],
+        examplesPl: [
+          "**Niedokonany**: Czytam książkę (proces)",
+          "**Dokonany**: Przeczytam książkę (ukończę)",
+          "**Niedokonany**: Piszę list (teraz)",
+          "**Dokonany**: Napiszę list (zakończę)",
+          "**Pary**: robić/zrobić, pisać/napisać, czytać/przeczytać"
+        ],
+        commonMistakesUk: "❌ Вживати доконаний вид для теперішнього часу: **zrobię teraz** → ✅ **robię teraz**\n❌ Недоконаний вид для разової дії: **Wczoraj pisałem list** → ✅ **Wczoraj napisałem list**",
+        commonMistakesPl: "❌ Używać aspektu dokonanego w czasie teraźniejszym: **zrobię teraz** → ✅ **robię teraz**\n❌ Aspekt niedokonany dla jednorazowej czynności: **Wczoraj pisałem list** → ✅ **Wczoraj napisałem list**",
+        tipsUk: "💡 Почни з 10 найчастіших пар дієслів. Створи картки: на одній стороні недоконаний, на іншій — доконаний.",
+        tipsPl: "💡 Zacznij od 10 najczęstszych par czasowników. Twórz fiszki: z jednej strony niedokonany, z drugiej — dokonany.",
+        difficulty: "A2",
+        relatedTopics: ["present", "past"],
+        estimatedMinutes: 20
       },
       {
         id: "prepositions",
@@ -146,7 +219,36 @@ export const defaultCompendiumContent: CompendiumContent = {
         bodyUk:
           "Найчастіші закінчення:\n- **-am/-em** (ja)\n- **-asz/-esz** (ty)\n- **-a/-e/-i** (on/ona/ono)",
         bodyPl:
-          "Najczęstsze końcówki:\n- **-am/-em** (ja)\n- **-asz/-esz** (ty)\n- **-a/-e/-i** (on/ona/ono)"
+          "Najczęstsze końcówki:\n- **-am/-em** (ja)\n- **-asz/-esz** (ty)\n- **-a/-e/-i** (on/ona/ono)",
+        detailedUk: "Теперішній час утворюється тільки від недоконаних дієслів. Існує 4 основні групи відмінювання (-ać, -eć/-yć, -ić, -ować). Закінчення залежить від особи та групи дієслова.",
+        detailedPl: "Czas teraźniejszy tworzy się tylko od czasowników niedokonanych. Istnieją 4 główne grupy koniugacji (-ać, -eć/-yć, -ić, -ować). Końcówki zależą od osoby i grupy czasownika.",
+        examplesUk: [
+          "**robić** (робити): robię, robisz, robi, robimy, robicie, robią",
+          "**pisać** (писати): piszę, piszesz, pisze, piszemy, piszecie, piszą",
+          "**czytać** (читати): czytam, czytasz, czyta, czytamy, czytacie, czytają",
+          "**mówić** (говорити): mówię, mówisz, mówi, mówimy, mówicie, mówią"
+        ],
+        examplesPl: [
+          "**robić**: robię, robisz, robi, robimy, robicie, robią",
+          "**pisać**: piszę, piszesz, pisze, piszemy, piszecie, piszą",
+          "**czytać**: czytam, czytasz, czyta, czytamy, czytacie, czytają",
+          "**mówić**: mówię, mówisz, mówi, mówimy, mówicie, mówią"
+        ],
+        counterExamplesUk: [
+          "❌ **zrobię** — це майбутній, не теперішній!",
+          "❌ **piszam** → ✅ **piszę** (1 особа має -ę)",
+          "❌ **czytaę** → ✅ **czytam** (група -ać: -am, не -ę)"
+        ],
+        counterExamplesPl: [
+          "❌ **zrobię** — to przyszły, nie teraźniejszy!",
+          "❌ **piszam** → ✅ **piszę** (1 osoba ma -ę)",
+          "❌ **czytaę** → ✅ **czytam** (grupa -ać: -am, nie -ę)"
+        ],
+        mnemonicUk: "🧠 **Я (-am/-ę) → Ти (+sz) → Він/Вона (-a/-e/-i) → Ми (+my) → Ви (+cie) → Вони (-ą/-ją)**",
+        mnemonicPl: "🧠 **Ja (-am/-ę) → Ty (+sz) → On/Ona (-a/-e/-i) → My (+my) → Wy (+cie) → Oni (-ą/-ją)**",
+        difficulty: "A1",
+        category: "verbs",
+        relatedRules: ["past", "future"]
       },
       {
         id: "past",
