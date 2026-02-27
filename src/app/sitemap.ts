@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { loadCompendiumContent } from "@/lib/compendium-loader";
 
 const DEFAULT_SITE_URL = "https://www.vocabpl.uno";
 
@@ -10,7 +11,7 @@ function getSiteUrl() {
   return envUrl.replace(/\/+$/, "");
 }
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = getSiteUrl();
   const now = new Date();
 
@@ -46,18 +47,43 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/compendium/facts", changeFrequency: "monthly", priority: 0.45 },
     { path: "/compendium/culture", changeFrequency: "monthly", priority: 0.45 },
 
-    // Legal
+    // Legal and Info
     { path: "/privacy", changeFrequency: "yearly", priority: 0.3 },
     { path: "/terms", changeFrequency: "yearly", priority: 0.3 },
     { path: "/cookies", changeFrequency: "yearly", priority: 0.2 },
     { path: "/legal", changeFrequency: "yearly", priority: 0.2 },
-    { path: "/contacts", changeFrequency: "yearly", priority: 0.3 }
+    { path: "/contacts", changeFrequency: "yearly", priority: 0.3 },
+    { path: "/faq", changeFrequency: "monthly", priority: 0.7 }
   ];
 
-  return routes.map((route) => ({
+  const staticRoutes = routes.map((route) => ({
     url: `${baseUrl}${route.path}`,
     lastModified: now,
     changeFrequency: route.changeFrequency,
     priority: route.priority
   }));
+
+  // Load dynamic grammar topics
+  try {
+    const compendium = await loadCompendiumContent();
+    const grammarTopics = [
+      ...compendium.grammar.sprints.map(sprint => ({
+        url: `${baseUrl}/compendium/grammar/${sprint.id}`,
+        lastModified: now,
+        changeFrequency: "monthly" as const,
+        priority: 0.6
+      })),
+      ...compendium.grammar.rules.map(rule => ({
+        url: `${baseUrl}/compendium/grammar/${rule.id}`,
+        lastModified: now,
+        changeFrequency: "monthly" as const,
+        priority: 0.6
+      }))
+    ];
+
+    return [...staticRoutes, ...grammarTopics];
+  } catch (error) {
+    console.error("Failed to load grammar topics for sitemap:", error);
+    return staticRoutes;
+  }
 }

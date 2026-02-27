@@ -13,6 +13,12 @@ import { AuthStatusProvider } from "@/components/useAuthStatus";
 import ClassFloatingNav from "@/components/ClassFloatingNav";
 import ByokPanel from "@/components/ByokPanel";
 import BetaDisclaimer from "@/components/BetaDisclaimer";
+import StructuredData, {
+  getWebSiteSchema,
+  getOrganizationSchema,
+  getWebApplicationSchema,
+  getCourseSchema
+} from "@/components/StructuredData";
 
 const DEFAULT_SITE_URL = "https://www.vocabpl.uno";
 
@@ -83,8 +89,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const locale = getServerLocale();
+  const siteUrl = getSiteUrl();
+
   return (
     <html lang={locale}>
+      <head>
+        <StructuredData data={getWebSiteSchema(siteUrl)} />
+        <StructuredData data={getOrganizationSchema(siteUrl)} />
+        <StructuredData data={getWebApplicationSchema(siteUrl)} />
+        <StructuredData data={getCourseSchema(siteUrl)} />
+      </head>
       <body className="bg-paper text-ink antialiased">
         <LocaleProvider initialLocale={locale}>
           <AuthStatusProvider>
