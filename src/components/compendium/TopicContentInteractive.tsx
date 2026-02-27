@@ -83,6 +83,19 @@ export default function TopicContentInteractive({
     ("examplesUk" in topic ? topic.examplesUk : []) :
     ("examplesPl" in topic ? topic.examplesPl : [])) || [];
 
+  // Get explanations for flashcards
+  const explanations = (locale === "uk" ?
+    ("exampleExplanationsUk" in topic ? topic.exampleExplanationsUk : []) :
+    ("exampleExplanationsPl" in topic ? topic.exampleExplanationsPl : [])) || [];
+
+  // Get quiz questions
+  const quizQuestions = ("quizQuestions" in topic ? topic.quizQuestions : []) || [];
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+  const [showQuizResult, setShowQuizResult] = useState(false);
+  const [quizScore, setQuizScore] = useState(0);
+  const [answeredQuestions, setAnsweredQuestions] = useState<Set<number>>(new Set());
+
   const nextFlashcard = () => {
     setShowFlashcardAnswer(false);
     setCurrentFlashcard((prev) => (prev + 1) % examples.length);
@@ -91,6 +104,37 @@ export default function TopicContentInteractive({
   const prevFlashcard = () => {
     setShowFlashcardAnswer(false);
     setCurrentFlashcard((prev) => (prev - 1 + examples.length) % examples.length);
+  };
+
+  const handleAnswerSelect = (index: number) => {
+    if (showQuizResult) return; // Already answered
+    setSelectedAnswer(index);
+    setShowQuizResult(true);
+
+    if (index === quizQuestions[currentQuestion]?.correctIndex) {
+      setQuizScore((prev) => prev + 1);
+    }
+    setAnsweredQuestions((prev) => new Set(prev).add(currentQuestion));
+  };
+
+  const nextQuestion = () => {
+    setSelectedAnswer(null);
+    setShowQuizResult(false);
+    setCurrentQuestion((prev) => (prev + 1) % quizQuestions.length);
+  };
+
+  const prevQuestion = () => {
+    setSelectedAnswer(null);
+    setShowQuizResult(false);
+    setCurrentQuestion((prev) => (prev - 1 + quizQuestions.length) % quizQuestions.length);
+  };
+
+  const resetQuiz = () => {
+    setCurrentQuestion(0);
+    setSelectedAnswer(null);
+    setShowQuizResult(false);
+    setQuizScore(0);
+    setAnsweredQuestions(new Set());
   };
 
   return (
@@ -124,16 +168,19 @@ export default function TopicContentInteractive({
             </button>
           )}
 
-          <button
-            onClick={() => setViewMode("quiz")}
-            disabled
-            className="inline-flex items-center gap-2 rounded-full border border-ink/10 px-4 py-2 text-sm font-semibold text-ink/40 cursor-not-allowed"
-            title={locale === "uk" ? "Скоро" : "Wkrótce"}
-          >
-            <Question size={16} />
-            {locale === "uk" ? "Квіз" : "Quiz"}
-            <span className="text-xs">(скоро)</span>
-          </button>
+          {quizQuestions.length > 0 && (
+            <button
+              onClick={() => setViewMode("quiz")}
+              className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-all ${
+                viewMode === "quiz"
+                  ? "bg-terracotta text-paper border border-terracotta"
+                  : "border border-ink/20 text-ink hover:border-terracotta/40 hover:bg-terracotta/5"
+              }`}
+            >
+              <Question size={16} weight={viewMode === "quiz" ? "fill" : "regular"} />
+              {locale === "uk" ? "Квіз" : "Quiz"}
+            </button>
+          )}
         </div>
 
         <button
@@ -205,9 +252,9 @@ export default function TopicContentInteractive({
                           )}
                         </button>
                       </div>
-                      {isRevealed && (
-                        <div className="mt-3 pt-3 border-t border-ink/10 text-xs text-ink/60 animate-in fade-in slide-in-from-top-2 duration-200">
-                          {locale === "uk" ? "💡 Детальний розбір прикладу буде тут" : "💡 Szczegółowa analiza przykładu tutaj"}
+                      {isRevealed && explanations[idx] && (
+                        <div className="mt-3 pt-3 border-t border-ink/10 text-sm text-ink/70 leading-relaxed animate-in fade-in slide-in-from-top-2 duration-200">
+                          {explanations[idx]}
                         </div>
                       )}
                     </div>
@@ -322,8 +369,8 @@ export default function TopicContentInteractive({
                       <div className="text-sm uppercase tracking-[0.2em] text-moss mb-4 font-semibold">
                         {locale === "uk" ? "Пояснення" : "Wyjaśnienie"}
                       </div>
-                      <div className="text-base sm:text-lg text-ink/80 leading-relaxed">
-                        {locale === "uk" ? "📚 Детальний розбір цього прикладу" : "📚 Szczegółowa analiza tego przykładu"}
+                      <div className="text-base sm:text-lg text-ink/80 leading-relaxed max-w-2xl mx-auto">
+                        {explanations[currentFlashcard] || (locale === "uk" ? "📚 Детальний розбір цього прикладу" : "📚 Szczegółowa analiza tego przykładu")}
                       </div>
                       <button className="mt-6 inline-flex items-center gap-2 rounded-full border border-ink/20 bg-paper px-5 py-2 text-sm font-semibold text-ink hover:bg-ink/5 transition-colors">
                         <EyeSlash size={16} />
@@ -376,16 +423,122 @@ export default function TopicContentInteractive({
         </div>
       )}
 
-      {/* Quiz View (stub) */}
-      {viewMode === "quiz" && (
-        <div className="rounded-[28px] border border-ink/10 bg-paper/60 p-10 text-center">
-          <Question size={48} className="text-ink/30 mx-auto mb-4" />
-          <p className="text-lg font-semibold text-ink mb-2">
-            {locale === "uk" ? "Квіз режим" : "Tryb quizu"}
-          </p>
-          <p className="text-sm text-ink/60">
-            {locale === "uk" ? "Інтерактивні вправи незабаром!" : "Interaktywne ćwiczenia wkrótce!"}
-          </p>
+      {/* Quiz View */}
+      {viewMode === "quiz" && quizQuestions.length > 0 && (
+        <div className="space-y-6">
+          <div className="rounded-[28px] border border-terracotta/20 bg-gradient-to-br from-terracotta/5 to-paper p-8 sm:p-10 shadow-soft">
+            {/* Quiz Header */}
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-ink flex items-center gap-2">
+                <Question size={24} weight="fill" className="text-terracotta" />
+                {locale === "uk" ? "Перевір знання" : "Sprawdź wiedzę"}
+              </h2>
+              <div className="flex items-center gap-4">
+                <span className="text-sm text-ink/60">
+                  {currentQuestion + 1} / {quizQuestions.length}
+                </span>
+                <span className="rounded-full bg-terracotta/10 px-3 py-1 text-sm font-semibold text-terracotta">
+                  {quizScore} / {answeredQuestions.size}
+                </span>
+              </div>
+            </div>
+
+            {/* Question */}
+            <div className="mb-6">
+              <p className="text-lg font-semibold text-ink mb-4">
+                {locale === "uk" ? quizQuestions[currentQuestion].questionUk : quizQuestions[currentQuestion].questionPl}
+              </p>
+
+              {/* Answer Options */}
+              <div className="space-y-3">
+                {quizQuestions[currentQuestion].options.map((option, idx) => {
+                  const isSelected = selectedAnswer === idx;
+                  const isCorrect = idx === quizQuestions[currentQuestion].correctIndex;
+                  const showResult = showQuizResult;
+
+                  let buttonClass = "w-full text-left rounded-2xl border-2 p-4 transition-all font-medium ";
+                  if (!showResult) {
+                    buttonClass += isSelected
+                      ? "border-terracotta bg-terracotta/10 text-terracotta"
+                      : "border-ink/20 bg-paper hover:border-terracotta/40 hover:bg-terracotta/5 text-ink";
+                  } else {
+                    if (isCorrect) {
+                      buttonClass += "border-moss bg-moss/10 text-moss";
+                    } else if (isSelected && !isCorrect) {
+                      buttonClass += "border-terracotta bg-terracotta/10 text-terracotta opacity-60";
+                    } else {
+                      buttonClass += "border-ink/10 bg-paper/60 text-ink/50";
+                    }
+                  }
+
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => handleAnswerSelect(idx)}
+                      disabled={showResult}
+                      className={buttonClass}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-current text-sm font-bold">
+                          {String.fromCharCode(65 + idx)}
+                        </span>
+                        <span className="flex-1">{option}</span>
+                        {showResult && isCorrect && (
+                          <CheckCircle size={24} weight="fill" className="text-moss" />
+                        )}
+                        {showResult && isSelected && !isCorrect && (
+                          <X size={24} weight="bold" className="text-terracotta" />
+                        )}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Explanation */}
+            {showQuizResult && (
+              <div className="rounded-2xl border border-moss/20 bg-moss/5 p-4 mb-6 animate-in fade-in slide-in-from-top-2 duration-300">
+                <p className="text-sm text-ink/70 leading-relaxed">
+                  {locale === "uk" ? quizQuestions[currentQuestion].explanationUk : quizQuestions[currentQuestion].explanationPl}
+                </p>
+              </div>
+            )}
+
+            {/* Navigation */}
+            <div className="flex items-center justify-between gap-4">
+              <button
+                onClick={prevQuestion}
+                className="rounded-full border border-ink/20 bg-paper px-6 py-3 text-sm font-semibold text-ink hover:border-terracotta/40 hover:bg-terracotta/5 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                disabled={quizQuestions.length <= 1}
+              >
+                ← {locale === "uk" ? "Попереднє" : "Poprzednie"}
+              </button>
+
+              <button
+                onClick={resetQuiz}
+                className="rounded-full border border-ink/10 bg-paper px-4 py-2 text-xs font-semibold text-ink/60 hover:bg-ink/5 transition-all"
+              >
+                {locale === "uk" ? "Почати знову" : "Zacznij od nowa"}
+              </button>
+
+              <button
+                onClick={nextQuestion}
+                className="rounded-full border border-terracotta/30 bg-terracotta/10 px-6 py-3 text-sm font-semibold text-terracotta hover:border-terracotta/50 hover:bg-terracotta/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                disabled={quizQuestions.length <= 1}
+              >
+                {locale === "uk" ? "Наступне" : "Następne"} →
+              </button>
+            </div>
+          </div>
+
+          {/* Quiz Tips */}
+          <div className="rounded-2xl border border-moss/20 bg-moss/5 p-4 text-sm text-ink/70">
+            <strong className="text-moss">{locale === "uk" ? "💡 Порада:" : "💡 Wskazówka:"}</strong>{" "}
+            {locale === "uk"
+              ? "Відповідай на всі питання, щоб перевірити своє розуміння теми. Можеш повторювати квіз скільки завгодно!"
+              : "Odpowiedz na wszystkie pytania, aby sprawdzić swoje zrozumienie tematu. Możesz powtarzać quiz ile chcesz!"}
+          </div>
         </div>
       )}
     </div>

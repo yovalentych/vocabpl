@@ -7,6 +7,16 @@ export type CompendiumHero = {
   leadPl: string;
 };
 
+export type QuizQuestion = {
+  id: string;
+  questionUk: string;
+  questionPl: string;
+  options: string[]; // Answer options (same for both languages if Polish words)
+  correctIndex: number; // Index of correct answer
+  explanationUk?: string; // Why this is correct
+  explanationPl?: string;
+};
+
 export type CompendiumSprint = {
   id: string;
   titleUk: string;
@@ -18,6 +28,8 @@ export type CompendiumSprint = {
   detailedPl?: string;
   examplesUk?: string[]; // Practical examples
   examplesPl?: string[];
+  exampleExplanationsUk?: string[]; // Detailed breakdown of each example (for flashcards)
+  exampleExplanationsPl?: string[];
   commonMistakesUk?: string; // Common mistakes to avoid
   commonMistakesPl?: string;
   tipsUk?: string; // Learning tips
@@ -25,6 +37,7 @@ export type CompendiumSprint = {
   difficulty?: 'A1' | 'A2' | 'B1' | 'B2' | 'C1'; // CEFR level
   relatedTopics?: string[]; // IDs of related sprints/rules
   estimatedMinutes?: number; // Study time estimate
+  quizQuestions?: QuizQuestion[]; // Interactive quiz questions
 };
 
 export type CompendiumRule = {
@@ -38,6 +51,8 @@ export type CompendiumRule = {
   detailedPl?: string;
   examplesUk?: string[]; // Multiple examples with translations
   examplesPl?: string[];
+  exampleExplanationsUk?: string[]; // Detailed breakdown of each example (for flashcards)
+  exampleExplanationsPl?: string[];
   counterExamplesUk?: string[]; // What NOT to do
   counterExamplesPl?: string[];
   mnemonicUk?: string; // Memory tricks
@@ -46,6 +61,7 @@ export type CompendiumRule = {
   category?: 'cases' | 'verbs' | 'adjectives' | 'syntax' | 'other'; // Topic category
   relatedRules?: string[]; // IDs of related rules
   practiceUrl?: string; // Link to practice exercises (optional)
+  quizQuestions?: QuizQuestion[]; // Interactive quiz questions
 };
 
 export type CompendiumSiteItem = {
@@ -151,6 +167,51 @@ export const defaultCompendiumContent: CompendiumContent = {
           "**Narzędnik**: Idę z **kotem** — po **z, przed, nad, pod**",
           "**Miejscownik**: Myślę o **kocie** — po **w, na, o, po, przy**"
         ],
+        exampleExplanationsUk: [
+          "**Mianownik** — початкова форма. Відповідає на 'хто? що?'. Використовується як підмет речення.",
+          "**Dopełniacz** — змінюємо закінчення з -∅ на **-a**. Після 'nie ma' ЗАВЖДИ родовий! Також після прийменників 'do, od, bez, z (звідки)'.",
+          "**Celownik** — закінчення **-u** для чоловічого роду. Після дієслова 'dawać' (давати). Відповідає на 'кому? чому?'.",
+          "**Biernik** — для живих істот те саме що родовий (**-a**). Використовується після 'widzę, lubię, znam' та прийменників руху.",
+          "**Narzędnik** — закінчення **-em**. ЗАВЖДИ після 'z' (з ким?). Також після 'przed, nad, pod, za' (позиція).",
+          "**Miejscownik** — закінчення **-e** + м'якшення (k→c, g→dz). Після 'o' (про), 'w, na, po, przy' (де? — статична позиція)."
+        ],
+        exampleExplanationsPl: [
+          "**Mianownik** — forma podstawowa. Odpowiada na 'kto? co?'. Używana jako podmiot zdania.",
+          "**Dopełniacz** — końcówka **-a**. Po 'nie ma' ZAWSZE dopełniacz! Także po 'do, od, bez, z (skąd)'.",
+          "**Celownik** — końcówka **-u** dla rodzaju męskiego. Po czasowniku 'dawać'. Odpowiada na 'komu? czemu?'.",
+          "**Biernik** — dla żywych istot taki sam jak dopełniacz (**-a**). Po 'widzę, lubię, znam' i przyimkach ruchu.",
+          "**Narzędnik** — końcówka **-em**. ZAWSZE po 'z' (z kim?). Także po 'przed, nad, pod, za' (pozycja).",
+          "**Miejscownik** — końcówka **-e** + zmiękczenie (k→c, g→dz). Po 'o' (o czym), 'w, na, po, przy' (gdzie? — statyczna pozycja)."
+        ],
+        quizQuestions: [
+          {
+            id: "q1",
+            questionUk: "Яку форму використати: 'Idę ___ szkoły' (Йду ЗІ школи)?",
+            questionPl: "Jaka forma: 'Idę ___ szkoły' (wracam)?",
+            options: ["do", "z", "w", "na"],
+            correctIndex: 1,
+            explanationUk: "'Z' + родовий відмінок для руху 'звідки'. **z szkoły** = зі школи (звідки?)",
+            explanationPl: "'Z' + dopełniacz dla ruchu 'skąd'. **z szkoły** = ze szkoły (skąd?)"
+          },
+          {
+            id: "q2",
+            questionUk: "Виберіть правильну форму: 'Widzę ___' (Бачу кота)",
+            questionPl: "Poprawna forma: 'Widzę ___' (widzę kota)",
+            options: ["kot", "kota", "kotu", "kotem"],
+            correctIndex: 1,
+            explanationUk: "Після 'widzę' (бачу) → знахідний відмінок. Для живих істот = родовий → **kota**",
+            explanationPl: "Po 'widzę' → biernik. Dla żywych istot = dopełniacz → **kota**"
+          },
+          {
+            id: "q3",
+            questionUk: "Де помилка? 'Jestem w szkole' (Я У школі)",
+            questionPl: "Gdzie błąd? 'Jestem w szkole'",
+            options: ["Немає помилки", "Треба 'do szkoły'", "Треба 'na szkole'", "Треба 'z szkoły'"],
+            correctIndex: 0,
+            explanationUk: "✅ Правильно! 'w' + місцевий для статичної позиції (де?). **w szkole** = у школі (де я зараз?)",
+            explanationPl: "✅ Poprawnie! 'w' + miejscownik dla statycznej pozycji (gdzie?). **w szkole** = w szkole (gdzie teraz jestem?)"
+          }
+        ],
         commonMistakesUk: "❌ **w szkole** (місцевий, де?) vs ✅ **do szkoły** (родовий, куди?)\n❌ **z domu** (родовий, звідки?) плутають з **w domu** (місцевий, де?)",
         commonMistakesPl: "❌ **w szkole** (miejscownik, gdzie?) vs ✅ **do szkoły** (dopełniacz, dokąd?)\n❌ **z domu** (dopełniacz, skąd?) mylą z **w domu** (miejscownik, gdzie?)",
         tipsUk: "💡 Створи таблицю прийменників з відмінками. Практикуй на 5-10 словах щодня, міняючи відмінки.",
@@ -181,6 +242,49 @@ export const defaultCompendiumContent: CompendiumContent = {
           "**Dokonany**: Napiszę list (zakończę)",
           "**Pary**: robić/zrobić, pisać/napisać, czytać/przeczytać"
         ],
+        exampleExplanationsUk: [
+          "**czytam** — недоконаний вид. Описує ПРОЦЕС читання зараз. Не важливо чи закінчу. Форма теперішнього часу можлива тільки для недоконаного виду!",
+          "**przeczytam** — доконаний вид (префікс **prze-**). Означає ЗАВЕРШУ читання. Це майбутній час! Доконаний вид не має теперішнього.",
+          "**piszę** — недоконаний, процес. Пишу зараз, але чи закінчу — невідомо. Можу писати годинами.",
+          "**napiszę** — доконаний (префікс **na-**). Завершу писання. Одноразова завершена дія в майбутньому.",
+          "**Парний принцип**: кожна пара відрізняється префіксом або суфіксом. robić → **z**robić, pisać → **na**pisać. Запам'ятовуй парами!"
+        ],
+        exampleExplanationsPl: [
+          "**czytam** — aspekt niedokonany. Opisuje PROCES czytania teraz. Nieważne czy skończę. Czas teraźniejszy możliwy tylko dla niedokonanego!",
+          "**przeczytam** — aspekt dokonany (prefiks **prze-**). Oznacza UKOŃCZĘ czytanie. To czas przyszły! Dokonany nie ma teraźniejszego.",
+          "**piszę** — niedokonany, proces. Piszę teraz, ale czy skończę — nieznane. Mogę pisać godzinami.",
+          "**napiszę** — dokonany (prefiks **na-**). Ukończę pisanie. Jednorazowa zakończona czynność w przyszłości.",
+          "**Zasada par**: każda para różni się prefiksem lub sufiksem. robić → **z**robić, pisać → **na**pisać. Ucz się parami!"
+        ],
+        quizQuestions: [
+          {
+            id: "q1",
+            questionUk: "Яка форма правильна: 'Teraz ___ książkę' (Зараз читаю книгу)?",
+            questionPl: "Jaka forma: 'Teraz ___ książkę'?",
+            options: ["czytam", "przeczytam", "czytałem", "przeczytałem"],
+            correctIndex: 0,
+            explanationUk: "Теперішній час → тільки недоконаний вид! **czytam** = читаю (процес зараз)",
+            explanationPl: "Czas teraźniejszy → tylko niedokonany! **czytam** = czytam (proces teraz)"
+          },
+          {
+            id: "q2",
+            questionUk: "Виберіть для завершеної дії: 'Wczoraj ___ list' (Вчора написав листа)",
+            questionPl: "Dla zakończonej czynności: 'Wczoraj ___ list'",
+            options: ["pisałem", "napisałem", "piszę", "napiszę"],
+            correctIndex: 1,
+            explanationUk: "Минулий час + завершена дія → доконаний вид! **napisałem** (написав і закінчив)",
+            explanationPl: "Czas przeszły + zakończona czynność → dokonany! **napisałem** (napisałem i skończyłem)"
+          },
+          {
+            id: "q3",
+            questionUk: "Що означає 'zrobię'?",
+            questionPl: "Co znaczy 'zrobię'?",
+            options: ["Роблю зараз", "Зроблю (завершу)", "Робив раніше", "Буду робити довго"],
+            correctIndex: 1,
+            explanationUk: "**zrobię** = зроблю (доконаний + майбутній). Завершу дію в майбутньому!",
+            explanationPl: "**zrobię** = zrobię (dokonany + przyszły). Ukończę czynność w przyszłości!"
+          }
+        ],
         commonMistakesUk: "❌ Вживати доконаний вид для теперішнього часу: **zrobię teraz** → ✅ **robię teraz**\n❌ Недоконаний вид для разової дії: **Wczoraj pisałem list** → ✅ **Wczoraj napisałem list**",
         commonMistakesPl: "❌ Używać aspektu dokonanego w czasie teraźniejszym: **zrobię teraz** → ✅ **robię teraz**\n❌ Aspekt niedokonany dla jednorazowej czynności: **Wczoraj pisałem list** → ✅ **Wczoraj napisałem list**",
         tipsUk: "💡 Почни з 10 найчастіших пар дієслів. Створи картки: на одній стороні недоконаний, на іншій — доконаний.",
@@ -194,21 +298,154 @@ export const defaultCompendiumContent: CompendiumContent = {
         titleUk: "Прийменники",
         titlePl: "Przyimki",
         hintUk: "Запамʼятовуй звʼязки: **do + G**, **na + B/M**, **z + N**.",
-        hintPl: "Zapamiętuj połączenia: **do + D**, **na + B/M**, **z + N**."
+        hintPl: "Zapamiętuj połączenia: **do + D**, **na + B/M**, **z + N**.",
+        detailedUk: "Кожен прийменник керує певним відмінком. Деякі можуть вживатися з кількома відмінками залежно від значення (рух vs позиція). Ключ — запамʼятати найчастіші комбінації.",
+        detailedPl: "Każdy przyimek rządzi określonym przypadkiem. Niektóre mogą występować z kilkoma przypadkami w zależności od znaczenia (ruch vs pozycja). Klucz — zapamiętać najczęstsze połączenia.",
+        examplesUk: [
+          "**do** + родовий: do szkoły (до школи), do domu (додому)",
+          "**z/ze** + родовий (звідки): z domu (з дому), ze szkoły (зі школи)",
+          "**z/ze** + орудний (з ким?): z kotem (з котом), z przyjacielem (з другом)",
+          "**na** + знахідний (куди?): na spacer (на прогулянку), na uniwersytet (в університет)",
+          "**na** + місцевий (де?): na uniwersytecie (в університеті), na ulicy (на вулиці)",
+          "**w/we** + місцевий: w domu (вдома), w szkole (у школі)",
+          "**o** + місцевий: o tobie (про тебе), o filmie (про фільм)"
+        ],
+        examplesPl: [
+          "**do** + dopełniacz: do szkoły, do domu",
+          "**z/ze** + dopełniacz (skąd): z domu, ze szkoły",
+          "**z/ze** + narzędnik (z kim?): z kotem, z przyjacielem",
+          "**na** + biernik (dokąd?): na spacer, na uniwersytet",
+          "**na** + miejscownik (gdzie?): na uniwersytecie, na ulicy",
+          "**w/we** + miejscownik: w domu, w szkole",
+          "**o** + miejscownik: o tobie, o filmie"
+        ],
+        exampleExplanationsUk: [
+          "**do + G**: завжди для напрямку руху. Питання: куди? → **do szkoły** (до школи, куди йду?)",
+          "**z + G**: для вихідної точки руху. Питання: звідки? → **z domu** (з дому, звідки виходжу?)",
+          "**z + N**: для компанії, інструменту. Питання: з ким? з чим? → **z kotem** (з котом, компанія)",
+          "**na + B**: рух на поверхню або подію. **na spacer** (йду НА прогулянку), **na uniwersytet** (їду В університет — устале)",
+          "**na + M**: статична позиція на поверхні. **na uniwersytecie** (я В університеті зараз), **na ulicy** (на вулиці)",
+          "**w + M**: статична позиція всередині. **w domu** (вдома, всередині будинку), **w szkole** (у школі)",
+          "**o + M**: тема розмови, думки. **o tobie** (про тебе), **o filmie** (про фільм)"
+        ],
+        exampleExplanationsPl: [
+          "**do + D**: zawsze dla kierunku ruchu. Pytanie: dokąd? → **do szkoły** (do szkoły, dokąd idę?)",
+          "**z + D**: dla punktu wyjścia. Pytanie: skąd? → **z domu** (z domu, skąd wychodzę?)",
+          "**z + N**: dla towarzystwa, narzędzia. Pytanie: z kim? z czym? → **z kotem** (z kotem, towarzystwo)",
+          "**na + B**: ruch na powierzchnię lub wydarzenie. **na spacer** (idę NA spacer), **na uniwersytet** (jadę NA uniwersytet — utarte)",
+          "**na + M**: statyczna pozycja na powierzchni. **na uniwersytecie** (jestem NA uniwersytecie teraz), **na ulicy** (na ulicy)",
+          "**w + M**: statyczna pozycja wewnątrz. **w domu** (w domu, wewnątrz budynku), **w szkole** (w szkole)",
+          "**o + M**: temat rozmowy, myśli. **o tobie** (o tobie), **o filmie** (o filmie)"
+        ],
+        commonMistakesUk: "❌ **w uniwersytet** → ✅ **na uniwersytet** (wyjątek!)\n❌ **do domu** (де?) → ✅ **w domu** (де?), **do domu** (куди?)",
+        commonMistakesPl: "❌ **w uniwersytet** → ✅ **na uniwersytet** (wyjątek!)\n❌ **do domu** (gdzie?) → ✅ **w domu** (gdzie?), **do domu** (dokąd?)",
+        tipsUk: "💡 Створи таблицю 'рух vs позиція': do/z (рух) ↔ w/na (позиція). Практикуй на 5 місцях.",
+        tipsPl: "💡 Stwórz tabelę 'ruch vs pozycja': do/z (ruch) ↔ w/na (pozycja). Ćwicz na 5 miejscach.",
+        difficulty: "A2",
+        relatedTopics: ["cases"],
+        estimatedMinutes: 12,
+        quizQuestions: [
+          {
+            id: "q1",
+            questionUk: "Доповни: 'Idę ___ szkoły' (Йду ЗІ школи)",
+            questionPl: "Uzupełnij: 'Idę ___ szkoły'",
+            options: ["do", "z", "w", "na"],
+            correctIndex: 1,
+            explanationUk: "'z' + родовий для руху 'звідки'. **z szkoły** = зі школи",
+            explanationPl: "'z' + dopełniacz dla ruchu 'skąd'. **z szkoły** = ze szkoły"
+          },
+          {
+            id: "q2",
+            questionUk: "'Mieszkam ___ Krakowie' (Живу в Кракові)",
+            questionPl: "'Mieszkam ___ Krakowie'",
+            options: ["do", "w", "na", "z"],
+            correctIndex: 1,
+            explanationUk: "'w' + місцевий для статичної позиції (де?). **w Krakowie**",
+            explanationPl: "'w' + miejscownik dla statycznej pozycji (gdzie?). **w Krakowie**"
+          }
+        ]
       },
       {
         id: "order",
         titleUk: "Порядок слів",
         titlePl: "Szyk",
         hintUk: "Базово: **підмет → дієслово → обʼєкт**, але нове став ближче до кінця.",
-        hintPl: "Bazowo: **podmiot → czasownik → dopełnienie**, nowe bliżej końca."
+        hintPl: "Bazowo: **podmiot → czasownik → dopełnienie**, nowe bliżej końca.",
+        detailedUk: "Польська має гнучкий порядок слів завдяки відмінковій системі. Нейтральний порядок: SVO (Subject-Verb-Object). Але НОВА інформація йде ближче до кінця речення для акценту.",
+        detailedPl: "Polski ma elastyczny szyk dzięki systemowi przypadków. Neutralny szyk: SVO (Subject-Verb-Object). Ale NOWA informacja idzie bliżej końca zdania dla akcentu.",
+        examplesUk: [
+          "Нейтральний: **Jan czyta książkę** (Ян читає книгу)",
+          "Акцент на дії: **Książkę czyta Jan** (Книгу читає Ян — хто? Ян!)",
+          "Акцент на об'єкті: **Jan czyta KSIĄŻKĘ** (Ян читає КНИГУ, не журнал)",
+          "Питання: **Co czyta Jan?** (Що читає Ян?) → **Jan czyta książkę** (нове = книгу)"
+        ],
+        examplesPl: [
+          "Neutralny: **Jan czyta książkę**",
+          "Akcent na czynności: **Książkę czyta Jan** (kto? Jan!)",
+          "Akcent na przedmiocie: **Jan czyta KSIĄŻKĘ** (nie czasopismo)",
+          "Pytanie: **Co czyta Jan?** → **Jan czyta książkę** (nowe = książkę)"
+        ],
+        difficulty: "B1",
+        estimatedMinutes: 10
       },
       {
         id: "questions",
         titleUk: "Питання",
         titlePl: "Pytania",
         hintUk: "**czy** для загальних, **kto/co/gdzie** для конкретних.",
-        hintPl: "**czy** dla ogólnych, **kto/co/gdzie** dla konkretnych."
+        hintPl: "**czy** dla ogólnych, **kto/co/gdzie** dla konkretnych.",
+        detailedUk: "Є два типи питань: **загальні** (так/ні) з часткою 'czy' та **спеціальні** з питальними словами (kto, co, gdzie, kiedy, dlaczego). Інтонація також важлива!",
+        detailedPl: "Są dwa typy pytań: **ogólne** (tak/nie) z partykułą 'czy' oraz **szczególne** z zaimkami pytającymi (kto, co, gdzie, kiedy, dlaczego). Intonacja też jest ważna!",
+        examplesUk: [
+          "**Czy** lubisz kawę? (Чи любиш каву?) — загальне питання",
+          "**Co** robisz? (Що робиш?) — спеціальне, про дію",
+          "**Gdzie** mieszkasz? (Де живеш?) — про місце",
+          "**Kiedy** przyjdziesz? (Коли прийдеш?) — про час",
+          "**Dlaczego** się spóźniłeś? (Чому спізнився?) — про причину"
+        ],
+        examplesPl: [
+          "**Czy** lubisz kawę? — pytanie ogólne",
+          "**Co** robisz? — szczególne, o czynności",
+          "**Gdzie** mieszkasz? — o miejscu",
+          "**Kiedy** przyjdziesz? — o czasie",
+          "**Dlaczego** się spóźniłeś? — o przyczynę"
+        ],
+        exampleExplanationsUk: [
+          "**Czy** — частка для так/ні питань. Можна опустити і просто підняти інтонацію: Lubisz kawę↗?",
+          "**Co** — що? Для предметів, дій. Завжди знахідний: Co widzisz? (Що бачиш?)",
+          "**Gdzie** — де? Для місця. Можна + прийменник: Gdzie mieszkasz? (де живеш?), Dokąd idziesz? (куди йдеш?)",
+          "**Kiedy** — коли? Для часу. Kiedy przyjdziesz? (коли прийдеш?)",
+          "**Dlaczego** — чому? Для причини. Dlaczego? = Bo... (чому? тому що...)"
+        ],
+        exampleExplanationsPl: [
+          "**Czy** — partykuła dla pytań tak/nie. Można pominąć i podnieść intonację: Lubisz kawę↗?",
+          "**Co** — co? Dla przedmiotów, czynności. Zawsze biernik: Co widzisz?",
+          "**Gdzie** — gdzie? Dla miejsca. Można + przyimek: Gdzie mieszkasz?, Dokąd idziesz?",
+          "**Kiedy** — kiedy? Dla czasu. Kiedy przyjdziesz?",
+          "**Dlaczego** — dlaczego? Dla przyczyny. Dlaczego? = Bo..."
+        ],
+        difficulty: "A1",
+        estimatedMinutes: 8,
+        quizQuestions: [
+          {
+            id: "q1",
+            questionUk: "Як запитати 'Де ти живеш?'",
+            questionPl: "Jak zapytać 'Gdzie mieszkasz?'",
+            options: ["Co mieszkasz?", "Gdzie mieszkasz?", "Kiedy mieszkasz?", "Czy mieszkasz?"],
+            correctIndex: 1,
+            explanationUk: "**Gdzie** = де? → **Gdzie mieszkasz?**",
+            explanationPl: "**Gdzie** = gdzie? → **Gdzie mieszkasz?**"
+          },
+          {
+            id: "q2",
+            questionUk: "Питання так/ні: '___ lubisz kawę?'",
+            questionPl: "Pytanie tak/nie: '___ lubisz kawę?'",
+            options: ["Co", "Gdzie", "Czy", "Kto"],
+            correctIndex: 2,
+            explanationUk: "Загальне питання → **Czy** lubisz kawę?",
+            explanationPl: "Pytanie ogólne → **Czy** lubisz kawę?"
+          }
+        ]
       }
     ],
     rules: [
@@ -233,6 +470,47 @@ export const defaultCompendiumContent: CompendiumContent = {
           "**pisać**: piszę, piszesz, pisze, piszemy, piszecie, piszą",
           "**czytać**: czytam, czytasz, czyta, czytamy, czytacie, czytają",
           "**mówić**: mówię, mówisz, mówi, mówimy, mówicie, mówią"
+        ],
+        exampleExplanationsUk: [
+          "**robić** (група -ić): 1 особа → **-ę** (robię), 2 → **+sz** (robisz), 3 → **-i** (robi). Множина: my/wy/oni → -imy/-icie/-ią",
+          "**pisać** (група -ać з чергуванням): основа zmінюється! pis- → pisz-. 1 особа → **-ę** (piszę), решта аналогічно. Чергування голосних!",
+          "**czytać** (стандартна група -ać): 1 особа → **-am** (czytam), НЕ -ę! Це ключова відмінність від -ić/-eć. Решта +sz, -a, +my, +cie, +ją",
+          "**mówić** (група -ić з чергуванням): 1 особа → **-ę** (mówię). Всі дієслова на -ić мають -ę в 1 особі! mów- → mówi-"
+        ],
+        exampleExplanationsPl: [
+          "**robić** (grupa -ić): 1 osoba → **-ę** (robię), 2 → **+sz** (robisz), 3 → **-i** (robi). Liczba mnoga: my/wy/oni → -imy/-icie/-ią",
+          "**pisać** (grupa -ać z alternacją): temat się zmienia! pis- → pisz-. 1 osoba → **-ę** (piszę), reszta analogicznie. Alternacja!",
+          "**czytać** (standardowa grupa -ać): 1 osoba → **-am** (czytam), NIE -ę! To kluczowa różnica od -ić/-eć. Reszta +sz, -a, +my, +cie, +ją",
+          "**mówić** (grupa -ić z alternacją): 1 osoba → **-ę** (mówię). Wszystkie czasowniki na -ić mają -ę w 1 osobie! mów- → mówi-"
+        ],
+        quizQuestions: [
+          {
+            id: "q1",
+            questionUk: "1 особа від 'czytać'?",
+            questionPl: "1 osoba od 'czytać'?",
+            options: ["czytę", "czytam", "czytaję", "czytamy"],
+            correctIndex: 1,
+            explanationUk: "Група -ać → 1 особа **-am**! czytać → **czytam** (НЕ -ę!)",
+            explanationPl: "Grupa -ać → 1 osoba **-am**! czytać → **czytam** (NIE -ę!)"
+          },
+          {
+            id: "q2",
+            questionUk: "3 особа множини від 'mówić'?",
+            questionPl: "3 osoba liczby mnogiej od 'mówić'?",
+            options: ["mówią", "mówią", "mówią", "mówią"],
+            correctIndex: 0,
+            explanationUk: "Група -ić → 3 множина **-ią** або **-ą**. mówić → mówi → **mówią**",
+            explanationPl: "Grupa -ić → 3 l.mn. **-ią** lub **-ą**. mówić → mówi → **mówią**"
+          },
+          {
+            id: "q3",
+            questionUk: "Чому 'piszę', а не 'pisam'?",
+            questionPl: "Dlaczego 'piszę', a nie 'pisam'?",
+            options: ["Помилка в питанні", "Чергування s→sz", "Група -ać має -ę", "Виняток"],
+            correctIndex: 1,
+            explanationUk: "pisać має чергування: pis- → **pisz-** у всіх формах. Тому piszę, piszesz... (НЕ pisam!)",
+            explanationPl: "pisać ma alternację: pis- → **pisz-** we wszystkich formach. Dlatego piszę, piszesz... (NIE pisam!)"
+          }
         ],
         counterExamplesUk: [
           "❌ **zrobię** — це майбутній, не теперішній!",
