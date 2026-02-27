@@ -54,7 +54,20 @@
       "Bash(regardless of the language used in the topic/request\"\n\n✅ paraphrase_generate:\n   \"CRITICAL: sourcePl and instructionPl MUST be in POLISH,)",
       "Bash(regardless of the language used in the topic/request\"\n\n✅ sentences_generate:\n   \"CRITICAL: The 'pl' field MUST contain POLISH words,)",
       "Bash(regardless of the language used in the topic/request\"\n\n✅ story_generate:\n   \"CRITICAL: The 'text' field MUST contain a story in POLISH,)",
-      "Bash(regardless of the language used in the topic/request\"\n   + Додаткові підкреслення: \"ЗАВЖДИ ПОЛЬСЬКОЮ!\", \"ОБОВ 'ЯЗКОВО польською мовою\"\n\nТепер можна писати тему українською/англійською, а контент завжди польський! 🇵🇱\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
+      "Bash(regardless of the language used in the topic/request\"\n   + Додаткові підкреслення: \"ЗАВЖДИ ПОЛЬСЬКОЮ!\", \"ОБОВ 'ЯЗКОВО польською мовою\"\n\nТепер можна писати тему українською/англійською, а контент завжди польський! 🇵🇱\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(find ~/.claude -name \"*.json\" -type f -exec sh -c 'jq empty \"\"$1\"\" 2>/dev/null || echo \"\"Invalid: $1\"\"' _ {} ;)",
+      "Bash(npx next build:*)",
+      "Bash(cat:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(git -C /Users/yovalentych/Downloads/polish_vocab_app_v2 status)",
+      "Bash(git -C /Users/yovalentych/Downloads/polish_vocab_app_v2 diff --stat)",
+      "Bash(git -C /Users/yovalentych/Downloads/polish_vocab_app_v2 log --oneline -5)",
+      "Bash(git -C /Users/yovalentych/Downloads/polish_vocab_app_v2 commit -m \"$\\(cat <<''EOF''\nComprehensive i18n: replace hardcoded strings across 22 components\n\nReplace ~150+ hardcoded Ukrainian/Polish UI strings with translation keys:\n- All 9 ExercisePage navigation strings \\(backToModeSelect, backToExercises\\)\n- DialogueAIConfig, StoryConfig, DescribeConfig → full i18n\n- DescribePractice, StoryPractice, DialogueAIPractice → UI labels, hints, errors\n- DescribeResultModal, StoryResultModal → feedback titles, scores, labels\n- ClozeResults, MatchResults → stats, tips, detailed feedback\n- BetaDisclaimer → new beta section with 22 keys in both locales\n- Home page \\(page.tsx\\) → authenticated user view with greeting, stats, CTA\n- i18n.ts → 120+ new keys added to both PL and UK sections\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git -C /Users/yovalentych/Downloads/polish_vocab_app_v2 push)",
+      "Bash(git status:*)",
+      "Bash(__NEW_LINE_9694c7d5b36f70a3__ grep -n '[А-Яа-яёЁ]' /Users/yovalentych/Downloads/polish_vocab_app_v2/src/components/tests/GrammarTopicsModal.tsx)",
+      "Bash(done)",
+      "Bash(git restore:*)"
     ]
   }
 }

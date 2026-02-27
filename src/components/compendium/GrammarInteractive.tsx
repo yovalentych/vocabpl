@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { CheckCircle, Circle, CaretDown, CaretUp, Lightning, BookOpen, Target, Clock } from "@phosphor-icons/react";
+import Link from "next/link";
+import { CheckCircle, Circle, Target, Clock, ArrowRight } from "@phosphor-icons/react";
 import { renderSimpleMarkdown } from "@/components/markdown";
 import type { CompendiumSprint, CompendiumRule } from "@/lib/compendium-content";
 
@@ -11,7 +12,6 @@ interface GrammarInteractiveProps {
   locale: string;
 }
 
-type ReadingMode = "quick" | "detailed";
 type CompletionState = Set<string>;
 
 const DIFFICULTY_CONFIG = {
@@ -23,8 +23,6 @@ const DIFFICULTY_CONFIG = {
 };
 
 export default function GrammarInteractive({ sprints, rules, locale }: GrammarInteractiveProps) {
-  const [readingMode, setReadingMode] = useState<ReadingMode>("quick");
-  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
   const [completedSprints, setCompletedSprints] = useState<CompletionState>(new Set());
   const [completedRules, setCompletedRules] = useState<CompletionState>(new Set());
   const [isClient, setIsClient] = useState(false);
@@ -40,7 +38,6 @@ export default function GrammarInteractive({ sprints, rules, locale }: GrammarIn
     try {
       const savedCompletedSprints = localStorage.getItem("grammar_completed_sprints");
       const savedCompletedRules = localStorage.getItem("grammar_completed_rules");
-      const savedReadingMode = localStorage.getItem("grammar_reading_mode");
 
       if (savedCompletedSprints) {
         setCompletedSprints(new Set(JSON.parse(savedCompletedSprints)));
@@ -48,25 +45,14 @@ export default function GrammarInteractive({ sprints, rules, locale }: GrammarIn
       if (savedCompletedRules) {
         setCompletedRules(new Set(JSON.parse(savedCompletedRules)));
       }
-      if (savedReadingMode === "quick" || savedReadingMode === "detailed") {
-        setReadingMode(savedReadingMode);
-      }
     } catch (error) {
       console.error("Failed to load grammar progress:", error);
     }
   }, []);
 
-  const toggleExpanded = (id: string) => {
-    const newExpanded = new Set(expandedItems);
-    if (newExpanded.has(id)) {
-      newExpanded.delete(id);
-    } else {
-      newExpanded.add(id);
-    }
-    setExpandedItems(newExpanded);
-  };
-
-  const toggleSprintCompletion = (id: string) => {
+  const toggleSprintCompletion = (id: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     const newCompleted = new Set(completedSprints);
     if (newCompleted.has(id)) {
       newCompleted.delete(id);
@@ -83,7 +69,9 @@ export default function GrammarInteractive({ sprints, rules, locale }: GrammarIn
     }
   };
 
-  const toggleRuleCompletion = (id: string) => {
+  const toggleRuleCompletion = (id: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     const newCompleted = new Set(completedRules);
     if (newCompleted.has(id)) {
       newCompleted.delete(id);
@@ -100,18 +88,6 @@ export default function GrammarInteractive({ sprints, rules, locale }: GrammarIn
     }
   };
 
-  const toggleReadingMode = () => {
-    const newMode: ReadingMode = readingMode === "quick" ? "detailed" : "quick";
-    setReadingMode(newMode);
-    if (isClient) {
-      try {
-        localStorage.setItem("grammar_reading_mode", newMode);
-      } catch (error) {
-        console.error("Failed to save reading mode:", error);
-      }
-    }
-  };
-
   const totalSprintsCompleted = completedSprints.size;
   const totalRulesCompleted = completedRules.size;
   const totalItems = sprints.length + rules.length;
@@ -120,39 +96,24 @@ export default function GrammarInteractive({ sprints, rules, locale }: GrammarIn
 
   return (
     <div className="space-y-10">
-      {/* Reading Mode Toggle + Progress */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-2xl border border-ink/10 bg-paper/60">
-        <div className="flex items-center gap-4">
-          <button
-            onClick={toggleReadingMode}
-            className="inline-flex items-center gap-2 rounded-full border border-ink/20 bg-paper px-4 py-2 text-sm font-semibold text-ink hover:border-moss/40 hover:bg-moss/5 transition-all"
-          >
-            {readingMode === "quick" ? (
-              <>
-                <Lightning size={16} weight="fill" className="text-gold" />
-                <span>{locale === "uk" ? "Швидкий огляд" : "Szybki przegląd"}</span>
-              </>
-            ) : (
-              <>
-                <BookOpen size={16} weight="fill" className="text-moss" />
-                <span>{locale === "uk" ? "Детальне вивчення" : "Szczegółowa nauka"}</span>
-              </>
-            )}
-          </button>
-
-          <div className="text-xs text-ink/60">
-            {readingMode === "quick"
-              ? (locale === "uk" ? "Основна інформація" : "Podstawowe informacje")
-              : (locale === "uk" ? "Повний контент + приклади" : "Pełna treść + przykłady")}
+      {/* Progress Info */}
+      <div className="rounded-2xl border border-moss/20 bg-gradient-to-br from-moss/5 to-paper p-6 shadow-soft">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <h3 className="text-sm font-semibold text-ink mb-1 flex items-center gap-2">
+              <Target size={18} className="text-moss" weight="fill" />
+              {locale === "uk" ? "Прогрес вивчення" : "Postęp nauki"}
+            </h3>
+            <p className="text-xs text-ink/60">
+              {locale === "uk" ? "Клікай на теми щоб вивчати детально" : "Klikaj tematy aby uczyć się szczegółowo"}
+            </p>
           </div>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <Target size={18} className="text-moss" weight="fill" />
-          <div className="text-sm">
-            <span className="font-bold text-moss">{totalCompleted}</span>
-            <span className="text-ink/60"> / {totalItems}</span>
-            <span className="ml-2 text-xs text-ink/50">({progressPercentage}%)</span>
+          <div className="flex items-baseline gap-2">
+            <span className="text-3xl font-bold text-moss">{totalCompleted}</span>
+            <span className="text-lg text-ink/60">/ {totalItems}</span>
+            <span className="ml-2 rounded-full bg-moss/10 px-3 py-1 text-sm font-semibold text-moss">
+              {progressPercentage}%
+            </span>
           </div>
         </div>
       </div>
@@ -169,29 +130,28 @@ export default function GrammarInteractive({ sprints, rules, locale }: GrammarIn
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {sprints.map((sprint) => {
-            const isExpanded = expandedItems.has(sprint.id);
             const isCompleted = completedSprints.has(sprint.id);
             const difficulty = sprint.difficulty ? DIFFICULTY_CONFIG[sprint.difficulty] : null;
 
             return (
-              <div
+              <Link
                 key={sprint.id}
+                href={`/compendium/grammar/${sprint.id}`}
                 id={`sprint-${sprint.id}`}
-                className={`group rounded-[24px] border transition-all duration-300 ${
+                className={`group rounded-[24px] border transition-all duration-300 block ${
                   isCompleted
-                    ? "border-moss/40 bg-gradient-to-br from-moss/10 to-moss/5 shadow-md"
+                    ? "border-moss/40 bg-gradient-to-br from-moss/10 to-moss/5 shadow-md hover:shadow-lg"
                     : "border-moss/20 bg-gradient-to-br from-moss/5 to-paper shadow-soft hover:shadow-lg hover:border-moss/40"
                 }`}
               >
-                {/* Header */}
-                <div className="p-6 pb-4">
+                <div className="p-6">
                   <div className="flex items-start justify-between gap-3 mb-3">
-                    <h3 className="text-lg font-bold text-ink flex-1">
+                    <h3 className="text-lg font-bold text-ink flex-1 group-hover:text-moss transition-colors">
                       {pick(sprint.titleUk, sprint.titlePl)}
                     </h3>
 
                     <button
-                      onClick={() => toggleSprintCompletion(sprint.id)}
+                      onClick={(e) => toggleSprintCompletion(sprint.id, e)}
                       className="flex-shrink-0 transition-transform hover:scale-110"
                       title={isCompleted ? (locale === "uk" ? "Позначити невивченим" : "Oznacz jako nieprzeczytane") : (locale === "uk" ? "Позначити вивченим" : "Oznacz jako przeczytane")}
                     >
@@ -218,80 +178,16 @@ export default function GrammarInteractive({ sprints, rules, locale }: GrammarIn
                     )}
                   </div>
 
-                  <div className="text-sm text-ink/70 leading-relaxed prose prose-sm prose-ul:pl-0 prose-li:pl-0 mb-3">
+                  <div className="text-sm text-ink/70 leading-relaxed prose prose-sm prose-ul:pl-0 prose-li:pl-0 mb-4">
                     {renderSimpleMarkdown(pick(sprint.hintUk, sprint.hintPl))}
                   </div>
-                </div>
 
-                {/* Expandable Content */}
-                {readingMode === "detailed" && (sprint.detailedUk || sprint.detailedPl || sprint.examplesUk || sprint.examplesPl) && (
-                  <div className="border-t border-moss/10">
-                    <button
-                      onClick={() => toggleExpanded(sprint.id)}
-                      className="w-full flex items-center justify-between gap-2 px-6 py-3 text-sm font-semibold text-moss hover:bg-moss/5 transition-colors"
-                    >
-                      <span>{isExpanded ? (locale === "uk" ? "Згорнути деталі" : "Zwiń szczegóły") : (locale === "uk" ? "Розгорнути деталі" : "Rozwiń szczegóły")}</span>
-                      {isExpanded ? <CaretUp size={16} weight="bold" /> : <CaretDown size={16} weight="bold" />}
-                    </button>
-
-                    {isExpanded && (
-                      <div className="px-6 pb-6 space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
-                        {/* Detailed Explanation */}
-                        {(sprint.detailedUk || sprint.detailedPl) && (
-                          <div>
-                            <h4 className="text-xs uppercase tracking-[0.2em] text-ink/50 font-semibold mb-2">
-                              {locale === "uk" ? "Детально" : "Szczegółowo"}
-                            </h4>
-                            <p className="text-sm text-ink/70 leading-relaxed">
-                              {pick(sprint.detailedUk, sprint.detailedPl)}
-                            </p>
-                          </div>
-                        )}
-
-                        {/* Examples */}
-                        {((sprint.examplesUk && sprint.examplesUk.length > 0) || (sprint.examplesPl && sprint.examplesPl.length > 0)) && (
-                          <div>
-                            <h4 className="text-xs uppercase tracking-[0.2em] text-ink/50 font-semibold mb-2">
-                              {locale === "uk" ? "Приклади" : "Przykłady"}
-                            </h4>
-                            <ul className="space-y-2">
-                              {(locale === "uk" ? sprint.examplesUk : sprint.examplesPl)?.map((example, idx) => (
-                                <li key={idx} className="text-sm text-ink/70 leading-relaxed prose prose-sm">
-                                  {renderSimpleMarkdown(example)}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-
-                        {/* Common Mistakes */}
-                        {(sprint.commonMistakesUk || sprint.commonMistakesPl) && (
-                          <div className="rounded-xl border border-terracotta/20 bg-terracotta/5 p-3">
-                            <h4 className="text-xs uppercase tracking-[0.2em] text-terracotta font-semibold mb-2">
-                              {locale === "uk" ? "Типові помилки" : "Częste błędy"}
-                            </h4>
-                            <div className="text-sm text-ink/70 leading-relaxed prose prose-sm">
-                              {renderSimpleMarkdown(pick(sprint.commonMistakesUk, sprint.commonMistakesPl))}
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Tips */}
-                        {(sprint.tipsUk || sprint.tipsPl) && (
-                          <div className="rounded-xl border border-gold/20 bg-gold/5 p-3">
-                            <h4 className="text-xs uppercase tracking-[0.2em] text-gold font-semibold mb-2">
-                              {locale === "uk" ? "Поради" : "Wskazówki"}
-                            </h4>
-                            <div className="text-sm text-ink/70 leading-relaxed prose prose-sm">
-                              {renderSimpleMarkdown(pick(sprint.tipsUk, sprint.tipsPl))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    )}
+                  <div className="flex items-center gap-2 text-sm font-semibold text-moss group-hover:gap-3 transition-all">
+                    <span>{locale === "uk" ? "Вивчити тему" : "Ucz się tematu"}</span>
+                    <ArrowRight size={16} weight="bold" />
                   </div>
-                )}
-              </div>
+                </div>
+              </Link>
             );
           })}
         </div>
@@ -309,25 +205,24 @@ export default function GrammarInteractive({ sprints, rules, locale }: GrammarIn
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {rules.map((rule) => {
-            const isExpanded = expandedItems.has(rule.id);
             const isCompleted = completedRules.has(rule.id);
             const difficulty = rule.difficulty ? DIFFICULTY_CONFIG[rule.difficulty] : null;
 
             return (
-              <article
+              <Link
                 key={rule.id}
-                className={`rounded-[24px] border transition-all duration-300 ${
+                href={`/compendium/grammar/${rule.id}`}
+                className={`group rounded-[24px] border transition-all duration-300 block ${
                   isCompleted
-                    ? "border-gold/40 bg-gradient-to-br from-gold/10 to-gold/5 shadow-md"
+                    ? "border-gold/40 bg-gradient-to-br from-gold/10 to-gold/5 shadow-md hover:shadow-lg"
                     : "border-ink/10 bg-paper/80 shadow-soft hover:shadow-md hover:border-gold/30"
                 }`}
               >
-                {/* Header */}
-                <div className="p-5 pb-3">
+                <div className="p-5">
                   <div className="flex items-center justify-between gap-2 mb-3">
                     <div className="flex items-center gap-2 flex-1">
                       <button
-                        onClick={() => toggleRuleCompletion(rule.id)}
+                        onClick={(e) => toggleRuleCompletion(rule.id, e)}
                         className="flex-shrink-0 transition-transform hover:scale-110"
                         title={isCompleted ? (locale === "uk" ? "Позначити невивченим" : "Oznacz jako nieprzeczytane") : (locale === "uk" ? "Позначити вивченим" : "Oznacz jako przeczytane")}
                       >
@@ -337,7 +232,7 @@ export default function GrammarInteractive({ sprints, rules, locale }: GrammarIn
                           <Circle size={20} className="text-ink/30 hover:text-gold/50" />
                         )}
                       </button>
-                      <h3 className="text-sm font-bold text-ink uppercase tracking-wide">
+                      <h3 className="text-sm font-bold text-ink uppercase tracking-wide group-hover:text-gold transition-colors">
                         {pick(rule.titleUk, rule.titlePl)}
                       </h3>
                     </div>
@@ -348,84 +243,16 @@ export default function GrammarInteractive({ sprints, rules, locale }: GrammarIn
                     )}
                   </div>
 
-                  <div className="text-sm text-ink/70 leading-relaxed prose prose-sm prose-strong:text-moss prose-strong:font-semibold">
+                  <div className="text-sm text-ink/70 leading-relaxed prose prose-sm prose-strong:text-moss prose-strong:font-semibold mb-3">
                     {renderSimpleMarkdown(pick(rule.bodyUk, rule.bodyPl))}
                   </div>
-                </div>
 
-                {/* Expandable Content */}
-                {readingMode === "detailed" && (rule.detailedUk || rule.detailedPl || rule.examplesUk || rule.examplesPl) && (
-                  <div className="border-t border-ink/10">
-                    <button
-                      onClick={() => toggleExpanded(rule.id)}
-                      className="w-full flex items-center justify-between gap-2 px-5 py-2.5 text-xs font-semibold text-gold hover:bg-gold/5 transition-colors"
-                    >
-                      <span>{isExpanded ? (locale === "uk" ? "Згорнути" : "Zwiń") : (locale === "uk" ? "Розгорнути" : "Rozwiń")}</span>
-                      {isExpanded ? <CaretUp size={14} weight="bold" /> : <CaretDown size={14} weight="bold" />}
-                    </button>
-
-                    {isExpanded && (
-                      <div className="px-5 pb-5 space-y-3 animate-in fade-in slide-in-from-top-2 duration-300">
-                        {/* Detailed */}
-                        {(rule.detailedUk || rule.detailedPl) && (
-                          <div>
-                            <h4 className="text-xs uppercase tracking-[0.2em] text-ink/50 font-semibold mb-1.5">
-                              {locale === "uk" ? "Детально" : "Szczegółowo"}
-                            </h4>
-                            <p className="text-xs text-ink/70 leading-relaxed">
-                              {pick(rule.detailedUk, rule.detailedPl)}
-                            </p>
-                          </div>
-                        )}
-
-                        {/* Examples */}
-                        {((rule.examplesUk && rule.examplesUk.length > 0) || (rule.examplesPl && rule.examplesPl.length > 0)) && (
-                          <div>
-                            <h4 className="text-xs uppercase tracking-[0.2em] text-ink/50 font-semibold mb-1.5">
-                              {locale === "uk" ? "Приклади" : "Przykłady"}
-                            </h4>
-                            <ul className="space-y-1.5">
-                              {(locale === "uk" ? rule.examplesUk : rule.examplesPl)?.map((example, idx) => (
-                                <li key={idx} className="text-xs text-ink/70 leading-relaxed prose prose-xs">
-                                  {renderSimpleMarkdown(example)}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-
-                        {/* Counter Examples */}
-                        {((rule.counterExamplesUk && rule.counterExamplesUk.length > 0) || (rule.counterExamplesPl && rule.counterExamplesPl.length > 0)) && (
-                          <div className="rounded-lg border border-terracotta/20 bg-terracotta/5 p-2.5">
-                            <h4 className="text-xs uppercase tracking-[0.2em] text-terracotta font-semibold mb-1.5">
-                              {locale === "uk" ? "Не робити так" : "Nie rób tak"}
-                            </h4>
-                            <ul className="space-y-1">
-                              {(locale === "uk" ? rule.counterExamplesUk : rule.counterExamplesPl)?.map((example, idx) => (
-                                <li key={idx} className="text-xs text-ink/70 leading-relaxed prose prose-xs">
-                                  {renderSimpleMarkdown(example)}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-
-                        {/* Mnemonic */}
-                        {(rule.mnemonicUk || rule.mnemonicPl) && (
-                          <div className="rounded-lg border border-moss/20 bg-moss/5 p-2.5">
-                            <h4 className="text-xs uppercase tracking-[0.2em] text-moss font-semibold mb-1.5">
-                              {locale === "uk" ? "Запам'ятай" : "Zapamiętaj"}
-                            </h4>
-                            <div className="text-xs text-ink/70 leading-relaxed prose prose-xs">
-                              {renderSimpleMarkdown(pick(rule.mnemonicUk, rule.mnemonicPl))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    )}
+                  <div className="flex items-center gap-2 text-xs font-semibold text-gold group-hover:gap-3 transition-all">
+                    <span>{locale === "uk" ? "Детальніше" : "Szczegóły"}</span>
+                    <ArrowRight size={14} weight="bold" />
                   </div>
-                )}
-              </article>
+                </div>
+              </Link>
             );
           })}
         </div>
