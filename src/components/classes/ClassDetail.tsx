@@ -300,13 +300,13 @@ export default function ClassDetail({ classId, locale }: ClassDetailProps) {
           <div>
             {isTeacher && (
               <div className="mb-6">
-                <Link
-                  href={`/classes/${classId}/students/add`}
+                <button
+                  onClick={() => window.location.href = `/classes/${classId}/students/add`}
                   className="inline-flex items-center gap-2 rounded-full border border-moss/30 bg-moss px-5 py-2.5 text-sm font-semibold text-white hover:bg-moss/90 transition-colors"
                 >
                   <Plus size={18} weight="bold" />
                   {t.addStudent}
-                </Link>
+                </button>
               </div>
             )}
 
@@ -340,13 +340,13 @@ export default function ClassDetail({ classId, locale }: ClassDetailProps) {
           <div>
             {isTeacher && (
               <div className="mb-6">
-                <Link
-                  href={`/classes/${classId}/assignments/new`}
+                <button
+                  onClick={() => window.location.href = `/classes/${classId}/assignments/new`}
                   className="inline-flex items-center gap-2 rounded-full border border-moss/30 bg-moss px-5 py-2.5 text-sm font-semibold text-white hover:bg-moss/90 transition-colors"
                 >
                   <Plus size={18} weight="bold" />
                   {t.createAssignment}
-                </Link>
+                </button>
               </div>
             )}
 
