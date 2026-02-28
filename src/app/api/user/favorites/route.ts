@@ -37,7 +37,7 @@ export async function DELETE(request: Request) {
   const db = await getDb();
   await db
     .collection("users")
-    .updateOne({ _id: new ObjectId(auth.id) }, { $pull: { favorites: wordId } });
+    .updateOne({ _id: new ObjectId(auth.id) }, { $pull: { favorites: wordId } } as any);
 
   return NextResponse.json({ ok: true });
 }

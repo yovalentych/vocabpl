@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getServerLocale } from "@/lib/i18n-server";
 import { getDictionary } from "@/lib/i18n-server";
 import { getDb } from "@/lib/db";
-import { defaultAboutContent, AboutContent } from "@/lib/about-content";
+import { defaultAboutContent } from "@/lib/about-content";
 import { Heart, Sparkle, BookOpen, Brain, MapPin } from "@phosphor-icons/react/dist/ssr";
 
 export const dynamic = "force-dynamic";
@@ -24,7 +24,7 @@ export default async function AboutPvsPage() {
   const locale = getServerLocale();
   const db = await getDb();
   const doc = await db.collection("settings").findOne({ key: "about_pvs" });
-  const content = (doc?.value || defaultAboutContent) as AboutContent;
+  const content = (doc?.value || defaultAboutContent) as any;
 
   const heroTitle = locale === "uk" ? content.hero.titleUk : content.hero.titlePl;
   const heroSubtitle = locale === "uk" ? content.hero.subtitleUk : content.hero.subtitlePl;

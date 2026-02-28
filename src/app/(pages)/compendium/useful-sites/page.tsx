@@ -75,7 +75,7 @@ export default async function CompendiumUsefulSitesPage() {
               </div>
 
               <nav className="space-y-2">
-                {content.groups.map((group, idx) => (
+                {content.groups.map((group: any, idx: number) => (
                   <a
                     key={group.id}
                     href={`#group-${group.id}`}

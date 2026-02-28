@@ -105,7 +105,7 @@ export default async function CompendiumFactsPage() {
 
         {/* Content Area */}
         <div className="space-y-6">
-          {content.items.map((fact, idx) => (
+          {content.items.map((fact: any, idx: number) => (
             <article
               key={fact.id}
               className="group rounded-[28px] border border-ink/10 bg-paper/80 p-6 sm:p-8 shadow-soft hover:shadow-lg hover:border-gold/30 hover:scale-[1.01] transition-all duration-300"

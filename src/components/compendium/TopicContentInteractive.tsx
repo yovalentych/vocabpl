@@ -98,12 +98,12 @@ export default function TopicContentInteractive({
 
   const nextFlashcard = () => {
     setShowFlashcardAnswer(false);
-    setCurrentFlashcard((prev) => (prev + 1) % examples.length);
+    setCurrentFlashcard((prev) => (prev + 1) % (examples as any[]).length);
   };
 
   const prevFlashcard = () => {
     setShowFlashcardAnswer(false);
-    setCurrentFlashcard((prev) => (prev - 1 + examples.length) % examples.length);
+    setCurrentFlashcard((prev) => (prev - 1 + (examples as any[]).length) % (examples as any[]).length);
   };
 
   const handleAnswerSelect = (index: number) => {
@@ -120,13 +120,13 @@ export default function TopicContentInteractive({
   const nextQuestion = () => {
     setSelectedAnswer(null);
     setShowQuizResult(false);
-    setCurrentQuestion((prev) => (prev + 1) % quizQuestions.length);
+    setCurrentQuestion((prev) => (prev + 1) % (quizQuestions as any[]).length);
   };
 
   const prevQuestion = () => {
     setSelectedAnswer(null);
     setShowQuizResult(false);
-    setCurrentQuestion((prev) => (prev - 1 + quizQuestions.length) % quizQuestions.length);
+    setCurrentQuestion((prev) => (prev - 1 + (quizQuestions as any[]).length) % (quizQuestions as any[]).length);
   };
 
   const resetQuiz = () => {
@@ -154,7 +154,7 @@ export default function TopicContentInteractive({
             {locale === "uk" ? "Теорія" : "Teoria"}
           </button>
 
-          {examples.length > 0 && (
+          {(examples as any[]).length > 0 && (
             <button
               onClick={() => setViewMode("flashcards")}
               className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-all ${
@@ -168,7 +168,7 @@ export default function TopicContentInteractive({
             </button>
           )}
 
-          {quizQuestions.length > 0 && (
+          {(quizQuestions as any[]).length > 0 && (
             <button
               onClick={() => setViewMode("quiz")}
               className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-all ${
@@ -220,7 +220,7 @@ export default function TopicContentInteractive({
           )}
 
           {/* Examples Section */}
-          {examples.length > 0 && (
+          {(examples as any[]).length > 0 && (
             <section className="rounded-[28px] border border-gold/20 bg-gradient-to-br from-gold/5 to-paper p-6 sm:p-8 shadow-soft">
               <div className="flex items-center gap-2 mb-4">
                 <Lightbulb size={22} weight="fill" className="text-gold" />
@@ -229,7 +229,7 @@ export default function TopicContentInteractive({
                 </h2>
               </div>
               <div className="space-y-3">
-                {examples.map((example, idx) => {
+                {(examples as any[]).map((example, idx) => {
                   const isRevealed = revealedExamples.has(idx);
                   return (
                     <div
@@ -265,7 +265,7 @@ export default function TopicContentInteractive({
           )}
 
           {/* Counter Examples (for rules) */}
-          {"counterExamplesUk" in topic && topic.counterExamplesUk && topic.counterExamplesUk.length > 0 && (
+          {"counterExamplesUk" in topic && topic.counterExamplesUk && (topic.counterExamplesUk as any[]).length > 0 && (
             <section className="rounded-[28px] border border-terracotta/20 bg-gradient-to-br from-terracotta/5 to-paper p-6 sm:p-8 shadow-soft">
               <div className="flex items-center gap-2 mb-4">
                 <Warning size={22} weight="fill" className="text-terracotta" />
@@ -274,7 +274,7 @@ export default function TopicContentInteractive({
                 </h2>
               </div>
               <ul className="space-y-2">
-                {(locale === "uk" ? topic.counterExamplesUk : ("counterExamplesPl" in topic ? topic.counterExamplesPl : undefined))?.map((example, idx) => (
+                {((locale === "uk" ? topic.counterExamplesUk : ("counterExamplesPl" in topic ? topic.counterExamplesPl : undefined)) as any[])?.map((example, idx) => (
                   <li key={idx} className="text-sm text-ink/70 leading-relaxed prose prose-sm">
                     {renderSimpleMarkdown(example)}
                   </li>
@@ -293,7 +293,10 @@ export default function TopicContentInteractive({
                 </h2>
               </div>
               <div className="text-sm text-ink/70 leading-relaxed prose prose-sm">
-                {renderSimpleMarkdown(pick(topic.commonMistakesUk, topic.commonMistakesPl))}
+                {renderSimpleMarkdown(pick(
+                  (topic.commonMistakesUk || []).join('\n\n'),
+                  (topic.commonMistakesPl || []).join('\n\n')
+                ))}
               </div>
             </section>
           )}
@@ -331,7 +334,7 @@ export default function TopicContentInteractive({
       )}
 
       {/* Flashcards View */}
-      {viewMode === "flashcards" && examples.length > 0 && (
+      {viewMode === "flashcards" && (examples as any[]).length > 0 && (
         <div className="space-y-6">
           <div className="rounded-[28px] border border-gold/20 bg-gradient-to-br from-gold/5 to-paper p-8 sm:p-10 shadow-soft">
             <div className="flex items-center justify-between mb-6">
@@ -340,7 +343,7 @@ export default function TopicContentInteractive({
                 {locale === "uk" ? "Режим флешкарток" : "Tryb fiszek"}
               </h2>
               <span className="text-sm text-ink/60">
-                {currentFlashcard + 1} / {examples.length}
+                {currentFlashcard + 1} / {(examples as any[]).length}
               </span>
             </div>
 
@@ -392,7 +395,7 @@ export default function TopicContentInteractive({
               <button
                 onClick={prevFlashcard}
                 className="rounded-full border border-ink/20 bg-paper px-6 py-3 text-sm font-semibold text-ink hover:border-gold/40 hover:bg-gold/5 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-                disabled={examples.length <= 1}
+                disabled={(examples as any[]).length <= 1}
               >
                 ← {locale === "uk" ? "Попередня" : "Poprzednia"}
               </button>
@@ -407,7 +410,7 @@ export default function TopicContentInteractive({
               <button
                 onClick={nextFlashcard}
                 className="rounded-full border border-gold/30 bg-gold/10 px-6 py-3 text-sm font-semibold text-gold hover:border-gold/50 hover:bg-gold/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-                disabled={examples.length <= 1}
+                disabled={(examples as any[]).length <= 1}
               >
                 {locale === "uk" ? "Наступна" : "Następna"} →
               </button>
@@ -424,7 +427,7 @@ export default function TopicContentInteractive({
       )}
 
       {/* Quiz View */}
-      {viewMode === "quiz" && quizQuestions.length > 0 && (
+      {viewMode === "quiz" && (quizQuestions as any[]).length > 0 && (
         <div className="space-y-6">
           <div className="rounded-[28px] border border-terracotta/20 bg-gradient-to-br from-terracotta/5 to-paper p-8 sm:p-10 shadow-soft">
             {/* Quiz Header */}
@@ -435,7 +438,7 @@ export default function TopicContentInteractive({
               </h2>
               <div className="flex items-center gap-4">
                 <span className="text-sm text-ink/60">
-                  {currentQuestion + 1} / {quizQuestions.length}
+                  {currentQuestion + 1} / {(quizQuestions as any[]).length}
                 </span>
                 <span className="rounded-full bg-terracotta/10 px-3 py-1 text-sm font-semibold text-terracotta">
                   {quizScore} / {answeredQuestions.size}
@@ -510,7 +513,7 @@ export default function TopicContentInteractive({
               <button
                 onClick={prevQuestion}
                 className="rounded-full border border-ink/20 bg-paper px-6 py-3 text-sm font-semibold text-ink hover:border-terracotta/40 hover:bg-terracotta/5 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-                disabled={quizQuestions.length <= 1}
+                disabled={(quizQuestions as any[]).length <= 1}
               >
                 ← {locale === "uk" ? "Попереднє" : "Poprzednie"}
               </button>
@@ -525,7 +528,7 @@ export default function TopicContentInteractive({
               <button
                 onClick={nextQuestion}
                 className="rounded-full border border-terracotta/30 bg-terracotta/10 px-6 py-3 text-sm font-semibold text-terracotta hover:border-terracotta/50 hover:bg-terracotta/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-                disabled={quizQuestions.length <= 1}
+                disabled={(quizQuestions as any[]).length <= 1}
               >
                 {locale === "uk" ? "Наступне" : "Następne"} →
               </button>

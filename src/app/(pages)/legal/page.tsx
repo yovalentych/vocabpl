@@ -3,17 +3,17 @@
 import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useLocale } from "@/components/LocaleProvider";
-import { legalContent, LegalSection } from "@/lib/legal-content";
+import { legalContent } from "@/lib/legal-content";
 
 export const dynamic = 'force-dynamic';
 
-const sections: LegalSection[] = ["terms", "privacy", "subscription", "cookies"];
+const sections: string[] = ["terms", "privacy", "subscription", "cookies"];
 
 export default function LegalCenterPage() {
   const params = useSearchParams();
   const { locale } = useLocale();
-  const initialTab = params.get("tab") as LegalSection | null;
-  const [active, setActive] = useState<LegalSection>(
+  const initialTab = params.get("tab");
+  const [active, setActive] = useState<string>(
     initialTab && sections.includes(initialTab) ? initialTab : "terms"
   );
 

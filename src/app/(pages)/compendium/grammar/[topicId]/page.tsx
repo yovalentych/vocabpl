@@ -7,7 +7,6 @@ import { loadCompendiumContent } from "@/lib/compendium-loader";
 import { renderSimpleMarkdown } from "@/components/markdown";
 import { requireCompendiumAccess } from "@/lib/compendium-access";
 import TopicContentInteractive from "@/components/compendium/TopicContentInteractive";
-import type { CompendiumSprint, CompendiumRule } from "@/lib/compendium-content";
 
 export const dynamic = "force-dynamic";
 
@@ -29,8 +28,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const topicId = params.topicId;
 
   // Find topic in sprints or rules
-  const sprint = all.grammar.sprints.find(s => s.id === topicId);
-  const rule = all.grammar.rules.find(r => r.id === topicId);
+  const sprint = all.grammar.sprints.find((s: any) => s.id === topicId);
+  const rule = all.grammar.rules.find((r: any) => r.id === topicId);
   const topic = sprint || rule;
 
   if (!topic) {
@@ -59,8 +58,8 @@ export default async function GrammarTopicPage({ params }: PageProps) {
   const topicId = params.topicId;
 
   // Find topic in sprints or rules
-  const sprint = all.grammar.sprints.find(s => s.id === topicId);
-  const rule = all.grammar.rules.find(r => r.id === topicId);
+  const sprint = all.grammar.sprints.find((s: any) => s.id === topicId);
+  const rule = all.grammar.rules.find((r: any) => r.id === topicId);
   const topic = sprint || rule;
   const topicType = sprint ? "sprint" : "rule";
 
@@ -68,14 +67,14 @@ export default async function GrammarTopicPage({ params }: PageProps) {
     notFound();
   }
 
-  const difficulty = topic.difficulty ? DIFFICULTY_CONFIG[topic.difficulty] : null;
+  const difficulty = topic.difficulty ? DIFFICULTY_CONFIG[topic.difficulty as keyof typeof DIFFICULTY_CONFIG] : null;
 
   // Find related topics
-  const relatedTopicIds = ("relatedTopics" in topic && topic.relatedTopics) || ("relatedRules" in topic && topic.relatedRules) || [];
+  const relatedTopicIds = (("relatedTopics" in topic && topic.relatedTopics) || ("relatedRules" in topic && topic.relatedRules) || []) as any[];
   const relatedTopics = relatedTopicIds
-    .map(id => {
-      const s = all.grammar.sprints.find(s => s.id === id);
-      const r = all.grammar.rules.find(r => r.id === id);
+    .map((id: any) => {
+      const s = all.grammar.sprints.find((s: any) => s.id === id);
+      const r = all.grammar.rules.find((r: any) => r.id === id);
       return s || r;
     })
     .filter(Boolean);
@@ -128,7 +127,7 @@ export default async function GrammarTopicPage({ params }: PageProps) {
             {"estimatedMinutes" in topic && topic.estimatedMinutes && (
               <span className="inline-flex items-center gap-1.5 rounded-full border border-ink/20 bg-paper/60 px-3 py-1.5 text-sm text-ink/70">
                 <Clock size={14} weight="fill" />
-                {topic.estimatedMinutes} {locale === "uk" ? "хв" : "min"}
+                {topic.estimatedMinutes as number} {locale === "uk" ? "хв" : "min"}
               </span>
             )}
             <span className="inline-flex items-center gap-1.5 rounded-full border border-gold/20 bg-gold/5 px-3 py-1.5 text-xs font-semibold text-gold uppercase tracking-wider">
@@ -153,7 +152,7 @@ export default async function GrammarTopicPage({ params }: PageProps) {
 
           {/* Short hint/body */}
           <div className="text-base text-ink/70 leading-relaxed max-w-3xl prose prose-base">
-            {renderSimpleMarkdown(pick("hintUk" in topic ? topic.hintUk : topic.bodyUk, "hintPl" in topic ? topic.hintPl : topic.bodyPl))}
+            {renderSimpleMarkdown(pick("hintUk" in topic ? topic.hintUk : (topic as any).bodyUk, "hintPl" in topic ? topic.hintPl : (topic as any).bodyPl))}
           </div>
         </div>
       </section>
@@ -163,7 +162,7 @@ export default async function GrammarTopicPage({ params }: PageProps) {
         topic={topic}
         topicType={topicType}
         locale={locale}
-        relatedTopics={relatedTopics as Array<CompendiumSprint | CompendiumRule>}
+        relatedTopics={relatedTopics as any[]}
       />
 
       {/* Related Topics */}
@@ -176,7 +175,7 @@ export default async function GrammarTopicPage({ params }: PageProps) {
             </h2>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
-            {relatedTopics.map((related) => {
+            {relatedTopics.map((related: any) => {
               if (!related) return null;
               return (
                 <Link
@@ -189,7 +188,7 @@ export default async function GrammarTopicPage({ params }: PageProps) {
                   </h3>
                   {related.difficulty && (
                     <span className="mt-2 inline-block text-xs text-ink/50">
-                      {DIFFICULTY_CONFIG[related.difficulty].emoji} {DIFFICULTY_CONFIG[related.difficulty].label}
+                      {DIFFICULTY_CONFIG[related.difficulty as keyof typeof DIFFICULTY_CONFIG].emoji} {DIFFICULTY_CONFIG[related.difficulty as keyof typeof DIFFICULTY_CONFIG].label}
                     </span>
                   )}
                 </Link>

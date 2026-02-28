@@ -27,7 +27,7 @@ export async function GET() {
     usage: {
       month: monthKey,
       usedCredits,
-      limit: plan.aiCreditsMonthly
+      limit: plan?.aiCreditsMonthly || 0
     },
     logs: logs.map((log) => ({
       id: log._id?.toString?.() || "",

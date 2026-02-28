@@ -111,7 +111,7 @@ export default async function CompendiumCulturePage() {
 
         {/* Content Area */}
         <div className="space-y-6">
-          {content.pulses.map((pulse, idx) => (
+          {content.pulses.map((pulse: any, idx: number) => (
             <article
               key={pulse.id}
               className="group rounded-[28px] border border-ink/10 bg-paper/80 p-6 sm:p-8 shadow-soft hover:shadow-lg hover:border-ink/25 hover:scale-[1.01] transition-all duration-300"

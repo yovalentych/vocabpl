@@ -1,15 +1,23 @@
-import { plans as defaultPlans, Plan } from "@/lib/plans";
+import { plans, type Plan } from "./plans";
 
-export type BillingSettings = {
-  blurPlans: boolean;
-  plans: Plan[];
-};
+export interface BillingPlan {
+  id: string;
+  priceUah: number;
+}
 
-export function mergeBillingPlans(overrides?: { id: Plan["id"]; priceUah: number }[]) {
-  if (!Array.isArray(overrides) || overrides.length === 0) return defaultPlans;
-  const overrideMap = new Map(overrides.map((item) => [item.id, item.priceUah]));
-  return defaultPlans.map((plan) => ({
-    ...plan,
-    priceUah: overrideMap.has(plan.id) ? Number(overrideMap.get(plan.id)) : plan.priceUah
-  }));
+export function mergeBillingPlans(customPlans?: BillingPlan[]): Plan[] {
+  if (!customPlans || customPlans.length === 0) {
+    return plans;
+  }
+
+  return plans.map(defaultPlan => {
+    const customPlan = customPlans.find(cp => cp.id === defaultPlan.id);
+    if (customPlan) {
+      return {
+        ...defaultPlan,
+        priceUah: customPlan.priceUah
+      };
+    }
+    return defaultPlan;
+  });
 }
