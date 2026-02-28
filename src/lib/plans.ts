@@ -1,72 +1,34 @@
-export const DEFAULT_PLAN_ID = "free";
+export type PlanTier = "classik" | "basik" | "pro" | "maxik";
 
-export interface Plan {
+export type Plan = {
   id: string;
-  name: string;
+  tier: PlanTier;
+  periodDays: number;
   priceUah: number;
-  features: string[];
-  allowAIGenerate?: boolean;
-  allowAICheck?: boolean;
-  maxAIRequests?: number;
-  aiCreditsMonthly?: number;
-  periodDays?: number;
-  tier?: string;
-}
+  aiCreditsMonthly: number;
+  allowAIGenerate: boolean;
+  allowAICheck: boolean;
+};
+
+export const DEFAULT_PLAN_ID = "basik_m";
 
 export const plans: Plan[] = [
-  {
-    id: "free",
-    name: "Безкоштовний",
-    priceUah: 0,
-    features: [
-      "Базові вправи",
-      "Словник",
-      "Обмежений AI доступ"
-    ],
-    allowAIGenerate: false,
-    allowAICheck: false,
-    maxAIRequests: 0,
-    periodDays: 30,
-    tier: "free"
-  },
-  {
-    id: "basic",
-    name: "Базовий",
-    priceUah: 99,
-    features: [
-      "Всі вправи",
-      "Повний словник",
-      "AI генерація (10 req/день)",
-      "AI перевірка (20 req/день)"
-    ],
-    allowAIGenerate: true,
-    allowAICheck: true,
-    maxAIRequests: 30,
-    periodDays: 30,
-    tier: "basic"
-  },
-  {
-    id: "pro",
-    name: "Професіонал",
-    priceUah: 199,
-    features: [
-      "Необмежені вправи",
-      "Необмежений AI",
-      "Пріоритетна підтримка",
-      "Статистика прогресу"
-    ],
-    allowAIGenerate: true,
-    allowAICheck: true,
-    maxAIRequests: -1,
-    periodDays: 30,
-    tier: "pro"
-  }
+  { id: "classik_m", tier: "classik", periodDays: 30, priceUah: 99, aiCreditsMonthly: 200, allowAIGenerate: false, allowAICheck: true },
+  { id: "basik_m", tier: "basik", periodDays: 30, priceUah: 199, aiCreditsMonthly: 800, allowAIGenerate: true, allowAICheck: true },
+  { id: "pro_m", tier: "pro", periodDays: 30, priceUah: 439, aiCreditsMonthly: 2500, allowAIGenerate: true, allowAICheck: true },
+  { id: "maxik_m", tier: "maxik", periodDays: 30, priceUah: 749, aiCreditsMonthly: 6000, allowAIGenerate: true, allowAICheck: true }
 ];
 
-export function getPlanById(planId: string): Plan | undefined {
-  return plans.find(p => p.id === planId);
-}
-
-export function getDefaultPlan(): Plan {
-  return plans[0];
+export function getPlanById(id?: string | null) {
+  if (!id) return plans.find((plan) => plan.id === DEFAULT_PLAN_ID) || plans[0];
+  const legacyMap: Record<string, string> = { basic: "basik_m", pro: "pro_m" };
+  const normalized = legacyMap[id] || id;
+  const direct = plans.find((plan) => plan.id === normalized);
+  if (direct) return direct;
+  const monthlyFallback = normalized.replace(/_(q|y)$/i, "_m");
+  return (
+    plans.find((plan) => plan.id === monthlyFallback) ||
+    plans.find((plan) => plan.id === DEFAULT_PLAN_ID) ||
+    plans[0]
+  );
 }

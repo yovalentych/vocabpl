@@ -1,27 +1,29 @@
-export interface ContactContent {
-  titleUk: string;
+export type ContactContent = {
   titlePl: string;
-  subtitleUk: string;
+  titleUk: string;
   subtitlePl: string;
-  leadUk: string;
+  subtitleUk: string;
   leadPl: string;
-  noteUk?: string;
-  notePl?: string;
+  leadUk: string;
   email: string;
   phone?: string;
   telegram?: string;
-  descriptionUk?: string;
-  descriptionPl?: string;
-}
+  notePl?: string;
+  noteUk?: string;
+};
 
 export const defaultContactContent: ContactContent = {
-  titleUk: "Контакти",
   titlePl: "Kontakt",
-  subtitleUk: "Зв'язатися з нами",
-  subtitlePl: "Skontaktuj się",
-  leadUk: "Маєте питання? Напишіть нам",
-  leadPl: "Masz pytania? Napisz do nas",
-  email: "support@polishvocab.com",
-  descriptionUk: "Зв'яжіться з нами для підтримки або співпраці",
-  descriptionPl: "Skontaktuj się z nami w sprawie wsparcia lub współpracy"
+  titleUk: "Контакти",
+  subtitlePl: "Napisz do mnie, jeśli masz pytania lub pomysły.",
+  subtitleUk: "Напиши мені, якщо маєш питання або ідеї.",
+  leadPl:
+    "Polish Vocab Studio rozwijam samodzielnie, więc każda wiadomość pomaga ulepszać projekt.",
+  leadUk:
+    "Polish Vocab Studio я розвиваю самостійно, тому кожне повідомлення допомагає покращувати проєкт.",
+  email: "info@vocabpl.uno",
+  phone: "",
+  telegram: "",
+  notePl: "Odpowiadam zwykle w ciągu 1-2 dni roboczych.",
+  noteUk: "Відповідаю зазвичай протягом 1-2 робочих днів."
 };

@@ -293,10 +293,7 @@ export default function TopicContentInteractive({
                 </h2>
               </div>
               <div className="text-sm text-ink/70 leading-relaxed prose prose-sm">
-                {renderSimpleMarkdown(pick(
-                  (topic.commonMistakesUk || []).join('\n\n'),
-                  (topic.commonMistakesPl || []).join('\n\n')
-                ))}
+                {renderSimpleMarkdown(pick(topic.commonMistakesUk, topic.commonMistakesPl))}
               </div>
             </section>
           )}
