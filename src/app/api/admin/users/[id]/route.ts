@@ -73,3 +73,62 @@ export async function GET(_: Request, { params }: { params: { id: string } }) {
     favorites
   });
 }
+
+export async function PATCH(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  const auth = await getAuthUser();
+  if (!auth || !auth.isAdmin) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const id = params.id;
+  if (!id || !ObjectId.isValid(id)) {
+    return NextResponse.json({ error: "Invalid user id" }, { status: 400 });
+  }
+
+  try {
+    const body = await request.json();
+    const { role } = body;
+
+    if (!role || !["user", "tutor"].includes(role)) {
+      return NextResponse.json(
+        { error: "Invalid role. Must be 'user' or 'tutor'" },
+        { status: 400 }
+      );
+    }
+
+    const db = await getDb();
+    const targetUserId = new ObjectId(id);
+    const targetUser = await db.collection("users").findOne({ _id: targetUserId });
+
+    if (!targetUser) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    // Заборонити міняти роль admin
+    if (targetUser.role === "admin") {
+      return NextResponse.json(
+        { error: "Cannot change admin role" },
+        { status: 403 }
+      );
+    }
+
+    await db.collection("users").updateOne(
+      { _id: targetUserId },
+      { $set: { role: role as "user" | "tutor" } }
+    );
+
+    return NextResponse.json({
+      success: true,
+      message: `User role updated to ${role}`
+    });
+  } catch (error) {
+    console.error("Error updating user role:", error);
+    return NextResponse.json(
+      { error: "Failed to update user role" },
+      { status: 500 }
+    );
+  }
+}

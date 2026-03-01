@@ -13,6 +13,7 @@ export const dictionary = {
       tests: "Testy",
       leaderboard: "Ranking",
       compendium: "Kompendium",
+      teacher: "Nauczyciel",
       admin: "Admin",
       class: "Klasa",
       plan: "Plan",
@@ -1476,6 +1477,11 @@ export const dictionary = {
       userProgress: "Postęp słówek",
       userFavorites: "Ulubione",
       userRole: "Rola",
+      roleLabels: {
+        admin: "Administrator",
+        tutor: "Nauczyciel",
+        user: "Użytkownik"
+      },
       close: "Zamknij",
       noData: "Brak danych",
       availableTests: "Dostępne testy",
@@ -2196,6 +2202,7 @@ export const dictionary = {
       tests: "Тести",
       leaderboard: "Рейтинг",
       compendium: "Довідник",
+      teacher: "Учитель",
       admin: "Адмін",
       class: "Клас",
       plan: "План",
@@ -3659,6 +3666,11 @@ export const dictionary = {
       userProgress: "Прогрес слів",
       userFavorites: "Улюблені",
       userRole: "Роль",
+      roleLabels: {
+        admin: "Адміністратор",
+        tutor: "Учитель",
+        user: "Користувач"
+      },
       close: "Закрити",
       noData: "Немає даних",
       availableTests: "Доступні тести",

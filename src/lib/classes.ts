@@ -198,9 +198,8 @@ export function isValidInviteCode(code: string): boolean {
 }
 
 export function canUserCreateClass(user: any): boolean {
-  // Phase 1: тільки admin може створювати класи
-  // TODO Phase 2: додати permissions для verified teachers
-  return user.role === 'admin';
+  // Allow both admins and tutors to create classes
+  return user.role === 'admin' || user.role === 'tutor';
 }
 
 export function isTeacherOfClass(userId: string | ObjectId, classDoc: Class): boolean {

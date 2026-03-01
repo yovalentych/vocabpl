@@ -66,6 +66,7 @@ export default function AdminUsersPanel() {
   const [detailsTab, setDetailsTab] = useState<"overview" | "activity" | "progress" | "favorites">("overview");
   const [activityWindow, setActivityWindow] = useState<7 | 30>(7);
   const [activityType, setActivityType] = useState<"all" | "test" | "word">("all");
+  const [roleUpdating, setRoleUpdating] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -109,6 +110,35 @@ export default function AdminUsersPanel() {
       mounted = false;
     };
   }, [selectedId]);
+
+  async function updateUserRole(userId: string, newRole: "user" | "tutor") {
+    if (!confirm(`Змінити роль на ${newRole}?`)) return;
+
+    try {
+      setRoleUpdating(userId);
+      const res = await fetch(`/api/admin/users/${userId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ role: newRole })
+      });
+
+      if (!res.ok) {
+        const error = await res.json();
+        alert(error.error || "Не вдалося оновити роль");
+        return;
+      }
+
+      setUsers(users.map(u =>
+        u.id === userId ? { ...u, role: newRole } : u
+      ));
+
+    } catch (error) {
+      console.error("Error updating role:", error);
+      alert("Помилка оновлення ролі");
+    } finally {
+      setRoleUpdating(null);
+    }
+  }
 
   const activity = (details
     ? [
@@ -283,9 +313,26 @@ export default function AdminUsersPanel() {
                   <p className="text-sm font-semibold">{user.username}</p>
                   <p className="text-xs text-ink/50">{user.name || "-"}</p>
                 </div>
-                <span className="rounded-full border border-ink/10 bg-paper px-3 py-1 text-xs uppercase tracking-[0.2em] text-ink/50">
-                  {user.role}
-                </span>
+                {user.role === "admin" ? (
+                  <span className="rounded-full border border-terracotta/40 bg-terracotta/10 px-3 py-1 text-xs uppercase tracking-[0.2em] text-terracotta">
+                    ADMIN
+                  </span>
+                ) : (
+                  <select
+                    value={user.role}
+                    onChange={(e) => updateUserRole(user.id, e.target.value as "user" | "tutor")}
+                    disabled={roleUpdating === user.id}
+                    onClick={(e) => e.stopPropagation()}
+                    className={`rounded-full border px-3 py-1 text-xs uppercase tracking-[0.2em] transition ${
+                      user.role === "tutor"
+                        ? "border-moss/40 bg-moss/10 text-moss"
+                        : "border-ink/10 bg-paper text-ink/50"
+                    } ${roleUpdating === user.id ? "opacity-50" : "cursor-pointer hover:opacity-80"}`}
+                  >
+                    <option value="user">USER</option>
+                    <option value="tutor">TUTOR</option>
+                  </select>
+                )}
               </div>
               <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-ink/60">
                 <span className="flex items-center gap-1 rounded-full border border-ink/10 bg-paper px-3 py-1">
@@ -362,7 +409,13 @@ export default function AdminUsersPanel() {
                           <div className="mt-4 grid gap-2 text-xs text-ink/60">
                             <div className="flex items-center justify-between">
                               <span>{t.admin.userRole}</span>
-                              <span className="rounded-full border border-ink/10 bg-paper px-3 py-1 uppercase tracking-[0.2em]">
+                              <span className={`rounded-full border px-3 py-1 uppercase tracking-[0.2em] text-xs ${
+                                details.user.role === 'admin'
+                                  ? 'border-terracotta/40 bg-terracotta/10 text-terracotta'
+                                  : details.user.role === 'tutor'
+                                  ? 'border-moss/40 bg-moss/10 text-moss'
+                                  : 'border-ink/10 bg-paper text-ink/50'
+                              }`}>
                                 {details.user.role}
                               </span>
                             </div>

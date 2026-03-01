@@ -6,7 +6,7 @@ import { getDb } from "@/lib/db";
 export type AuthUser = {
   id: string;
   username: string;
-  role: "admin" | "user";
+  role: "admin" | "tutor" | "user";
   isAdmin: boolean;
 };
 
@@ -90,6 +90,11 @@ export async function getUserByEmail(email: string) {
   return db.collection("users").findOne({ emailLower: email.toLowerCase() });
 }
 
+export function isTutorOrAdmin(user: AuthUser | null): boolean {
+  if (!user) return false;
+  return user.role === "admin" || user.role === "tutor";
+}
+
 export async function createUser({
   username,
   password,
@@ -112,7 +117,7 @@ export async function createUser({
   await ensureUserIndexes();
   const db = await getDb();
   const passwordHash = await hashPassword(password);
-  const role: "admin" | "user" = isAdminUsername(username) ? "admin" : "user";
+  const role: "admin" | "tutor" | "user" = isAdminUsername(username) ? "admin" : "user";
   const emailLower = email.toLowerCase();
   const userDoc = {
     username,
