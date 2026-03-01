@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { Users, Plus, Archive, GraduationCap, Student } from "@phosphor-icons/react";
+import { Users, Plus, Archive, GraduationCap, Student, ChartBar, ClipboardText, CheckCircle } from "@phosphor-icons/react";
 
 type ClassWithRole = {
   _id: string;
@@ -30,6 +30,7 @@ export default function ClassesList({ locale }: ClassesListProps) {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'teacher' | 'student'>('all');
   const [showArchived, setShowArchived] = useState(false);
+  const [sortBy, setSortBy] = useState<'recent' | 'name' | 'students'>('recent');
 
   const t = locale === 'uk' ? {
     title: "Мої класи",
@@ -44,7 +45,15 @@ export default function ClassesList({ locale }: ClassesListProps) {
     active: "активних",
     archived: "Архівовані",
     joinClass: "Приєднатися до класу",
-    teacher: "Викладач"
+    teacher: "Викладач",
+    overview: "Огляд",
+    totalClasses: "Всього класів",
+    totalStudents: "Всього студентів",
+    totalAssignments: "Всього завдань",
+    sortRecent: "Нещодавні",
+    sortName: "За назвою",
+    sortStudents: "За студентами",
+    sortBy: "Сортувати"
   } : {
     title: "Moje klasy",
     createClass: "Utwórz klasę",
@@ -58,8 +67,41 @@ export default function ClassesList({ locale }: ClassesListProps) {
     active: "aktywnych",
     archived: "Zarchiwizowane",
     joinClass: "Dołącz do klasy",
-    teacher: "Nauczyciel"
+    teacher: "Nauczyciel",
+    overview: "Przegląd",
+    totalClasses: "Wszystkie klasy",
+    totalStudents: "Wszyscy uczniowie",
+    totalAssignments: "Wszystkie zadania",
+    sortRecent: "Najnowsze",
+    sortName: "Według nazwy",
+    sortStudents: "Według uczniów",
+    sortBy: "Sortuj"
   };
+
+  // Calculate stats for teacher
+  const stats = useMemo(() => {
+    const teacherClasses = classes.filter(c => c.myRole === 'teacher');
+    return {
+      totalClasses: teacherClasses.length,
+      totalStudents: teacherClasses.reduce((sum, c) => sum + c.stats.totalStudents, 0),
+      totalAssignments: teacherClasses.reduce((sum, c) => sum + c.stats.totalAssignments, 0),
+    };
+  }, [classes]);
+
+  // Sort classes
+  const sortedClasses = useMemo(() => {
+    const sorted = [...classes];
+    if (sortBy === 'name') {
+      sorted.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (sortBy === 'students') {
+      sorted.sort((a, b) => b.stats.totalStudents - a.stats.totalStudents);
+    } else {
+      sorted.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    }
+    return sorted;
+  }, [classes, sortBy]);
+
+  const showStats = filter === 'all' || filter === 'teacher';
 
   useEffect(() => {
     loadClasses();
@@ -106,6 +148,47 @@ export default function ClassesList({ locale }: ClassesListProps) {
           </Link>
         </div>
       </div>
+
+      {/* Stats Overview (only for teachers) */}
+      {!loading && showStats && stats.totalClasses > 0 && (
+        <div className="grid gap-4 sm:grid-cols-3 mb-8">
+          <div className="rounded-2xl border border-ink/10 bg-paper p-5">
+            <div className="flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-moss/10">
+                <GraduationCap size={22} weight="fill" className="text-moss" />
+              </div>
+              <div>
+                <p className="text-[11px] uppercase tracking-[0.2em] text-ink/50">{t.totalClasses}</p>
+                <p className="text-2xl font-bold text-ink">{stats.totalClasses}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-ink/10 bg-paper p-5">
+            <div className="flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gold/10">
+                <Users size={22} weight="fill" className="text-gold" />
+              </div>
+              <div>
+                <p className="text-[11px] uppercase tracking-[0.2em] text-ink/50">{t.totalStudents}</p>
+                <p className="text-2xl font-bold text-ink">{stats.totalStudents}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-ink/10 bg-paper p-5">
+            <div className="flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-terracotta/10">
+                <ClipboardText size={22} weight="fill" className="text-terracotta" />
+              </div>
+              <div>
+                <p className="text-[11px] uppercase tracking-[0.2em] text-ink/50">{t.totalAssignments}</p>
+                <p className="text-2xl font-bold text-ink">{stats.totalAssignments}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Filters */}
       <div className="flex items-center gap-4 mb-6">
@@ -154,12 +237,25 @@ export default function ClassesList({ locale }: ClassesListProps) {
           <Archive size={16} />
           {t.archived}
         </label>
+
+        <div className="flex items-center gap-2 text-sm">
+          <ChartBar size={16} className="text-ink/50" />
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as any)}
+            className="rounded-full border border-ink/20 bg-paper px-3 py-1.5 text-sm text-ink/70 outline-none focus:border-moss/50 transition-colors"
+          >
+            <option value="recent">{t.sortRecent}</option>
+            <option value="name">{t.sortName}</option>
+            <option value="students">{t.sortStudents}</option>
+          </select>
+        </div>
       </div>
 
       {/* Classes Grid */}
       {loading ? (
         <div className="text-center py-12 text-ink/50">Завантаження...</div>
-      ) : classes.length === 0 ? (
+      ) : sortedClasses.length === 0 ? (
         <div className="text-center py-16">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-moss/10 mb-4">
             <Users size={32} className="text-moss" weight="fill" />
@@ -169,7 +265,7 @@ export default function ClassesList({ locale }: ClassesListProps) {
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {classes.map((cls) => (
+          {sortedClasses.map((cls) => (
             <a
               key={cls._id}
               href={`/classes/${cls._id}`}
