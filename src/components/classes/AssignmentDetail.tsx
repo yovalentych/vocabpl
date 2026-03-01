@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   ArrowLeft,
   Clock,
@@ -10,7 +10,10 @@ import {
   Users,
   ClipboardText,
   ChatText,
-  Star
+  Star,
+  MagnifyingGlass,
+  Funnel,
+  SortAscending
 } from "@phosphor-icons/react";
 
 type AssignmentDetailProps = {
@@ -116,7 +119,16 @@ export default function AssignmentDetail({
           points: "балів",
           of: "з",
           loading: "Завантаження...",
-          notFound: "Завдання не знайдено"
+          notFound: "Завдання не знайдено",
+          filterAll: "Всі",
+          filterNotStarted: "Не розпочато",
+          filterSubmitted: "Здано",
+          filterGraded: "Оцінено",
+          searchPlaceholder: "Пошук студентів...",
+          sortBy: "Сортування",
+          sortByName: "За іменем",
+          sortByScore: "За балом",
+          sortByDate: "За датою"
         }
       : {
           backToAssignments: "Powrot do zadan",
@@ -154,7 +166,16 @@ export default function AssignmentDetail({
           points: "punktow",
           of: "z",
           loading: "Ladowanie...",
-          notFound: "Nie znaleziono zadania"
+          notFound: "Nie znaleziono zadania",
+          filterAll: "Wszystkie",
+          filterNotStarted: "Nie rozpoczęto",
+          filterSubmitted: "Przesłano",
+          filterGraded: "Oceniono",
+          searchPlaceholder: "Szukaj uczniów...",
+          sortBy: "Sortuj",
+          sortByName: "Według imienia",
+          sortByScore: "Według wyniku",
+          sortByDate: "Według daty"
         };
 
   const exerciseTypeLabels: Record<string, string> =
@@ -596,6 +617,46 @@ export default function AssignmentDetail({
   }
 
   function TeacherView({ submissions }: { submissions: Submission[] }) {
+    const [statusFilter, setStatusFilter] = useState<string>("all");
+    const [searchQuery, setSearchQuery] = useState("");
+    const [sortBy, setSortBy] = useState<"name" | "score" | "date">("name");
+
+    // Filter and sort submissions
+    const filteredSubmissions = useMemo(() => {
+      let result = [...submissions];
+
+      // Filter by status
+      if (statusFilter !== "all") {
+        result = result.filter(s => s.status === statusFilter);
+      }
+
+      // Filter by search query
+      if (searchQuery.trim()) {
+        const query = searchQuery.trim().toLowerCase();
+        result = result.filter(s =>
+          s.studentName.toLowerCase().includes(query)
+        );
+      }
+
+      // Sort
+      result.sort((a, b) => {
+        if (sortBy === "name") {
+          return a.studentName.localeCompare(b.studentName);
+        } else if (sortBy === "score") {
+          const scoreA = a.percentage ?? -1;
+          const scoreB = b.percentage ?? -1;
+          return scoreB - scoreA;
+        } else {
+          // Sort by date
+          const dateA = a.submittedAt ? new Date(a.submittedAt).getTime() : 0;
+          const dateB = b.submittedAt ? new Date(b.submittedAt).getTime() : 0;
+          return dateB - dateA;
+        }
+      });
+
+      return result;
+    }, [submissions, statusFilter, searchQuery, sortBy]);
+
     const totalStudents = submissions.length;
     const submittedCount = submissions.filter(
       (s) => s.status === "submitted" || s.status === "graded"
@@ -648,11 +709,67 @@ export default function AssignmentDetail({
           </div>
         </div>
 
+        {/* Filters */}
+        <div className="rounded-2xl border border-ink/10 bg-paper p-4">
+          <div className="flex flex-col sm:flex-row gap-3">
+            {/* Search */}
+            <div className="relative flex-1">
+              <MagnifyingGlass
+                size={16}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-ink/40"
+              />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={t.searchPlaceholder}
+                className="w-full rounded-full border border-ink/20 bg-paper pl-9 pr-4 py-2 text-sm outline-none focus:border-moss/50 transition-colors"
+              />
+            </div>
+
+            {/* Status filter */}
+            <div className="flex items-center gap-2">
+              <Funnel size={16} className="text-ink/50" />
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="rounded-full border border-ink/20 bg-paper px-3 py-2 text-sm outline-none focus:border-moss/50 transition-colors"
+              >
+                <option value="all">{t.filterAll}</option>
+                <option value="not_started">{t.filterNotStarted}</option>
+                <option value="submitted">{t.filterSubmitted}</option>
+                <option value="graded">{t.filterGraded}</option>
+              </select>
+            </div>
+
+            {/* Sort */}
+            <div className="flex items-center gap-2">
+              <SortAscending size={16} className="text-ink/50" />
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as any)}
+                className="rounded-full border border-ink/20 bg-paper px-3 py-2 text-sm outline-none focus:border-moss/50 transition-colors"
+              >
+                <option value="name">{t.sortByName}</option>
+                <option value="score">{t.sortByScore}</option>
+                <option value="date">{t.sortByDate}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
         {/* Submissions table */}
-        {submissions.length === 0 ? (
+        {filteredSubmissions.length === 0 ? (
           <div className="rounded-2xl border border-ink/10 bg-paper p-12 text-center">
             <Users size={48} className="mx-auto mb-4 text-ink/30" />
-            <p className="text-ink/60">{t.noSubmissions}</p>
+            <p className="text-ink/60">
+              {submissions.length === 0
+                ? t.noSubmissions
+                : (searchQuery || statusFilter !== "all")
+                  ? (locale === "uk" ? "Нічого не знайдено" : "Nie znaleziono")
+                  : t.noSubmissions
+              }
+            </p>
           </div>
         ) : (
           <div className="rounded-2xl border border-ink/10 bg-paper overflow-hidden">
@@ -677,7 +794,7 @@ export default function AssignmentDetail({
 
             {/* Table rows */}
             <div className="divide-y divide-ink/5">
-              {submissions.map((sub) => (
+              {filteredSubmissions.map((sub) => (
                 <div
                   key={sub._id}
                   className="flex flex-col sm:grid sm:grid-cols-[1fr_auto_auto_auto_auto] gap-2 sm:gap-4 px-6 py-4 items-start sm:items-center"
