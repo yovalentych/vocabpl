@@ -16,6 +16,7 @@ import {
 } from "@phosphor-icons/react";
 import type { Class } from "@/lib/classes";
 import AssignmentsList from "./AssignmentsList";
+import ClassStatistics from "./ClassStatistics";
 
 type Tab = 'overview' | 'students' | 'assignments' | 'analytics' | 'settings';
 
@@ -367,10 +368,7 @@ export default function ClassDetail({ classId, locale }: ClassDetailProps) {
         )}
 
         {activeTab === 'analytics' && isTeacher && (
-          <div className="rounded-2xl border border-ink/10 bg-paper p-6">
-            <h3 className="font-bold text-ink mb-4">{t.analytics}</h3>
-            <p className="text-sm text-ink/60">Coming soon...</p>
-          </div>
+          <ClassStatistics classId={classId} locale={locale} />
         )}
 
         {activeTab === 'settings' && isTeacher && (
