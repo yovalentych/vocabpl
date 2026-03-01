@@ -117,6 +117,48 @@ export type Assignment = {
   updatedAt: Date;
 };
 
+export type AssignmentTemplate = {
+  _id: ObjectId;
+  teacherId: ObjectId;
+
+  // Metadata
+  name: string;                     // "Dialogue about travel (A2)"
+  description?: string;             // "Practice dialogues about travel"
+  tags?: string[];                  // ["dialogue", "travel", "A2"]
+
+  // Assignment configuration (what gets copied)
+  type: AssignmentType;
+
+  // For exercise
+  exerciseType?: ExerciseType;
+  exerciseConfig?: {
+    topic?: string;
+    level?: string;
+    difficulty?: string;
+  };
+
+  // For test
+  testId?: ObjectId;
+
+  // For reading
+  readingId?: ObjectId;
+
+  // Default values (can be changed when creating assignment)
+  defaultTitle?: string;
+  defaultDescription?: string;
+  defaultInstructions?: string;
+  defaultPointsTotal?: number;
+  defaultPassingScore?: number;
+  defaultSettings?: AssignmentSettings;
+
+  // Statistics
+  usedCount: number;                // How many times used
+  lastUsedAt?: Date;
+
+  createdAt: Date;
+  updatedAt: Date;
+};
+
 export type SubmissionStatus = 'not_started' | 'in_progress' | 'submitted' | 'graded';
 
 export type Submission = {
