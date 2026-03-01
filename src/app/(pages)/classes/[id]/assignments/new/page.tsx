@@ -3,14 +3,32 @@
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Check } from "@phosphor-icons/react";
+import { ArrowLeft, Check, Sparkle, FileText } from "@phosphor-icons/react";
+import SelectTemplateModal from "@/components/classes/templates/SelectTemplateModal";
 
 type AssignmentType = 'exercise' | 'test' | 'reading' | 'custom';
 type ExerciseType = 'sentences' | 'cloze' | 'match' | 'translate' | 'paraphrase' | 'dialogue' | 'describe' | 'story';
 
+type Template = {
+  _id: string;
+  name: string;
+  type: AssignmentType;
+  exerciseType?: ExerciseType;
+  exerciseConfig?: any;
+  defaultTitle?: string;
+  defaultDescription?: string;
+  defaultInstructions?: string;
+  defaultPointsTotal?: number;
+  defaultPassingScore?: number;
+};
+
 export default function NewAssignmentPage() {
   const params = useParams();
   const classId = params.id as string;
+
+  const [creationMode, setCreationMode] = useState<'scratch' | 'template' | null>(null);
+  const [showTemplateModal, setShowTemplateModal] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
 
   const [type, setType] = useState<AssignmentType>('exercise');
   const [exerciseType, setExerciseType] = useState<ExerciseType>('sentences');
@@ -26,6 +44,14 @@ export default function NewAssignmentPage() {
   const t = {
     title: "Створити завдання",
     backToClass: "Назад до класу",
+    chooseMode: "Оберіть спосіб створення",
+    fromScratch: "Створити з нуля",
+    fromScratchDesc: "Налаштувати все вручну",
+    fromTemplate: "Використати шаблон",
+    fromTemplateDesc: "Швидке створення з готової конфігурації",
+    usingTemplate: "Використовується шаблон",
+    changeTemplate: "Змінити шаблон",
+    clearTemplate: "Очистити",
     assignmentType: "Тип завдання",
     exercise: "Вправа",
     test: "Тест",
@@ -64,6 +90,41 @@ export default function NewAssignmentPage() {
     { value: 'describe', label: t.describe, icon: '🖼️' },
     { value: 'story', label: t.story, icon: '📖' }
   ];
+
+  function handleSelectTemplate(template: Template) {
+    setSelectedTemplate(template);
+    setCreationMode('template');
+    setShowTemplateModal(false);
+
+    // Auto-fill fields from template
+    setType(template.type);
+    if (template.exerciseType) {
+      setExerciseType(template.exerciseType as ExerciseType);
+    }
+    if (template.defaultTitle) {
+      setTitle(template.defaultTitle);
+    }
+    if (template.defaultDescription) {
+      setDescription(template.defaultDescription);
+    }
+    if (template.exerciseConfig) {
+      if (template.exerciseConfig.topic) setTopic(template.exerciseConfig.topic);
+      if (template.exerciseConfig.level) setLevel(template.exerciseConfig.level);
+    }
+    if (template.defaultPointsTotal) {
+      setPointsTotal(template.defaultPointsTotal);
+    }
+  }
+
+  function handleClearTemplate() {
+    setSelectedTemplate(null);
+    setCreationMode('scratch');
+    setTitle("");
+    setDescription("");
+    setTopic("");
+    setLevel("A1");
+    setPointsTotal(100);
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -111,6 +172,13 @@ export default function NewAssignmentPage() {
       const data = await res.json();
 
       if (res.ok) {
+        // Update template usage count if template was used
+        if (selectedTemplate) {
+          await fetch(`/api/classes/templates/${selectedTemplate._id}/use`, {
+            method: "POST"
+          }).catch(err => console.error("Failed to update template usage:", err));
+        }
+
         window.location.href = `/classes/${classId}?tab=assignments`;
       } else {
         setError(data.error || "Помилка створення завдання");
@@ -136,8 +204,79 @@ export default function NewAssignmentPage() {
         <h1 className="text-3xl font-bold text-ink">{t.title}</h1>
       </div>
 
+      {/* Mode Selection */}
+      {!creationMode && (
+        <div className="mb-8">
+          <h2 className="text-lg font-semibold text-ink mb-4">{t.chooseMode}</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <button
+              type="button"
+              onClick={() => setCreationMode('scratch')}
+              className="group rounded-2xl border-2 border-ink/20 bg-paper p-6 text-left hover:border-moss hover:bg-moss/5 transition-all"
+            >
+              <div className="flex items-center gap-3 mb-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-ink/5 group-hover:bg-moss/10 transition-colors">
+                  <Sparkle size={24} weight="fill" className="text-ink/60 group-hover:text-moss transition-colors" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-ink">{t.fromScratch}</h3>
+                  <p className="text-xs text-ink/60">{t.fromScratchDesc}</p>
+                </div>
+              </div>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShowTemplateModal(true)}
+              className="group rounded-2xl border-2 border-moss/30 bg-moss/5 p-6 text-left hover:border-moss hover:bg-moss/10 transition-all"
+            >
+              <div className="flex items-center gap-3 mb-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-moss/10 group-hover:bg-moss/20 transition-colors">
+                  <FileText size={24} weight="fill" className="text-moss" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-ink">{t.fromTemplate}</h3>
+                  <p className="text-xs text-ink/60">{t.fromTemplateDesc}</p>
+                </div>
+              </div>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Template Badge */}
+      {selectedTemplate && creationMode === 'template' && (
+        <div className="mb-6 rounded-2xl border border-moss/30 bg-moss/10 p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs font-semibold text-moss/70 uppercase tracking-wide mb-1">
+                {t.usingTemplate}
+              </p>
+              <p className="font-bold text-moss">{selectedTemplate.name}</p>
+            </div>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => setShowTemplateModal(true)}
+                className="rounded-lg border border-moss/30 bg-paper px-3 py-1.5 text-xs font-semibold text-moss hover:bg-moss/10 transition-colors"
+              >
+                {t.changeTemplate}
+              </button>
+              <button
+                type="button"
+                onClick={handleClearTemplate}
+                className="rounded-lg border border-ink/20 bg-paper px-3 py-1.5 text-xs font-semibold text-ink/60 hover:bg-ink/5 transition-colors"
+              >
+                {t.clearTemplate}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Form */}
-      <form onSubmit={handleSubmit} className="space-y-6">
+      {creationMode && (
+        <form onSubmit={handleSubmit} className="space-y-6">
         {error && (
           <div className="rounded-2xl border border-terracotta/30 bg-terracotta/10 p-4 text-sm text-terracotta">
             {error}
@@ -322,6 +461,15 @@ export default function NewAssignmentPage() {
           </button>
         </div>
       </form>
+      )}
+
+      {/* Select Template Modal */}
+      {showTemplateModal && (
+        <SelectTemplateModal
+          onSelect={handleSelectTemplate}
+          onClose={() => setShowTemplateModal(false)}
+        />
+      )}
     </div>
   );
 }
