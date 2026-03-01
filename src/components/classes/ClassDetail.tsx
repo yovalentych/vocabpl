@@ -15,6 +15,7 @@ import {
   Check
 } from "@phosphor-icons/react";
 import type { Class } from "@/lib/classes";
+import AssignmentsList from "./AssignmentsList";
 
 type Tab = 'overview' | 'students' | 'assignments' | 'analytics' | 'settings';
 
@@ -28,6 +29,17 @@ export default function ClassDetail({ classId, locale }: ClassDetailProps) {
   const [activeTab, setActiveTab] = useState<Tab>('overview');
   const [loading, setLoading] = useState(true);
   const [copiedCode, setCopiedCode] = useState(false);
+
+  // Check URL params for tab
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const tab = params.get('tab') as Tab;
+      if (tab && ['overview', 'students', 'assignments', 'analytics', 'settings'].includes(tab)) {
+        setActiveTab(tab);
+      }
+    }
+  }, []);
 
   const t = locale === 'uk' ? {
     backToClasses: "Назад до класів",
@@ -350,10 +362,7 @@ export default function ClassDetail({ classId, locale }: ClassDetailProps) {
               </div>
             )}
 
-            <div className="rounded-2xl border border-ink/10 bg-paper p-12 text-center">
-              <ClipboardText size={48} className="mx-auto mb-4 text-ink/30" />
-              <p className="text-ink/60">{t.noAssignments}</p>
-            </div>
+            <AssignmentsList classId={classId} isTeacher={isTeacher} locale={locale} />
           </div>
         )}
 
