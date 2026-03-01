@@ -17,6 +17,7 @@ import {
 import type { Class } from "@/lib/classes";
 import AssignmentsList from "./AssignmentsList";
 import ClassStatistics from "./ClassStatistics";
+import ClassSettings from "./ClassSettings";
 
 type Tab = 'overview' | 'students' | 'assignments' | 'analytics' | 'settings';
 
@@ -372,10 +373,20 @@ export default function ClassDetail({ classId, locale }: ClassDetailProps) {
         )}
 
         {activeTab === 'settings' && isTeacher && (
-          <div className="rounded-2xl border border-ink/10 bg-paper p-6">
-            <h3 className="font-bold text-ink mb-4">{t.settings}</h3>
-            <p className="text-sm text-ink/60">Coming soon...</p>
-          </div>
+          <ClassSettings
+            classId={classId}
+            classData={{
+              name: classData.name,
+              description: classData.description,
+              settings: classData.settings,
+              stats: {
+                totalAssignments: classData.stats.totalAssignments,
+                completedAssignments: classData.stats.completedAssignments
+              }
+            }}
+            locale={locale}
+            onUpdate={loadClass}
+          />
         )}
       </div>
     </div>
