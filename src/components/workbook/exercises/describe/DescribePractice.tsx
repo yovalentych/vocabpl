@@ -46,7 +46,7 @@ const commonPhrases: Record<string, string[]> = {
   ]
 };
 
-export default function DescribePractice({ prompt = "", level = "A1" }: DescribePracticeProps) {
+export default function DescribePractice({ prompt = "", level = "A1", onComplete }: DescribePracticeProps) {
   const { t, locale } = useLocale();
   const {
     image,
@@ -80,6 +80,7 @@ export default function DescribePractice({ prompt = "", level = "A1" }: Describe
 
   const handleCloseModal = () => {
     setShowResultModal(false);
+    onComplete?.();
     // Reset for next attempt
     setDescription("");
     if (prompt) {

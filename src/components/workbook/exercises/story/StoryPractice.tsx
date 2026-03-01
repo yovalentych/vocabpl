@@ -117,6 +117,7 @@ export default function StoryPractice({ level = "A2", topic, onComplete }: Story
 
   const handleCloseModal = () => {
     setShowResultModal(false);
+    onComplete?.();
     // Reset form
     setStoryTitle("");
     setStoryText("");
