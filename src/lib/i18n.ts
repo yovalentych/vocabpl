@@ -1127,6 +1127,64 @@ export const dictionary = {
       loadMore: "Załaduj więcej",
       deleteConfirm: "Czy na pewno chcesz usunąć to powiadomienie?"
     },
+    schedule: {
+      title: "Harmonogram",
+      mySchedule: "Mój harmonogram",
+      createEvent: "Utwórz wydarzenie",
+      editEvent: "Edytuj wydarzenie",
+      deleteEvent: "Usuń wydarzenie",
+      viewMonth: "Miesiąc",
+      viewWeek: "Tydzień",
+      viewDay: "Dzień",
+      viewList: "Lista",
+      today: "Dziś",
+      noEvents: "Brak wydarzeń",
+      noEventsMessage: "Nie ma zaplanowanych wydarzeń w tym okresie",
+      eventTypes: {
+        lesson: "Lekcja",
+        assignment_deadline: "Termin zadania",
+        test: "Test",
+        meeting: "Spotkanie",
+        announcement: "Ogłoszenie"
+      },
+      fields: {
+        type: "Typ",
+        title: "Tytuł",
+        description: "Opis",
+        startTime: "Początek",
+        endTime: "Koniec",
+        location: "Miejsce",
+        meetingLink: "Link do spotkania",
+        participants: "Uczestnicy",
+        allStudents: "Wszyscy uczniowie",
+        selectedStudents: "Wybrani uczniowie",
+        color: "Kolor",
+        recurring: "Powtarzające się",
+        recurrence: "Częstotliwość"
+      },
+      recurrence: {
+        daily: "Codziennie",
+        weekly: "Co tydzień",
+        monthly: "Co miesiąc",
+        interval: "Co ile",
+        days: "dni",
+        weeks: "tygodni",
+        months: "miesięcy",
+        daysOfWeek: "Dni tygodnia",
+        endDate: "Data końcowa",
+        never: "Nigdy"
+      },
+      actions: {
+        save: "Zapisz",
+        cancel: "Anuluj",
+        delete: "Usuń",
+        edit: "Edytuj"
+      },
+      upcoming: "Nadchodzące",
+      past: "Przeszłe",
+      duration: "Czas trwania",
+      minutes: "min"
+    },
     footer: {
       feedbackCta: "Kontakt",
       feedbackTitle: "Kontakt",
@@ -3344,6 +3402,64 @@ export const dictionary = {
       },
       loadMore: "Завантажити ще",
       deleteConfirm: "Ви впевнені, що хочете видалити це сповіщення?"
+    },
+    schedule: {
+      title: "Розклад",
+      mySchedule: "Мій розклад",
+      createEvent: "Створити подію",
+      editEvent: "Редагувати подію",
+      deleteEvent: "Видалити подію",
+      viewMonth: "Місяць",
+      viewWeek: "Тиждень",
+      viewDay: "День",
+      viewList: "Список",
+      today: "Сьогодні",
+      noEvents: "Немає подій",
+      noEventsMessage: "Немає запланованих подій у цьому періоді",
+      eventTypes: {
+        lesson: "Заняття",
+        assignment_deadline: "Дедлайн завдання",
+        test: "Тест",
+        meeting: "Зустріч",
+        announcement: "Оголошення"
+      },
+      fields: {
+        type: "Тип",
+        title: "Назва",
+        description: "Опис",
+        startTime: "Початок",
+        endTime: "Кінець",
+        location: "Місце",
+        meetingLink: "Посилання на зустріч",
+        participants: "Учасники",
+        allStudents: "Всі студенти",
+        selectedStudents: "Обрані студенти",
+        color: "Колір",
+        recurring: "Повторювана",
+        recurrence: "Частота"
+      },
+      recurrence: {
+        daily: "Щодня",
+        weekly: "Щотижня",
+        monthly: "Щомісяця",
+        interval: "Кожні",
+        days: "дні",
+        weeks: "тижні",
+        months: "місяці",
+        daysOfWeek: "Дні тижня",
+        endDate: "Дата закінчення",
+        never: "Ніколи"
+      },
+      actions: {
+        save: "Зберегти",
+        cancel: "Скасувати",
+        delete: "Видалити",
+        edit: "Редагувати"
+      },
+      upcoming: "Майбутні",
+      past: "Минулі",
+      duration: "Тривалість",
+      minutes: "хв"
     },
     footer: {
       feedbackCta: "Контакт",

@@ -12,14 +12,17 @@ import {
   GraduationCap,
   Student,
   Copy,
-  Check
+  Check,
+  Calendar
 } from "@phosphor-icons/react";
 import type { Class } from "@/lib/classes";
 import AssignmentsList from "./AssignmentsList";
 import ClassStatistics from "./ClassStatistics";
 import ClassSettings from "./ClassSettings";
+import SimpleCalendar from "./SimpleCalendar";
+import CreateEventModal from "./CreateEventModal";
 
-type Tab = 'overview' | 'students' | 'assignments' | 'analytics' | 'settings';
+type Tab = 'overview' | 'students' | 'assignments' | 'schedule' | 'analytics' | 'settings';
 
 type ClassDetailProps = {
   classId: string;
@@ -31,6 +34,7 @@ export default function ClassDetail({ classId, locale }: ClassDetailProps) {
   const [activeTab, setActiveTab] = useState<Tab>('overview');
   const [loading, setLoading] = useState(true);
   const [copiedCode, setCopiedCode] = useState(false);
+  const [showCreateEvent, setShowCreateEvent] = useState(false);
 
   // Check URL params for tab
   useEffect(() => {
@@ -48,6 +52,7 @@ export default function ClassDetail({ classId, locale }: ClassDetailProps) {
     overview: "Огляд",
     students: "Студенти",
     assignments: "Завдання",
+    schedule: "Розклад",
     analytics: "Аналітика",
     settings: "Налаштування",
     teacher: "Викладач",
@@ -70,6 +75,7 @@ export default function ClassDetail({ classId, locale }: ClassDetailProps) {
     overview: "Przegląd",
     students: "Uczniowie",
     assignments: "Zadania",
+    schedule: "Harmonogram",
     analytics: "Analityka",
     settings: "Ustawienia",
     teacher: "Nauczyciel",
@@ -269,6 +275,17 @@ export default function ClassDetail({ classId, locale }: ClassDetailProps) {
           >
             <ClipboardText size={18} />
             {t.assignments}
+          </button>
+          <button
+            onClick={() => setActiveTab('schedule')}
+            className={`inline-flex items-center gap-2 px-1 py-3 text-sm font-semibold border-b-2 transition-colors ${
+              activeTab === 'schedule'
+                ? 'border-moss text-moss'
+                : 'border-transparent text-ink/60 hover:text-ink'
+            }`}
+          >
+            <Calendar size={18} />
+            {t.schedule}
           </button>
           {isTeacher && (
             <>
@@ -557,6 +574,32 @@ export default function ClassDetail({ classId, locale }: ClassDetailProps) {
             )}
 
             <AssignmentsList classId={classId} isTeacher={isTeacher} locale={locale} />
+          </div>
+        )}
+
+        {activeTab === 'schedule' && (
+          <div>
+            <SimpleCalendar
+              classId={classId}
+              locale={locale}
+              isTeacher={isTeacher}
+              onCreateEvent={() => setShowCreateEvent(true)}
+              onEventClick={(event) => {
+                console.log("Event clicked:", event);
+              }}
+            />
+
+            {showCreateEvent && (
+              <CreateEventModal
+                classId={classId}
+                locale={locale}
+                onClose={() => setShowCreateEvent(false)}
+                onSuccess={() => {
+                  setShowCreateEvent(false);
+                  window.location.reload();
+                }}
+              />
+            )}
           </div>
         )}
 
