@@ -21,6 +21,7 @@ import ClassStatistics from "./ClassStatistics";
 import ClassSettings from "./ClassSettings";
 import SimpleCalendar from "./SimpleCalendar";
 import CreateEventModal from "./CreateEventModal";
+import StudentOverview from "./StudentOverview";
 
 type Tab = 'overview' | 'students' | 'assignments' | 'schedule' | 'analytics' | 'settings';
 
@@ -319,6 +320,7 @@ export default function ClassDetail({ classId, locale }: ClassDetailProps) {
       {/* Tab Content */}
       <div>
         {activeTab === 'overview' && (
+          isTeacher ? (
           <div className="space-y-6">
             {/* Quick Stats */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -517,6 +519,9 @@ export default function ClassDetail({ classId, locale }: ClassDetailProps) {
               </div>
             )}
           </div>
+          ) : (
+            <StudentOverview classId={classId} classData={classData} locale={locale} />
+          )
         )}
 
         {activeTab === 'students' && (
