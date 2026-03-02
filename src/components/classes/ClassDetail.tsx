@@ -303,10 +303,202 @@ export default function ClassDetail({ classId, locale }: ClassDetailProps) {
       <div>
         {activeTab === 'overview' && (
           <div className="space-y-6">
-            <div className="rounded-2xl border border-ink/10 bg-paper p-6">
-              <h3 className="font-bold text-ink mb-4">Recent Activity</h3>
-              <p className="text-sm text-ink/60">Coming soon...</p>
+            {/* Quick Stats */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* Total Students */}
+              <div className="rounded-2xl border border-ink/10 bg-paper p-6">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="rounded-full bg-moss/10 p-2">
+                    <Users size={20} className="text-moss" weight="bold" />
+                  </div>
+                  <h3 className="text-sm font-medium text-ink/60">{t.totalStudents}</h3>
+                </div>
+                <p className="text-3xl font-bold text-ink">{classData.stats?.totalStudents || 0}</p>
+              </div>
+
+              {/* Total Assignments */}
+              <div className="rounded-2xl border border-ink/10 bg-paper p-6">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="rounded-full bg-gold/10 p-2">
+                    <ClipboardText size={20} className="text-gold" weight="bold" />
+                  </div>
+                  <h3 className="text-sm font-medium text-ink/60">{t.totalAssignments}</h3>
+                </div>
+                <p className="text-3xl font-bold text-ink">{classData.stats?.totalAssignments || 0}</p>
+              </div>
+
+              {/* Completed Assignments */}
+              <div className="rounded-2xl border border-ink/10 bg-paper p-6">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="rounded-full bg-terracotta/10 p-2">
+                    <Check size={20} className="text-terracotta" weight="bold" />
+                  </div>
+                  <h3 className="text-sm font-medium text-ink/60">{t.completedRate}</h3>
+                </div>
+                <p className="text-3xl font-bold text-ink">
+                  {classData.stats?.totalAssignments > 0
+                    ? Math.round((classData.stats?.completedAssignments / classData.stats?.totalAssignments) * 100)
+                    : 0}%
+                </p>
+              </div>
+
+              {/* Active Students */}
+              <div className="rounded-2xl border border-ink/10 bg-paper p-6">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="rounded-full bg-moss/10 p-2">
+                    <GraduationCap size={20} className="text-moss" weight="bold" />
+                  </div>
+                  <h3 className="text-sm font-medium text-ink/60">{t.activeStudents}</h3>
+                </div>
+                <p className="text-3xl font-bold text-ink">
+                  {classData.students?.filter((s: any) => {
+                    const lastActive = s.lastActiveAt ? new Date(s.lastActiveAt) : null;
+                    const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+                    return lastActive && lastActive > weekAgo;
+                  }).length || 0}
+                </p>
+              </div>
             </div>
+
+            {/* Quick Actions (for teachers) */}
+            {isTeacher && (
+              <div className="rounded-2xl border border-ink/10 bg-paper p-6">
+                <h3 className="font-bold text-ink mb-4">
+                  {locale === 'uk' ? 'Швидкі дії' : 'Szybkie akcje'}
+                </h3>
+                <div className="flex flex-wrap gap-3">
+                  <Link
+                    href={`/classes/${classId}/assignments/new`}
+                    className="inline-flex items-center gap-2 rounded-full border border-moss/30 bg-moss px-5 py-2.5 text-sm font-semibold text-white hover:bg-moss/90 transition-colors"
+                  >
+                    <Plus size={18} weight="bold" />
+                    {t.createAssignment}
+                  </Link>
+                  <Link
+                    href={`/classes/${classId}/students/add`}
+                    className="inline-flex items-center gap-2 rounded-full border border-ink/20 bg-paper px-5 py-2.5 text-sm font-semibold text-ink hover:bg-ink/5 transition-colors"
+                  >
+                    <Plus size={18} weight="bold" />
+                    {t.addStudent}
+                  </Link>
+                  <button
+                    onClick={() => setActiveTab('analytics')}
+                    className="inline-flex items-center gap-2 rounded-full border border-ink/20 bg-paper px-5 py-2.5 text-sm font-semibold text-ink hover:bg-ink/5 transition-colors"
+                  >
+                    <ChartLine size={18} weight="bold" />
+                    {locale === 'uk' ? 'Переглянути аналітику' : 'Zobacz analitykę'}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Class Info */}
+            <div className="rounded-2xl border border-ink/10 bg-paper p-6">
+              <h3 className="font-bold text-ink mb-4">
+                {locale === 'uk' ? 'Інформація про клас' : 'Informacje o klasie'}
+              </h3>
+              <div className="space-y-3">
+                <div className="flex items-start gap-3">
+                  <GraduationCap size={20} className="text-ink/40 mt-0.5" />
+                  <div>
+                    <p className="text-xs text-ink/50">{t.teacher}</p>
+                    <p className="text-sm font-medium text-ink">{classData.teacherName}</p>
+                  </div>
+                </div>
+
+                {classData.description && (
+                  <div className="flex items-start gap-3">
+                    <ClipboardText size={20} className="text-ink/40 mt-0.5" />
+                    <div>
+                      <p className="text-xs text-ink/50">
+                        {locale === 'uk' ? 'Опис' : 'Opis'}
+                      </p>
+                      <p className="text-sm text-ink">{classData.description}</p>
+                    </div>
+                  </div>
+                )}
+
+                {isTeacher && classData.settings?.inviteCode && (
+                  <div className="flex items-start gap-3">
+                    <Copy size={20} className="text-ink/40 mt-0.5" />
+                    <div className="flex-1">
+                      <p className="text-xs text-ink/50 mb-1">{t.inviteCode}</p>
+                      <div className="flex items-center gap-2">
+                        <code className="text-sm font-mono font-bold text-moss bg-moss/5 px-3 py-1 rounded-lg">
+                          {classData.settings.inviteCode}
+                        </code>
+                        <button
+                          onClick={copyInviteCode}
+                          className="inline-flex items-center gap-1 text-xs text-ink/60 hover:text-moss transition-colors"
+                        >
+                          {copiedCode ? (
+                            <>
+                              <Check size={14} weight="bold" />
+                              {t.copied}
+                            </>
+                          ) : (
+                            <>
+                              <Copy size={14} />
+                              {t.copyCode}
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex items-center gap-3">
+                  <div className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                    classData.settings?.isPublic
+                      ? 'bg-moss/10 text-moss'
+                      : 'bg-ink/10 text-ink/60'
+                  }`}>
+                    {classData.settings?.isPublic ? t.publicClass : t.privateClass}
+                  </div>
+                  {classData.archivedAt && (
+                    <div className="px-3 py-1 rounded-full text-xs font-semibold bg-terracotta/10 text-terracotta">
+                      {locale === 'uk' ? 'Архівовано' : 'Zarchiwizowano'}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Recent Students */}
+            {classData.students && classData.students.length > 0 && (
+              <div className="rounded-2xl border border-ink/10 bg-paper p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-bold text-ink">
+                    {locale === 'uk' ? 'Останні студенти' : 'Ostatni uczniowie'}
+                  </h3>
+                  <button
+                    onClick={() => setActiveTab('students')}
+                    className="text-sm text-moss hover:text-moss/80 font-medium"
+                  >
+                    {locale === 'uk' ? 'Переглянути всіх' : 'Zobacz wszystkich'} →
+                  </button>
+                </div>
+                <div className="space-y-2">
+                  {classData.students.slice(0, 5).map((student: any) => (
+                    <div
+                      key={student.id}
+                      className="flex items-center gap-3 p-3 rounded-xl hover:bg-ink/5 transition-colors"
+                    >
+                      <div className="rounded-full bg-moss/10 p-2">
+                        <Student size={18} className="text-moss" weight="bold" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-ink">{student.name || student.username}</p>
+                        <p className="text-xs text-ink/50">
+                          {t.joinedAt}: {new Date(student.joinedAt).toLocaleDateString(locale)}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
