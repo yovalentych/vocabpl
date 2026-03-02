@@ -5,6 +5,7 @@ import { getDb } from "@/lib/db";
 import { getPlanById } from "@/lib/plans";
 import { isMonoConfigured, verifyMonoSignature } from "@/lib/monobank";
 import { sendPaymentReceiptEmail } from "@/lib/mailer";
+import { notifySubscriptionActivated } from "@/lib/notifications";
 
 export const dynamic = "force-dynamic";
 
@@ -115,6 +116,18 @@ export async function POST(request: Request) {
       }
     }
   );
+
+  // Notification for subscription activation
+  try {
+    await notifySubscriptionActivated({
+      userId,
+      userRole: user.role || "user",
+      planName: plan.tier || plan.id,
+      expiresAt: nextExpires
+    });
+  } catch (err) {
+    console.error("Failed to notify subscription:", err);
+  }
 
   const receiptAlready = Boolean(existing?.receiptSentAt);
   const userEmail = typeof user.email === "string" ? user.email : "";

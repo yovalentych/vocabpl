@@ -3,6 +3,7 @@ import { ObjectId } from "mongodb";
 import { getAuthUser } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { isCsrfValid } from "@/lib/csrf";
+import { notifySubscriptionResumed } from "@/lib/notifications";
 
 export async function POST(request: Request) {
   if (!isCsrfValid(request)) {
@@ -26,6 +27,20 @@ export async function POST(request: Request) {
       }
     }
   );
+
+  // Notification
+  if (user) {
+    try {
+      await notifySubscriptionResumed({
+        userId: new ObjectId(auth.id),
+        userRole: user.role || "user",
+        planName: user.subscription?.planId || "Основний",
+        expiresAt: user.subscription?.expiresAt
+      });
+    } catch (err) {
+      console.error("Failed to notify:", err);
+    }
+  }
 
   return NextResponse.json({ ok: true });
 }
