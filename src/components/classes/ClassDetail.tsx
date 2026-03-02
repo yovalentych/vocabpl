@@ -22,8 +22,9 @@ import ClassSettings from "./ClassSettings";
 import SimpleCalendar from "./SimpleCalendar";
 import CreateEventModal from "./CreateEventModal";
 import StudentOverview from "./StudentOverview";
+import StudentProgress from "./StudentProgress";
 
-type Tab = 'overview' | 'students' | 'assignments' | 'schedule' | 'analytics' | 'settings';
+type Tab = 'overview' | 'students' | 'assignments' | 'schedule' | 'progress' | 'analytics' | 'settings';
 
 type ClassDetailProps = {
   classId: string;
@@ -54,6 +55,7 @@ export default function ClassDetail({ classId, locale }: ClassDetailProps) {
     students: "Студенти",
     assignments: "Завдання",
     schedule: "Розклад",
+    progress: "Мій прогрес",
     analytics: "Аналітика",
     settings: "Налаштування",
     teacher: "Викладач",
@@ -77,6 +79,7 @@ export default function ClassDetail({ classId, locale }: ClassDetailProps) {
     students: "Uczniowie",
     assignments: "Zadania",
     schedule: "Harmonogram",
+    progress: "Mój postęp",
     analytics: "Analityka",
     settings: "Ustawienia",
     teacher: "Nauczyciel",
@@ -288,6 +291,19 @@ export default function ClassDetail({ classId, locale }: ClassDetailProps) {
             <Calendar size={18} />
             {t.schedule}
           </button>
+          {!isTeacher && (
+            <button
+              onClick={() => setActiveTab('progress')}
+              className={`inline-flex items-center gap-2 px-1 py-3 text-sm font-semibold border-b-2 transition-colors ${
+                activeTab === 'progress'
+                  ? 'border-moss text-moss'
+                  : 'border-transparent text-ink/60 hover:text-ink'
+              }`}
+            >
+              <ChartLine size={18} />
+              {t.progress}
+            </button>
+          )}
           {isTeacher && (
             <>
               <button
@@ -606,6 +622,10 @@ export default function ClassDetail({ classId, locale }: ClassDetailProps) {
               />
             )}
           </div>
+        )}
+
+        {activeTab === 'progress' && !isTeacher && (
+          <StudentProgress classId={classId} locale={locale} />
         )}
 
         {activeTab === 'analytics' && isTeacher && (
