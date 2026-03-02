@@ -28,6 +28,8 @@ type AssignmentsListProps = {
 export default function AssignmentsList({ classId, isTeacher, locale }: AssignmentsListProps) {
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectMode, setSelectMode] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   const t = locale === 'uk' ? {
     loading: "Завантаження...",
@@ -54,7 +56,17 @@ export default function AssignmentsList({ classId, isTeacher, locale }: Assignme
     paraphrase: "Перефразування",
     dialogue: "Діалог",
     describe: "Опис",
-    story: "Історія"
+    story: "Історія",
+    select: "Вибрати",
+    cancel: "Скасувати",
+    selected: "Вибрано",
+    selectAll: "Вибрати всі",
+    deselectAll: "Зняти вибір",
+    bulkActions: "Масові дії",
+    copyTo: "Копіювати в клас",
+    archive: "Архівувати",
+    delete: "Видалити",
+    updateDeadline: "Змінити дедлайн"
   } : {
     loading: "Ładowanie...",
     noAssignments: "Nie ma jeszcze zadań",
@@ -80,7 +92,17 @@ export default function AssignmentsList({ classId, isTeacher, locale }: Assignme
     paraphrase: "Parafraza",
     dialogue: "Dialog",
     describe: "Opis",
-    story: "Historia"
+    story: "Historia",
+    select: "Wybierz",
+    cancel: "Anuluj",
+    selected: "Wybrano",
+    selectAll: "Wybierz wszystkie",
+    deselectAll: "Odznacz wszystkie",
+    bulkActions: "Akcje masowe",
+    copyTo: "Kopiuj do klasy",
+    archive: "Archiwizuj",
+    delete: "Usuń",
+    updateDeadline: "Zmień termin"
   };
 
   const exerciseTypeLabels: Record<string, string> = {
@@ -128,6 +150,29 @@ export default function AssignmentsList({ classId, isTeacher, locale }: Assignme
     } finally {
       setLoading(false);
     }
+  }
+
+  function toggleSelectMode() {
+    setSelectMode(!selectMode);
+    setSelectedIds(new Set());
+  }
+
+  function toggleSelectAssignment(id: string) {
+    const newSelected = new Set(selectedIds);
+    if (newSelected.has(id)) {
+      newSelected.delete(id);
+    } else {
+      newSelected.add(id);
+    }
+    setSelectedIds(newSelected);
+  }
+
+  function selectAll() {
+    setSelectedIds(new Set(assignments.map(a => a._id)));
+  }
+
+  function deselectAll() {
+    setSelectedIds(new Set());
   }
 
   function getTypeLabel(assignment: Assignment) {
