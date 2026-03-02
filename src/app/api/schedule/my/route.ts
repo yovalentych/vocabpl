@@ -91,8 +91,19 @@ export async function GET(request: Request) {
       .project({ name: 1, teacherName: 1 })
       .toArray();
 
+    // Create a map for quick class name lookup
+    const classMap = new Map(
+      classes.map(c => [c._id.toString(), c.name])
+    );
+
+    // Add className to each event
+    const eventsWithClassName = filteredEvents.map(event => ({
+      ...event,
+      className: classMap.get(event.classId.toString())
+    }));
+
     return NextResponse.json({
-      events: filteredEvents,
+      events: eventsWithClassName,
       classes
     });
   } catch (error) {
