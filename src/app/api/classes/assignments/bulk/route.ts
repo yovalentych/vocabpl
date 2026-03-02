@@ -4,6 +4,7 @@ import { getDb } from "@/lib/db";
 import { ObjectId } from "mongodb";
 import { isTeacherOfClass, type Class, type Assignment } from "@/lib/classes";
 import { notifyAssignmentsBulkCopied } from "@/lib/notifications";
+import type { ScheduleEvent } from "@/lib/schedule";
 
 // POST /api/classes/assignments/bulk - Bulk operations on assignments
 export async function POST(request: Request) {
@@ -117,6 +118,34 @@ export async function POST(request: Request) {
             });
 
             await db.collection("class_submissions").insertMany(submissions);
+          }
+
+          // Copy schedule event if exists
+          if (assignment.dueAt) {
+            const originalAssignmentId = assignments.find(a =>
+              a.title === assignment.title && a.classId.toString() === classObjectId.toString()
+            )?._id;
+
+            if (originalAssignmentId) {
+              const scheduleEvent = await db
+                .collection<ScheduleEvent>("schedule_events")
+                .findOne({ assignmentId: originalAssignmentId });
+
+              if (scheduleEvent) {
+                const { _id, ...eventData } = scheduleEvent;
+                const copiedEvent: Omit<ScheduleEvent, '_id'> = {
+                  ...eventData,
+                  classId: targetClassObjectId,
+                  teacherId: new ObjectId(auth.id),
+                  assignmentId: assignment._id,
+                  participants: assignment.assignedTo === 'all' ? 'all' : assignment.assignedTo,
+                  createdAt: now,
+                  updatedAt: now
+                };
+
+                await db.collection<ScheduleEvent>("schedule_events").insertOne(copiedEvent as any);
+              }
+            }
           }
         }
 

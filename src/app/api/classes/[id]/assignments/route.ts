@@ -10,6 +10,7 @@ import {
   type Assignment
 } from "@/lib/classes";
 import { notifyAssignmentCreated } from "@/lib/notifications";
+import type { ScheduleEvent } from "@/lib/schedule";
 
 // GET /api/classes/[id]/assignments - Отримати список завдань класу
 export async function GET(
@@ -245,6 +246,33 @@ export async function POST(
           });
         } catch (notifError) {
           console.error("Failed to create notifications:", notifError);
+        }
+      }
+
+      // Створюємо schedule event для deadline (якщо є dueAt)
+      if (dueAt) {
+        try {
+          const dueDate = new Date(dueAt);
+          const startTime = new Date(dueDate.getTime() - 60 * 60 * 1000); // 1 година до deadline
+
+          const scheduleEvent: Omit<ScheduleEvent, '_id'> = {
+            classId,
+            teacherId: new ObjectId(auth.id),
+            type: 'assignment_deadline',
+            title: `${title.trim()} - Deadline`,
+            description: description?.trim() || `Deadline for assignment: ${title.trim()}`,
+            startTime,
+            endTime: dueDate,
+            isRecurring: false,
+            assignmentId: result.insertedId,
+            participants: assignedTo === 'all' ? 'all' : assignedTo.map((id: string) => new ObjectId(id)),
+            createdAt: now,
+            updatedAt: now
+          };
+
+          await db.collection<ScheduleEvent>("schedule_events").insertOne(scheduleEvent as any);
+        } catch (scheduleError) {
+          console.error("Failed to create schedule event:", scheduleError);
         }
       }
     }
