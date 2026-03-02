@@ -116,7 +116,7 @@ export async function POST(request: Request) {
             {
               $push: { "teacherProfile.gracePeriodWarningsSent": "7d" },
               $set: { "teacherProfile.updatedAt": now, updatedAt: now },
-            }
+            } as any
           );
           console.log(`[cron] Sent 7-day warning to teacher ${teacher._id}`);
           results.warnings7d++;
@@ -131,7 +131,7 @@ export async function POST(request: Request) {
             {
               $push: { "teacherProfile.gracePeriodWarningsSent": "3d" },
               $set: { "teacherProfile.updatedAt": now, updatedAt: now },
-            }
+            } as any
           );
           console.log(`[cron] Sent 3-day warning to teacher ${teacher._id}`);
           results.warnings3d++;
@@ -146,7 +146,7 @@ export async function POST(request: Request) {
             {
               $push: { "teacherProfile.gracePeriodWarningsSent": "1d" },
               $set: { "teacherProfile.updatedAt": now, updatedAt: now },
-            }
+            } as any
           );
           console.log(`[cron] Sent 1-day warning to teacher ${teacher._id}`);
           results.warnings1d++;
