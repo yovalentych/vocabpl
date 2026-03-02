@@ -1,7 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Clock, Users, CheckCircle, XCircle, Calendar } from "@phosphor-icons/react";
+import { Clock, Users, CheckCircle, XCircle, Calendar, CheckSquare, Square } from "@phosphor-icons/react";
+import BulkActionToolbar from "./BulkActionToolbar";
+import SelectClassModal from "./SelectClassModal";
+import UpdateDeadlineModal from "./UpdateDeadlineModal";
 
 type Assignment = {
   _id: string;
@@ -30,6 +33,8 @@ export default function AssignmentsList({ classId, isTeacher, locale }: Assignme
   const [loading, setLoading] = useState(true);
   const [selectMode, setSelectMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [showSelectClassModal, setShowSelectClassModal] = useState(false);
+  const [showUpdateDeadlineModal, setShowUpdateDeadlineModal] = useState(false);
 
   const t = locale === 'uk' ? {
     loading: "Завантаження...",
@@ -175,6 +180,136 @@ export default function AssignmentsList({ classId, isTeacher, locale }: Assignme
     setSelectedIds(new Set());
   }
 
+  async function handleBulkCopy() {
+    setShowSelectClassModal(true);
+  }
+
+  async function performBulkCopy(targetClassId: string) {
+    try {
+      const res = await fetch("/api/classes/assignments/bulk", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          operation: "copy",
+          assignmentIds: Array.from(selectedIds),
+          classId: classId,
+          targetClassId: targetClassId
+        })
+      });
+
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.error || "Failed to copy");
+      }
+
+      const data = await res.json();
+      alert(data.message || "Завдання скопійовано!");
+      setShowSelectClassModal(false);
+      toggleSelectMode();
+    } catch (error) {
+      console.error("Bulk copy failed:", error);
+      alert("Помилка копіювання завдань");
+    }
+  }
+
+  async function handleBulkArchive() {
+    if (!confirm(`Архівувати ${selectedIds.size} завдань?`)) return;
+
+    try {
+      const res = await fetch("/api/classes/assignments/bulk", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          operation: "archive",
+          assignmentIds: Array.from(selectedIds),
+          classId: classId
+        })
+      });
+
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.error || "Failed to archive");
+      }
+
+      const data = await res.json();
+      alert(data.message || "Завдання архівовано!");
+      loadAssignments();
+      toggleSelectMode();
+    } catch (error) {
+      console.error("Bulk archive failed:", error);
+      alert("Помилка архівації завдань");
+    }
+  }
+
+  async function handleBulkDelete() {
+    const count = selectedIds.size;
+    const confirmation = prompt(`УВАГА: Це видалить ${count} завдань та всі submissions. Введіть "${count}" для підтвердження:`);
+
+    if (confirmation !== count.toString()) return;
+
+    try {
+      const res = await fetch("/api/classes/assignments/bulk", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          operation: "delete",
+          assignmentIds: Array.from(selectedIds),
+          classId: classId
+        })
+      });
+
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.error || "Failed to delete");
+      }
+
+      const data = await res.json();
+      alert(data.message || "Завдання видалено!");
+      loadAssignments();
+      toggleSelectMode();
+    } catch (error) {
+      console.error("Bulk delete failed:", error);
+      alert("Помилка видалення завдань");
+    }
+  }
+
+  async function handleBulkUpdateDeadline() {
+    setShowUpdateDeadlineModal(true);
+  }
+
+  async function performBulkUpdateDeadline(dueAt: string | null, publishAt: string | null) {
+    try {
+      const updates: any = {};
+      if (dueAt) updates.dueAt = dueAt;
+      if (publishAt) updates.publishAt = publishAt;
+
+      const res = await fetch("/api/classes/assignments/bulk", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          operation: "update",
+          assignmentIds: Array.from(selectedIds),
+          classId: classId,
+          updates: updates
+        })
+      });
+
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.error || "Failed to update");
+      }
+
+      const data = await res.json();
+      alert(data.message || "Дати оновлено!");
+      setShowUpdateDeadlineModal(false);
+      loadAssignments();
+      toggleSelectMode();
+    } catch (error) {
+      console.error("Bulk update failed:", error);
+      alert("Помилка оновлення дат");
+    }
+  }
+
   function getTypeLabel(assignment: Assignment) {
     if (assignment.type === 'exercise' && assignment.exerciseType) {
       return exerciseTypeLabels[assignment.exerciseType] || assignment.exerciseType;
@@ -248,19 +383,110 @@ export default function AssignmentsList({ classId, isTeacher, locale }: Assignme
 
   return (
     <div className="space-y-4">
+      {/* Header with Select Mode Toggle */}
+      {isTeacher && (
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            {selectMode && (
+              <>
+                <button
+                  onClick={selectAll}
+                  className="text-xs font-semibold text-moss hover:underline"
+                >
+                  {t.selectAll}
+                </button>
+                <span className="text-ink/20">•</span>
+                <button
+                  onClick={deselectAll}
+                  className="text-xs font-semibold text-ink/60 hover:underline"
+                >
+                  {t.deselectAll}
+                </button>
+              </>
+            )}
+          </div>
+          <button
+            onClick={toggleSelectMode}
+            className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-all ${
+              selectMode
+                ? 'border border-ink/20 bg-paper text-ink hover:bg-ink/5'
+                : 'border border-moss/30 bg-moss/10 text-moss hover:bg-moss/20'
+            }`}
+          >
+            {selectMode ? (
+              <>
+                <XCircle size={16} weight="fill" />
+                {t.cancel}
+              </>
+            ) : (
+              <>
+                <CheckSquare size={16} />
+                {t.select}
+              </>
+            )}
+          </button>
+        </div>
+      )}
+
+      {/* Bulk Action Toolbar */}
+      {selectMode && selectedIds.size > 0 && (
+        <BulkActionToolbar
+          selectedCount={selectedIds.size}
+          onCopy={handleBulkCopy}
+          onArchive={handleBulkArchive}
+          onDelete={handleBulkDelete}
+          onUpdateDeadline={handleBulkUpdateDeadline}
+          onCancel={toggleSelectMode}
+          locale={locale}
+        />
+      )}
+
+      {/* Assignments List */}
       {assignments.map((assignment) => {
         const isDue = isOverdue(assignment.dueAt);
         const status = getAssignmentStatus(assignment);
+        const isSelected = selectedIds.has(assignment._id);
 
         return (
-          <a
+          <div
             key={assignment._id}
-            href={`/classes/${classId}/assignments/${assignment._id}`}
-            className="block rounded-2xl border border-ink/10 bg-paper p-6 hover:border-moss/30 hover:shadow-lg transition-all"
+            className={`relative rounded-2xl border bg-paper p-6 transition-all ${
+              selectMode
+                ? isSelected
+                  ? 'border-moss/50 bg-moss/5 shadow-lg'
+                  : 'border-ink/10 hover:border-moss/30 cursor-pointer'
+                : 'border-ink/10 hover:border-moss/30 hover:shadow-lg'
+            }`}
+            onClick={selectMode ? () => toggleSelectAssignment(assignment._id) : undefined}
           >
-            {/* Header */}
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex items-start gap-3 flex-1">
+            {/* Checkbox for Select Mode */}
+            {selectMode && (
+              <div className="absolute top-6 left-6 z-10">
+                <div
+                  className={`flex items-center justify-center w-6 h-6 rounded-md border-2 transition-all ${
+                    isSelected
+                      ? 'bg-moss border-moss'
+                      : 'bg-paper border-ink/30 hover:border-moss/50'
+                  }`}
+                >
+                  {isSelected ? (
+                    <CheckCircle size={20} weight="fill" className="text-white" />
+                  ) : (
+                    <Square size={20} weight="regular" className="text-ink/30" />
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Assignment Card Content */}
+            <a
+              href={selectMode ? undefined : `/classes/${classId}/assignments/${assignment._id}`}
+              className={`block ${selectMode ? 'pl-10' : ''}`}
+              onClick={(e) => selectMode && e.preventDefault()}
+            >
+              {/* Header */}
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-start gap-3 flex-1">
                 {/* Icon */}
                 <div className="text-3xl">{getTypeIcon(assignment)}</div>
 
@@ -327,9 +553,29 @@ export default function AssignmentsList({ classId, isTeacher, locale }: Assignme
                 </div>
               )}
             </div>
-          </a>
+            </a>
+          </div>
         );
       })}
+
+      {/* Modals */}
+      {showSelectClassModal && (
+        <SelectClassModal
+          onSelect={performBulkCopy}
+          onClose={() => setShowSelectClassModal(false)}
+          locale={locale}
+          excludeClassId={classId}
+        />
+      )}
+
+      {showUpdateDeadlineModal && (
+        <UpdateDeadlineModal
+          selectedCount={selectedIds.size}
+          onUpdate={performBulkUpdateDeadline}
+          onClose={() => setShowUpdateDeadlineModal(false)}
+          locale={locale}
+        />
+      )}
     </div>
   );
 }
