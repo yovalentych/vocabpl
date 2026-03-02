@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Clock, Users, CheckCircle, XCircle, Calendar, CheckSquare, Square } from "@phosphor-icons/react";
+import { Clock, Users, CheckCircle, XCircle, Calendar, CheckSquare, Square, Star } from "@phosphor-icons/react";
 import BulkActionToolbar from "./BulkActionToolbar";
 import SelectClassModal from "./SelectClassModal";
 import UpdateDeadlineModal from "./UpdateDeadlineModal";
@@ -19,6 +19,11 @@ type Assignment = {
   settings: {
     allowLateSubmission: boolean;
     showResultsImmediately: boolean;
+  };
+  stats?: {
+    total: number;
+    submitted: number;
+    graded: number;
   };
 };
 
@@ -49,6 +54,8 @@ export default function AssignmentsList({ classId, isTeacher, locale }: Assignme
     assignedOn: "Призначено",
     students: "студентів",
     completed: "виконали",
+    submitted: "здали",
+    graded: "оцінено",
     pending: "в очікуванні",
     overdue: "прострочено",
     scheduled: "Заплановано",
@@ -85,6 +92,8 @@ export default function AssignmentsList({ classId, isTeacher, locale }: Assignme
     assignedOn: "Przypisano",
     students: "uczniów",
     completed: "ukończyli",
+    submitted: "oddali",
+    graded: "oceniono",
     pending: "oczekujące",
     overdue: "zaległe",
     scheduled: "Zaplanowane",
@@ -545,11 +554,17 @@ export default function AssignmentsList({ classId, isTeacher, locale }: Assignme
                 {t.assignedOn}: {formatDate(assignment.assignedAt)}
               </div>
 
-              {/* TODO: Додати статистику submissions */}
-              {isTeacher && (
-                <div className="flex items-center gap-1 ml-auto">
-                  <Users size={12} />
-                  <span>0/0 {t.completed}</span>
+              {/* Статистика submissions */}
+              {isTeacher && assignment.stats && (
+                <div className="flex items-center gap-3 ml-auto">
+                  <div className="flex items-center gap-1 text-moss">
+                    <CheckCircle size={14} weight="fill" />
+                    <span>{assignment.stats.submitted}/{assignment.stats.total} {t.submitted}</span>
+                  </div>
+                  <div className="flex items-center gap-1 text-gold">
+                    <Star size={14} weight="fill" />
+                    <span>{assignment.stats.graded} {t.graded}</span>
+                  </div>
                 </div>
               )}
             </div>

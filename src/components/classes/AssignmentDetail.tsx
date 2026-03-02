@@ -13,8 +13,11 @@ import {
   Star,
   MagnifyingGlass,
   Funnel,
-  SortAscending
+  SortAscending,
+  Square,
+  CheckSquare
 } from "@phosphor-icons/react";
+import FeedbackTemplateSelector from "./FeedbackTemplateSelector";
 
 type AssignmentDetailProps = {
   classId: string;
@@ -81,6 +84,11 @@ export default function AssignmentDetail({
   const [feedbackComment, setFeedbackComment] = useState("");
   const [savingGrade, setSavingGrade] = useState(false);
 
+  // Batch grading state
+  const [selectMode, setSelectMode] = useState(false);
+  const [selectedSubmissionIds, setSelectedSubmissionIds] = useState<Set<string>>(new Set());
+  const [batchGrading, setBatchGrading] = useState(false);
+
   const t =
     locale === "uk"
       ? {
@@ -128,7 +136,14 @@ export default function AssignmentDetail({
           sortBy: "Сортування",
           sortByName: "За іменем",
           sortByScore: "За балом",
-          sortByDate: "За датою"
+          sortByDate: "За датою",
+          batchGrade: "Масове оцінювання",
+          selectMode: "Режим вибору",
+          selected: "Вибрано",
+          gradeSelected: "Оцінити вибране",
+          cancel: "Скасувати",
+          selectAll: "Вибрати всі",
+          deselectAll: "Зняти вибір"
         }
       : {
           backToAssignments: "Powrot do zadan",
@@ -175,7 +190,14 @@ export default function AssignmentDetail({
           sortBy: "Sortuj",
           sortByName: "Według imienia",
           sortByScore: "Według wyniku",
-          sortByDate: "Według daty"
+          sortByDate: "Według daty",
+          batchGrade: "Masowa ocena",
+          selectMode: "Tryb wyboru",
+          selected: "Wybrano",
+          gradeSelected: "Oceń wybrane",
+          cancel: "Anuluj",
+          selectAll: "Wybierz wszystkie",
+          deselectAll: "Odznacz wszystkie"
         };
 
   const exerciseTypeLabels: Record<string, string> =
@@ -225,6 +247,13 @@ export default function AssignmentDetail({
   async function saveGrade(submissionId: string) {
     try {
       setSavingGrade(true);
+
+      // Check if batch grading
+      if (submissionId === 'batch') {
+        await saveBatchGrade();
+        return;
+      }
+
       const res = await fetch(
         `/api/classes/${classId}/assignments/${assignmentId}/submissions/${submissionId}`,
         {
@@ -246,6 +275,71 @@ export default function AssignmentDetail({
     } finally {
       setSavingGrade(false);
     }
+  }
+
+  async function saveBatchGrade() {
+    try {
+      const submissionIds = Array.from(selectedSubmissionIds);
+      const res = await fetch(
+        `/api/classes/${classId}/assignments/${assignmentId}/submissions/bulk`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            submissionIds,
+            feedback: feedbackComment,
+            status: "graded"
+          })
+        }
+      );
+
+      if (res.ok) {
+        setGradingSubmission(null);
+        setFeedbackComment("");
+        setSelectMode(false);
+        setSelectedSubmissionIds(new Set());
+        await loadAssignment();
+      }
+    } catch (error) {
+      console.error("Failed to batch grade:", error);
+    }
+  }
+
+  function toggleSelectMode() {
+    setSelectMode(!selectMode);
+    setSelectedSubmissionIds(new Set());
+  }
+
+  function toggleSelectSubmission(submissionId: string) {
+    const newSelected = new Set(selectedSubmissionIds);
+    if (newSelected.has(submissionId)) {
+      newSelected.delete(submissionId);
+    } else {
+      newSelected.add(submissionId);
+    }
+    setSelectedSubmissionIds(newSelected);
+  }
+
+  function selectAllSubmissions(submissions: Submission[]) {
+    // Only select submitted/not graded submissions
+    const selectableIds = submissions
+      .filter(s => s.status === 'submitted')
+      .map(s => s._id);
+    setSelectedSubmissionIds(new Set(selectableIds));
+  }
+
+  function openBatchGradeModal() {
+    if (selectedSubmissionIds.size === 0) return;
+
+    // Create a pseudo submission for batch mode
+    setGradingSubmission({
+      _id: 'batch',
+      studentId: 'batch',
+      studentName: `${selectedSubmissionIds.size} ${locale === 'uk' ? 'студентів' : 'uczniów'}`,
+      status: 'submitted'
+    } as Submission);
+    setFeedbackComment("");
+    setBatchGrading(true);
   }
 
   function isOverdue(dueAt?: string) {
@@ -416,75 +510,153 @@ export default function AssignmentDetail({
 
       {/* Grading Modal */}
       {gradingSubmission && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 backdrop-blur-sm">
-          <div className="w-full max-w-lg rounded-2xl border border-ink/10 bg-paper p-6 shadow-xl mx-4">
-            <div className="flex items-start justify-between mb-6">
-              <div>
-                <h2 className="text-lg font-bold text-ink mb-1">
-                  {t.grade}: {gradingSubmission.studentName}
-                </h2>
-                {gradingSubmission.score != null &&
-                  assignment.pointsTotal != null && (
-                    <p className="text-sm text-ink/60">
-                      {t.score}: {gradingSubmission.score} {t.of}{" "}
-                      {assignment.pointsTotal} {t.points}
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 backdrop-blur-sm p-4"
+          onKeyDown={(e) => {
+            if (e.key === "Escape") {
+              setGradingSubmission(null);
+              setFeedbackComment("");
+            }
+            if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+              if (!savingGrade) {
+                saveGrade(gradingSubmission._id);
+              }
+            }
+          }}
+        >
+          <div className="w-full max-w-2xl max-h-[90vh] flex flex-col rounded-2xl border border-ink/10 bg-paper shadow-xl overflow-hidden">
+            {/* Sticky Header */}
+            <div className="sticky top-0 z-10 bg-paper border-b border-ink/10 px-6 py-4">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <h2 className="text-lg font-bold text-ink mb-1">
+                    {gradingSubmission._id === 'batch'
+                      ? (locale === 'uk' ? 'Масове оцінювання' : 'Masowa ocena')
+                      : `${t.grade}: ${gradingSubmission.studentName}`}
+                  </h2>
+                  {gradingSubmission._id !== 'batch' && gradingSubmission.score != null && assignment.pointsTotal != null && (
+                    <div className="flex items-center gap-3 text-sm">
+                      <span className="text-ink/60">
+                        {t.score}: <span className="font-semibold text-ink">{gradingSubmission.score}</span> {t.of} {assignment.pointsTotal} {t.points}
+                      </span>
                       {gradingSubmission.percentage != null && (
-                        <span className="ml-2">
-                          ({gradingSubmission.percentage}%)
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gold/10 text-gold font-semibold">
+                          <Star size={12} weight="fill" />
+                          {gradingSubmission.percentage}%
                         </span>
                       )}
-                    </p>
+                    </div>
                   )}
+                </div>
+                <button
+                  onClick={() => {
+                    setGradingSubmission(null);
+                    setFeedbackComment("");
+                  }}
+                  className="rounded-full p-2 text-ink/40 hover:text-ink hover:bg-ink/5 transition-colors"
+                >
+                  <XCircle size={24} />
+                </button>
               </div>
-              <button
-                onClick={() => {
-                  setGradingSubmission(null);
-                  setFeedbackComment("");
-                }}
-                className="rounded-full p-2 text-ink/40 hover:text-ink hover:bg-ink/5 transition-colors"
-              >
-                <XCircle size={24} />
-              </button>
             </div>
 
-            <div className="mb-6">
-              <label className="block text-sm font-semibold text-ink mb-2">
-                <ChatText size={16} className="inline mr-1.5" />
-                {t.teacherFeedback}
-              </label>
-              <textarea
-                value={feedbackComment}
-                onChange={(e) => setFeedbackComment(e.target.value)}
-                placeholder={t.feedbackPlaceholder}
-                rows={4}
-                className="w-full rounded-xl border border-ink/10 bg-paper px-4 py-3 text-sm text-ink placeholder:text-ink/40 focus:border-moss/50 focus:outline-none focus:ring-1 focus:ring-moss/30 resize-none"
+            {/* Scrollable Body */}
+            <div className="flex-1 overflow-y-auto px-6 py-4 space-y-6">
+              {/* Submission Details (only for single grading) */}
+              {gradingSubmission._id !== 'batch' && gradingSubmission.submittedAt && (
+                <div className="rounded-xl border border-ink/10 bg-ink/[0.02] p-4">
+                  <h3 className="text-sm font-semibold text-ink mb-3 flex items-center gap-2">
+                    <ClipboardText size={16} />
+                    {locale === 'uk' ? 'Деталі роботи' : 'Szczegóły pracy'}
+                  </h3>
+                  <div className="space-y-2 text-sm">
+                    <div>
+                      <span className="text-ink/50">{t.submittedAt}:</span>
+                      <span className="ml-2 font-semibold text-ink">{formatDate(gradingSubmission.submittedAt)}</span>
+                      {gradingSubmission.late && (
+                        <span className="ml-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-terracotta/10 text-terracotta text-xs font-semibold">
+                          <Clock size={12} />
+                          {t.late}
+                        </span>
+                      )}
+                    </div>
+                    {gradingSubmission.percentage != null && (
+                      <div>
+                        <span className="text-ink/50">{locale === 'uk' ? 'Результат:' : 'Wynik:'}</span>
+                        <span className="ml-2 font-semibold text-gold">{gradingSubmission.percentage}%</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Feedback Templates */}
+              <FeedbackTemplateSelector
+                locale={locale}
+                onSelect={(comment) => setFeedbackComment(comment)}
               />
+
+              {/* Feedback Input */}
+              <div>
+                <label className="block text-sm font-semibold text-ink mb-2">
+                  <ChatText size={16} className="inline mr-1.5" />
+                  {t.teacherFeedback}
+                </label>
+                <textarea
+                  value={feedbackComment}
+                  onChange={(e) => setFeedbackComment(e.target.value)}
+                  placeholder={t.feedbackPlaceholder}
+                  rows={5}
+                  className="w-full rounded-xl border border-ink/10 bg-paper px-4 py-3 text-sm text-ink placeholder:text-ink/40 focus:border-moss/50 focus:outline-none focus:ring-1 focus:ring-moss/30 resize-none"
+                />
+                <p className="mt-1 text-xs text-ink/40">
+                  {locale === 'uk'
+                    ? 'Порада: Використовуйте Cmd/Ctrl+Enter для швидкого збереження'
+                    : 'Wskazówka: Użyj Cmd/Ctrl+Enter do szybkiego zapisu'}
+                </p>
+              </div>
+
+              {/* Feedback Preview */}
+              {feedbackComment.trim() && (
+                <div className="rounded-xl border border-moss/20 bg-moss/5 p-4">
+                  <h3 className="text-sm font-semibold text-moss mb-2">
+                    {locale === 'uk' ? 'Попередній перегляд' : 'Podgląd'}
+                  </h3>
+                  <p className="text-sm text-ink whitespace-pre-wrap">{feedbackComment}</p>
+                </div>
+              )}
             </div>
 
-            <div className="flex justify-end gap-3">
-              <button
-                onClick={() => {
-                  setGradingSubmission(null);
-                  setFeedbackComment("");
-                }}
-                className="rounded-full border border-ink/20 bg-paper px-5 py-2.5 text-sm font-semibold text-ink/70 hover:bg-ink/5 transition-colors"
-              >
-                {locale === "uk" ? "Скасувати" : "Anuluj"}
-              </button>
-              <button
-                onClick={() => saveGrade(gradingSubmission._id)}
-                disabled={savingGrade}
-                className="inline-flex items-center gap-2 rounded-full border border-moss/30 bg-moss px-5 py-2.5 text-sm font-semibold text-white hover:bg-moss/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {savingGrade ? (
-                  t.saving
-                ) : (
-                  <>
-                    <Check size={16} weight="bold" />
-                    {t.saveGrade}
-                  </>
-                )}
-              </button>
+            {/* Sticky Footer */}
+            <div className="sticky bottom-0 z-10 bg-paper border-t border-ink/10 px-6 py-4">
+              <div className="flex justify-end gap-3">
+                <button
+                  onClick={() => {
+                    setGradingSubmission(null);
+                    setFeedbackComment("");
+                  }}
+                  className="rounded-full border border-ink/20 bg-paper px-5 py-2.5 text-sm font-semibold text-ink/70 hover:bg-ink/5 transition-colors"
+                >
+                  {t.cancel}
+                </button>
+                <button
+                  onClick={() => saveGrade(gradingSubmission._id)}
+                  disabled={savingGrade}
+                  className="inline-flex items-center gap-2 rounded-full border border-moss/30 bg-moss px-5 py-2.5 text-sm font-semibold text-white hover:bg-moss/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {savingGrade ? (
+                    <>
+                      <Clock size={16} className="animate-spin" />
+                      {t.saving}
+                    </>
+                  ) : (
+                    <>
+                      <Check size={16} weight="bold" />
+                      {t.saveGrade}
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -677,6 +849,51 @@ export default function AssignmentDetail({
 
     return (
       <div className="space-y-6">
+        {/* Batch Actions Toolbar */}
+        {selectMode && selectedSubmissionIds.size > 0 && (
+          <div className="sticky top-0 z-10 mb-4 rounded-2xl border-2 border-moss/30 bg-moss/10 p-4">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <span className="text-sm font-bold text-moss">
+                  {t.selected}: {selectedSubmissionIds.size}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={openBatchGradeModal}
+                  className="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold px-4 py-2 text-sm font-semibold text-white hover:bg-gold/90 transition-colors"
+                >
+                  <Star size={16} weight="fill" />
+                  {t.gradeSelected}
+                </button>
+
+                <div className="h-6 w-px bg-ink/10" />
+
+                <button
+                  onClick={toggleSelectMode}
+                  className="inline-flex items-center gap-2 rounded-full border border-ink/20 bg-paper px-4 py-2 text-sm font-semibold text-ink/60 hover:text-ink hover:bg-ink/5 transition-colors"
+                >
+                  <XCircle size={16} weight="bold" />
+                  {t.cancel}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Select Mode Toggle */}
+        {!selectMode && (
+          <div className="flex justify-end">
+            <button
+              onClick={toggleSelectMode}
+              className="rounded-full border border-moss/30 text-moss hover:bg-moss/5 px-4 py-2 text-sm font-semibold transition-colors"
+            >
+              {t.batchGrade}
+            </button>
+          </div>
+        )}
+
         {/* Stats bar */}
         <div className="grid gap-4 sm:grid-cols-3">
           <div className="rounded-2xl border border-ink/10 bg-paper p-5">
@@ -774,7 +991,27 @@ export default function AssignmentDetail({
         ) : (
           <div className="rounded-2xl border border-ink/10 bg-paper overflow-hidden">
             {/* Table header */}
-            <div className="hidden sm:grid sm:grid-cols-[1fr_auto_auto_auto_auto] gap-4 px-6 py-3 border-b border-ink/10 bg-ink/[0.02]">
+            <div className={`hidden sm:grid ${selectMode ? 'sm:grid-cols-[auto_1fr_auto_auto_auto_auto]' : 'sm:grid-cols-[1fr_auto_auto_auto_auto]'} gap-4 px-6 py-3 border-b border-ink/10 bg-ink/[0.02]`}>
+              {selectMode && (
+                <div className="flex items-center justify-center w-10">
+                  <button
+                    onClick={() => {
+                      if (selectedSubmissionIds.size === filteredSubmissions.filter(s => s.status === 'submitted').length) {
+                        setSelectedSubmissionIds(new Set());
+                      } else {
+                        selectAllSubmissions(filteredSubmissions);
+                      }
+                    }}
+                    className="text-ink/50 hover:text-moss transition-colors"
+                  >
+                    {selectedSubmissionIds.size > 0 && selectedSubmissionIds.size === filteredSubmissions.filter(s => s.status === 'submitted').length ? (
+                      <CheckSquare size={20} weight="fill" className="text-moss" />
+                    ) : (
+                      <Square size={20} />
+                    )}
+                  </button>
+                </div>
+              )}
               <div className="text-xs font-semibold text-ink/50 uppercase tracking-wide">
                 {t.studentName}
               </div>
@@ -794,15 +1031,47 @@ export default function AssignmentDetail({
 
             {/* Table rows */}
             <div className="divide-y divide-ink/5">
-              {filteredSubmissions.map((sub) => (
-                <div
-                  key={sub._id}
-                  className="flex flex-col sm:grid sm:grid-cols-[1fr_auto_auto_auto_auto] gap-2 sm:gap-4 px-6 py-4 items-start sm:items-center"
-                >
-                  {/* Student name */}
-                  <div className="font-semibold text-ink text-sm">
-                    {sub.studentName}
-                  </div>
+              {filteredSubmissions.map((sub) => {
+                const isSelected = selectedSubmissionIds.has(sub._id);
+                const isSelectable = selectMode && sub.status === 'submitted';
+
+                return (
+                  <div
+                    key={sub._id}
+                    className={`flex flex-col sm:grid ${selectMode ? 'sm:grid-cols-[auto_1fr_auto_auto_auto_auto]' : 'sm:grid-cols-[1fr_auto_auto_auto_auto]'} gap-2 sm:gap-4 px-6 py-4 items-start sm:items-center transition-colors ${
+                      isSelectable
+                        ? isSelected
+                          ? 'bg-moss/5 hover:bg-moss/10 cursor-pointer'
+                          : 'hover:bg-ink/[0.02] cursor-pointer'
+                        : ''
+                    }`}
+                    onClick={isSelectable ? () => toggleSelectSubmission(sub._id) : undefined}
+                  >
+                    {/* Checkbox for select mode */}
+                    {selectMode && (
+                      <div className="flex items-center justify-center w-10">
+                        {sub.status === 'submitted' ? (
+                          <div
+                            className={`flex items-center justify-center w-5 h-5 rounded border-2 transition-all ${
+                              isSelected
+                                ? 'bg-moss border-moss'
+                                : 'border-ink/30 hover:border-moss/50'
+                            }`}
+                          >
+                            {isSelected && (
+                              <Check size={14} weight="bold" className="text-white" />
+                            )}
+                          </div>
+                        ) : (
+                          <div className="w-5 h-5" />
+                        )}
+                      </div>
+                    )}
+
+                    {/* Student name */}
+                    <div className="font-semibold text-ink text-sm">
+                      {sub.studentName}
+                    </div>
 
                   {/* Status badge */}
                   <div className="w-28 flex justify-center">
@@ -860,7 +1129,8 @@ export default function AssignmentDetail({
                     )}
                   </div>
                 </div>
-              ))}
+              );
+              })}
             </div>
           </div>
         )}

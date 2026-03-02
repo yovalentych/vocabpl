@@ -49,12 +49,45 @@ export async function GET(
       ? assignments
       : assignments.filter(a => !a.publishAt || a.publishAt <= now);
 
+    // Агрегація статистики submissions (тільки для вчителів)
+    let statsMap = new Map<string, { total: number; submitted: number; graded: number }>();
+
+    if (isTeacher && assignments.length > 0) {
+      const assignmentIds = assignments.map(a => a._id);
+
+      const submissionStats = await db.collection("class_submissions")
+        .aggregate([
+          { $match: { assignmentId: { $in: assignmentIds } } },
+          {
+            $group: {
+              _id: "$assignmentId",
+              total: { $sum: 1 },
+              submitted: {
+                $sum: { $cond: [{ $in: ["$status", ["submitted", "graded"]] }, 1, 0] }
+              },
+              graded: {
+                $sum: { $cond: [{ $eq: ["$status", "graded"] }, 1, 0] }
+              }
+            }
+          }
+        ])
+        .toArray();
+
+      statsMap = new Map(
+        submissionStats.map(s => [
+          s._id.toString(),
+          { total: s.total, submitted: s.submitted, graded: s.graded }
+        ])
+      );
+    }
+
     return NextResponse.json({
       assignments: visibleAssignments.map(a => ({
         ...a,
         _id: a._id.toString(),
         classId: a.classId.toString(),
-        teacherId: a.teacherId.toString()
+        teacherId: a.teacherId.toString(),
+        stats: isTeacher ? (statsMap.get(a._id.toString()) || { total: 0, submitted: 0, graded: 0 }) : undefined
       }))
     });
   } catch (error) {
