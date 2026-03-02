@@ -88,14 +88,65 @@ export async function POST(request: Request) {
   const user = await db.collection("users").findOne({ _id: userId });
   if (!user) return NextResponse.json({ ok: true });
 
-  const currentExpires = user.subscription?.expiresAt ? new Date(user.subscription.expiresAt) : null;
-  const baseDate = currentExpires && currentExpires.getTime() > Date.now() ? currentExpires : new Date();
-  const nextExpires = new Date(baseDate.getTime() + plan.periodDays * 24 * 60 * 60 * 1000);
-
   const walletData = payload?.walletData || {};
   const cardToken = walletData?.cardToken || null;
   const cardMask = walletData?.maskedPan || null;
   const walletId = walletData?.walletId || null;
+
+  // Handle teacher registration payments
+  if (existing.paymentType === "teacher_registration") {
+    if (!user.teacherProfile) {
+      console.error("[webhook] Teacher payment but no teacherProfile found");
+      return NextResponse.json({ ok: true });
+    }
+
+    const teacherPlanExpiresAt = new Date(Date.now() + plan.periodDays * 24 * 60 * 60 * 1000);
+
+    // Update user to tutor role and activate teacher profile
+    await db.collection("users").updateOne(
+      { _id: userId },
+      {
+        $set: {
+          role: "tutor",
+          "teacherProfile.status": "active",
+          "teacherProfile.subscription.expiresAt": teacherPlanExpiresAt,
+          "teacherProfile.subscription.cardToken": cardToken || undefined,
+          "teacherProfile.subscription.cardMask": cardMask || undefined,
+          "teacherProfile.subscription.walletId": walletId || undefined,
+          "teacherProfile.updatedAt": new Date(),
+          updatedAt: new Date(),
+        },
+      }
+    );
+
+    // Send welcome email
+    try {
+      const { sendTeacherWelcomeEmail, sendAdminNewTeacherNotification } = await import("@/lib/mailer");
+      await sendTeacherWelcomeEmail(
+        user.email,
+        user.teacherProfile.fullName,
+        plan.tier || plan.id
+      );
+
+      // Notify admin
+      await sendAdminNewTeacherNotification({
+        fullName: user.teacherProfile.fullName,
+        email: user.email,
+        planId: plan.id,
+        schoolOrInstitution: user.teacherProfile.schoolOrInstitution,
+      });
+    } catch (error) {
+      console.error("[webhook] Failed to send teacher emails:", error);
+    }
+
+    console.log(`[webhook] Teacher registration completed for user ${userId}`);
+    return NextResponse.json({ ok: true });
+  }
+
+  // Regular student subscription payment handling
+  const currentExpires = user.subscription?.expiresAt ? new Date(user.subscription.expiresAt) : null;
+  const baseDate = currentExpires && currentExpires.getTime() > Date.now() ? currentExpires : new Date();
+  const nextExpires = new Date(baseDate.getTime() + plan.periodDays * 24 * 60 * 60 * 1000);
 
   await db.collection("users").updateOne(
     { _id: userId },

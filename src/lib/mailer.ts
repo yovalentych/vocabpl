@@ -455,3 +455,259 @@ export async function sendFeedbackEmail({
     throw error;
   });
 }
+
+// Teacher Registration Email Templates
+
+export async function sendTeacherVerificationEmail(to: string, code: string, fullName: string) {
+  const subject = "Polish Vocab Studio — реєстрація вчителя / Teacher registration";
+  const preheader = "Ваш код підтвердження · Your verification code";
+  const html = `
+    <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent">${preheader}</div>
+    <div style="background:#f6ede3;padding:32px 18px;font-family:'Segoe UI',Arial,sans-serif;color:#2b2118;line-height:1.6">
+      <div style="max-width:560px;margin:0 auto;background:#fff7ef;border:1px solid #eadbcc;border-radius:18px;padding:24px">
+        <h2 style="margin:0 0 8px;font-size:20px">Polish Vocab Studio</h2>
+        <p style="margin:0 0 16px;font-size:14px;color:#6b5a4a">Реєстрація вчителя · Teacher registration</p>
+        <p style="margin:0 0 10px">Вітаємо, ${fullName}!</p>
+        <p style="margin:0 0 10px">Welcome, ${fullName}!</p>
+        <p style="margin:0 0 10px">Ваш код підтвердження для реєстрації як вчитель:</p>
+        <p style="margin:0 0 10px">Your verification code for teacher registration:</p>
+        <div style="font-size:28px;font-weight:700;letter-spacing:6px;margin:12px 0;color:#2b2118">${code}</div>
+        <p style="margin:0 0 6px;font-size:13px;color:#6b5a4a">Код дійсний 15 хвилин.</p>
+        <p style="margin:0 0 18px;font-size:13px;color:#6b5a4a">The code is valid for 15 minutes.</p>
+        <div style="height:1px;background:#eadbcc;margin:18px 0"></div>
+        <p style="margin:0;font-size:12px;color:#7a6a5a">Якщо це були не ви — просто ігноруйте цей лист.</p>
+        <p style="margin:0;font-size:12px;color:#7a6a5a">If this wasn't you, you can ignore this email.</p>
+      </div>
+    </div>
+  `;
+
+  if (shouldUseBrevo()) {
+    try {
+      await sendBrevoEmail({ to, subject, html });
+      return;
+    } catch (error) {
+      console.error("[smtp] teacher verification email failed", error);
+      throw error;
+    }
+  }
+
+  const { from } = getSmtpConfig();
+  const transporter = createTransporter();
+  try {
+    await transporter.sendMail({ from, to, subject, html });
+  } catch (error) {
+    console.error("[smtp] teacher verification email failed", error);
+    throw error;
+  }
+}
+
+export async function sendTeacherWelcomeEmail(
+  to: string,
+  fullName: string,
+  planName: string
+) {
+  const subject = "Polish Vocab Studio — ласкаво просимо! / Welcome!";
+  const preheader = "Вітаємо в команді вчителів · Welcome to the teacher team";
+  const html = `
+    <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent">${preheader}</div>
+    <div style="background:#f6ede3;padding:32px 18px;font-family:'Segoe UI',Arial,sans-serif;color:#2b2118;line-height:1.6">
+      <div style="max-width:560px;margin:0 auto;background:#fff7ef;border:1px solid #eadbcc;border-radius:18px;padding:24px">
+        <h2 style="margin:0 0 8px;font-size:20px">Polish Vocab Studio</h2>
+        <p style="margin:0 0 16px;font-size:14px;color:#6b5a4a">Ласкаво просимо · Welcome</p>
+        <p style="margin:0 0 16px">Вітаємо, ${fullName}! 🎉</p>
+        <p style="margin:0 0 16px">Welcome, ${fullName}! 🎉</p>
+        <p style="margin:0 0 10px">Ваша реєстрація як вчителя завершена!</p>
+        <p style="margin:0 0 10px">Your teacher registration is complete!</p>
+        <div style="margin:16px 0;padding:14px 16px;border-radius:12px;background:#f1e6da">
+          <div style="font-size:14px;margin:0 0 6px">План / Plan: <strong>${planName}</strong></div>
+        </div>
+        <p style="margin:16px 0 10px">Наступні кроки:</p>
+        <p style="margin:0 0 10px">Next steps:</p>
+        <ul style="margin:8px 0;padding-left:20px">
+          <li style="margin:4px 0">Створіть свій перший клас · Create your first class</li>
+          <li style="margin:4px 0">Додайте студентів · Add students</li>
+          <li style="margin:4px 0">Створюйте завдання · Create assignments</li>
+        </ul>
+        <div style="margin:20px 0">
+          <a href="${process.env.APP_PUBLIC_URL || "https://polishvocab.studio"}/cabinet" style="display:inline-block;background:#2b2118;color:#fff;text-decoration:none;padding:12px 24px;border-radius:999px;font-size:14px;font-weight:600">
+            Перейти до кабінету · Go to Cabinet
+          </a>
+        </div>
+        <div style="height:1px;background:#eadbcc;margin:18px 0"></div>
+        <p style="margin:0;font-size:12px;color:#7a6a5a">Якщо у вас виникли питання, зв'яжіться з нами.</p>
+        <p style="margin:0;font-size:12px;color:#7a6a5a">If you have any questions, please contact us.</p>
+      </div>
+    </div>
+  `;
+
+  if (shouldUseBrevo()) {
+    try {
+      await sendBrevoEmail({ to, subject, html });
+      return;
+    } catch (error) {
+      console.error("[smtp] teacher welcome email failed", error);
+      throw error;
+    }
+  }
+
+  const { from } = getSmtpConfig();
+  const transporter = createTransporter();
+  try {
+    await transporter.sendMail({ from, to, subject, html });
+  } catch (error) {
+    console.error("[smtp] teacher welcome email failed", error);
+    throw error;
+  }
+}
+
+export async function sendAdminNewTeacherNotification(teacherInfo: {
+  fullName: string;
+  email: string;
+  planId: string;
+  schoolOrInstitution?: string;
+}) {
+  const adminEmail = process.env.ADMIN_EMAIL || process.env.SMTP_USER;
+  if (!adminEmail) {
+    console.warn("[smtp] Admin email not configured, skipping notification");
+    return;
+  }
+
+  const subject = "New Teacher Registration — Polish Vocab Studio";
+  const html = `
+    <div style="background:#f6ede3;padding:28px 18px;font-family:'Segoe UI',Arial,sans-serif;color:#2b2118;line-height:1.6">
+      <div style="max-width:640px;margin:0 auto;background:#fff7ef;border:1px solid #e7d7c8;border-radius:18px;padding:20px">
+        <h2 style="margin:0 0 12px;font-size:20px">New Teacher Registration</h2>
+        <p style="margin:0 0 8px"><strong>Name:</strong> ${teacherInfo.fullName}</p>
+        <p style="margin:0 0 8px"><strong>Email:</strong> ${teacherInfo.email}</p>
+        <p style="margin:0 0 8px"><strong>Plan:</strong> ${teacherInfo.planId}</p>
+        ${teacherInfo.schoolOrInstitution ? `<p style="margin:0 0 8px"><strong>Institution:</strong> ${teacherInfo.schoolOrInstitution}</p>` : ""}
+        <div style="margin:20px 0">
+          <a href="${process.env.APP_PUBLIC_URL || "https://polishvocab.studio"}/admin/teachers" style="display:inline-block;background:#2b2118;color:#fff;text-decoration:none;padding:10px 16px;border-radius:999px;font-size:12px;font-weight:600">
+            View in Admin Panel
+          </a>
+        </div>
+      </div>
+    </div>
+  `;
+
+  if (shouldUseBrevo()) {
+    try {
+      await sendBrevoEmail({ to: adminEmail, subject, html });
+      return;
+    } catch (error) {
+      console.error("[smtp] admin notification email failed", error);
+    }
+  } else {
+    const { from } = getSmtpConfig();
+    const transporter = createTransporter();
+    try {
+      await transporter.sendMail({ from, to: adminEmail, subject, html });
+    } catch (error) {
+      console.error("[smtp] admin notification email failed", error);
+    }
+  }
+}
+
+export async function sendGracePeriodWarningEmail(
+  to: string,
+  fullName: string,
+  daysRemaining: number
+) {
+  const subject = `Polish Vocab Studio — ${daysRemaining} ${daysRemaining === 1 ? "день" : "дні"} до видалення / ${daysRemaining} ${daysRemaining === 1 ? "day" : "days"} until deletion`;
+  const preheader = "Ваш акаунт вчителя буде видалено · Your teacher account will be deleted";
+  const html = `
+    <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent">${preheader}</div>
+    <div style="background:#f6ede3;padding:32px 18px;font-family:'Segoe UI',Arial,sans-serif;color:#2b2118;line-height:1.6">
+      <div style="max-width:560px;margin:0 auto;background:#fff7ef;border:1px solid #eadbcc;border-radius:18px;padding:24px">
+        <h2 style="margin:0 0 8px;font-size:20px">Polish Vocab Studio</h2>
+        <p style="margin:0 0 16px;font-size:14px;color:#6b5a4a">Попередження · Warning</p>
+        <p style="margin:0 0 16px">Шановний ${fullName},</p>
+        <p style="margin:0 0 16px">Dear ${fullName},</p>
+        <div style="margin:16px 0;padding:14px 16px;border-radius:12px;background:#ffe8d6;border:2px solid #ffb380">
+          <p style="margin:0 0 8px;font-weight:600">⚠️ Залишилось ${daysRemaining} ${daysRemaining === 1 ? "день" : "дні"}</p>
+          <p style="margin:0 0 8px;font-weight:600">⚠️ ${daysRemaining} ${daysRemaining === 1 ? "day" : "days"} remaining</p>
+        </div>
+        <p style="margin:16px 0 10px">Ваш акаунт вчителя буде автоматично видалено через ${daysRemaining} ${daysRemaining === 1 ? "день" : "дні"}.</p>
+        <p style="margin:0 0 10px">Your teacher account will be automatically deleted in ${daysRemaining} ${daysRemaining === 1 ? "day" : "days"}.</p>
+        <p style="margin:16px 0 10px">Щоб відновити підписку та зберегти ваші класи та завдання:</p>
+        <p style="margin:0 0 10px">To resume your subscription and keep your classes and assignments:</p>
+        <div style="margin:20px 0">
+          <a href="${process.env.APP_PUBLIC_URL || "https://polishvocab.studio"}/cabinet" style="display:inline-block;background:#2b2118;color:#fff;text-decoration:none;padding:12px 24px;border-radius:999px;font-size:14px;font-weight:600">
+            Відновити підписку · Resume Subscription
+          </a>
+        </div>
+        <div style="height:1px;background:#eadbcc;margin:18px 0"></div>
+        <p style="margin:0;font-size:12px;color:#7a6a5a">Якщо у вас виникли питання, зв'яжіться з підтримкою.</p>
+        <p style="margin:0;font-size:12px;color:#7a6a5a">If you have any questions, please contact support.</p>
+      </div>
+    </div>
+  `;
+
+  if (shouldUseBrevo()) {
+    try {
+      await sendBrevoEmail({ to, subject, html });
+      return;
+    } catch (error) {
+      console.error("[smtp] grace period warning email failed", error);
+      throw error;
+    }
+  }
+
+  const { from } = getSmtpConfig();
+  const transporter = createTransporter();
+  try {
+    await transporter.sendMail({ from, to, subject, html });
+  } catch (error) {
+    console.error("[smtp] grace period warning email failed", error);
+    throw error;
+  }
+}
+
+export async function sendTeacherDeletionEmail(to: string, fullName: string) {
+  const subject = "Polish Vocab Studio — акаунт видалено / Account deleted";
+  const preheader = "Ваш акаунт вчителя було видалено · Your teacher account has been deleted";
+  const html = `
+    <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent">${preheader}</div>
+    <div style="background:#f6ede3;padding:32px 18px;font-family:'Segoe UI',Arial,sans-serif;color:#2b2118;line-height:1.6">
+      <div style="max-width:560px;margin:0 auto;background:#fff7ef;border:1px solid #eadbcc;border-radius:18px;padding:24px">
+        <h2 style="margin:0 0 8px;font-size:20px">Polish Vocab Studio</h2>
+        <p style="margin:0 0 16px;font-size:14px;color:#6b5a4a">Видалення акаунту · Account deletion</p>
+        <p style="margin:0 0 16px">Шановний ${fullName},</p>
+        <p style="margin:0 0 16px">Dear ${fullName},</p>
+        <p style="margin:16px 0 10px">Ваш акаунт вчителя було видалено через закінчення grace period (30 днів).</p>
+        <p style="margin:0 0 10px">Your teacher account has been deleted due to the expiration of the grace period (30 days).</p>
+        <p style="margin:16px 0 10px">Всі класи та завдання були заархівовані.</p>
+        <p style="margin:0 0 10px">All classes and assignments have been archived.</p>
+        <p style="margin:16px 0 10px">Ви можете зареєструватися як вчитель знову в будь-який час.</p>
+        <p style="margin:0 0 10px">You can register as a teacher again at any time.</p>
+        <div style="margin:20px 0">
+          <a href="${process.env.APP_PUBLIC_URL || "https://polishvocab.studio"}/cabinet" style="display:inline-block;background:#2b2118;color:#fff;text-decoration:none;padding:12px 24px;border-radius:999px;font-size:14px;font-weight:600">
+            Перейти до кабінету · Go to Cabinet
+          </a>
+        </div>
+        <div style="height:1px;background:#eadbcc;margin:18px 0"></div>
+        <p style="margin:0;font-size:12px;color:#7a6a5a">Дякуємо, що були з нами!</p>
+        <p style="margin:0;font-size:12px;color:#7a6a5a">Thank you for being with us!</p>
+      </div>
+    </div>
+  `;
+
+  if (shouldUseBrevo()) {
+    try {
+      await sendBrevoEmail({ to, subject, html });
+      return;
+    } catch (error) {
+      console.error("[smtp] teacher deletion email failed", error);
+      throw error;
+    }
+  }
+
+  const { from } = getSmtpConfig();
+  const transporter = createTransporter();
+  try {
+    await transporter.sendMail({ from, to, subject, html });
+  } catch (error) {
+    console.error("[smtp] teacher deletion email failed", error);
+    throw error;
+  }
+}

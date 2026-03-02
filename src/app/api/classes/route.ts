@@ -85,6 +85,23 @@ export async function POST(request: Request) {
     );
   }
 
+  // Check teacher limits
+  if (auth.role === "tutor") {
+    const { canCreateClass } = await import("@/lib/teacher-limits");
+    const limitCheck = await canCreateClass(new ObjectId(auth.id));
+    if (!limitCheck.allowed) {
+      return NextResponse.json(
+        {
+          error: limitCheck.reason || "Class creation limit reached",
+          code: "TEACHER_LIMIT_REACHED",
+          current: limitCheck.current,
+          limit: limitCheck.limit,
+        },
+        { status: 403 }
+      );
+    }
+  }
+
   try {
     const body = await request.json();
     const { name, description, settings } = body;

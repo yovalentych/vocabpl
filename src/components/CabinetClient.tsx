@@ -2,9 +2,11 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useLocale } from "@/components/LocaleProvider";
-import { plans as defaultPlans, Plan, getPlanById } from "@/lib/plans";
+import { plans as defaultPlans, Plan, getPlanById, getTeacherPlanById } from "@/lib/plans";
 import { readPrefs, setCookie, writePrefs } from "@/lib/prefs";
 import { csrfFetch } from "@/lib/csrf-client";
+import TeacherRegistrationWizard from "@/components/TeacherRegistrationWizard";
+import TeacherProfileCard from "@/components/TeacherProfileCard";
 import {
   User,
   Lock,
@@ -17,7 +19,8 @@ import {
   XCircle,
   Lightning,
   Brain,
-  ChartLineUp
+  ChartLineUp,
+  Chalkboard
 } from "@phosphor-icons/react";
 
 type UserProfile = {
@@ -86,6 +89,9 @@ export default function CabinetClient({ username }: { username: string }) {
   const [dataRequestMessage, setDataRequestMessage] = useState("");
   const [dataRequestStatus, setDataRequestStatus] = useState<"idle" | "saving" | "done" | "error">("idle");
   const hasAiAccess = Boolean(isActive || hasPromoAccess);
+  const [teacherProfile, setTeacherProfile] = useState<any>(null);
+  const [teacherUsage, setTeacherUsage] = useState<any>(null);
+  const [showTeacherWizard, setShowTeacherWizard] = useState(false);
 
   useEffect(() => {
     if (resendCooldown <= 0) return;
@@ -115,9 +121,17 @@ export default function CabinetClient({ username }: { username: string }) {
     if (data?.usage) setAiUsageSummary({ usedCredits: data.usage.usedCredits, limit: data.usage.limit });
   }
 
+  async function loadTeacherData() {
+    const res = await fetch("/api/teacher/status");
+    if (!res.ok) return;
+    const data = await res.json();
+    setTeacherProfile(data.teacherProfile);
+  }
+
   useEffect(() => {
     loadProfile();
     loadAiUsage();
+    loadTeacherData();
   }, []);
 
   useEffect(() => {
@@ -981,6 +995,84 @@ export default function CabinetClient({ username }: { username: string }) {
             </div>
           </div>
         </div>
+      </section>
+
+      {/* Teacher Section */}
+      <section>
+        <div className="mb-6 flex items-center gap-3">
+          <Chalkboard size={24} weight="fill" className="text-ink/50" />
+          <h2 className="text-2xl font-semibold">{t.cabinet.teacherTitle}</h2>
+        </div>
+
+        {teacherProfile && teacherProfile.status === "active" ? (
+          <TeacherProfileCard
+            teacherProfile={teacherProfile}
+            plan={getTeacherPlanById(teacherProfile.planId)}
+            usage={teacherUsage}
+            locale={locale}
+            onCancelSubscription={async () => {
+              // TODO: Implement cancel subscription
+              console.log("Cancel subscription");
+            }}
+            onResumeSubscription={async () => {
+              // TODO: Implement resume subscription
+              console.log("Resume subscription");
+            }}
+          />
+        ) : teacherProfile && teacherProfile.status === "verifying_email" ? (
+          <div className="rounded-3xl border border-amber-200 bg-amber-50/50 p-6 shadow-soft">
+            <p className="text-sm text-amber-900">
+              {t.cabinet.teacherStatusVerifying} - {t.cabinet.teacherVerificationHint}
+            </p>
+          </div>
+        ) : teacherProfile && teacherProfile.status === "pending_payment" ? (
+          <div className="rounded-3xl border border-blue-200 bg-blue-50/50 p-6 shadow-soft">
+            <p className="text-sm text-blue-900">
+              {t.cabinet.teacherStatusPendingPayment}
+            </p>
+            <button
+              onClick={() => {
+                window.location.href = "/cabinet?teacher_payment=retry";
+              }}
+              className="mt-4 rounded-full bg-blue-600 px-5 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+            >
+              {t.cabinet.teacherPaymentProceed}
+            </button>
+          </div>
+        ) : teacherProfile && teacherProfile.status === "grace_period" ? (
+          <TeacherProfileCard
+            teacherProfile={teacherProfile}
+            plan={getTeacherPlanById(teacherProfile.planId)}
+            usage={teacherUsage}
+            locale={locale}
+            onResumeSubscription={async () => {
+              console.log("Resume subscription");
+            }}
+          />
+        ) : showTeacherWizard ? (
+          <TeacherRegistrationWizard
+            locale={locale}
+            onComplete={() => {
+              setShowTeacherWizard(false);
+              loadTeacherData();
+            }}
+          />
+        ) : (
+          <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
+            <p className="mb-4 text-sm text-ink/60">{t.cabinet.teacherIntro}</p>
+            <div className="space-y-2 text-sm text-ink/70">
+              <p>✓ {t.cabinet.teacherBenefit1}</p>
+              <p>✓ {t.cabinet.teacherBenefit2}</p>
+              <p>✓ {t.cabinet.teacherBenefit3}</p>
+            </div>
+            <button
+              onClick={() => setShowTeacherWizard(true)}
+              className="mt-6 rounded-full bg-amber-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-amber-700"
+            >
+              {t.cabinet.teacherRegisterButton}
+            </button>
+          </div>
+        )}
       </section>
 
       {/* Data Request */}

@@ -129,6 +129,23 @@ export async function POST(
       );
     }
 
+    // Check teacher limits
+    if (auth.role === "tutor") {
+      const { canCreateAssignment } = await import("@/lib/teacher-limits");
+      const limitCheck = await canCreateAssignment(new ObjectId(auth.id));
+      if (!limitCheck.allowed) {
+        return NextResponse.json(
+          {
+            error: limitCheck.reason || "Assignment creation limit reached",
+            code: "TEACHER_LIMIT_REACHED",
+            current: limitCheck.current,
+            limit: limitCheck.limit,
+          },
+          { status: 403 }
+        );
+      }
+    }
+
     const body = await request.json();
     const {
       type,
