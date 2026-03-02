@@ -44,6 +44,17 @@ export async function GET(
 
     const isTeacher = isTeacherOfClass(auth.id, classDoc);
 
+    // Перевіряємо доступ студентів до scheduled assignments
+    if (!isTeacher) {
+      const now = new Date();
+      if (assignment.publishAt && assignment.publishAt > now) {
+        return NextResponse.json(
+          { error: "Assignment not published yet" },
+          { status: 403 }
+        );
+      }
+    }
+
     const assignmentData = {
       ...assignment,
       _id: assignment._id.toString(),

@@ -99,8 +99,9 @@ export type Assignment = {
   description?: string;
   instructions?: string;
 
-  // Дедлайн
+  // Дедлайн та публікація
   assignedAt: Date;
+  publishAt?: Date;       // Дата публікації (якщо не вказано - одразу доступне)
   dueAt?: Date;
 
   // Оцінювання
@@ -271,6 +272,36 @@ export function getDefaultAssignmentSettings(): AssignmentSettings {
     allowRetake: false,
     maxAttempts: 1
   };
+}
+
+export type AssignmentStatus = 'scheduled' | 'active' | 'past';
+
+export function getAssignmentStatus(assignment: Assignment): AssignmentStatus {
+  const now = new Date();
+
+  // Якщо publishAt в майбутньому - scheduled
+  if (assignment.publishAt && assignment.publishAt > now) {
+    return 'scheduled';
+  }
+
+  // Якщо dueAt в минулому - past
+  if (assignment.dueAt && assignment.dueAt < now) {
+    return 'past';
+  }
+
+  // Інакше - active
+  return 'active';
+}
+
+export function isAssignmentVisible(assignment: Assignment, isTeacher: boolean): boolean {
+  // Вчителі бачать всі assignments
+  if (isTeacher) {
+    return true;
+  }
+
+  // Студенти бачать тільки опубліковані
+  const now = new Date();
+  return !assignment.publishAt || assignment.publishAt <= now;
 }
 
 // ============================================================================

@@ -37,6 +37,7 @@ export default function NewAssignmentPage() {
   const [description, setDescription] = useState("");
   const [topic, setTopic] = useState("");
   const [level, setLevel] = useState("A1");
+  const [publishAt, setPublishAt] = useState("");
   const [dueAt, setDueAt] = useState("");
   const [pointsTotal, setPointsTotal] = useState(100);
   const [loading, setLoading] = useState(false);
@@ -77,6 +78,8 @@ export default function NewAssignmentPage() {
     topicLabel: "Тема для AI",
     topicPlaceholder: "напр. Минулий час дієслів",
     level: "Рівень",
+    publishDate: "Дата публікації (опціонально)",
+    publishDateHint: "Залиште порожнім для негайної публікації",
     dueDate: "Дедлайн (опціонально)",
     points: "Максимальна к-сть балів",
     cancel: "Скасувати",
@@ -205,6 +208,7 @@ export default function NewAssignmentPage() {
             level,
             difficulty: level
           } : undefined,
+          publishAt: publishAt || undefined,
           dueAt: dueAt || undefined,
           pointsTotal,
           passingScore: Math.floor(pointsTotal * 0.6), // 60% для проходження
@@ -466,6 +470,20 @@ export default function NewAssignmentPage() {
             </div>
           </div>
         )}
+
+        {/* Publish Date */}
+        <div>
+          <label className="block text-sm font-semibold text-ink mb-2">
+            {t.publishDate}
+          </label>
+          <input
+            type="datetime-local"
+            value={publishAt}
+            onChange={(e) => setPublishAt(e.target.value)}
+            className="w-full rounded-2xl border border-ink/20 bg-paper px-4 py-3 text-ink focus:border-moss/50 focus:outline-none focus:ring-2 focus:ring-moss/20"
+          />
+          <p className="text-xs text-ink/50 mt-1">{t.publishDateHint}</p>
+        </div>
 
         {/* Due Date */}
         <div>

@@ -41,8 +41,16 @@ export async function GET(
       .sort({ createdAt: -1 })
       .toArray();
 
+    const isTeacher = isTeacherOfClass(auth.id, classDoc);
+    const now = new Date();
+
+    // Фільтруємо assignments для студентів (приховуємо scheduled)
+    const visibleAssignments = isTeacher
+      ? assignments
+      : assignments.filter(a => !a.publishAt || a.publishAt <= now);
+
     return NextResponse.json({
-      assignments: assignments.map(a => ({
+      assignments: visibleAssignments.map(a => ({
         ...a,
         _id: a._id.toString(),
         classId: a.classId.toString(),
@@ -96,6 +104,7 @@ export async function POST(
       exerciseConfig,
       testId,
       readingId,
+      publishAt,
       dueAt,
       pointsTotal,
       passingScore,
@@ -139,6 +148,7 @@ export async function POST(
       testId: testId ? new ObjectId(testId) : undefined,
       readingId: readingId ? new ObjectId(readingId) : undefined,
       assignedAt: now,
+      publishAt: publishAt ? new Date(publishAt) : undefined,
       dueAt: dueAt ? new Date(dueAt) : undefined,
       pointsTotal,
       passingScore,

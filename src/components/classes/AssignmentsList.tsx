@@ -9,6 +9,7 @@ type Assignment = {
   title: string;
   description?: string;
   exerciseType?: string;
+  publishAt?: string;
   dueAt?: string;
   pointsTotal?: number;
   assignedAt: string;
@@ -43,6 +44,9 @@ export default function AssignmentsList({ classId, isTeacher, locale }: Assignme
     completed: "виконали",
     pending: "в очікуванні",
     overdue: "прострочено",
+    scheduled: "Заплановано",
+    active: "Активне",
+    past: "Завершено",
     sentences: "Речення",
     cloze: "Пропуски",
     match: "Співставлення",
@@ -66,6 +70,9 @@ export default function AssignmentsList({ classId, isTeacher, locale }: Assignme
     completed: "ukończyli",
     pending: "oczekujące",
     overdue: "zaległe",
+    scheduled: "Zaplanowane",
+    active: "Aktywne",
+    past: "Zakończone",
     sentences: "Zdania",
     cloze: "Luki",
     match: "Dopasowanie",
@@ -86,6 +93,23 @@ export default function AssignmentsList({ classId, isTeacher, locale }: Assignme
     describe: t.describe,
     story: t.story
   };
+
+  function getAssignmentStatus(assignment: Assignment): 'scheduled' | 'active' | 'past' {
+    const now = new Date();
+
+    // Якщо publishAt в майбутньому - scheduled
+    if (assignment.publishAt && new Date(assignment.publishAt) > now) {
+      return 'scheduled';
+    }
+
+    // Якщо dueAt в минулому - past
+    if (assignment.dueAt && new Date(assignment.dueAt) < now) {
+      return 'past';
+    }
+
+    // Інакше - active
+    return 'active';
+  }
 
   useEffect(() => {
     loadAssignments();
@@ -181,6 +205,7 @@ export default function AssignmentsList({ classId, isTeacher, locale }: Assignme
     <div className="space-y-4">
       {assignments.map((assignment) => {
         const isDue = isOverdue(assignment.dueAt);
+        const status = getAssignmentStatus(assignment);
 
         return (
           <a
@@ -203,6 +228,17 @@ export default function AssignmentsList({ classId, isTeacher, locale }: Assignme
                     <span className="inline-flex items-center gap-1 rounded-full bg-moss/10 px-2 py-0.5 text-moss font-semibold">
                       {getTypeLabel(assignment)}
                     </span>
+                    {isTeacher && (
+                      <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-semibold ${
+                        status === 'scheduled' ? 'bg-gold/10 text-gold' :
+                        status === 'past' ? 'bg-ink/10 text-ink/60' :
+                        'bg-moss/10 text-moss'
+                      }`}>
+                        {status === 'scheduled' && '⏰ '}
+                        {status === 'past' && '✓ '}
+                        {t[status]}
+                      </span>
+                    )}
                     {assignment.pointsTotal && (
                       <span>• {assignment.pointsTotal} {t.points}</span>
                     )}
