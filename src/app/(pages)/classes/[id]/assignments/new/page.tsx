@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Check, Sparkle, FileText } from "@phosphor-icons/react";
 import SelectTemplateModal from "@/components/classes/templates/SelectTemplateModal";
+import SaveAsTemplateModal from "@/components/classes/templates/SaveAsTemplateModal";
 
 type AssignmentType = 'exercise' | 'test' | 'reading' | 'custom';
 type ExerciseType = 'sentences' | 'cloze' | 'match' | 'translate' | 'paraphrase' | 'dialogue' | 'describe' | 'story';
@@ -40,6 +41,9 @@ export default function NewAssignmentPage() {
   const [pointsTotal, setPointsTotal] = useState(100);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const [showSaveAsTemplateModal, setShowSaveAsTemplateModal] = useState(false);
+  const [createdAssignmentId, setCreatedAssignmentId] = useState<string | null>(null);
 
   const t = {
     title: "Створити завдання",
@@ -126,6 +130,51 @@ export default function NewAssignmentPage() {
     setPointsTotal(100);
   }
 
+  function handleSkipTemplate() {
+    window.location.href = `/classes/${classId}?tab=assignments`;
+  }
+
+  async function handleSaveAsTemplate(templateName: string, templateDescription: string, tags: string[]) {
+    try {
+      const payload: any = {
+        name: templateName,
+        description: templateDescription || undefined,
+        tags: tags.length > 0 ? tags : undefined,
+        type,
+        defaultTitle: title,
+        defaultDescription: description || undefined,
+        defaultPointsTotal: pointsTotal,
+        defaultPassingScore: Math.floor(pointsTotal * 0.6)
+      };
+
+      if (type === 'exercise') {
+        payload.exerciseType = exerciseType;
+        payload.exerciseConfig = {
+          topic: topic,
+          level: level,
+          difficulty: level
+        };
+      }
+
+      const res = await fetch("/api/classes/templates", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.error || "Failed to create template");
+      }
+
+      // Redirect to assignments list
+      window.location.href = `/classes/${classId}?tab=assignments`;
+    } catch (error) {
+      console.error("Error saving template:", error);
+      alert("Помилка збереження шаблону");
+    }
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
@@ -179,7 +228,9 @@ export default function NewAssignmentPage() {
           }).catch(err => console.error("Failed to update template usage:", err));
         }
 
-        window.location.href = `/classes/${classId}?tab=assignments`;
+        // Save assignment ID and show "Save as template" modal
+        setCreatedAssignmentId(data.assignmentId);
+        setShowSaveAsTemplateModal(true);
       } else {
         setError(data.error || "Помилка створення завдання");
       }
@@ -468,6 +519,15 @@ export default function NewAssignmentPage() {
         <SelectTemplateModal
           onSelect={handleSelectTemplate}
           onClose={() => setShowTemplateModal(false)}
+        />
+      )}
+
+      {/* Save As Template Modal */}
+      {showSaveAsTemplateModal && (
+        <SaveAsTemplateModal
+          assignmentTitle={title}
+          onSave={handleSaveAsTemplate}
+          onSkip={handleSkipTemplate}
         />
       )}
     </div>
