@@ -3,6 +3,7 @@ import { getAuthUser } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { ObjectId } from "mongodb";
 import { isTeacherOfClass, type Class, type Assignment } from "@/lib/classes";
+import { notifyAssignmentsBulkCopied } from "@/lib/notifications";
 
 // POST /api/classes/assignments/bulk - Bulk operations on assignments
 export async function POST(request: Request) {
@@ -117,6 +118,24 @@ export async function POST(request: Request) {
 
             await db.collection("class_submissions").insertMany(submissions);
           }
+        }
+
+        // Створюємо notification для викладача
+        try {
+          const teacher = await db.collection("users").findOne({ _id: new ObjectId(auth.id) });
+          if (teacher) {
+            await notifyAssignmentsBulkCopied({
+              teacherId: new ObjectId(auth.id),
+              teacherRole: teacher.role || "user",
+              sourceClassId: classObjectId,
+              sourceClassName: classDoc.name,
+              targetClassId: targetClassObjectId,
+              targetClassName: targetClass.name,
+              assignmentCount: copiedAssignments.length
+            });
+          }
+        } catch (notifError) {
+          console.error("Failed to create notification:", notifError);
         }
 
         return NextResponse.json({

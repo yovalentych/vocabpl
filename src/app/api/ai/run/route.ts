@@ -1986,6 +1986,11 @@ export async function POST(request: Request) {
 
   // Update user credits (skip if creditsLimit is Infinity - i.e., admin)
   if (creditsLimit !== Infinity && creditsLimit > 0) {
+    const previousUsedCredits = usedCredits;
+    const newUsedCredits = user?.aiUsage?.month === monthKey
+      ? usedCredits + creditsCost
+      : creditsCost;
+
     if (user?.aiUsage?.month === monthKey) {
       await db.collection("users").updateOne(
         { _id: new ObjectId(auth.id) },
@@ -1996,6 +2001,43 @@ export async function POST(request: Request) {
         { _id: new ObjectId(auth.id) },
         { $set: { "aiUsage.month": monthKey, "aiUsage.usedCredits": creditsCost } }
       );
+    }
+
+    // Check if we crossed 80% or 90% thresholds and send notifications
+    const previousPercentage = (previousUsedCredits / creditsLimit) * 100;
+    const newPercentage = (newUsedCredits / creditsLimit) * 100;
+
+    try {
+      const { notifyAICreditsWarning, notifyAICreditsExceeded } = await import("@/lib/notifications");
+
+      if (newPercentage >= 90 && previousPercentage < 90) {
+        await notifyAICreditsWarning({
+          userId: new ObjectId(auth.id),
+          userRole: user.role || "user",
+          percentageUsed: 90,
+          usedCredits: newUsedCredits,
+          totalCredits: creditsLimit
+        });
+      } else if (newPercentage >= 80 && previousPercentage < 80) {
+        await notifyAICreditsWarning({
+          userId: new ObjectId(auth.id),
+          userRole: user.role || "user",
+          percentageUsed: 80,
+          usedCredits: newUsedCredits,
+          totalCredits: creditsLimit
+        });
+      }
+
+      if (newUsedCredits >= creditsLimit) {
+        await notifyAICreditsExceeded({
+          userId: new ObjectId(auth.id),
+          userRole: user.role || "user",
+          usedCredits: newUsedCredits,
+          totalCredits: creditsLimit
+        });
+      }
+    } catch (notifError) {
+      console.error("Failed to send AI credits notification:", notifError);
     }
   }
 

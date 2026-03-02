@@ -3,6 +3,7 @@ import { getAuthUser } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { ObjectId } from "mongodb";
 import { isTeacherOfClass, type Class, type ClassStudent } from "@/lib/classes";
+import { notifyStudentAddedToClass } from "@/lib/notifications";
 
 // GET /api/classes/[id]/students - Отримати список студентів класу
 export async function GET(
@@ -143,6 +144,21 @@ export async function POST(
         $addToSet: { 'classes.asStudent': classId }
       }
     );
+
+    // Створюємо notification для студента
+    try {
+      await notifyStudentAddedToClass({
+        studentId,
+        studentRole: student.role || "user",
+        classId,
+        className: classDoc.name,
+        teacherId: new ObjectId(classDoc.teacherId),
+        teacherName: classDoc.teacherName
+      });
+    } catch (notifError) {
+      console.error("Failed to create notification:", notifError);
+      // Не блокуємо операцію якщо notification не створилось
+    }
 
     return NextResponse.json({
       success: true,

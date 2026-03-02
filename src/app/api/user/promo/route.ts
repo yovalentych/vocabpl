@@ -5,6 +5,7 @@ import { getDb } from "@/lib/db";
 import { getExpiryDate, PromoDuration } from "@/lib/promo";
 import { DEFAULT_PLAN_ID } from "@/lib/plans";
 import { isCsrfValid } from "@/lib/csrf";
+import { notifyPromoApplied } from "@/lib/notifications";
 
 export async function POST(request: Request) {
   if (!isCsrfValid(request)) {
@@ -71,6 +72,22 @@ export async function POST(request: Request) {
         $set: { subscription }
       }
     );
+
+    // Notification
+    try {
+      const user = await db.collection("users").findOne({ _id: new ObjectId(auth.id) });
+      if (user) {
+        await notifyPromoApplied({
+          userId: new ObjectId(auth.id),
+          userRole: user.role || "user",
+          promoCode: advancedPromo.code,
+          discountPercent: advancedPromo.discountPercent,
+          expiresAt: expiresAt
+        });
+      }
+    } catch (err) {
+      console.error("Failed to notify:", err);
+    }
 
     return NextResponse.json({
       ok: true,

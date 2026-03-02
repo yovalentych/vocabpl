@@ -7,6 +7,7 @@ import {
   type Class,
   type Submission
 } from "@/lib/classes";
+import { notifyAssignmentGraded } from "@/lib/notifications";
 
 // GET /api/classes/[id]/assignments/[aid]/submissions/[sid] — Get a submission
 export async function GET(
@@ -116,6 +117,32 @@ export async function PATCH(
       { _id: submissionId },
       { $set: updateFields }
     );
+
+    // Створюємо notification для студента якщо assignment graded
+    if (status === "graded") {
+      try {
+        const assignment = await db.collection("class_assignments").findOne({
+          _id: submission.assignmentId
+        });
+
+        if (assignment) {
+          const student = await db.collection("users").findOne({ _id: submission.studentId });
+          if (student) {
+            await notifyAssignmentGraded({
+              studentId: submission.studentId,
+              studentRole: student.role || "user",
+              classId,
+              assignmentId: submission.assignmentId,
+              assignmentTitle: assignment.title,
+              grade: score,
+              teacherName: classDoc.teacherName
+            });
+          }
+        }
+      } catch (notifError) {
+        console.error("Failed to create notification:", notifError);
+      }
+    }
 
     return NextResponse.json({
       success: true,

@@ -3,6 +3,7 @@ import { getAuthUser } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { ObjectId } from "mongodb";
 import { isTeacherOfClass, type Class } from "@/lib/classes";
+import { notifyStudentRemovedFromClass, notifyStudentLeftClass } from "@/lib/notifications";
 
 // DELETE /api/classes/[id]/students/[studentId] - Видалити студента
 export async function DELETE(
@@ -69,6 +70,39 @@ export async function DELETE(
         $pull: { 'classes.asStudent': classId } as any
       }
     );
+
+    // Отримати інформацію про студента для notification
+    const student = await db.collection("users").findOne({ _id: studentId });
+
+    if (student) {
+      try {
+        if (isTeacher && !isSelf) {
+          // Викладач видалив студента - повідомити студента
+          await notifyStudentRemovedFromClass({
+            studentId,
+            studentRole: student.role || "user",
+            classId,
+            className: classDoc.name,
+            teacherName: classDoc.teacherName
+          });
+        } else if (isSelf && !isTeacher) {
+          // Студент сам вийшов - повідомити викладача
+          const teacher = await db.collection("users").findOne({ _id: classDoc.teacherId });
+          if (teacher) {
+            await notifyStudentLeftClass({
+              teacherId: classDoc.teacherId,
+              teacherRole: teacher.role || "user",
+              studentId,
+              studentName: student.name || student.username,
+              classId,
+              className: classDoc.name
+            });
+          }
+        }
+      } catch (notifError) {
+        console.error("Failed to create notification:", notifError);
+      }
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {

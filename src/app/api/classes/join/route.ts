@@ -3,6 +3,7 @@ import { getAuthUser } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { ObjectId } from "mongodb";
 import { isValidInviteCode, type Class, type ClassStudent } from "@/lib/classes";
+import { notifyStudentJoinedClass } from "@/lib/notifications";
 
 // POST /api/classes/join - Приєднатися до класу через invite code
 export async function POST(request: Request) {
@@ -108,6 +109,25 @@ export async function POST(request: Request) {
         $addToSet: { 'classes.asStudent': classDoc._id }
       }
     );
+
+    // Отримати teacher для notification
+    const teacher = await db.collection("users").findOne({ _id: classDoc.teacherId });
+
+    // Створюємо notification для викладача
+    if (teacher) {
+      try {
+        await notifyStudentJoinedClass({
+          teacherId: classDoc.teacherId,
+          teacherRole: teacher.role || "user",
+          studentId: userId,
+          studentName: user.name || user.username,
+          classId: classDoc._id,
+          className: classDoc.name
+        });
+      } catch (notifError) {
+        console.error("Failed to create notification:", notifError);
+      }
+    }
 
     return NextResponse.json({
       success: true,

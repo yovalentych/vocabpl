@@ -6,6 +6,7 @@ import {
   isTeacherOfClass,
   type Class
 } from "@/lib/classes";
+import { notifyAssignmentBulkGraded } from "@/lib/notifications";
 
 // POST /api/classes/[id]/assignments/[aid]/submissions/bulk - Bulk grade submissions
 export async function POST(
@@ -73,6 +74,40 @@ export async function POST(
       },
       { $set: updateFields }
     );
+
+    // Створюємо notifications для студентів якщо graded
+    if (status === "graded") {
+      try {
+        const assignmentId = new ObjectId(params.aid);
+        const assignment = await db.collection("class_assignments").findOne({ _id: assignmentId });
+
+        if (assignment) {
+          const submissions = await db.collection("class_submissions")
+            .find({ _id: { $in: objectIds } })
+            .toArray();
+
+          const studentIds = submissions.map(s => s.studentId as ObjectId);
+          const students = await db.collection("users")
+            .find({ _id: { $in: studentIds } })
+            .toArray();
+
+          const studentIdsWithRoles = students.map(s => ({
+            id: s._id as ObjectId,
+            role: s.role || "user" as "admin" | "tutor" | "user"
+          }));
+
+          await notifyAssignmentBulkGraded({
+            studentIds: studentIdsWithRoles,
+            classId,
+            assignmentId,
+            assignmentTitle: assignment.title,
+            teacherName: classDoc.teacherName
+          });
+        }
+      } catch (notifError) {
+        console.error("Failed to create notifications:", notifError);
+      }
+    }
 
     return NextResponse.json({
       success: true,

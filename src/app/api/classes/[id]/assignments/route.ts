@@ -9,6 +9,7 @@ import {
   type Class,
   type Assignment
 } from "@/lib/classes";
+import { notifyAssignmentCreated } from "@/lib/notifications";
 
 // GET /api/classes/[id]/assignments - Отримати список завдань класу
 export async function GET(
@@ -227,6 +228,25 @@ export async function POST(
       });
 
       await db.collection("class_submissions").insertMany(submissions);
+
+      // Створюємо notifications для студентів (тільки якщо завдання вже опубліковане)
+      const shouldNotify = !publishAt || new Date(publishAt) <= now;
+
+      if (shouldNotify) {
+        try {
+          await notifyAssignmentCreated({
+            studentIds,
+            classId,
+            className: classDoc.name,
+            assignmentId: result.insertedId,
+            assignmentTitle: title.trim(),
+            dueDate: dueAt ? new Date(dueAt) : undefined,
+            teacherName: classDoc.teacherName
+          });
+        } catch (notifError) {
+          console.error("Failed to create notifications:", notifError);
+        }
+      }
     }
 
     return NextResponse.json({

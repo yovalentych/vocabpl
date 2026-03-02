@@ -22,7 +22,8 @@ export const dictionary = {
       cabinet: "Kabiniet",
       logout: "Wyloguj",
       messages: "Wiadomości",
-      reviews: "Recenzje"
+      reviews: "Recenzje",
+      notifications: "Powiadomienia"
     },
     common: {
       language: "Język",
@@ -1097,6 +1098,34 @@ export const dictionary = {
       emptyAdmin: "Brak zgłoszeń do sprawdzenia.",
       saveReview: "Zapisz komentarz",
       commentPlaceholder: "Dodaj komentarz do pracy..."
+    },
+    notifications: {
+      title: "Powiadomienia",
+      categories: {
+        all: "Wszystkie",
+        classes: "Klasy",
+        assignments: "Zadania",
+        subscription: "Subskrypcja",
+        credits: "Kredyty",
+        system: "System",
+        workbook: "Zeszyt"
+      },
+      status: {
+        unread: "Nieprzeczytane",
+        all: "Wszystkie"
+      },
+      actions: {
+        markAllRead: "Oznacz wszystkie jako przeczytane",
+        markRead: "Oznacz jako przeczytane",
+        markUnread: "Oznacz jako nieprzeczytane",
+        delete: "Usuń"
+      },
+      empty: {
+        title: "Brak powiadomień",
+        message: "Gdy otrzymasz powiadomienie, pojawi się ono tutaj"
+      },
+      loadMore: "Załaduj więcej",
+      deleteConfirm: "Czy na pewno chcesz usunąć to powiadomienie?"
     },
     footer: {
       feedbackCta: "Kontakt",
@@ -2211,7 +2240,8 @@ export const dictionary = {
       cabinet: "Кабінет",
       logout: "Вийти",
       messages: "Повідомлення",
-      reviews: "Відгуки"
+      reviews: "Відгуки",
+      notifications: "Сповіщення"
     },
     common: {
       language: "Мова",
@@ -3286,6 +3316,34 @@ export const dictionary = {
       emptyAdmin: "Немає робіт для перевірки.",
       saveReview: "Зберегти коментар",
       commentPlaceholder: "Додай коментар до роботи..."
+    },
+    notifications: {
+      title: "Сповіщення",
+      categories: {
+        all: "Всі",
+        classes: "Класи",
+        assignments: "Завдання",
+        subscription: "Підписка",
+        credits: "Кредити",
+        system: "Система",
+        workbook: "Зошит"
+      },
+      status: {
+        unread: "Непрочитані",
+        all: "Всі"
+      },
+      actions: {
+        markAllRead: "Позначити всі як прочитані",
+        markRead: "Позначити як прочитане",
+        markUnread: "Позначити як непрочитане",
+        delete: "Видалити"
+      },
+      empty: {
+        title: "Немає сповіщень",
+        message: "Коли отримаєте сповіщення, воно з'явиться тут"
+      },
+      loadMore: "Завантажити ще",
+      deleteConfirm: "Ви впевнені, що хочете видалити це сповіщення?"
     },
     footer: {
       feedbackCta: "Контакт",

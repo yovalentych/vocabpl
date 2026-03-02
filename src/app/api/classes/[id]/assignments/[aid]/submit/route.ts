@@ -8,6 +8,7 @@ import {
   type Assignment,
   type Submission
 } from "@/lib/classes";
+import { notifySubmissionReceived } from "@/lib/notifications";
 
 // POST /api/classes/[id]/assignments/[aid]/submit — Student submits exercise results
 export async function POST(
@@ -113,6 +114,26 @@ export async function POST(
           $set: { updatedAt: now }
         }
       );
+    }
+
+    // Створюємо notification для викладача
+    try {
+      const teacher = await db.collection("users").findOne({ _id: assignment.teacherId });
+      if (teacher) {
+        const student = classDoc.students.find(s => s.id === auth.id);
+        await notifySubmissionReceived({
+          teacherId: assignment.teacherId,
+          teacherRole: teacher.role || "user",
+          studentId,
+          studentName: student?.name || student?.username || auth.username,
+          classId,
+          assignmentId,
+          assignmentTitle: assignment.title,
+          submissionId: submission._id
+        });
+      }
+    } catch (notifError) {
+      console.error("Failed to create notification:", notifError);
     }
 
     return NextResponse.json({

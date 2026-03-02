@@ -7,37 +7,47 @@ import { useLocale } from "@/components/LocaleProvider";
 import { csrfFetch } from "@/lib/csrf-client";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
 import { useAuthStatus } from "@/components/useAuthStatus";
-import { EnvelopeSimple, SignOut, List, X, CreditCard, GraduationCap } from "@phosphor-icons/react";
+import { Bell, SignOut, List, X, CreditCard, GraduationCap } from "@phosphor-icons/react";
 
 export default function NavBar() {
   const pathname = usePathname();
   const { t } = useLocale();
   const auth = useAuthStatus();
-  const [pendingCount, setPendingCount] = useState(0);
+  const [unreadCount, setUnreadCount] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    if (!auth.isAdmin) return;
+    if (!auth.isAuthenticated) return;
     let mounted = true;
+
     async function loadCount() {
       try {
-        const res = await fetch("/api/admin/reviews-count");
+        const res = await fetch("/api/notifications/count");
         if (!res.ok) return;
         const data = await res.json().catch(() => null);
         if (!mounted) return;
-        setPendingCount(Number(data?.count || 0));
+        setUnreadCount(Number(data?.unreadCount || 0));
       } catch (error) {
         if (!mounted) return;
-        setPendingCount(0);
+        setUnreadCount(0);
       }
     }
+
     loadCount();
-    const timer = window.setInterval(loadCount, 30000);
+    const timer = window.setInterval(loadCount, 60000); // Poll every 60s
+
+    // Listen for notification updates
+    function handleNotificationUpdate() {
+      loadCount();
+    }
+    window.addEventListener("notification-update", handleNotificationUpdate);
+
     return () => {
       mounted = false;
       window.clearInterval(timer);
+      window.removeEventListener("notification-update", handleNotificationUpdate);
     };
-  }, [auth.isAdmin]);
+  }, [auth.isAuthenticated]);
 
 
   if (!auth.isAuthenticated) {
@@ -151,15 +161,15 @@ export default function NavBar() {
               </Link>
             )}
             <Link
-              href={auth.isAdmin ? "/admin/reviews" : "/messages"}
+              href="/notifications"
               className="relative rounded-full border border-ink/20 px-3 py-1 text-ink/70 hover:bg-ink/10"
-              aria-label={auth.isAdmin ? t.nav.reviews : t.nav.messages}
-              title={auth.isAdmin ? t.nav.reviews : t.nav.messages}
+              aria-label={t.nav.notifications || "Сповіщення"}
+              title={t.nav.notifications || "Сповіщення"}
             >
-              <EnvelopeSimple size={18} weight="bold" />
-              {auth.isAdmin && pendingCount > 0 && (
+              <Bell size={18} weight="bold" />
+              {unreadCount > 0 && (
                 <span className="absolute -top-2 -right-1 rounded-full bg-terracotta px-1.5 py-0.5 text-[10px] font-semibold text-paper">
-                  {pendingCount}
+                  {unreadCount}
                 </span>
               )}
             </Link>
@@ -241,15 +251,15 @@ export default function NavBar() {
               </Link>
             )}
             <Link
-              href={auth.isAdmin ? "/admin/reviews" : "/messages"}
+              href="/notifications"
               onClick={() => setMobileMenuOpen(false)}
               className="relative rounded-full border-2 border-ink/20 px-6 py-3.5 text-base font-medium text-ink/70 transition-all active:scale-95 active:bg-ink/10 flex items-center justify-center gap-2.5"
             >
-              <EnvelopeSimple size={20} weight="bold" />
-              <span>{auth.isAdmin ? t.nav.reviews : t.nav.messages}</span>
-              {auth.isAdmin && pendingCount > 0 && (
+              <Bell size={20} weight="bold" />
+              <span>{t.nav.notifications || "Сповіщення"}</span>
+              {unreadCount > 0 && (
                 <span className="rounded-full bg-terracotta px-2.5 py-1 text-xs font-semibold text-paper">
-                  {pendingCount}
+                  {unreadCount}
                 </span>
               )}
             </Link>

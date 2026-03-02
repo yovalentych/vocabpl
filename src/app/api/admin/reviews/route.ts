@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 import { getAuthUser } from "@/lib/auth";
 import { getDb } from "@/lib/db";
+import { notifyWorkbookReviewed } from "@/lib/notifications";
 
 export async function GET(request: Request) {
   const auth = await getAuthUser();
@@ -60,6 +61,10 @@ export async function POST(request: Request) {
   if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
 
   const db = await getDb();
+
+  // Отримати submission для userId
+  const submission = await db.collection("workbook_submissions").findOne({ id: String(id) });
+
   await db.collection("workbook_submissions").updateOne(
     { id: String(id) },
     {
@@ -80,6 +85,24 @@ export async function POST(request: Request) {
       }
     }
   );
+
+  // Створюємо notification для студента
+  if (submission && submission.userId) {
+    try {
+      const student = await db.collection("users").findOne({ _id: submission.userId });
+      if (student) {
+        await notifyWorkbookReviewed({
+          userId: submission.userId,
+          userRole: student.role || "user",
+          submissionId: String(id),
+          rating: typeof rating === "number" ? rating : undefined,
+          reviewerName: auth.username || "Адмін"
+        });
+      }
+    } catch (notifError) {
+      console.error("Failed to create notification:", notifError);
+    }
+  }
 
   return NextResponse.json({ ok: true });
 }
