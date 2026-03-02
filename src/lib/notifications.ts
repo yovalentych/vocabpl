@@ -778,7 +778,7 @@ export async function notifyWorkbookReviewed(params: {
     actions: [
       {
         label: "Переглянути відгук",
-        href: "/messages",
+        href: "/notifications?category=workbook",
         variant: "primary"
       }
     ],

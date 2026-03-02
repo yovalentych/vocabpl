@@ -7,6 +7,7 @@ import {
   isTeacherOfClass,
   type Class
 } from "@/lib/classes";
+import { notifyClassArchived } from "@/lib/notifications";
 
 // GET /api/classes/[id] - Отримати деталі класу
 export async function GET(
@@ -169,6 +170,18 @@ export async function DELETE(
         }
       }
     );
+
+    // Надіслати нотифікації студентам про архівацію класу
+    if (classDoc.studentIds && classDoc.studentIds.length > 0) {
+      notifyClassArchived({
+        studentIds: classDoc.studentIds,
+        classId: classDoc._id,
+        className: classDoc.name,
+        teacherName: classDoc.teacherName || "Викладач"
+      }).catch(err => {
+        console.error("Failed to send class archived notifications:", err);
+      });
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {
