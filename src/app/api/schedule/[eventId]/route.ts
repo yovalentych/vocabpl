@@ -50,6 +50,10 @@ export async function PATCH(
     if (body.recurrence !== undefined) updateData.recurrence = body.recurrence;
     if (body.reminders !== undefined) updateData.reminders = body.reminders;
 
+    // Cancellation support
+    if (body.isCancelled !== undefined) updateData.isCancelled = body.isCancelled;
+    if (body.cancellationReason !== undefined) updateData.cancellationReason = body.cancellationReason?.trim();
+
     await db
       .collection<ScheduleEvent>("schedule_events")
       .updateOne({ _id: eventId }, { $set: updateData });

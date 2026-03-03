@@ -24,6 +24,20 @@ export type Reminder = {
   sent: boolean;              // Whether reminder was sent
 };
 
+// Override for a specific occurrence of a recurring event
+export type EventOverride = {
+  originalDate: Date;          // Original date of the occurrence (for matching)
+  newStartTime?: Date;         // New start time (if rescheduled)
+  newEndTime?: Date;           // New end time (if rescheduled)
+  cancelled: boolean;          // If this occurrence is cancelled
+  title?: string;              // Custom title for this occurrence
+  description?: string;        // Custom description
+  location?: string;           // Custom location
+  meetingLink?: string;        // Custom meeting link
+  reason?: string;             // Reason for cancellation/rescheduling
+  createdAt: Date;
+};
+
 export type ScheduleEvent = {
   _id?: ObjectId;
   classId: ObjectId;
@@ -39,6 +53,11 @@ export type ScheduleEvent = {
   // Recurring events
   isRecurring: boolean;
   recurrence?: Recurrence;
+  overrides?: EventOverride[];  // Overrides for specific occurrences
+
+  // Cancellation
+  isCancelled?: boolean;        // If entire series/event is cancelled
+  cancellationReason?: string;
 
   // Assignment integration
   assignmentId?: ObjectId;
@@ -257,4 +276,110 @@ export function getRecurrenceDescription(recurrence: Recurrence, locale: 'uk' | 
   }
 
   return '';
+}
+
+// ==================== OVERRIDE HELPERS ====================
+
+/**
+ * Get override for a specific occurrence date
+ */
+export function getOverrideForDate(event: ScheduleEvent, date: Date): EventOverride | undefined {
+  if (!event.overrides || event.overrides.length === 0) return undefined;
+
+  const dateStr = date.toDateString();
+  return event.overrides.find(
+    override => override.originalDate.toDateString() === dateStr
+  );
+}
+
+/**
+ * Check if a specific occurrence is cancelled
+ */
+export function isOccurrenceCancelled(event: ScheduleEvent, date: Date): boolean {
+  const override = getOverrideForDate(event, date);
+  return override?.cancelled || false;
+}
+
+/**
+ * Get actual start/end times for an occurrence (considering overrides)
+ */
+export function getOccurrenceTimes(
+  event: ScheduleEvent,
+  originalDate: Date
+): { start: Date; end: Date } | null {
+  const override = getOverrideForDate(event, originalDate);
+
+  if (override?.cancelled) {
+    return null; // Occurrence is cancelled
+  }
+
+  if (override?.newStartTime && override?.newEndTime) {
+    return {
+      start: override.newStartTime,
+      end: override.newEndTime
+    };
+  }
+
+  // No override, use original times
+  const duration = event.endTime.getTime() - event.startTime.getTime();
+  return {
+    start: originalDate,
+    end: new Date(originalDate.getTime() + duration)
+  };
+}
+
+/**
+ * Get display title for an occurrence (considering overrides)
+ */
+export function getOccurrenceTitle(event: ScheduleEvent, date: Date): string {
+  const override = getOverrideForDate(event, date);
+  return override?.title || event.title;
+}
+
+/**
+ * Generate occurrences with overrides applied
+ */
+export function generateOccurrencesWithOverrides(
+  event: ScheduleEvent,
+  startDate: Date,
+  endDate: Date
+): Array<{
+  originalDate: Date;
+  start: Date;
+  end: Date;
+  title: string;
+  cancelled: boolean;
+  rescheduled: boolean;
+  override?: EventOverride;
+}> {
+  const baseOccurrences = generateOccurrences(event, startDate, endDate);
+
+  return baseOccurrences.map(occ => {
+    const override = getOverrideForDate(event, occ.start);
+    const times = getOccurrenceTimes(event, occ.start);
+
+    if (override?.cancelled || !times) {
+      return {
+        originalDate: occ.start,
+        start: occ.start,
+        end: occ.end,
+        title: event.title,
+        cancelled: true,
+        rescheduled: false,
+        override
+      };
+    }
+
+    const isRescheduled = override?.newStartTime !== undefined;
+
+    return {
+      originalDate: occ.start,
+      start: times.start,
+      end: times.end,
+      title: getOccurrenceTitle(event, occ.start),
+      cancelled: false,
+      rescheduled: isRescheduled,
+      override
+    };
+  });
 }
