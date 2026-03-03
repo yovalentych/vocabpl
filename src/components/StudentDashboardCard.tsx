@@ -78,66 +78,78 @@ export default function StudentDashboardCard({
   const getStatusColor = (status: string) => {
     switch (status) {
       case "not_started":
-        return "text-red-600";
+        return "text-terracotta";
       case "in_progress":
-        return "text-amber-600";
+        return "text-gold";
       case "submitted":
-        return "text-green-600";
+        return "text-moss";
       default:
-        return "text-stone-600";
+        return "text-ink/60";
     }
   };
 
   return (
-    <div className="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+    <div className="space-y-6">
       {/* Stats Cards */}
-      <div className="mb-6 grid gap-4 md:grid-cols-4">
-        <div className="rounded-lg border border-stone-200 bg-gradient-to-br from-blue-50 to-white p-4">
-          <div className="text-sm text-stone-600">{t.cabinet.totalClasses}</div>
-          <div className="text-3xl font-bold text-blue-600">{stats.totalClasses}</div>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="relative overflow-hidden rounded-[24px] border border-ink/10 bg-gradient-to-br from-moss/10 to-paper p-6 shadow-soft">
+          <div className="absolute -right-4 -top-4 h-16 w-16 rounded-full bg-moss/20 blur-2xl" />
+          <div className="relative">
+            <div className="mb-2 text-xs uppercase tracking-wider text-ink/60">{t.cabinet.totalClasses}</div>
+            <div className="text-3xl font-semibold text-moss">{stats.totalClasses}</div>
+          </div>
         </div>
-        <div className="rounded-lg border border-stone-200 bg-gradient-to-br from-amber-50 to-white p-4">
-          <div className="text-sm text-stone-600">{t.cabinet.activeAssignments}</div>
-          <div className="text-3xl font-bold text-amber-600">{stats.activeAssignments}</div>
+        <div className="relative overflow-hidden rounded-[24px] border border-ink/10 bg-gradient-to-br from-gold/10 to-paper p-6 shadow-soft">
+          <div className="absolute -right-4 -top-4 h-16 w-16 rounded-full bg-gold/20 blur-2xl" />
+          <div className="relative">
+            <div className="mb-2 text-xs uppercase tracking-wider text-ink/60">{t.cabinet.activeAssignments}</div>
+            <div className="text-3xl font-semibold text-gold">{stats.activeAssignments}</div>
+          </div>
         </div>
-        <div className="rounded-lg border border-stone-200 bg-gradient-to-br from-orange-50 to-white p-4">
-          <div className="text-sm text-stone-600">{t.cabinet.upcomingDeadlines}</div>
-          <div className="text-3xl font-bold text-orange-600">{stats.upcomingDeadlines}</div>
+        <div className="relative overflow-hidden rounded-[24px] border border-ink/10 bg-gradient-to-br from-terracotta/10 to-paper p-6 shadow-soft">
+          <div className="absolute -right-4 -top-4 h-16 w-16 rounded-full bg-terracotta/20 blur-2xl" />
+          <div className="relative">
+            <div className="mb-2 text-xs uppercase tracking-wider text-ink/60">{t.cabinet.upcomingDeadlines}</div>
+            <div className="text-3xl font-semibold text-terracotta">{stats.upcomingDeadlines}</div>
+          </div>
         </div>
-        <div className="rounded-lg border border-stone-200 bg-gradient-to-br from-green-50 to-white p-4">
-          <div className="text-sm text-stone-600">{t.cabinet.averageGrade}</div>
-          <div className="text-3xl font-bold text-green-600">
-            {stats.averageGrade !== null ? `${stats.averageGrade}%` : "—"}
+        <div className="relative overflow-hidden rounded-[24px] border border-ink/10 bg-gradient-to-br from-moss/10 to-paper p-6 shadow-soft">
+          <div className="absolute -right-4 -top-4 h-16 w-16 rounded-full bg-moss/20 blur-2xl" />
+          <div className="relative">
+            <div className="mb-2 text-xs uppercase tracking-wider text-ink/60">{t.cabinet.averageGrade}</div>
+            <div className="text-3xl font-semibold text-moss">
+              {stats.averageGrade !== null ? `${stats.averageGrade}%` : "—"}
+            </div>
           </div>
         </div>
       </div>
 
       {/* Upcoming Deadlines */}
       {upcomingDeadlines.length > 0 && (
-        <div className="mb-6">
-          <h3 className="mb-3 text-lg font-semibold text-stone-900">
+        <div>
+          <h3 className="mb-4 text-xl font-semibold">
             {t.cabinet.upcomingDeadlinesTitle}
           </h3>
-          <div className="space-y-2">
+          <div className="space-y-3">
             {upcomingDeadlines.slice(0, 5).map((deadline) => (
               <Link
                 key={deadline.assignmentId}
                 href={`/classes/${deadline.classId}`}
-                className="block rounded-lg border border-stone-200 bg-stone-50 p-3 transition-colors hover:bg-stone-100"
+                className="block rounded-[20px] border border-ink/10 bg-paper p-4 transition-all hover:shadow-soft"
               >
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between gap-4">
                   <div className="flex-1">
-                    <div className="font-medium text-stone-900">{deadline.assignmentTitle}</div>
-                    <div className="text-sm text-stone-600">{deadline.className}</div>
+                    <div className="font-semibold">{deadline.assignmentTitle}</div>
+                    <div className="text-sm text-ink/60">{deadline.className}</div>
                   </div>
                   <div className="text-right">
                     <div
-                      className={`text-sm font-medium ${
+                      className={`text-sm font-semibold ${
                         deadline.daysRemaining < 0
-                          ? "text-red-600"
+                          ? "text-terracotta"
                           : deadline.daysRemaining <= 1
-                            ? "text-orange-600"
-                            : "text-stone-600"
+                            ? "text-gold"
+                            : "text-ink/60"
                       }`}
                     >
                       {formatDaysRemaining(deadline.daysRemaining)}
@@ -155,35 +167,35 @@ export default function StudentDashboardCard({
 
       {/* Recent Grades */}
       {recentGrades.length > 0 && (
-        <div className="mb-6">
-          <h3 className="mb-3 text-lg font-semibold text-stone-900">
+        <div>
+          <h3 className="mb-4 text-xl font-semibold">
             {t.cabinet.recentGradesTitle}
           </h3>
-          <div className="space-y-2">
+          <div className="space-y-3">
             {recentGrades.map((grade) => (
               <Link
                 key={`${grade.assignmentId}-${grade.gradedAt}`}
                 href={`/classes/${grade.classId}`}
-                className="block rounded-lg border border-stone-200 bg-stone-50 p-3 transition-colors hover:bg-stone-100"
+                className="block rounded-[20px] border border-ink/10 bg-paper p-4 transition-all hover:shadow-soft"
               >
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between gap-4">
                   <div className="flex-1">
-                    <div className="font-medium text-stone-900">{grade.assignmentTitle}</div>
-                    <div className="text-sm text-stone-600">{grade.className}</div>
+                    <div className="font-semibold">{grade.assignmentTitle}</div>
+                    <div className="text-sm text-ink/60">{grade.className}</div>
                   </div>
                   <div className="text-right">
                     <div
-                      className={`text-lg font-bold ${
+                      className={`text-2xl font-semibold ${
                         grade.percentage >= 80
-                          ? "text-green-600"
+                          ? "text-moss"
                           : grade.percentage >= 60
-                            ? "text-amber-600"
-                            : "text-red-600"
+                            ? "text-gold"
+                            : "text-terracotta"
                       }`}
                     >
                       {grade.percentage}%
                     </div>
-                    <div className="text-xs text-stone-500">
+                    <div className="text-xs text-ink/40">
                       {new Date(grade.gradedAt).toLocaleDateString(
                         locale === "pl" ? "pl-PL" : "uk-UA"
                       )}
@@ -197,51 +209,54 @@ export default function StudentDashboardCard({
       )}
 
       {/* My Classes List */}
-      <div className="mb-6">
-        <h3 className="mb-3 text-lg font-semibold text-stone-900">
+      <div>
+        <h3 className="mb-4 text-xl font-semibold">
           {t.cabinet.myClassesList}
         </h3>
-        <div className="space-y-3">
+        <div className="space-y-4">
           {classes.map((cls) => (
             <div
               key={cls._id}
-              className="rounded-lg border border-stone-200 bg-gradient-to-r from-stone-50 to-white p-4"
+              className="rounded-[24px] border border-ink/10 bg-gradient-to-br from-ink/5 to-paper p-6"
             >
-              <div className="mb-2 flex items-start justify-between">
-                <div>
-                  <h4 className="text-lg font-semibold text-stone-900">{cls.name}</h4>
-                  <p className="text-sm text-stone-600">
+              <div className="mb-3 flex items-start justify-between gap-4">
+                <div className="flex-1">
+                  <h4 className="text-lg font-semibold">{cls.name}</h4>
+                  <p className="text-sm text-ink/60">
                     {locale === "pl" ? "Nauczyciel" : "Вчитель"}: {cls.teacherName}
                   </p>
                 </div>
                 {cls.myAverageGrade !== null && (
                   <div
-                    className={`rounded-full px-3 py-1 text-sm font-bold ${
+                    className={`rounded-full px-4 py-1.5 text-sm font-semibold ${
                       cls.myAverageGrade >= 80
-                        ? "bg-green-100 text-green-700"
+                        ? "border border-moss/20 bg-moss/10 text-moss"
                         : cls.myAverageGrade >= 60
-                          ? "bg-amber-100 text-amber-700"
-                          : "bg-red-100 text-red-700"
+                          ? "border border-gold/20 bg-gold/10 text-gold"
+                          : "border border-terracotta/20 bg-terracotta/10 text-terracotta"
                     }`}
                   >
                     {cls.myAverageGrade}%
                   </div>
                 )}
               </div>
-              <div className="mb-3 flex items-center gap-4 text-sm text-stone-600">
+              <div className="mb-4 flex items-center gap-4 text-sm text-ink/60">
                 <span>
                   {t.cabinet.assignmentsCompleted
                     .replace("{completed}", cls.completedAssignments.toString())
                     .replace("{total}", cls.totalAssignments.toString())}
                 </span>
                 {cls.upcomingDeadlines > 0 && (
-                  <span className="text-orange-600">
-                    {cls.upcomingDeadlines} {locale === "pl" ? "terminów" : "дедлайнів"}
-                  </span>
+                  <>
+                    <span>·</span>
+                    <span className="text-terracotta">
+                      {cls.upcomingDeadlines} {locale === "pl" ? "terminów" : "дедлайнів"}
+                    </span>
+                  </>
                 )}
               </div>
               <Link href={`/classes/${cls._id}`}>
-                <button className="w-full rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700">
+                <button className="w-full rounded-full border border-moss/20 bg-moss px-4 py-2.5 text-sm font-semibold text-paper transition-all hover:bg-moss/90 hover:shadow-md">
                   {t.cabinet.viewClass}
                 </button>
               </Link>
@@ -253,12 +268,12 @@ export default function StudentDashboardCard({
       {/* Quick Actions */}
       <div className="flex flex-wrap gap-3">
         <Link href="/classes/join">
-          <button className="rounded-lg border-2 border-blue-600 bg-white px-6 py-2 font-semibold text-blue-600 transition-colors hover:bg-blue-50">
+          <button className="rounded-full border border-moss/20 bg-moss px-6 py-3 font-semibold text-paper transition-all hover:bg-moss/90 hover:shadow-md">
             + {t.cabinet.joinClass}
           </button>
         </Link>
         <Link href="/classes">
-          <button className="rounded-lg bg-stone-200 px-6 py-2 font-semibold text-stone-700 transition-colors hover:bg-stone-300">
+          <button className="rounded-full border border-ink/10 bg-paper px-6 py-3 font-semibold text-ink transition-all hover:bg-ink/5 hover:shadow-sm">
             {t.cabinet.allClasses}
           </button>
         </Link>

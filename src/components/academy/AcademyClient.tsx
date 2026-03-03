@@ -109,9 +109,9 @@ export default function AcademyClient() {
 
   if (loading) {
     return (
-      <div className="mx-auto max-w-7xl p-6">
-        <div className="flex items-center justify-center py-12">
-          <div className="text-lg text-stone-600">
+      <div className="mx-auto max-w-7xl p-6 sm:p-8">
+        <div className="flex items-center justify-center py-16">
+          <div className="text-lg text-ink/60">
             {locale === "pl" ? "Ładowanie..." : "Завантаження..."}
           </div>
         </div>
@@ -122,57 +122,73 @@ export default function AcademyClient() {
   // If user is neither teacher nor student
   if (!isTeacher && !isStudent) {
     return (
-      <div className="mx-auto max-w-7xl p-6">
-        <div className="mb-8">
-          <h1 className="mb-2 text-4xl font-bold text-stone-900">
-            {locale === "pl" ? "Akademia" : "Академія"}
-          </h1>
-          <p className="text-lg text-stone-600">
-            {locale === "pl"
-              ? "Centrum edukacyjne dla nauczycieli i uczniów"
-              : "Освітній центр для вчителів та учнів"}
-          </p>
+      <div className="mx-auto max-w-7xl space-y-10 p-6 sm:p-8">
+        {/* Header */}
+        <div className="relative overflow-hidden rounded-[32px] border border-ink/10 bg-gradient-to-br from-moss/10 to-terracotta/10 p-8 shadow-soft">
+          <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gold/20 blur-3xl" />
+          <div className="relative">
+            <div className="flex items-center gap-2">
+              <GraduationCap size={24} weight="fill" className="text-ink/60" />
+              <p className="text-xs uppercase tracking-[0.3em] text-ink/60">
+                {locale === "pl" ? "AKADEMIA" : "АКАДЕМІЯ"}
+              </p>
+            </div>
+            <h1 className="mt-2 text-4xl font-semibold">
+              {locale === "pl" ? "Akademia" : "Академія"}
+            </h1>
+            <p className="mt-2 text-ink/60">
+              {locale === "pl"
+                ? "Centrum edukacyjne dla nauczycieli i uczniów"
+                : "Освітній центр для вчителів та учнів"}
+            </p>
+          </div>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
           {/* Become a Teacher */}
-          <div className="rounded-2xl border border-stone-200 bg-gradient-to-br from-amber-50 to-white p-8 shadow-sm">
-            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-600 text-white">
-              <Chalkboard size={32} weight="fill" />
+          <div className="group relative overflow-hidden rounded-[32px] border border-ink/10 bg-gradient-to-br from-moss/10 via-paper to-moss/5 p-8 shadow-soft transition-all hover:shadow-lg">
+            <div className="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-moss/20 blur-2xl transition-all group-hover:bg-moss/30" />
+            <div className="relative">
+              <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-[20px] border border-moss/20 bg-moss/10">
+                <Chalkboard size={32} weight="fill" className="text-moss" />
+              </div>
+              <h2 className="mb-3 text-2xl font-semibold">
+                {locale === "pl" ? "Для вчителів" : "Для вчителів"}
+              </h2>
+              <p className="mb-6 text-ink/60">
+                {locale === "pl"
+                  ? "Twórz klasy, zadania i śledź postępy uczniów"
+                  : "Створюйте класи, завдання та відстежуйте прогрес студентів"}
+              </p>
+              <Link href="/cabinet">
+                <button className="w-full rounded-full border border-moss/20 bg-moss px-6 py-3 font-semibold text-paper transition-all hover:bg-moss/90 hover:shadow-md">
+                  {locale === "pl" ? "Zostań nauczycielem" : "Стати вчителем"}
+                </button>
+              </Link>
             </div>
-            <h2 className="mb-2 text-2xl font-bold text-stone-900">
-              {locale === "pl" ? "Dla nauczycieli" : "Для вчителів"}
-            </h2>
-            <p className="mb-4 text-stone-600">
-              {locale === "pl"
-                ? "Twórz klasy, zadania i śledź postępy uczniów"
-                : "Створюйте класи, завдання та відстежуйте прогрес студентів"}
-            </p>
-            <Link href="/cabinet">
-              <button className="w-full rounded-xl bg-amber-600 px-6 py-3 font-semibold text-white transition-colors hover:bg-amber-700">
-                {locale === "pl" ? "Zostań nauczycielem" : "Стати вчителем"}
-              </button>
-            </Link>
           </div>
 
           {/* Join a Class */}
-          <div className="rounded-2xl border border-stone-200 bg-gradient-to-br from-blue-50 to-white p-8 shadow-sm">
-            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-600 text-white">
-              <GraduationCap size={32} weight="fill" />
+          <div className="group relative overflow-hidden rounded-[32px] border border-ink/10 bg-gradient-to-br from-terracotta/10 via-paper to-terracotta/5 p-8 shadow-soft transition-all hover:shadow-lg">
+            <div className="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-terracotta/20 blur-2xl transition-all group-hover:bg-terracotta/30" />
+            <div className="relative">
+              <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-[20px] border border-terracotta/20 bg-terracotta/10">
+                <GraduationCap size={32} weight="fill" className="text-terracotta" />
+              </div>
+              <h2 className="mb-3 text-2xl font-semibold">
+                {locale === "pl" ? "Dla uczniów" : "Для учнів"}
+              </h2>
+              <p className="mb-6 text-ink/60">
+                {locale === "pl"
+                  ? "Dołącz do klasy i rozpocznij naukę"
+                  : "Приєднуйтесь до класу та почніть навчання"}
+              </p>
+              <Link href="/classes/join">
+                <button className="w-full rounded-full border border-terracotta/20 bg-terracotta px-6 py-3 font-semibold text-paper transition-all hover:bg-terracotta/90 hover:shadow-md">
+                  {locale === "pl" ? "Dołącz do klasy" : "Приєднатися до класу"}
+                </button>
+              </Link>
             </div>
-            <h2 className="mb-2 text-2xl font-bold text-stone-900">
-              {locale === "pl" ? "Dla uczniów" : "Для учнів"}
-            </h2>
-            <p className="mb-4 text-stone-600">
-              {locale === "pl"
-                ? "Dołącz do klasy i rozpocznij naukę"
-                : "Приєднуйтесь до класу та почніть навчання"}
-            </p>
-            <Link href="/classes/join">
-              <button className="w-full rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white transition-colors hover:bg-blue-700">
-                {locale === "pl" ? "Dołącz do klasy" : "Приєднатися до класу"}
-              </button>
-            </Link>
           </div>
         </div>
       </div>
@@ -180,106 +196,123 @@ export default function AcademyClient() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl p-6">
+    <div className="mx-auto max-w-7xl space-y-10 p-6 sm:p-8">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="mb-2 text-4xl font-bold text-stone-900">
-          {locale === "pl" ? "Akademia" : "Академія"}
-        </h1>
-        <p className="text-lg text-stone-600">
-          {locale === "pl"
-            ? "Twoje centrum edukacyjne"
-            : "Ваш освітній центр"}
-        </p>
+      <div className="relative overflow-hidden rounded-[32px] border border-ink/10 bg-gradient-to-br from-moss/10 to-terracotta/10 p-8 shadow-soft">
+        <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gold/20 blur-3xl" />
+        <div className="relative">
+          <div className="flex items-center gap-2">
+            <GraduationCap size={24} weight="fill" className="text-ink/60" />
+            <p className="text-xs uppercase tracking-[0.3em] text-ink/60">
+              {locale === "pl" ? "AKADEMIA" : "АКАДЕМІЯ"}
+            </p>
+          </div>
+          <h1 className="mt-2 text-4xl font-semibold">
+            {locale === "pl" ? "Akademia" : "Академія"}
+          </h1>
+          <p className="mt-2 text-ink/60">
+            {locale === "pl"
+              ? "Twoje centrum edukacyjne"
+              : "Ваш освітній центр"}
+          </p>
+        </div>
       </div>
 
       {/* Tabs (if both roles) */}
       {hasBothRoles && (
-        <div className="mb-6 flex gap-2 border-b border-stone-200">
+        <div className="flex gap-3">
           <button
             onClick={() => setActiveTab("teacher")}
-            className={`px-6 py-3 font-semibold transition-colors ${
+            className={`flex items-center gap-2 rounded-full px-6 py-3 font-semibold transition-all ${
               activeTab === "teacher"
-                ? "border-b-2 border-amber-600 text-amber-600"
-                : "text-stone-600 hover:text-stone-900"
+                ? "border border-moss/20 bg-moss/10 text-moss shadow-sm"
+                : "border border-ink/10 bg-paper text-ink/60 hover:bg-ink/5"
             }`}
           >
-            <div className="flex items-center gap-2">
-              <Chalkboard size={20} weight="fill" />
-              {locale === "pl" ? "Panel nauczyciela" : "Панель вчителя"}
-            </div>
+            <Chalkboard size={20} weight="fill" />
+            {locale === "pl" ? "Викладач" : "Вчитель"}
           </button>
           <button
             onClick={() => setActiveTab("student")}
-            className={`px-6 py-3 font-semibold transition-colors ${
+            className={`flex items-center gap-2 rounded-full px-6 py-3 font-semibold transition-all ${
               activeTab === "student"
-                ? "border-b-2 border-blue-600 text-blue-600"
-                : "text-stone-600 hover:text-stone-900"
+                ? "border border-terracotta/20 bg-terracotta/10 text-terracotta shadow-sm"
+                : "border border-ink/10 bg-paper text-ink/60 hover:bg-ink/5"
             }`}
           >
-            <div className="flex items-center gap-2">
-              <GraduationCap size={20} weight="fill" />
-              {locale === "pl" ? "Panel ucznia" : "Панель учня"}
-            </div>
+            <GraduationCap size={20} weight="fill" />
+            {locale === "pl" ? "Студент" : "Учень"}
           </button>
         </div>
       )}
 
       {/* Teacher Dashboard */}
       {((activeTab === "teacher" && hasBothRoles) || (isTeacher && !hasBothRoles)) && (
-        <div>
+        <section className="space-y-6">
           {/* Teacher Stats */}
-          <div className="mb-6 grid gap-4 md:grid-cols-4">
-            <div className="rounded-xl border border-stone-200 bg-gradient-to-br from-amber-50 to-white p-4 shadow-sm">
-              <div className="mb-2 text-sm font-medium text-stone-600">
-                {locale === "pl" ? "Klasy" : "Класи"}
-              </div>
-              <div className="text-3xl font-bold text-amber-600">
-                {teacherProfile?.stats?.totalClasses || teacherClasses.length}
-              </div>
-            </div>
-            <div className="rounded-xl border border-stone-200 bg-gradient-to-br from-blue-50 to-white p-4 shadow-sm">
-              <div className="mb-2 text-sm font-medium text-stone-600">
-                {locale === "pl" ? "Uczniowie" : "Студенти"}
-              </div>
-              <div className="text-3xl font-bold text-blue-600">
-                {teacherProfile?.stats?.totalStudents || 0}
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="relative overflow-hidden rounded-[24px] border border-ink/10 bg-gradient-to-br from-moss/10 to-paper p-6 shadow-soft">
+              <div className="absolute -right-4 -top-4 h-16 w-16 rounded-full bg-moss/20 blur-2xl" />
+              <div className="relative">
+                <div className="mb-2 text-xs uppercase tracking-wider text-ink/60">
+                  {locale === "pl" ? "Класи" : "Класи"}
+                </div>
+                <div className="text-3xl font-semibold text-moss">
+                  {teacherProfile?.stats?.totalClasses || teacherClasses.length}
+                </div>
               </div>
             </div>
-            <div className="rounded-xl border border-stone-200 bg-gradient-to-br from-green-50 to-white p-4 shadow-sm">
-              <div className="mb-2 text-sm font-medium text-stone-600">
-                {locale === "pl" ? "Zadania" : "Завдання"}
-              </div>
-              <div className="text-3xl font-bold text-green-600">
-                {teacherProfile?.stats?.totalAssignments || 0}
+            <div className="relative overflow-hidden rounded-[24px] border border-ink/10 bg-gradient-to-br from-terracotta/10 to-paper p-6 shadow-soft">
+              <div className="absolute -right-4 -top-4 h-16 w-16 rounded-full bg-terracotta/20 blur-2xl" />
+              <div className="relative">
+                <div className="mb-2 text-xs uppercase tracking-wider text-ink/60">
+                  {locale === "pl" ? "Студенти" : "Студенти"}
+                </div>
+                <div className="text-3xl font-semibold text-terracotta">
+                  {teacherProfile?.stats?.totalStudents || 0}
+                </div>
               </div>
             </div>
-            <div className="rounded-xl border border-stone-200 bg-gradient-to-br from-purple-50 to-white p-4 shadow-sm">
-              <div className="mb-2 text-sm font-medium text-stone-600">
-                {locale === "pl" ? "Plan" : "План"}
+            <div className="relative overflow-hidden rounded-[24px] border border-ink/10 bg-gradient-to-br from-gold/10 to-paper p-6 shadow-soft">
+              <div className="absolute -right-4 -top-4 h-16 w-16 rounded-full bg-gold/20 blur-2xl" />
+              <div className="relative">
+                <div className="mb-2 text-xs uppercase tracking-wider text-ink/60">
+                  {locale === "pl" ? "Завдання" : "Завдання"}
+                </div>
+                <div className="text-3xl font-semibold text-gold">
+                  {teacherProfile?.stats?.totalAssignments || 0}
+                </div>
               </div>
-              <div className="text-sm font-bold text-purple-600">
-                {teacherProfile?.planId || "—"}
+            </div>
+            <div className="relative overflow-hidden rounded-[24px] border border-ink/10 bg-gradient-to-br from-ink/5 to-paper p-6 shadow-soft">
+              <div className="absolute -right-4 -top-4 h-16 w-16 rounded-full bg-ink/10 blur-2xl" />
+              <div className="relative">
+                <div className="mb-2 text-xs uppercase tracking-wider text-ink/60">
+                  {locale === "pl" ? "План" : "План"}
+                </div>
+                <div className="text-sm font-semibold text-ink">
+                  {teacherProfile?.planId || "—"}
+                </div>
               </div>
             </div>
           </div>
 
           {/* Quick Actions */}
-          <div className="mb-6 flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-3">
             <Link href="/classes/new">
-              <button className="flex items-center gap-2 rounded-xl bg-amber-600 px-6 py-3 font-semibold text-white transition-colors hover:bg-amber-700">
+              <button className="flex items-center gap-2 rounded-full border border-moss/20 bg-moss px-6 py-3 font-semibold text-paper transition-all hover:bg-moss/90 hover:shadow-md">
                 <Plus size={20} weight="bold" />
                 {locale === "pl" ? "Utwórz klasę" : "Створити клас"}
               </button>
             </Link>
             <Link href="/classes">
-              <button className="flex items-center gap-2 rounded-xl border-2 border-stone-300 bg-white px-6 py-3 font-semibold text-stone-700 transition-colors hover:bg-stone-50">
+              <button className="flex items-center gap-2 rounded-full border border-ink/10 bg-paper px-6 py-3 font-semibold text-ink transition-all hover:bg-ink/5 hover:shadow-sm">
                 <Books size={20} weight="fill" />
                 {locale === "pl" ? "Wszystkie klasy" : "Всі класи"}
               </button>
             </Link>
             <Link href="/schedule">
-              <button className="flex items-center gap-2 rounded-xl border-2 border-stone-300 bg-white px-6 py-3 font-semibold text-stone-700 transition-colors hover:bg-stone-50">
+              <button className="flex items-center gap-2 rounded-full border border-ink/10 bg-paper px-6 py-3 font-semibold text-ink transition-all hover:bg-ink/5 hover:shadow-sm">
                 <Calendar size={20} weight="fill" />
                 {locale === "pl" ? "Harmonogram" : "Розклад"}
               </button>
@@ -288,37 +321,44 @@ export default function AcademyClient() {
 
           {/* Teacher Classes List */}
           <div>
-            <h2 className="mb-4 text-2xl font-bold text-stone-900">
-              {locale === "pl" ? "Moje klasy" : "Мої класи"}
-            </h2>
+            <div className="mb-6 flex items-center gap-3">
+              <Books size={24} weight="fill" className="text-moss" />
+              <h2 className="text-2xl font-semibold">
+                {locale === "pl" ? "Moje klasy" : "Мої класи"}
+              </h2>
+            </div>
             {teacherClasses.length > 0 ? (
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {teacherClasses.slice(0, 6).map((cls: any) => (
                   <Link key={cls._id} href={`/classes/${cls._id}`}>
-                    <div className="rounded-xl border border-stone-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md">
-                      <h3 className="mb-2 text-lg font-semibold text-stone-900">{cls.name}</h3>
-                      <div className="flex items-center gap-4 text-sm text-stone-600">
-                        <span>{cls.studentIds?.length || 0} {locale === "pl" ? "uczniów" : "студентів"}</span>
-                        <span>{cls.stats?.totalAssignments || 0} {locale === "pl" ? "zadań" : "завдань"}</span>
+                    <div className="group relative overflow-hidden rounded-[24px] border border-ink/10 bg-paper p-6 shadow-soft transition-all hover:shadow-lg">
+                      <div className="absolute -right-4 -top-4 h-16 w-16 rounded-full bg-moss/10 blur-xl transition-all group-hover:bg-moss/20" />
+                      <div className="relative">
+                        <h3 className="mb-3 text-lg font-semibold">{cls.name}</h3>
+                        <div className="flex items-center gap-4 text-sm text-ink/60">
+                          <span>{cls.studentIds?.length || 0} {locale === "pl" ? "uczniów" : "студентів"}</span>
+                          <span>·</span>
+                          <span>{cls.stats?.totalAssignments || 0} {locale === "pl" ? "zadań" : "завдань"}</span>
+                        </div>
                       </div>
                     </div>
                   </Link>
                 ))}
               </div>
             ) : (
-              <div className="rounded-xl border border-stone-200 bg-stone-50 p-8 text-center">
-                <p className="mb-4 text-stone-600">
+              <div className="rounded-[24px] border border-ink/10 bg-ink/5 p-12 text-center">
+                <p className="mb-6 text-ink/60">
                   {locale === "pl" ? "Nie masz jeszcze żadnych klas" : "У вас ще немає класів"}
                 </p>
                 <Link href="/classes/new">
-                  <button className="rounded-xl bg-amber-600 px-6 py-2 font-semibold text-white hover:bg-amber-700">
+                  <button className="rounded-full border border-moss/20 bg-moss px-8 py-3 font-semibold text-paper transition-all hover:bg-moss/90 hover:shadow-md">
                     {locale === "pl" ? "Utwórz pierwszą klasę" : "Створити перший клас"}
                   </button>
                 </Link>
               </div>
             )}
           </div>
-        </div>
+        </section>
       )}
 
       {/* Student Dashboard */}
