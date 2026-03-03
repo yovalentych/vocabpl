@@ -209,7 +209,7 @@ export async function notifyStudentAddedToClass(params: {
     actions: [
       {
         label: "Переглянути клас",
-        href: `/class/${params.classId}`,
+        href: `/classes/${params.classId}`,
         variant: "primary"
       }
     ],
@@ -242,7 +242,7 @@ export async function notifyStudentJoinedClass(params: {
     actions: [
       {
         label: "Переглянути клас",
-        href: `/class/${params.classId}`,
+        href: `/classes/${params.classId}`,
         variant: "primary"
       }
     ],
@@ -298,7 +298,7 @@ export async function notifyStudentLeftClass(params: {
     actions: [
       {
         label: "Переглянути клас",
-        href: `/class/${params.classId}`,
+        href: `/classes/${params.classId}`,
         variant: "secondary"
       }
     ],
@@ -337,7 +337,7 @@ export async function notifyAssignmentCreated(params: {
     actions: [
       {
         label: "Переглянути завдання",
-        href: `/class/${params.classId}/assignment/${params.assignmentId}`,
+        href: `/classes/${params.classId}/assignment/${params.assignmentId}`,
         variant: "primary"
       }
     ],
@@ -372,7 +372,7 @@ export async function notifyAssignmentsBulkCopied(params: {
     actions: [
       {
         label: "Переглянути клас",
-        href: `/class/${params.targetClassId}`,
+        href: `/classes/${params.targetClassId}`,
         variant: "primary"
       }
     ],
@@ -429,7 +429,7 @@ export async function notifySubmissionReceived(params: {
     actions: [
       {
         label: "Перевірити",
-        href: `/class/${params.classId}/assignment/${params.assignmentId}/submission/${params.submissionId}`,
+        href: `/classes/${params.classId}/assignment/${params.assignmentId}/submission/${params.submissionId}`,
         variant: "primary"
       }
     ],
@@ -467,7 +467,7 @@ export async function notifyAssignmentGraded(params: {
     actions: [
       {
         label: "Переглянути оцінку",
-        href: `/class/${params.classId}/assignment/${params.assignmentId}`,
+        href: `/classes/${params.classId}/assignment/${params.assignmentId}`,
         variant: "primary"
       }
     ],
@@ -500,7 +500,7 @@ export async function notifyAssignmentBulkGraded(params: {
       actions: [
         {
           label: "Переглянути оцінку",
-          href: `/class/${params.classId}/assignment/${params.assignmentId}`,
+          href: `/classes/${params.classId}/assignment/${params.assignmentId}`,
           variant: "primary"
         }
       ],
