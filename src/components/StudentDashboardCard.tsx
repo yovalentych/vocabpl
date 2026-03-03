@@ -56,20 +56,20 @@ export default function StudentDashboardCard({
   const { t, locale } = useLocale();
 
   const formatDaysRemaining = (days: number) => {
-    if (days < 0) return t("cabinet.overdue");
-    if (days === 0) return t("cabinet.today");
-    if (days === 1) return t("cabinet.tomorrow");
-    return t("cabinet.daysRemaining", { n: days });
+    if (days < 0) return t.cabinet.overdue;
+    if (days === 0) return t.cabinet.today;
+    if (days === 1) return t.cabinet.tomorrow;
+    return t.cabinet.daysRemaining.replace("{n}", days.toString());
   };
 
   const getStatusLabel = (status: string) => {
     switch (status) {
       case "not_started":
-        return t("cabinet.notStarted");
+        return t.cabinet.notStarted;
       case "in_progress":
-        return t("cabinet.inProgress");
+        return t.cabinet.inProgress;
       case "submitted":
-        return t("cabinet.submitted");
+        return t.cabinet.submitted;
       default:
         return status;
     }
@@ -93,19 +93,19 @@ export default function StudentDashboardCard({
       {/* Stats Cards */}
       <div className="mb-6 grid gap-4 md:grid-cols-4">
         <div className="rounded-lg border border-stone-200 bg-gradient-to-br from-blue-50 to-white p-4">
-          <div className="text-sm text-stone-600">{t("cabinet.totalClasses")}</div>
+          <div className="text-sm text-stone-600">{t.cabinet.totalClasses}</div>
           <div className="text-3xl font-bold text-blue-600">{stats.totalClasses}</div>
         </div>
         <div className="rounded-lg border border-stone-200 bg-gradient-to-br from-amber-50 to-white p-4">
-          <div className="text-sm text-stone-600">{t("cabinet.activeAssignments")}</div>
+          <div className="text-sm text-stone-600">{t.cabinet.activeAssignments}</div>
           <div className="text-3xl font-bold text-amber-600">{stats.activeAssignments}</div>
         </div>
         <div className="rounded-lg border border-stone-200 bg-gradient-to-br from-orange-50 to-white p-4">
-          <div className="text-sm text-stone-600">{t("cabinet.upcomingDeadlines")}</div>
+          <div className="text-sm text-stone-600">{t.cabinet.upcomingDeadlines}</div>
           <div className="text-3xl font-bold text-orange-600">{stats.upcomingDeadlines}</div>
         </div>
         <div className="rounded-lg border border-stone-200 bg-gradient-to-br from-green-50 to-white p-4">
-          <div className="text-sm text-stone-600">{t("cabinet.averageGrade")}</div>
+          <div className="text-sm text-stone-600">{t.cabinet.averageGrade}</div>
           <div className="text-3xl font-bold text-green-600">
             {stats.averageGrade !== null ? `${stats.averageGrade}%` : "—"}
           </div>
@@ -116,7 +116,7 @@ export default function StudentDashboardCard({
       {upcomingDeadlines.length > 0 && (
         <div className="mb-6">
           <h3 className="mb-3 text-lg font-semibold text-stone-900">
-            {t("cabinet.upcomingDeadlinesTitle")}
+            {t.cabinet.upcomingDeadlinesTitle}
           </h3>
           <div className="space-y-2">
             {upcomingDeadlines.slice(0, 5).map((deadline) => (
@@ -157,7 +157,7 @@ export default function StudentDashboardCard({
       {recentGrades.length > 0 && (
         <div className="mb-6">
           <h3 className="mb-3 text-lg font-semibold text-stone-900">
-            {t("cabinet.recentGradesTitle")}
+            {t.cabinet.recentGradesTitle}
           </h3>
           <div className="space-y-2">
             {recentGrades.map((grade) => (
@@ -199,7 +199,7 @@ export default function StudentDashboardCard({
       {/* My Classes List */}
       <div className="mb-6">
         <h3 className="mb-3 text-lg font-semibold text-stone-900">
-          {t("cabinet.myClassesList")}
+          {t.cabinet.myClassesList}
         </h3>
         <div className="space-y-3">
           {classes.map((cls) => (
@@ -230,10 +230,9 @@ export default function StudentDashboardCard({
               </div>
               <div className="mb-3 flex items-center gap-4 text-sm text-stone-600">
                 <span>
-                  {t("cabinet.assignmentsCompleted", {
-                    completed: cls.completedAssignments,
-                    total: cls.totalAssignments,
-                  })}
+                  {t.cabinet.assignmentsCompleted
+                    .replace("{completed}", cls.completedAssignments.toString())
+                    .replace("{total}", cls.totalAssignments.toString())}
                 </span>
                 {cls.upcomingDeadlines > 0 && (
                   <span className="text-orange-600">
@@ -243,7 +242,7 @@ export default function StudentDashboardCard({
               </div>
               <Link href={`/classes/${cls._id}`}>
                 <button className="w-full rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700">
-                  {t("cabinet.viewClass")}
+                  {t.cabinet.viewClass}
                 </button>
               </Link>
             </div>
@@ -255,12 +254,12 @@ export default function StudentDashboardCard({
       <div className="flex flex-wrap gap-3">
         <Link href="/classes/join">
           <button className="rounded-lg border-2 border-blue-600 bg-white px-6 py-2 font-semibold text-blue-600 transition-colors hover:bg-blue-50">
-            + {t("cabinet.joinClass")}
+            + {t.cabinet.joinClass}
           </button>
         </Link>
         <Link href="/classes">
           <button className="rounded-lg bg-stone-200 px-6 py-2 font-semibold text-stone-700 transition-colors hover:bg-stone-300">
-            {t("cabinet.allClasses")}
+            {t.cabinet.allClasses}
           </button>
         </Link>
       </div>
