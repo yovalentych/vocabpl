@@ -17,22 +17,37 @@ import {
 export default function SchoolWelcome() {
   const { locale } = useLocale();
   const [isTeacher, setIsTeacher] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [adminSettings, setAdminSettings] = useState({
+    teacherModeEnabled: false,
+    studentModeEnabled: false
+  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    checkTeacherStatus();
+    checkUserStatus();
   }, []);
 
-  async function checkTeacherStatus() {
+  async function checkUserStatus() {
     setLoading(true);
     try {
       const response = await fetch("/api/auth/me");
       if (response.ok) {
         const data = await response.json();
-        setIsTeacher(data.role === "tutor" || data.role === "admin");
+        const isAdminUser = data.role === "admin";
+        setIsTeacher(data.role === "tutor" || isAdminUser);
+        setIsAdmin(isAdminUser);
+
+        // Load admin settings from localStorage if admin
+        if (isAdminUser) {
+          const saved = localStorage.getItem("adminSettings");
+          if (saved) {
+            setAdminSettings(JSON.parse(saved));
+          }
+        }
       }
     } catch (error) {
-      console.error("Failed to check teacher status:", error);
+      console.error("Failed to check user status:", error);
     } finally {
       setLoading(false);
     }
@@ -74,10 +89,10 @@ export default function SchoolWelcome() {
 
       {/* Role Selection */}
       <div className="mx-auto max-w-7xl px-6 py-16">
-        <div className={`grid gap-8 ${isTeacher ? "md:grid-cols-2" : "md:grid-cols-1 max-w-2xl mx-auto"}`}>
+        <div className={`grid gap-8 ${(isTeacher || (isAdmin && adminSettings.teacherModeEnabled)) ? "md:grid-cols-2" : "md:grid-cols-1 max-w-2xl mx-auto"}`}>
 
           {/* Teacher Card */}
-          {isTeacher && (
+          {(isTeacher || (isAdmin && adminSettings.teacherModeEnabled)) && (
             <Link href="/school/teacher">
               <div className="group relative overflow-hidden rounded-[32px] border border-ink/10 bg-gradient-to-br from-moss/5 to-paper p-8 shadow-soft transition-all hover:scale-[1.02] hover:shadow-lg">
                 {/* Decorative elements */}

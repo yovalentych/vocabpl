@@ -29,6 +29,7 @@ type UserProfile = {
   name?: string;
   email?: string;
   emailVerified?: boolean;
+  role?: "admin" | "tutor" | "user";
   consent?: {
     marketingAt?: string | null;
   };
@@ -89,7 +90,6 @@ export default function CabinetClient({ username }: { username: string }) {
   const [dataRequestType, setDataRequestType] = useState<"access" | "delete">("access");
   const [dataRequestMessage, setDataRequestMessage] = useState("");
   const [dataRequestStatus, setDataRequestStatus] = useState<"idle" | "saving" | "done" | "error">("idle");
-  const hasAiAccess = Boolean(isActive || hasPromoAccess);
   const [teacherProfile, setTeacherProfile] = useState<any>(null);
   const [teacherUsage, setTeacherUsage] = useState<any>(null);
   const [showTeacherWizard, setShowTeacherWizard] = useState(false);
@@ -97,6 +97,17 @@ export default function CabinetClient({ username }: { username: string }) {
   const [studentClasses, setStudentClasses] = useState<any[]>([]);
   const [studentDeadlines, setStudentDeadlines] = useState<any[]>([]);
   const [studentGrades, setStudentGrades] = useState<any[]>([]);
+
+  // Admin settings
+  const isAdmin = profile?.role === "admin";
+  const [adminSettings, setAdminSettings] = useState({
+    teacherModeEnabled: false,
+    studentModeEnabled: false,
+    unlimitedCredits: true,
+    freeAccess: true
+  });
+  const [adminSettingsStatus, setAdminSettingsStatus] = useState<"idle" | "saving" | "done" | "error">("idle");
+  const hasAiAccess = Boolean(isActive || hasPromoAccess || (isAdmin && adminSettings.unlimitedCredits));
 
   useEffect(() => {
     if (resendCooldown <= 0) return;
@@ -147,11 +158,38 @@ export default function CabinetClient({ username }: { username: string }) {
     }
   }
 
+  async function loadAdminSettings() {
+    if (!isAdmin) return;
+    try {
+      const saved = localStorage.getItem("adminSettings");
+      if (saved) {
+        setAdminSettings(JSON.parse(saved));
+      }
+    } catch (error) {
+      console.error("Failed to load admin settings:", error);
+    }
+  }
+
+  async function saveAdminSettings(newSettings: typeof adminSettings) {
+    if (!isAdmin) return;
+    setAdminSettingsStatus("saving");
+    try {
+      localStorage.setItem("adminSettings", JSON.stringify(newSettings));
+      setAdminSettings(newSettings);
+      setAdminSettingsStatus("done");
+      setTimeout(() => setAdminSettingsStatus("idle"), 2000);
+    } catch (error) {
+      console.error("Failed to save admin settings:", error);
+      setAdminSettingsStatus("error");
+    }
+  }
+
   useEffect(() => {
     loadProfile();
     loadAiUsage();
     loadTeacherData();
     loadStudentData();
+    loadAdminSettings();
   }, []);
 
   useEffect(() => {
@@ -421,9 +459,17 @@ export default function CabinetClient({ username }: { username: string }) {
                 <div className="flex-1">
                   <p className="text-xs uppercase tracking-[0.2em] text-ink/50">{t.cabinet.creditsLabel}</p>
                   <p className="mt-1 text-2xl font-semibold text-terracotta">
-                    {Math.max(0, aiUsageSummary.limit - aiUsageSummary.usedCredits)}
+                    {isAdmin && adminSettings.unlimitedCredits
+                      ? "∞"
+                      : Math.max(0, aiUsageSummary.limit - aiUsageSummary.usedCredits)
+                    }
                   </p>
-                  <p className="text-xs text-ink/60">{t.cabinet.creditsOf.replace("{limit}", String(aiUsageSummary.limit))}</p>
+                  <p className="text-xs text-ink/60">
+                    {isAdmin && adminSettings.unlimitedCredits
+                      ? (locale === "pl" ? "Nieograniczone" : "Необмежено")
+                      : t.cabinet.creditsOf.replace("{limit}", String(aiUsageSummary.limit))
+                    }
+                  </p>
                 </div>
               </div>
             </div>
@@ -742,6 +788,7 @@ export default function CabinetClient({ username }: { username: string }) {
       </section>
 
       {/* Billing Plans */}
+      {!(isAdmin && adminSettings.freeAccess) && (
       <section id="billing">
         <div className="mb-6 flex items-center gap-3">
           <CreditCard size={24} weight="fill" className="text-ink" />
@@ -941,6 +988,7 @@ export default function CabinetClient({ username }: { username: string }) {
           </div>
         </div>
       </section>
+      )}
 
       {/* Privacy & Consents */}
       <section>
@@ -1016,6 +1064,143 @@ export default function CabinetClient({ username }: { username: string }) {
           </div>
         </div>
       </section>
+
+      {/* Admin Settings */}
+      {isAdmin && (
+        <section id="admin-settings">
+          <div className="mb-6 flex items-center gap-3">
+            <Sparkle size={24} weight="fill" className="text-gold" />
+            <h2 className="text-2xl font-semibold">
+              {locale === "pl" ? "Ustawienia admina" : "Налаштування адміна"}
+            </h2>
+          </div>
+
+          <div className="rounded-3xl border border-gold/20 bg-gradient-to-br from-gold/5 to-paper p-8 shadow-soft">
+            <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-gold/15 blur-3xl" />
+            <div className="relative space-y-6">
+              <p className="text-sm text-ink/60">
+                {locale === "pl"
+                  ? "Jako administrator masz dostęp do dodatkowych funkcji i nieograniczonych zasobów."
+                  : "Як адміністратор ви маєте доступ до додаткових функцій та необмежених ресурсів."
+                }
+              </p>
+
+              {/* Toggle Switches */}
+              <div className="space-y-4">
+                {/* Unlimited Credits */}
+                <div className="flex items-center justify-between rounded-2xl border border-ink/10 bg-paper p-4">
+                  <div>
+                    <h3 className="font-semibold">
+                      {locale === "pl" ? "Nieograniczone kredyty AI" : "Необмежені AI кредити"}
+                    </h3>
+                    <p className="text-sm text-ink/60">
+                      {locale === "pl"
+                        ? "Brak limitu użycia funkcji AI"
+                        : "Відсутній ліміт використання AI функцій"
+                      }
+                    </p>
+                  </div>
+                  <label className="relative inline-flex cursor-pointer items-center">
+                    <input
+                      type="checkbox"
+                      checked={adminSettings.unlimitedCredits}
+                      onChange={(e) => saveAdminSettings({ ...adminSettings, unlimitedCredits: e.target.checked })}
+                      className="peer sr-only"
+                    />
+                    <div className="peer h-6 w-11 rounded-full bg-ink/20 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:bg-paper after:transition-all after:content-[''] peer-checked:bg-moss peer-checked:after:translate-x-full peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-moss/20"></div>
+                  </label>
+                </div>
+
+                {/* Free Access */}
+                <div className="flex items-center justify-between rounded-2xl border border-ink/10 bg-paper p-4">
+                  <div>
+                    <h3 className="font-semibold">
+                      {locale === "pl" ? "Darmowy dostęp" : "Безкоштовний доступ"}
+                    </h3>
+                    <p className="text-sm text-ink/60">
+                      {locale === "pl"
+                        ? "Ukryj sekcję planów płatności"
+                        : "Приховати секцію платних планів"
+                      }
+                    </p>
+                  </div>
+                  <label className="relative inline-flex cursor-pointer items-center">
+                    <input
+                      type="checkbox"
+                      checked={adminSettings.freeAccess}
+                      onChange={(e) => saveAdminSettings({ ...adminSettings, freeAccess: e.target.checked })}
+                      className="peer sr-only"
+                    />
+                    <div className="peer h-6 w-11 rounded-full bg-ink/20 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:bg-paper after:transition-all after:content-[''] peer-checked:bg-moss peer-checked:after:translate-x-full peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-moss/20"></div>
+                  </label>
+                </div>
+
+                {/* Teacher Mode */}
+                <div className="flex items-center justify-between rounded-2xl border border-ink/10 bg-paper p-4">
+                  <div>
+                    <h3 className="font-semibold">
+                      {locale === "pl" ? "Tryb nauczyciela" : "Режим вчителя"}
+                    </h3>
+                    <p className="text-sm text-ink/60">
+                      {locale === "pl"
+                        ? "Dostęp do panelu nauczyciela w Szkole"
+                        : "Доступ до панелі вчителя у Школі"
+                      }
+                    </p>
+                  </div>
+                  <label className="relative inline-flex cursor-pointer items-center">
+                    <input
+                      type="checkbox"
+                      checked={adminSettings.teacherModeEnabled}
+                      onChange={(e) => saveAdminSettings({ ...adminSettings, teacherModeEnabled: e.target.checked })}
+                      className="peer sr-only"
+                    />
+                    <div className="peer h-6 w-11 rounded-full bg-ink/20 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:bg-paper after:transition-all after:content-[''] peer-checked:bg-moss peer-checked:after:translate-x-full peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-moss/20"></div>
+                  </label>
+                </div>
+
+                {/* Student Mode */}
+                <div className="flex items-center justify-between rounded-2xl border border-ink/10 bg-paper p-4">
+                  <div>
+                    <h3 className="font-semibold">
+                      {locale === "pl" ? "Tryb ucznia" : "Режим учня"}
+                    </h3>
+                    <p className="text-sm text-ink/60">
+                      {locale === "pl"
+                        ? "Dostęp do panelu ucznia w Szkole"
+                        : "Доступ до панелі учня у Школі"
+                      }
+                    </p>
+                  </div>
+                  <label className="relative inline-flex cursor-pointer items-center">
+                    <input
+                      type="checkbox"
+                      checked={adminSettings.studentModeEnabled}
+                      onChange={(e) => saveAdminSettings({ ...adminSettings, studentModeEnabled: e.target.checked })}
+                      className="peer sr-only"
+                    />
+                    <div className="peer h-6 w-11 rounded-full bg-ink/20 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:bg-paper after:transition-all after:content-[''] peer-checked:bg-moss peer-checked:after:translate-x-full peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-moss/20"></div>
+                  </label>
+                </div>
+              </div>
+
+              {/* Status Message */}
+              {adminSettingsStatus === "done" && (
+                <div className="flex items-center gap-2 text-sm text-moss">
+                  <CheckCircle size={16} weight="fill" />
+                  <span>{locale === "pl" ? "Ustawienia zapisane" : "Налаштування збережено"}</span>
+                </div>
+              )}
+              {adminSettingsStatus === "error" && (
+                <div className="flex items-center gap-2 text-sm text-terracotta">
+                  <XCircle size={16} weight="fill" />
+                  <span>{locale === "pl" ? "Błąd zapisu" : "Помилка збереження"}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Teacher Section */}
       <section>
