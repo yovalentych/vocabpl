@@ -7,6 +7,7 @@ import { readPrefs, setCookie, writePrefs } from "@/lib/prefs";
 import { csrfFetch } from "@/lib/csrf-client";
 import TeacherRegistrationWizard from "@/components/TeacherRegistrationWizard";
 import TeacherProfileCard from "@/components/TeacherProfileCard";
+import StudentDashboardCard from "@/components/StudentDashboardCard";
 import {
   User,
   Lock,
@@ -92,6 +93,10 @@ export default function CabinetClient({ username }: { username: string }) {
   const [teacherProfile, setTeacherProfile] = useState<any>(null);
   const [teacherUsage, setTeacherUsage] = useState<any>(null);
   const [showTeacherWizard, setShowTeacherWizard] = useState(false);
+  const [studentStats, setStudentStats] = useState<any>(null);
+  const [studentClasses, setStudentClasses] = useState<any[]>([]);
+  const [studentDeadlines, setStudentDeadlines] = useState<any[]>([]);
+  const [studentGrades, setStudentGrades] = useState<any[]>([]);
 
   useEffect(() => {
     if (resendCooldown <= 0) return;
@@ -128,10 +133,25 @@ export default function CabinetClient({ username }: { username: string }) {
     setTeacherProfile(data.teacherProfile);
   }
 
+  async function loadStudentData() {
+    try {
+      const res = await fetch("/api/student/dashboard");
+      if (!res.ok) return;
+      const data = await res.json();
+      setStudentStats(data.stats);
+      setStudentClasses(data.classes || []);
+      setStudentDeadlines(data.upcomingDeadlines || []);
+      setStudentGrades(data.recentGrades || []);
+    } catch (error) {
+      console.error("Failed to load student data:", error);
+    }
+  }
+
   useEffect(() => {
     loadProfile();
     loadAiUsage();
     loadTeacherData();
+    loadStudentData();
   }, []);
 
   useEffect(() => {
@@ -1071,6 +1091,32 @@ export default function CabinetClient({ username }: { username: string }) {
             >
               {t.cabinet.teacherRegisterButton}
             </button>
+          </div>
+        )}
+      </section>
+
+      {/* Student Section */}
+      <section>
+        <div className="mb-6 flex items-center gap-3">
+          <Trophy size={24} weight="fill" className="text-ink/50" />
+          <h2 className="text-2xl font-semibold">{t.cabinet.myClasses}</h2>
+        </div>
+
+        {studentStats && studentClasses.length > 0 ? (
+          <StudentDashboardCard
+            stats={studentStats}
+            classes={studentClasses}
+            upcomingDeadlines={studentDeadlines}
+            recentGrades={studentGrades}
+          />
+        ) : (
+          <div className="rounded-3xl border border-ink/10 bg-paper/80 p-6 text-center shadow-soft">
+            <p className="mb-4 text-sm text-ink/60">{t.cabinet.noClassesYet}</p>
+            <a href="/classes/join">
+              <button className="rounded-full bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-blue-700">
+                {t.cabinet.joinFirstClass}
+              </button>
+            </a>
           </div>
         )}
       </section>
