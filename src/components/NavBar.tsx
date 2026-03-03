@@ -151,13 +151,13 @@ export default function NavBar() {
             >
               {t.nav.compendium}
             </Link>
-            {(auth.isAdmin || auth.role === 'tutor') && (
+            {(auth.isAdmin || auth.role === 'tutor' || auth.hasClasses) && (
               <Link
-                href="/classes"
+                href="/academy"
                 className="flex items-center gap-2 rounded-full border border-moss/30 bg-moss/10 px-3 py-1 text-moss transition hover:bg-moss/20"
               >
                 <GraduationCap size={18} weight="bold" />
-                <span className="hidden lg:inline text-xs font-semibold">{t.nav.teacher}</span>
+                <span className="hidden lg:inline text-xs font-semibold">{t.nav.academy || (t.locale === "pl" ? "Akademia" : "Академія")}</span>
               </Link>
             )}
             <Link
@@ -240,14 +240,14 @@ export default function NavBar() {
             >
               {t.nav.compendium}
             </Link>
-            {(auth.isAdmin || auth.role === 'tutor') && (
+            {(auth.isAdmin || auth.role === 'tutor' || auth.hasClasses) && (
               <Link
-                href="/classes"
+                href="/academy"
                 onClick={() => setMobileMenuOpen(false)}
                 className="rounded-full border-2 border-moss/30 bg-moss/10 px-6 py-3.5 text-base font-medium text-moss transition-all active:scale-95 active:bg-moss/20 flex items-center justify-center gap-2.5"
               >
                 <GraduationCap size={20} weight="bold" />
-                <span>{t.nav.teacher}</span>
+                <span>{t.nav.academy || (t.locale === "pl" ? "Akademia" : "Академія")}</span>
               </Link>
             )}
             <Link
