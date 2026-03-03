@@ -1,6 +1,6 @@
 import { getAuthUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import AcademyClient from "@/components/academy/AcademyClient";
+import AcademyLayout from "@/components/academy/AcademyLayout";
 
 export default async function AcademyPage() {
   const auth = await getAuthUser();
@@ -9,5 +9,5 @@ export default async function AcademyPage() {
     redirect("/login");
   }
 
-  return <AcademyClient />;
+  return <AcademyLayout />;
 }
