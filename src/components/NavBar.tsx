@@ -152,11 +152,13 @@ export default function NavBar() {
               {t.nav.compendium}
             </Link>
             <Link
-              href="/academy"
+              href="/school"
+              target="_blank"
+              rel="noopener noreferrer"
               className="flex items-center gap-2 rounded-full border border-moss/30 bg-moss/10 px-3 py-1 text-moss transition hover:bg-moss/20"
             >
               <GraduationCap size={18} weight="bold" />
-              <span className="hidden lg:inline text-xs font-semibold">{t.nav.academy || (locale === "pl" ? "Akademia" : "Академія")}</span>
+              <span className="hidden lg:inline text-xs font-semibold">{t.nav.school || (locale === "pl" ? "Szkoła" : "Школа")}</span>
             </Link>
             <Link
               href="/notifications"
@@ -239,12 +241,14 @@ export default function NavBar() {
               {t.nav.compendium}
             </Link>
             <Link
-              href="/academy"
+              href="/school"
+              target="_blank"
+              rel="noopener noreferrer"
               onClick={() => setMobileMenuOpen(false)}
               className="rounded-full border-2 border-moss/30 bg-moss/10 px-6 py-3.5 text-base font-medium text-moss transition-all active:scale-95 active:bg-moss/20 flex items-center justify-center gap-2.5"
             >
               <GraduationCap size={20} weight="bold" />
-              <span>{t.nav.academy || (locale === "pl" ? "Akademia" : "Академія")}</span>
+              <span>{t.nav.school || (locale === "pl" ? "Szkoła" : "Школа")}</span>
             </Link>
             <Link
               href="/notifications"

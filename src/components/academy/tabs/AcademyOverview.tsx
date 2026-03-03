@@ -173,7 +173,7 @@ export default function AcademyOverview({ isTeacher, isStudent, teacherProfile, 
                 {locale === "pl" ? "Nadchodzące wydarzenia" : "Найближчі події"}
               </h3>
             </div>
-            <Link href="/academy?tab=schedule" className="text-sm text-moss hover:underline">
+            <Link href="/school/teacher?tab=schedule" className="text-sm text-moss hover:underline">
               {locale === "pl" ? "Zobacz wszystkie" : "Всі події"}
             </Link>
           </div>
@@ -210,7 +210,7 @@ export default function AcademyOverview({ isTeacher, isStudent, teacherProfile, 
                   {locale === "pl" ? "Pilne terminy" : "Термінові дедлайни"}
                 </h3>
               </div>
-              <Link href="/academy?tab=assignments" className="text-sm text-moss hover:underline">
+              <Link href="/school/teacher?tab=assignments" className="text-sm text-moss hover:underline">
                 {locale === "pl" ? "Zobacz wszystkie" : "Всі завдання"}
               </Link>
             </div>
@@ -245,7 +245,7 @@ export default function AcademyOverview({ isTeacher, isStudent, teacherProfile, 
                   {locale === "pl" ? "Moje klasy" : isTeacher ? "Мої класи" : "Мої класи"}
                 </h3>
               </div>
-              <Link href="/academy?tab=classes" className="text-sm text-moss hover:underline">
+              <Link href="/school/teacher?tab=classes" className="text-sm text-moss hover:underline">
                 {locale === "pl" ? "Zobacz wszystkie" : "Всі класи"}
               </Link>
             </div>
