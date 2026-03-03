@@ -58,9 +58,10 @@ export default function AcademyClient() {
     setLoading(true);
     try {
       // Load user role
+      let userData: any = null;
       const userRes = await fetch("/api/user/me");
       if (userRes.ok) {
-        const userData = await userRes.json();
+        userData = await userRes.json();
         setRole(userData.user?.role || "user");
       }
 
@@ -124,7 +125,7 @@ export default function AcademyClient() {
       <div className="mx-auto max-w-7xl p-6">
         <div className="mb-8">
           <h1 className="mb-2 text-4xl font-bold text-stone-900">
-            {t.academy?.title || (locale === "pl" ? "Akademia" : "Академія")}
+            {locale === "pl" ? "Akademia" : "Академія"}
           </h1>
           <p className="text-lg text-stone-600">
             {locale === "pl"
@@ -183,7 +184,7 @@ export default function AcademyClient() {
       {/* Header */}
       <div className="mb-8">
         <h1 className="mb-2 text-4xl font-bold text-stone-900">
-          {t.academy?.title || (locale === "pl" ? "Akademia" : "Академія")}
+          {locale === "pl" ? "Akademia" : "Академія"}
         </h1>
         <p className="text-lg text-stone-600">
           {locale === "pl"
