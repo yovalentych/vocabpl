@@ -5,6 +5,7 @@ import { getDictionary } from "@/lib/i18n-server";
 import { loadCompendiumContent } from "@/lib/compendium-loader";
 import { renderSimpleMarkdown } from "@/components/markdown";
 import { requireCompendiumAccess } from "@/lib/compendium-access";
+import { PhonemeLifehackSection } from "@/components/PhonemeLifehackSection";
 
 export const dynamic = "force-dynamic";
 
@@ -105,7 +106,9 @@ export default async function CompendiumFactsPage() {
 
         {/* Content Area */}
         <div className="space-y-6">
-          {content.items.map((fact: any, idx: number) => (
+          {content.items
+            .filter((fact: any) => !fact.id.startsWith('fact-') || parseInt(fact.id.replace('fact-', ''), 10) <= 5)
+            .map((fact: any, idx: number) => (
             <article
               key={fact.id}
               className="group rounded-[28px] border border-ink/10 bg-paper/80 p-6 sm:p-8 shadow-soft hover:shadow-lg hover:border-gold/30 hover:scale-[1.01] transition-all duration-300"
@@ -141,6 +144,9 @@ export default async function CompendiumFactsPage() {
               )}
             </article>
           ))}
+
+          {/* Interactive phoneme lifehacks section */}
+          <PhonemeLifehackSection />
 
           {/* Bottom Navigation */}
           <div className="flex items-center justify-between pt-8 border-t border-ink/10">
