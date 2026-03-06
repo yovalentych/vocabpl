@@ -18,32 +18,10 @@ export default function AcademyStudents() {
   async function loadStudents() {
     setLoading(true);
     try {
-      // Load all classes to get all students
-      const classesRes = await fetch("/api/classes");
-      if (classesRes.ok) {
-        const data = await classesRes.json();
-        const allStudents = new Map();
-
-        // Gather unique students from all classes
-        for (const cls of data.classes || []) {
-          const classRes = await fetch(`/api/classes/${cls._id}`);
-          if (classRes.ok) {
-            const classData = await classRes.json();
-            (classData.class?.students || []).forEach((student: any) => {
-              if (!allStudents.has(student._id?.toString())) {
-                allStudents.set(student._id?.toString(), {
-                  ...student,
-                  classes: [{ id: cls._id, name: cls.name }]
-                });
-              } else {
-                const existing = allStudents.get(student._id?.toString());
-                existing.classes.push({ id: cls._id, name: cls.name });
-              }
-            });
-          }
-        }
-
-        setStudents(Array.from(allStudents.values()));
+      const res = await fetch("/api/teacher/students");
+      if (res.ok) {
+        const data = await res.json();
+        setStudents(data.students || []);
       }
     } catch (error) {
       console.error("Failed to load students:", error);
@@ -100,7 +78,7 @@ export default function AcademyStudents() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filteredStudents.map((student: any) => (
             <div
-              key={student._id}
+              key={student.id}
               className="rounded-[24px] border border-ink/10 bg-paper p-6 shadow-soft"
             >
               <div className="mb-3 flex items-start justify-between">
