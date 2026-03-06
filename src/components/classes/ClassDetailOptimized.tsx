@@ -28,6 +28,7 @@ import CreateEventModal from "./CreateEventModal";
 import StudentOverview from "./StudentOverview";
 import StudentProgress from "./StudentProgress";
 import ClassGradeBook from "./ClassGradeBook";
+import EventDetailPanel from "@/components/schedule/EventDetailPanel";
 
 type Tab = 'overview' | 'students' | 'assignments' | 'schedule' | 'progress' | 'gradebook' | 'analytics' | 'settings';
 
@@ -42,6 +43,7 @@ export default function ClassDetailOptimized({ classId, locale }: ClassDetailPro
   const [loading, setLoading] = useState(true);
   const [copiedCode, setCopiedCode] = useState(false);
   const [showCreateEvent, setShowCreateEvent] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<any>(null);
 
   const t = locale === 'uk' ? {
     backToAcademy: "Назад до Школи",
@@ -500,7 +502,7 @@ export default function ClassDetailOptimized({ classId, locale }: ClassDetailPro
             locale={locale}
             isTeacher={isTeacher}
             onCreateEvent={() => setShowCreateEvent(true)}
-            onEventClick={(event) => console.log("Event clicked:", event)}
+            onEventClick={(event) => setSelectedEvent(event)}
           />
         )}
 
@@ -533,6 +535,19 @@ export default function ClassDetailOptimized({ classId, locale }: ClassDetailPro
           />
         )}
       </div>
+
+      {/* Event Detail Panel */}
+      {selectedEvent && (
+        <EventDetailPanel
+          event={selectedEvent}
+          isTeacher={isTeacher}
+          onClose={() => setSelectedEvent(null)}
+          onUpdated={() => {
+            setSelectedEvent(null);
+            window.location.reload();
+          }}
+        />
+      )}
 
       {/* Create Event Modal */}
       {showCreateEvent && (

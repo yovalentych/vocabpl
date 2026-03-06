@@ -23,27 +23,10 @@ export default function AcademyAssignments({ isTeacher }: Props) {
     setLoading(true);
     try {
       if (isTeacher) {
-        // Load all assignments from all classes
-        const classesRes = await fetch("/api/classes");
-        if (classesRes.ok) {
-          const data = await classesRes.json();
-          const allAssignments: any[] = [];
-
-          // Gather assignments from all classes
-          for (const cls of data.classes || []) {
-            const assignmentsRes = await fetch(`/api/classes/${cls._id}/assignments`);
-            if (assignmentsRes.ok) {
-              const assignData = await assignmentsRes.json();
-              const withClassName = (assignData.assignments || []).map((a: any) => ({
-                ...a,
-                className: cls.name,
-                classId: cls._id
-              }));
-              allAssignments.push(...withClassName);
-            }
-          }
-
-          setAssignments(allAssignments);
+        const res = await fetch("/api/teacher/assignments");
+        if (res.ok) {
+          const data = await res.json();
+          setAssignments(data.assignments || []);
         }
       } else {
         // Load all student assignments
