@@ -46,14 +46,15 @@ export async function POST(
     );
 
     if (updated.matchedCount === 0) {
+      const pushUpdate: any = {
+        $push: {
+          participants: { userId: auth.id, name, role, joinedAt: now, lastSeenAt: now },
+        },
+        $set: { updatedAt: now },
+      };
       await db.collection("lesson_sessions").updateOne(
         { eventId, occurrenceDate },
-        {
-          $push: {
-            participants: { userId: auth.id, name, role, joinedAt: now, lastSeenAt: now },
-          },
-          $set: { updatedAt: now },
-        }
+        pushUpdate
       );
     }
 
