@@ -135,11 +135,11 @@ export default function AcademyLayout() {
             <div className="flex items-center gap-2">
               <GraduationCap size={24} weight="fill" className="text-ink/60" />
               <p className="text-xs uppercase tracking-[0.3em] text-ink/60">
-                {locale === "pl" ? "AKADEMIA" : "АКАДЕМІЯ"}
+                {locale === "pl" ? "SZKOŁA" : "ШКОЛА"}
               </p>
             </div>
             <h1 className="mt-2 text-4xl font-semibold">
-              {locale === "pl" ? "Akademia" : "Академія"}
+              {locale === "pl" ? "Szkoła" : "Школа"}
             </h1>
             <p className="mt-2 text-ink/60">
               {locale === "pl"
@@ -206,20 +206,26 @@ export default function AcademyLayout() {
       <div className="relative overflow-hidden rounded-[32px] border border-ink/10 bg-gradient-to-br from-moss/10 to-terracotta/10 p-8 shadow-soft">
         <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gold/20 blur-3xl" />
         <div className="relative">
-          <div className="flex items-center gap-2">
-            <GraduationCap size={24} weight="fill" className="text-ink/60" />
-            <p className="text-xs uppercase tracking-[0.3em] text-ink/60">
-              {locale === "pl" ? "AKADEMIA" : "АКАДЕМІЯ"}
-            </p>
+          <div className="mb-3 flex items-center gap-2">
+            <a href="/school" className="inline-flex items-center gap-1.5 text-xs text-ink/50 hover:text-ink transition-colors">
+              <GraduationCap size={14} weight="fill" />
+              <span className="uppercase tracking-[0.3em]">
+                {locale === "pl" ? "SZKOŁA" : "ШКОЛА"}
+              </span>
+            </a>
           </div>
-          <h1 className="mt-2 text-4xl font-semibold">
-            {locale === "pl" ? "Akademia" : "Академія"}
+          <h1 className="text-4xl font-semibold">
+            {isTeacher && !isStudent
+              ? (locale === "pl" ? "Panel nauczyciela" : "Панель вчителя")
+              : !isTeacher && isStudent
+                ? (locale === "pl" ? "Panel ucznia" : "Панель учня")
+                : (locale === "pl" ? "Szkoła" : "Школа")}
           </h1>
           <p className="mt-2 text-ink/60">
             {isTeacher && !isStudent
-              ? (locale === "pl" ? "Panel nauczyciela" : "Панель викладача")
+              ? (locale === "pl" ? "Zarządzaj klasami i zadaniami" : "Керуйте класами та завданнями")
               : !isTeacher && isStudent
-                ? (locale === "pl" ? "Panel ucznia" : "Панель студента")
+                ? (locale === "pl" ? "Twoja nauka i postępy" : "Ваше навчання та прогрес")
                 : (locale === "pl" ? "Twoje centrum edukacyjne" : "Ваш освітній центр")}
           </p>
         </div>

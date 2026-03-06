@@ -9,5 +9,5 @@ interface Props {
 
 export default function AcademyClasses({ isTeacher }: Props) {
   const { locale } = useLocale();
-  return <ClassesList locale={locale} />;
+  return <ClassesList locale={locale} isTeacher={isTeacher} />;
 }

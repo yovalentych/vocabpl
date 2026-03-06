@@ -89,10 +89,10 @@ export default function SchoolWelcome() {
 
       {/* Role Selection */}
       <div className="mx-auto max-w-7xl px-6 py-16">
-        <div className={`grid gap-8 ${(isTeacher || (isAdmin && adminSettings.teacherModeEnabled)) ? "md:grid-cols-2" : "md:grid-cols-1 max-w-2xl mx-auto"}`}>
+        <div className={`grid gap-8 ${(isTeacher || isAdmin) ? "md:grid-cols-2" : "md:grid-cols-1 max-w-2xl mx-auto"}`}>
 
           {/* Teacher Card */}
-          {(isTeacher || (isAdmin && adminSettings.teacherModeEnabled)) && (
+          {(isTeacher || isAdmin) && (
             <Link href="/school/teacher">
               <div className="group relative overflow-hidden rounded-[32px] border border-ink/10 bg-gradient-to-br from-moss/5 to-paper p-8 shadow-soft transition-all hover:scale-[1.02] hover:shadow-lg">
                 {/* Decorative elements */}

@@ -23,9 +23,10 @@ type ClassWithRole = {
 
 type ClassesListProps = {
   locale: 'uk' | 'pl';
+  isTeacher?: boolean;
 };
 
-export default function ClassesList({ locale }: ClassesListProps) {
+export default function ClassesList({ locale, isTeacher = false }: ClassesListProps) {
   const [classes, setClasses] = useState<ClassWithRole[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'teacher' | 'student'>('all');
@@ -139,13 +140,15 @@ export default function ClassesList({ locale }: ClassesListProps) {
             <Users size={18} weight="fill" />
             {t.joinClass}
           </Link>
-          <Link
-            href="/classes/new"
-            className="inline-flex items-center gap-2 rounded-full border border-moss/30 bg-moss px-5 py-2.5 text-sm font-semibold text-white hover:bg-moss/90 transition-colors"
-          >
-            <Plus size={18} weight="bold" />
-            {t.createClass}
-          </Link>
+          {isTeacher && (
+            <Link
+              href="/classes/new"
+              className="inline-flex items-center gap-2 rounded-full border border-moss/30 bg-moss px-5 py-2.5 text-sm font-semibold text-white hover:bg-moss/90 transition-colors"
+            >
+              <Plus size={18} weight="bold" />
+              {t.createClass}
+            </Link>
+          )}
         </div>
       </div>
 
