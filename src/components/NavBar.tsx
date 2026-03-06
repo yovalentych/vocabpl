@@ -7,13 +7,14 @@ import { useLocale } from "@/components/LocaleProvider";
 import { csrfFetch } from "@/lib/csrf-client";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
 import { useAuthStatus } from "@/components/useAuthStatus";
-import { Bell, SignOut, List, X, CreditCard, GraduationCap } from "@phosphor-icons/react";
+import { Bell, SignOut, List, X, CreditCard, GraduationCap, ChatCircle } from "@phosphor-icons/react";
 
 export default function NavBar() {
   const pathname = usePathname();
   const { t, locale } = useLocale();
   const auth = useAuthStatus();
   const [unreadCount, setUnreadCount] = useState(0);
+  const [unreadMessages, setUnreadMessages] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -33,10 +34,28 @@ export default function NavBar() {
       }
     }
 
-    loadCount();
-    const timer = window.setInterval(loadCount, 60000); // Poll every 60s
+    async function loadMsgCount() {
+      try {
+        const res = await fetch("/api/conversations");
+        if (!res.ok) return;
+        const data = await res.json().catch(() => null);
+        if (!mounted) return;
+        const total = (data?.conversations || []).reduce(
+          (sum: number, c: any) => sum + (c.unreadCount || 0),
+          0
+        );
+        setUnreadMessages(total);
+      } catch {
+        if (!mounted) return;
+        setUnreadMessages(0);
+      }
+    }
 
-    // Listen for notification updates
+    loadCount();
+    loadMsgCount();
+    const timer = window.setInterval(loadCount, 60000);
+    const msgTimer = window.setInterval(loadMsgCount, 30000);
+
     function handleNotificationUpdate() {
       loadCount();
     }
@@ -45,6 +64,7 @@ export default function NavBar() {
     return () => {
       mounted = false;
       window.clearInterval(timer);
+      window.clearInterval(msgTimer);
       window.removeEventListener("notification-update", handleNotificationUpdate);
     };
   }, [auth.isAuthenticated]);
@@ -161,6 +181,19 @@ export default function NavBar() {
               <span className="hidden lg:inline text-xs font-semibold">{t.nav.school || (locale === "pl" ? "Szkoła" : "Школа")}</span>
             </Link>
             <Link
+              href="/messages"
+              className="relative rounded-full border border-ink/20 px-3 py-1 text-ink/70 hover:bg-ink/10"
+              aria-label="Повідомлення"
+              title="Повідомлення"
+            >
+              <ChatCircle size={18} weight="bold" />
+              {unreadMessages > 0 && (
+                <span className="absolute -top-2 -right-1 rounded-full bg-moss px-1.5 py-0.5 text-[10px] font-semibold text-paper">
+                  {unreadMessages}
+                </span>
+              )}
+            </Link>
+            <Link
               href="/notifications"
               className="relative rounded-full border border-ink/20 px-3 py-1 text-ink/70 hover:bg-ink/10"
               aria-label={t.nav.notifications || "Сповіщення"}
@@ -249,6 +282,19 @@ export default function NavBar() {
             >
               <GraduationCap size={20} weight="bold" />
               <span>{t.nav.school || (locale === "pl" ? "Szkoła" : "Школа")}</span>
+            </Link>
+            <Link
+              href="/messages"
+              onClick={() => setMobileMenuOpen(false)}
+              className="relative rounded-full border-2 border-ink/20 px-6 py-3.5 text-base font-medium text-ink/70 transition-all active:scale-95 active:bg-ink/10 flex items-center justify-center gap-2.5"
+            >
+              <ChatCircle size={20} weight="bold" />
+              <span>Повідомлення</span>
+              {unreadMessages > 0 && (
+                <span className="rounded-full bg-moss px-2.5 py-1 text-xs font-semibold text-paper">
+                  {unreadMessages}
+                </span>
+              )}
             </Link>
             <Link
               href="/notifications"

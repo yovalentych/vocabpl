@@ -1,12 +1,12 @@
 import { redirect } from "next/navigation";
 import { getAuthUser } from "@/lib/auth";
+import MessagesPage from "@/components/messages/MessagesPage";
 
-export default async function MessagesPage() {
+export default async function Page() {
   const user = await getAuthUser();
   if (!user) {
     redirect("/login");
   }
 
-  // Redirect to new notifications page with workbook category
-  redirect("/notifications?category=workbook");
+  return <MessagesPage userId={user.id} username={user.username} />;
 }

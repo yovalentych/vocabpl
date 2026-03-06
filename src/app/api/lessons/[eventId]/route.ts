@@ -36,7 +36,6 @@ export async function GET(
     const isStudent = (classDoc.students || []).some((s: any) => s.id === auth.id);
     if (!isTeacher && !isStudent) return NextResponse.json({ error: "Access denied" }, { status: 403 });
 
-    // Compute occurrence window (combine date with event times)
     const eventStart = new Date(event.startTime);
     const eventEnd = new Date(event.endTime);
     const duration = eventEnd.getTime() - eventStart.getTime();
@@ -48,10 +47,8 @@ export async function GET(
 
     const now = new Date();
     const windowOpen = isTeacher || (now >= windowStart && now <= windowEnd);
-
     const students = classDoc.students || [];
 
-    // Find or create session
     const existing = await db.collection("lesson_sessions").findOne({ eventId, occurrenceDate });
     let session: any;
     if (existing) {
@@ -66,6 +63,9 @@ export async function GET(
         status: "waiting",
         sharedNotes: "",
         agenda: "",
+        vocabularyCards: [],
+        grammarBlocks: [],
+        homework: null,
         attendance: students.map((s: any) => ({
           studentId: s.id,
           studentName: s.name || s.username,
@@ -83,13 +83,10 @@ export async function GET(
       session = { ...doc, _id: result.insertedId };
     }
 
-    // Online = lastSeenAt within last 20s
     const threshold = new Date(now.getTime() - 20000);
     const onlineParticipants = (session.participants || []).filter(
       (p: any) => new Date(p.lastSeenAt) >= threshold
     );
-
-    const personalNote = session.personalNotes?.[auth.id] || "";
 
     return NextResponse.json({
       sessionId: session._id.toString(),
@@ -120,12 +117,15 @@ export async function GET(
       })),
       sharedNotes: session.sharedNotes || "",
       agenda: session.agenda || "",
+      vocabularyCards: session.vocabularyCards || [],
+      grammarBlocks: session.grammarBlocks || [],
+      homework: session.homework || null,
       attendance: session.attendance || [],
       conducted: session.conducted || false,
       participants: onlineParticipants,
       exercises: session.exercises || [],
       responses: session.responses || [],
-      personalNote,
+      personalNote: session.personalNotes?.[auth.id] || "",
     });
   } catch (error) {
     console.error("[lessons GET]", error);
@@ -165,17 +165,26 @@ export async function PATCH(
       agenda,
       conducted,
       status: newStatus,
-      attendanceUpdate, // { studentId, status }
+      attendanceUpdate,
       personalNote,
-      addExercise,      // { title, description, points }
-      toggleExercise,   // { exerciseId, isActive }
-      submitResponse,   // { exerciseId, answer }
-      gradeResponse,    // { exerciseId, studentId, score }
+      addExercise,
+      toggleExercise,
+      submitResponse,
+      gradeResponse,
+      // Board V2
+      addVocabCard,
+      removeVocabCard,
+      addGrammarBlock,
+      removeGrammarBlock,
+      updateGrammarBlock,
+      setHomework,
+      convertHomework,
     } = body;
 
     const now = new Date();
     const $set: Record<string, any> = { updatedAt: now };
     const $push: Record<string, any> = {};
+    const $pull: Record<string, any> = {};
     const arrayFilters: any[] = [];
 
     if (isTeacher) {
@@ -189,6 +198,7 @@ export async function PATCH(
         arrayFilters.push({ "elem.studentId": attendanceUpdate.studentId });
       }
 
+      // Exercises
       if (addExercise) {
         $push.exercises = {
           id: crypto.randomUUID(),
@@ -199,12 +209,10 @@ export async function PATCH(
           createdAt: now,
         };
       }
-
       if (toggleExercise) {
         $set["exercises.$[ex].isActive"] = toggleExercise.isActive;
         arrayFilters.push({ "ex.id": toggleExercise.exerciseId });
       }
-
       if (gradeResponse) {
         $set["responses.$[r].score"] = gradeResponse.score;
         $set["responses.$[r].gradedAt"] = now;
@@ -214,7 +222,78 @@ export async function PATCH(
         });
       }
 
-      // When marking conducted: sync attendance to attendance_records
+      // Vocabulary
+      if (addVocabCard) {
+        $push.vocabularyCards = {
+          id: crypto.randomUUID(),
+          word: addVocabCard.word.trim(),
+          translation: addVocabCard.translation.trim(),
+          addedAt: now,
+        };
+      }
+      if (removeVocabCard) {
+        $pull.vocabularyCards = { id: removeVocabCard.cardId };
+      }
+
+      // Grammar
+      if (addGrammarBlock) {
+        $push.grammarBlocks = {
+          id: crypto.randomUUID(),
+          title: addGrammarBlock.title.trim(),
+          rule: addGrammarBlock.rule.trim(),
+          examples: (addGrammarBlock.examples || []).filter((e: string) => e.trim()),
+          addedAt: now,
+        };
+      }
+      if (removeGrammarBlock) {
+        $pull.grammarBlocks = { id: removeGrammarBlock.blockId };
+      }
+      if (updateGrammarBlock) {
+        if (updateGrammarBlock.title !== undefined)
+          $set["grammarBlocks.$[gb].title"] = updateGrammarBlock.title;
+        if (updateGrammarBlock.rule !== undefined)
+          $set["grammarBlocks.$[gb].rule"] = updateGrammarBlock.rule;
+        if (updateGrammarBlock.examples !== undefined)
+          $set["grammarBlocks.$[gb].examples"] = updateGrammarBlock.examples;
+        arrayFilters.push({ "gb.id": updateGrammarBlock.blockId });
+      }
+
+      // Homework
+      if (setHomework !== undefined) {
+        $set.homework = setHomework
+          ? {
+              text: setHomework.text,
+              dueDate: setHomework.dueDate || null,
+              assignmentId: null,
+              assignmentClassId: null,
+            }
+          : null;
+      }
+
+      // Convert homework to assignment
+      if (convertHomework) {
+        const session = await db.collection("lesson_sessions").findOne({ eventId, occurrenceDate });
+        if (session?.homework?.text) {
+          const assignmentDoc = {
+            classId: event.classId,
+            teacherId: classDoc.teacherId,
+            title: session.homework.text.slice(0, 100),
+            description: session.homework.text,
+            type: "custom",
+            status: "published",
+            publishAt: now,
+            maxScore: 100,
+            dueDate: session.homework.dueDate ? new Date(session.homework.dueDate) : null,
+            createdAt: now,
+            updatedAt: now,
+          };
+          const result = await db.collection("class_assignments").insertOne(assignmentDoc);
+          $set["homework.assignmentId"] = result.insertedId.toString();
+          $set["homework.assignmentClassId"] = event.classId.toString();
+        }
+      }
+
+      // Sync to attendance_records when marking conducted
       if (conducted === true) {
         const session = await db.collection("lesson_sessions").findOne({ eventId, occurrenceDate });
         if (session) {
@@ -248,14 +327,13 @@ export async function PATCH(
     if (submitResponse && isStudent) {
       const studentName =
         (classDoc.students || []).find((s: any) => s.id === auth.id)?.name || auth.username;
-      // Check if already submitted for this exercise
-      const existing = await db.collection("lesson_sessions").findOne({
+      const existingResp = await db.collection("lesson_sessions").findOne({
         eventId,
         occurrenceDate,
         "responses.exerciseId": submitResponse.exerciseId,
         "responses.studentId": auth.id,
       });
-      if (!existing) {
+      if (!existingResp) {
         $push.responses = {
           exerciseId: submitResponse.exerciseId,
           studentId: auth.id,
@@ -276,6 +354,7 @@ export async function PATCH(
     const updateDoc: any = {};
     if (Object.keys($set).length) updateDoc.$set = $set;
     if (Object.keys($push).length) updateDoc.$push = $push;
+    if (Object.keys($pull).length) updateDoc.$pull = $pull;
     if (!Object.keys(updateDoc).length) return NextResponse.json({ success: true });
 
     const options: any = {};
