@@ -46,7 +46,7 @@ export default function AcademyAssignments({ isTeacher }: Props) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="text-ink/60">{locale === "pl" ? "Ładowanie..." : "Завантаження..."}</div>
+        <div className="h-5 w-5 animate-spin rounded-full border-2 border-moss border-t-transparent" />
       </div>
     );
   }
@@ -121,25 +121,36 @@ export default function AcademyAssignments({ isTeacher }: Props) {
                     </p>
                   )}
                 </div>
-                {assignment.status && (
-                  <div
-                    className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                      assignment.status === "graded"
-                        ? "border border-moss/20 bg-moss/10 text-moss"
-                        : assignment.status === "submitted"
-                          ? "border border-gold/20 bg-gold/10 text-gold"
-                          : "border border-ink/10 bg-ink/5 text-ink/60"
-                    }`}
-                  >
-                    {assignment.status === "not_started"
-                      ? (locale === "pl" ? "Nie rozpoczęto" : "Не розпочато")
-                      : assignment.status === "in_progress"
-                        ? (locale === "pl" ? "W trakcie" : "В процесі")
-                        : assignment.status === "submitted"
-                          ? (locale === "pl" ? "Wysłano" : "Надіслано")
-                          : (locale === "pl" ? "Oceniono" : "Оцінено")}
-                  </div>
-                )}
+                <div className="flex flex-col items-end gap-1">
+                  {assignment.status && (
+                    <div
+                      className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                        assignment.status === "graded"
+                          ? "border border-moss/20 bg-moss/10 text-moss"
+                          : assignment.status === "submitted"
+                            ? "border border-gold/20 bg-gold/10 text-gold"
+                            : "border border-ink/10 bg-ink/5 text-ink/60"
+                      }`}
+                    >
+                      {assignment.status === "not_started"
+                        ? (locale === "pl" ? "Nie rozpoczęto" : "Не розпочато")
+                        : assignment.status === "in_progress"
+                          ? (locale === "pl" ? "W trakcie" : "В процесі")
+                          : assignment.status === "submitted"
+                            ? (locale === "pl" ? "Wysłano" : "Надіслано")
+                            : (locale === "pl" ? "Oceniono" : "Оцінено")}
+                    </div>
+                  )}
+                  {assignment.status === "graded" && assignment.percentage != null && (
+                    <span className={`text-sm font-bold ${
+                      assignment.percentage >= 80 ? "text-moss" :
+                      assignment.percentage >= 60 ? "text-gold" :
+                      "text-terracotta"
+                    }`}>
+                      {assignment.percentage}%
+                    </span>
+                  )}
+                </div>
               </div>
             </Link>
           ))}

@@ -80,7 +80,7 @@ export default function AcademyOverview({ isTeacher, isStudent, teacherProfile, 
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="text-ink/60">{locale === "pl" ? "Ładowanie..." : "Завантаження..."}</div>
+        <div className="h-5 w-5 animate-spin rounded-full border-2 border-moss border-t-transparent" />
       </div>
     );
   }
@@ -221,7 +221,7 @@ export default function AcademyOverview({ isTeacher, isStudent, teacherProfile, 
               {urgentAssignments.map((deadline: any) => (
                 <Link
                   key={deadline.assignmentId}
-                  href={`/classes/${deadline.classId}`}
+                  href={`/classes/${deadline.classId}/assignments/${deadline.assignmentId}`}
                   className="block rounded-[16px] border border-ink/10 bg-ink/5 p-3 transition-all hover:shadow-soft"
                 >
                   <div className="font-medium">{deadline.assignmentTitle}</div>
