@@ -238,7 +238,7 @@ export default function RecurringSeriesList({ classId, locale, onEdit, onCreateR
 
                             {/* Next occurrence */}
                             {nextOcc && !isCancelled && (
-                              <div className="mt-2 inline-flex items-center gap-1.5 rounded-lg bg-moss/8 px-2.5 py-1 text-xs font-medium text-moss">
+                              <div className="mt-2 inline-flex items-center gap-1.5 rounded-lg bg-moss/[0.08] px-2.5 py-1 text-xs font-medium text-moss">
                                 <div className="h-1.5 w-1.5 rounded-full bg-moss" />
                                 {t.nextLesson}: {nextOcc.toLocaleDateString(locale === "uk" ? "uk-UA" : "pl-PL", { weekday: "short", day: "numeric", month: "short" })}
                                 {" · "}{formatTime(nextOcc, locale)}
