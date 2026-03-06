@@ -84,24 +84,40 @@ export async function GET(
       });
     } else {
       // Student sees only their submission
-      const submission = await db
+      const studentId = new ObjectId(auth.id);
+      let submission = await db
         .collection<Submission>("class_submissions")
-        .findOne({
+        .findOne({ assignmentId, studentId });
+
+      // Auto-create submission record on first view (enables submit route to work)
+      if (!submission) {
+        const student = (classDoc as any).students?.find((s: any) => s.id === auth.id);
+        const studentName = student?.name || student?.username || auth.username;
+        const now = new Date();
+        const newDoc = {
           assignmentId,
-          studentId: new ObjectId(auth.id)
-        });
+          classId,
+          studentId,
+          studentName,
+          status: "not_started" as const,
+          attemptNumber: 0,
+          isLate: false,
+          createdAt: now,
+          updatedAt: now,
+        };
+        const result = await db.collection("class_submissions").insertOne(newDoc);
+        submission = { ...newDoc, _id: result.insertedId } as any;
+      }
 
       return NextResponse.json({
         assignment: assignmentData,
-        submission: submission
-          ? {
-              ...submission,
-              _id: submission._id.toString(),
-              assignmentId: submission.assignmentId.toString(),
-              classId: submission.classId.toString(),
-              studentId: submission.studentId.toString()
-            }
-          : null,
+        submission: {
+          ...(submission as any),
+          _id: (submission as any)._id.toString(),
+          assignmentId: (submission as any).assignmentId.toString(),
+          classId: (submission as any).classId.toString(),
+          studentId: (submission as any).studentId.toString(),
+        },
         role: "student"
       });
     }

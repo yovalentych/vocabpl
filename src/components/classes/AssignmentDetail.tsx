@@ -36,6 +36,7 @@ type Submission = {
   passed?: boolean;
   submittedAt?: string;
   late?: boolean;
+  exerciseData?: { text?: string; [key: string]: unknown };
   feedback?: {
     comment?: string;
   };
@@ -563,6 +564,18 @@ export default function AssignmentDetail({
 
             {/* Scrollable Body */}
             <div className="flex-1 overflow-y-auto px-6 py-4 space-y-6">
+              {/* Student text answer (custom assignment) */}
+              {gradingSubmission._id !== 'batch' && (gradingSubmission as any).exerciseData?.text && (
+                <div className="rounded-xl border border-gold/20 bg-gold/5 p-4">
+                  <h3 className="text-sm font-semibold text-gold mb-2">
+                    {locale === 'uk' ? 'Відповідь студента' : 'Odpowiedź ucznia'}
+                  </h3>
+                  <p className="text-sm text-ink/80 whitespace-pre-wrap">
+                    {(gradingSubmission as any).exerciseData.text}
+                  </p>
+                </div>
+              )}
+
               {/* Submission Details (only for single grading) */}
               {gradingSubmission._id !== 'batch' && gradingSubmission.submittedAt && (
                 <div className="rounded-xl border border-ink/10 bg-ink/[0.02] p-4">
@@ -667,6 +680,93 @@ export default function AssignmentDetail({
 
   function StudentView({ submission }: { submission: Submission }) {
     const doUrl = `/classes/${classId}/assignments/${assignmentId}/do`;
+    const isCustom = !assignment.exerciseType;
+    const [customText, setCustomText] = useState("");
+    const [submitting, setSubmitting] = useState(false);
+
+    async function submitCustom() {
+      if (submitting) return;
+      setSubmitting(true);
+      try {
+        const res = await csrfFetch(
+          `/api/classes/${classId}/assignments/${assignmentId}/submit`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              score: assignment.pointsTotal || 1,
+              points: assignment.pointsTotal || 1,
+              exerciseData: customText.trim() ? { text: customText.trim() } : undefined,
+            }),
+          }
+        );
+        if (res.ok) await loadAssignment();
+      } catch (err) {
+        console.error("Submit error:", err);
+      } finally {
+        setSubmitting(false);
+      }
+    }
+
+    // Custom assignment (created from lesson homework, no exerciseType)
+    if (isCustom) {
+      const isDone = submission.status === "submitted" || submission.status === "graded";
+      return (
+        <div className="rounded-2xl border border-ink/10 bg-paper p-6 space-y-5">
+          {isDone ? (
+            <div className="space-y-5">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  {getStatusBadge(submission.status)}
+                  {submission.passed != null && (
+                    submission.passed ? (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-moss/10 px-2.5 py-1 text-xs font-semibold text-moss">
+                        <CheckCircle size={14} weight="fill" />{t.passed}
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-terracotta/10 px-2.5 py-1 text-xs font-semibold text-terracotta">
+                        <XCircle size={14} weight="fill" />{t.failed}
+                      </span>
+                    )
+                  )}
+                </div>
+              </div>
+              {submission.status === "graded" && submission.feedback?.comment && (
+                <div className="rounded-xl border border-moss/20 bg-moss/5 p-4">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-moss mb-2">
+                    <ChatText size={16} />{t.teacherFeedback}
+                  </div>
+                  <p className="text-sm text-ink/70">{submission.feedback.comment}</p>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <p className="text-sm text-ink/60">
+                {locale === "uk"
+                  ? "Ознайомтесь із завданням і натисніть «Виконано», коли зробите."
+                  : "Zapoznaj się z zadaniem i kliknij «Wykonano», gdy skończysz."}
+              </p>
+              <textarea
+                value={customText}
+                onChange={(e) => setCustomText(e.target.value)}
+                rows={4}
+                placeholder={locale === "uk" ? "Опціонально: напишіть коментар або відповідь..." : "Opcjonalnie: napisz komentarz lub odpowiedź..."}
+                className="w-full resize-none rounded-xl border border-ink/15 bg-ink/[0.02] px-4 py-3 text-sm focus:border-moss/40 focus:outline-none focus:ring-2 focus:ring-moss/10"
+              />
+              <button
+                onClick={submitCustom}
+                disabled={submitting}
+                className="inline-flex items-center gap-2 rounded-full border border-moss/30 bg-moss px-6 py-3 text-sm font-semibold text-white hover:bg-moss/90 transition-colors disabled:opacity-50"
+              >
+                <Check size={16} weight="bold" />
+                {submitting ? "..." : locale === "uk" ? "Виконано" : "Wykonano"}
+              </button>
+            </div>
+          )}
+        </div>
+      );
+    }
 
     return (
       <div className="rounded-2xl border border-ink/10 bg-paper p-6">
