@@ -29,6 +29,7 @@ import StudentOverview from "./StudentOverview";
 import StudentProgress from "./StudentProgress";
 import ClassGradeBook from "./ClassGradeBook";
 import EventDetailPanel from "@/components/schedule/EventDetailPanel";
+import UpcomingEvents from "./UpcomingEvents";
 
 type Tab = 'overview' | 'students' | 'assignments' | 'schedule' | 'progress' | 'gradebook' | 'analytics' | 'settings';
 
@@ -388,6 +389,14 @@ export default function ClassDetailOptimized({ classId, locale }: ClassDetailPro
                   {t.viewAnalytics}
                 </button>
               </div>
+
+              {/* Upcoming Events */}
+              <UpcomingEvents
+                classId={classId}
+                locale={locale}
+                onEventClick={(event, date) => { setSelectedEvent(event); setSelectedOccurrenceDate(date); }}
+                onViewSchedule={() => handleTabChange('schedule')}
+              />
 
               {/* Recent Students */}
               {classData.students && classData.students.length > 0 && (

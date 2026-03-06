@@ -62,6 +62,14 @@ export default function EventDetailPanel({
 
   const effectiveDate = occurrenceDate || new Date(event.startTime);
 
+  // Compute actual start/end for this occurrence (considering reschedule overrides)
+  const override = event.overrides?.find(
+    (o: any) => new Date(o.originalDate).toDateString() === effectiveDate.toDateString()
+  );
+  const eventDuration = new Date(event.endTime).getTime() - new Date(event.startTime).getTime();
+  const occStart = override?.newStartTime ? new Date(override.newStartTime) : effectiveDate;
+  const occEnd = override?.newEndTime ? new Date(override.newEndTime) : new Date(occStart.getTime() + eventDuration);
+
   const isOccurrenceCancelled =
     event.isRecurring &&
     event.overrides?.some(
@@ -218,14 +226,14 @@ export default function EventDetailPanel({
             <Clock size={20} className="shrink-0 text-ink/60" weight="fill" />
             <div>
               <div className="font-medium">
-                {effectiveDate.toLocaleDateString(locale === "uk" ? "uk-UA" : "pl-PL", {
+                {occStart.toLocaleDateString(locale === "uk" ? "uk-UA" : "pl-PL", {
                   weekday: "long",
                   day: "numeric",
                   month: "long",
                 })}
               </div>
               <div className="text-sm text-ink/60">
-                {formatEventTime(new Date(event.startTime), new Date(event.endTime), locale)}
+                {formatEventTime(occStart, occEnd, locale)}
               </div>
             </div>
           </div>
