@@ -34,8 +34,9 @@ export default function SchoolWelcome() {
       const response = await fetch("/api/auth/me");
       if (response.ok) {
         const data = await response.json();
-        const isAdminUser = data.role === "admin";
-        setIsTeacher(data.role === "tutor" || isAdminUser);
+        const role = data.user?.role;
+        const isAdminUser = role === "admin";
+        setIsTeacher(role === "tutor" || isAdminUser);
         setIsAdmin(isAdminUser);
 
         // Load admin settings from localStorage if admin
