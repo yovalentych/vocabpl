@@ -46,12 +46,11 @@ export default function AcademyAssignments({ isTeacher }: Props) {
           setAssignments(allAssignments);
         }
       } else {
-        // Load student assignments
-        const studentRes = await fetch("/api/student/dashboard");
+        // Load all student assignments
+        const studentRes = await fetch("/api/student/assignments");
         if (studentRes.ok) {
           const data = await studentRes.json();
-          // Combine upcoming deadlines with classes
-          setAssignments(data.upcomingDeadlines || []);
+          setAssignments(data.assignments || []);
         }
       }
     } catch (error) {

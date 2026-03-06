@@ -44,16 +44,16 @@ export async function GET() {
 
     // 2. Отримати всі assignments для цих класів
     const assignments = await db
-      .collection("assignments")
+      .collection("class_assignments")
       .find({
         classId: { $in: classIds },
-        publishAt: { $lte: now },
+        $or: [{ publishAt: { $exists: false } }, { publishAt: { $lte: now } }],
       })
       .toArray();
 
     // 3. Отримати всі submissions студента
     const submissions = await db
-      .collection("submissions")
+      .collection("class_submissions")
       .find({
         studentId: userId,
         classId: { $in: classIds },

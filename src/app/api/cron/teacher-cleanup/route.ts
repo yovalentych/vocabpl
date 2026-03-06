@@ -66,7 +66,7 @@ export async function POST(request: Request) {
             }
           );
 
-          await db.collection("assignments").updateMany(
+          await db.collection("class_assignments").updateMany(
             { teacherId: teacher._id, archivedAt: { $exists: false } },
             {
               $set: {

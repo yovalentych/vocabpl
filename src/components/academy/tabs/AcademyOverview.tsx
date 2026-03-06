@@ -29,6 +29,7 @@ export default function AcademyOverview({ isTeacher, isStudent, teacherProfile, 
   const [studentClasses, setStudentClasses] = useState<any[]>([]);
   const [upcomingEvents, setUpcomingEvents] = useState<any[]>([]);
   const [urgentAssignments, setUrgentAssignments] = useState<any[]>([]);
+  const [loadedStudentStats, setLoadedStudentStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -54,6 +55,7 @@ export default function AcademyOverview({ isTeacher, isStudent, teacherProfile, 
           const data = await studentRes.json();
           setStudentClasses(data.classes || []);
           setUrgentAssignments(data.upcomingDeadlines?.slice(0, 5) || []);
+          setLoadedStudentStats(data.stats || null);
         }
       }
 
@@ -122,7 +124,7 @@ export default function AcademyOverview({ isTeacher, isStudent, teacherProfile, 
                   {locale === "pl" ? "Moje klasy" : "Мої класи"}
                 </div>
                 <div className="text-3xl font-semibold text-moss">
-                  {studentStats?.totalClasses || 0}
+                  {loadedStudentStats?.totalClasses ?? studentStats?.totalClasses ?? 0}
                 </div>
               </div>
             </div>
@@ -133,7 +135,7 @@ export default function AcademyOverview({ isTeacher, isStudent, teacherProfile, 
                   {locale === "pl" ? "Aktywne zadania" : "Активні завдання"}
                 </div>
                 <div className="text-3xl font-semibold text-gold">
-                  {studentStats?.activeAssignments || 0}
+                  {loadedStudentStats?.activeAssignments ?? studentStats?.activeAssignments ?? 0}
                 </div>
               </div>
             </div>
