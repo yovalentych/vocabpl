@@ -24,6 +24,9 @@ import {
   Star,
   Repeat,
   Hourglass,
+  Trash,
+  CaretDown,
+  CaretUp,
 } from "@phosphor-icons/react";
 import { csrfFetch } from "@/lib/csrf-client";
 
@@ -61,6 +64,28 @@ interface Response {
   submittedAt: string;
 }
 
+interface VocabCard {
+  id: string;
+  word: string;
+  translation: string;
+  addedAt: string;
+}
+
+interface GrammarBlock {
+  id: string;
+  title: string;
+  rule: string;
+  examples: string[];
+  addedAt: string;
+}
+
+interface HomeworkData {
+  text: string;
+  dueDate?: string | null;
+  assignmentId?: string | null;
+  assignmentClassId?: string | null;
+}
+
 interface SessionData {
   sessionId: string;
   eventId: string;
@@ -86,6 +111,9 @@ interface SessionData {
   students: { id: string; name: string; username: string }[];
   sharedNotes: string;
   agenda: string;
+  vocabularyCards: VocabCard[];
+  grammarBlocks: GrammarBlock[];
+  homework: HomeworkData | null;
   attendance: AttendanceEntry[];
   conducted: boolean;
   participants: Participant[];
@@ -192,6 +220,14 @@ export default function LessonSession({ eventId, date, userId }: Props) {
       if (initial) setLoading(false);
     }
   }, [apiUrl]);
+
+  const patchAndRefresh = useCallback(
+    async (body: Record<string, unknown>) => {
+      await patch(body);
+      await fetchSession();
+    },
+    [patch, fetchSession]
+  );
 
   useEffect(() => {
     fetchSession(true);
@@ -430,6 +466,7 @@ export default function LessonSession({ eventId, date, userId }: Props) {
             onAgendaChange={handleAgendaChange}
             notesEditingRef={notesEditing}
             agendaEditingRef={agendaEditing}
+            onPatchAndRefresh={patchAndRefresh}
           />
         )}
         {tab === "attendance" && (
@@ -617,7 +654,504 @@ interface BoardTabProps {
   onAgendaChange: (v: string) => void;
   notesEditingRef: React.MutableRefObject<boolean>;
   agendaEditingRef: React.MutableRefObject<boolean>;
+  onPatchAndRefresh: (body: Record<string, unknown>) => Promise<void>;
 }
+
+// ---- SimpleMarkdown ----
+
+function SimpleMarkdown({ text }: { text: string }) {
+  if (!text) return null;
+
+  function renderInline(line: string, key: string) {
+    const parts = line.split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g);
+    return (
+      <span key={key}>
+        {parts.map((part, i) => {
+          if (part.startsWith("**") && part.endsWith("**"))
+            return <strong key={i}>{part.slice(2, -2)}</strong>;
+          if (part.startsWith("*") && part.endsWith("*"))
+            return <em key={i}>{part.slice(1, -1)}</em>;
+          return part;
+        })}
+      </span>
+    );
+  }
+
+  const lines = text.split("\n");
+  const elements: React.ReactNode[] = [];
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    if (line.startsWith("## ")) {
+      elements.push(
+        <h3 key={i} className="mb-1 mt-3 text-sm font-bold text-ink">
+          {line.slice(3)}
+        </h3>
+      );
+    } else if (line.startsWith("- ")) {
+      elements.push(
+        <li key={i} className="ml-4 list-disc text-sm text-ink/80">
+          {renderInline(line.slice(2), `li-${i}`)}
+        </li>
+      );
+    } else if (line === "---") {
+      elements.push(<hr key={i} className="my-2 border-ink/10" />);
+    } else if (line === "") {
+      elements.push(<br key={i} />);
+    } else {
+      elements.push(
+        <p key={i} className="text-sm leading-relaxed text-ink/80">
+          {renderInline(line, `p-${i}`)}
+        </p>
+      );
+    }
+  }
+  return <div className="space-y-0.5">{elements}</div>;
+}
+
+// ---- FlipCard ----
+
+function FlipCard({
+  card,
+  isTeacher,
+  onRemove,
+}: {
+  card: VocabCard;
+  isTeacher: boolean;
+  onRemove: () => void;
+}) {
+  const [flipped, setFlipped] = useState(false);
+  return (
+    <div className="group relative" style={{ perspective: "600px" }}>
+      <div
+        className="cursor-pointer"
+        style={{
+          transformStyle: "preserve-3d",
+          transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
+          transition: "transform 0.4s",
+          height: "96px",
+          position: "relative",
+        }}
+        onClick={() => setFlipped((f) => !f)}
+      >
+        {/* Front */}
+        <div
+          className="absolute inset-0 flex flex-col items-center justify-center gap-1 rounded-[16px] border border-ink/10 bg-paper p-3 shadow-sm"
+          style={{ backfaceVisibility: "hidden" }}
+        >
+          <span className="text-center text-sm font-semibold leading-snug text-ink">
+            {card.word}
+          </span>
+          <Repeat size={10} className="text-ink/20" />
+        </div>
+        {/* Back */}
+        <div
+          className="absolute inset-0 flex items-center justify-center rounded-[16px] border border-moss/20 bg-moss/5 p-3"
+          style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
+        >
+          <span className="text-center text-sm font-semibold leading-snug text-moss">
+            {card.translation}
+          </span>
+        </div>
+      </div>
+      {isTeacher && (
+        <button
+          onClick={onRemove}
+          className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-terracotta text-paper opacity-0 shadow-sm transition-opacity group-hover:opacity-100"
+        >
+          <X size={9} weight="bold" />
+        </button>
+      )}
+    </div>
+  );
+}
+
+// ---- VocabSection ----
+
+function VocabSection({
+  cards,
+  isTeacher,
+  onPatch,
+}: {
+  cards: VocabCard[];
+  isTeacher: boolean;
+  onPatch: (b: Record<string, unknown>) => Promise<void>;
+}) {
+  const [showForm, setShowForm] = useState(false);
+  const [word, setWord] = useState("");
+  const [translation, setTranslation] = useState("");
+  const [adding, setAdding] = useState(false);
+
+  async function add() {
+    if (!word.trim() || !translation.trim()) return;
+    setAdding(true);
+    await onPatch({ addVocabCard: { word: word.trim(), translation: translation.trim() } });
+    setWord("");
+    setTranslation("");
+    setShowForm(false);
+    setAdding(false);
+  }
+
+  return (
+    <div>
+      <div className="mb-3 flex items-center justify-between">
+        <h3 className="text-xs font-semibold uppercase tracking-wider text-ink/40">
+          Словник · {cards.length}
+        </h3>
+        {isTeacher && !showForm && (
+          <button
+            onClick={() => setShowForm(true)}
+            className="flex items-center gap-1 text-xs font-semibold text-moss hover:text-moss/80"
+          >
+            <Plus size={13} weight="bold" /> Додати слово
+          </button>
+        )}
+      </div>
+
+      {isTeacher && showForm && (
+        <div className="mb-4 flex flex-wrap items-end gap-2 rounded-[16px] border border-moss/20 bg-moss/[0.04] p-4">
+          <input
+            value={word}
+            onChange={(e) => setWord(e.target.value)}
+            placeholder="Слово (PL)"
+            className="min-w-[120px] flex-1 rounded-xl border border-ink/15 px-3 py-2 text-sm focus:border-moss/40 focus:outline-none"
+          />
+          <input
+            value={translation}
+            onChange={(e) => setTranslation(e.target.value)}
+            placeholder="Переклад (UK)"
+            className="min-w-[120px] flex-1 rounded-xl border border-ink/15 px-3 py-2 text-sm focus:border-moss/40 focus:outline-none"
+            onKeyDown={(e) => e.key === "Enter" && add()}
+          />
+          <div className="flex gap-2">
+            <button
+              onClick={() => setShowForm(false)}
+              className="rounded-xl border border-ink/10 px-3 py-2 text-sm hover:bg-ink/5"
+            >
+              <X size={14} />
+            </button>
+            <button
+              onClick={add}
+              disabled={adding || !word.trim() || !translation.trim()}
+              className="flex items-center gap-1.5 rounded-xl bg-moss px-4 py-2 text-sm font-semibold text-paper hover:bg-moss/90 disabled:opacity-50"
+            >
+              <Check size={13} weight="bold" /> Додати
+            </button>
+          </div>
+        </div>
+      )}
+
+      {cards.length === 0 ? (
+        <p className="py-4 text-sm text-ink/30">
+          {isTeacher ? "Додайте перші слова до уроку" : "Викладач ще не додав слів"}
+        </p>
+      ) : (
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+          {cards.map((card) => (
+            <FlipCard
+              key={card.id}
+              card={card}
+              isTeacher={isTeacher}
+              onRemove={() => onPatch({ removeVocabCard: { cardId: card.id } })}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ---- GrammarSection ----
+
+function GrammarSection({
+  blocks,
+  isTeacher,
+  onPatch,
+}: {
+  blocks: GrammarBlock[];
+  isTeacher: boolean;
+  onPatch: (b: Record<string, unknown>) => Promise<void>;
+}) {
+  const [showForm, setShowForm] = useState(false);
+  const [title, setTitle] = useState("");
+  const [rule, setRule] = useState("");
+  const [examples, setExamples] = useState<string[]>([""]);
+  const [adding, setAdding] = useState(false);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+
+  async function add() {
+    if (!title.trim() || !rule.trim()) return;
+    setAdding(true);
+    await onPatch({
+      addGrammarBlock: { title: title.trim(), rule: rule.trim(), examples: examples.filter((e) => e.trim()) },
+    });
+    setTitle("");
+    setRule("");
+    setExamples([""]);
+    setShowForm(false);
+    setAdding(false);
+  }
+
+  return (
+    <div>
+      <div className="mb-3 flex items-center justify-between">
+        <h3 className="text-xs font-semibold uppercase tracking-wider text-ink/40">
+          Граматика · {blocks.length}
+        </h3>
+        {isTeacher && !showForm && (
+          <button
+            onClick={() => setShowForm(true)}
+            className="flex items-center gap-1 text-xs font-semibold text-moss hover:text-moss/80"
+          >
+            <Plus size={13} weight="bold" /> Додати блок
+          </button>
+        )}
+      </div>
+
+      {isTeacher && showForm && (
+        <div className="mb-4 space-y-3 rounded-[16px] border border-moss/20 bg-moss/[0.04] p-4">
+          <input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Назва теми (напр. Відмінювання «бути»)"
+            className="w-full rounded-xl border border-ink/15 px-3 py-2 text-sm focus:border-moss/40 focus:outline-none"
+          />
+          <textarea
+            value={rule}
+            onChange={(e) => setRule(e.target.value)}
+            rows={3}
+            placeholder="Правило або пояснення..."
+            className="w-full resize-none rounded-xl border border-ink/15 px-3 py-2 text-sm focus:border-moss/40 focus:outline-none"
+          />
+          <div className="space-y-2">
+            <label className="text-xs text-ink/40">Приклади</label>
+            {examples.map((ex, i) => (
+              <div key={i} className="flex gap-2">
+                <input
+                  value={ex}
+                  onChange={(e) =>
+                    setExamples((prev) => prev.map((x, j) => (j === i ? e.target.value : x)))
+                  }
+                  placeholder={`Приклад ${i + 1}`}
+                  className="flex-1 rounded-xl border border-ink/15 px-3 py-2 text-sm focus:border-moss/40 focus:outline-none"
+                />
+                {examples.length > 1 && (
+                  <button
+                    onClick={() => setExamples((prev) => prev.filter((_, j) => j !== i))}
+                    className="rounded-xl border border-ink/10 px-2 hover:bg-ink/5"
+                  >
+                    <X size={12} />
+                  </button>
+                )}
+              </div>
+            ))}
+            <button
+              onClick={() => setExamples((prev) => [...prev, ""])}
+              className="text-xs text-moss hover:text-moss/80"
+            >
+              + Ще приклад
+            </button>
+          </div>
+          <div className="flex justify-end gap-2">
+            <button
+              onClick={() => setShowForm(false)}
+              className="rounded-xl border border-ink/10 px-3 py-2 text-sm hover:bg-ink/5"
+            >
+              <X size={14} />
+            </button>
+            <button
+              onClick={add}
+              disabled={adding || !title.trim() || !rule.trim()}
+              className="flex items-center gap-1.5 rounded-xl bg-moss px-4 py-2 text-sm font-semibold text-paper hover:bg-moss/90 disabled:opacity-50"
+            >
+              <Check size={13} weight="bold" /> Додати
+            </button>
+          </div>
+        </div>
+      )}
+
+      {blocks.length === 0 ? (
+        <p className="py-4 text-sm text-ink/30">
+          {isTeacher ? "Додайте граматичні блоки до уроку" : "Викладач ще не додав граматику"}
+        </p>
+      ) : (
+        <div className="space-y-2">
+          {blocks.map((block) => {
+            const expanded = expandedId === block.id;
+            return (
+              <div key={block.id} className="overflow-hidden rounded-[16px] border border-ink/10">
+                <button
+                  className="flex w-full items-center gap-3 p-4 text-left hover:bg-ink/[0.02]"
+                  onClick={() => setExpandedId(expanded ? null : block.id)}
+                >
+                  <span className="min-w-0 flex-1 text-sm font-semibold">{block.title}</span>
+                  {isTeacher && (
+                    <span
+                      role="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onPatch({ removeGrammarBlock: { blockId: block.id } });
+                      }}
+                      className="rounded-lg border border-terracotta/20 p-1 text-terracotta/60 hover:bg-terracotta/10"
+                    >
+                      <Trash size={13} />
+                    </span>
+                  )}
+                  {expanded ? (
+                    <CaretUp size={14} className="shrink-0 text-ink/30" />
+                  ) : (
+                    <CaretDown size={14} className="shrink-0 text-ink/30" />
+                  )}
+                </button>
+                {expanded && (
+                  <div className="border-t border-ink/10 px-4 pb-4 pt-3">
+                    <p className="whitespace-pre-wrap text-sm leading-relaxed text-ink/80">
+                      {block.rule}
+                    </p>
+                    {block.examples.length > 0 && (
+                      <ul className="mt-3 space-y-1">
+                        {block.examples.map((ex, i) => (
+                          <li key={i} className="flex items-start gap-2 text-sm text-ink/70">
+                            <span className="mt-0.5 text-moss">→</span>
+                            <span className="italic">{ex}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ---- HomeworkSection ----
+
+function HomeworkSection({
+  homework,
+  isTeacher,
+  classId,
+  onPatch,
+}: {
+  homework: HomeworkData | null;
+  isTeacher: boolean;
+  classId: string;
+  onPatch: (b: Record<string, unknown>) => Promise<void>;
+}) {
+  const [text, setText] = useState(homework?.text || "");
+  const [dueDate, setDueDate] = useState(homework?.dueDate || "");
+  const [saving, setSaving] = useState(false);
+  const [converting, setConverting] = useState(false);
+  const editingRef = useRef(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (!editingRef.current) {
+      setText(homework?.text || "");
+      setDueDate(homework?.dueDate || "");
+    }
+  }, [homework?.text, homework?.dueDate]);
+
+  function handleTextChange(val: string) {
+    setText(val);
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(async () => {
+      setSaving(true);
+      await onPatch({ setHomework: val.trim() ? { text: val, dueDate: dueDate || null } : null });
+      setSaving(false);
+    }, 1500);
+  }
+
+  async function convertToAssignment() {
+    setConverting(true);
+    await onPatch({ convertHomework: true });
+    setConverting(false);
+  }
+
+  return (
+    <div>
+      <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-ink/40">
+        Домашнє завдання
+      </h3>
+
+      {homework?.assignmentId ? (
+        <div className="flex items-start gap-3 rounded-[16px] border border-moss/20 bg-moss/5 p-4">
+          <CheckCircle size={20} weight="fill" className="mt-0.5 shrink-0 text-moss" />
+          <div className="flex-1">
+            <p className="text-sm font-semibold text-moss">Перетворено у завдання</p>
+            <p className="mt-0.5 line-clamp-2 text-xs text-ink/60">{homework.text}</p>
+            <a
+              href={`/classes/${classId}?tab=assignments`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-moss hover:underline"
+            >
+              <ArrowSquareOut size={12} weight="bold" /> Відкрити завдання
+            </a>
+          </div>
+        </div>
+      ) : isTeacher ? (
+        <div className="space-y-3">
+          <textarea
+            value={text}
+            onChange={(e) => handleTextChange(e.target.value)}
+            onFocus={() => (editingRef.current = true)}
+            onBlur={() => (editingRef.current = false)}
+            rows={4}
+            placeholder="Опишіть домашнє завдання..."
+            className="w-full resize-none rounded-[16px] border border-ink/15 bg-ink/[0.02] px-4 py-3 text-sm leading-relaxed focus:border-moss/40 focus:bg-paper focus:outline-none focus:ring-2 focus:ring-moss/10"
+          />
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-2">
+              <label className="text-xs text-ink/50">Дедлайн:</label>
+              <input
+                type="date"
+                value={dueDate}
+                onChange={(e) => {
+                  setDueDate(e.target.value);
+                  if (text.trim())
+                    onPatch({ setHomework: { text, dueDate: e.target.value || null } });
+                }}
+                className="rounded-xl border border-ink/15 px-3 py-1.5 text-sm focus:border-moss/40 focus:outline-none"
+              />
+            </div>
+            {saving && <span className="text-xs text-ink/30">Зберігається...</span>}
+            {text.trim() && (
+              <button
+                onClick={convertToAssignment}
+                disabled={converting}
+                className="ml-auto flex items-center gap-1.5 rounded-xl border border-moss/30 bg-moss/10 px-4 py-2 text-xs font-semibold text-moss hover:bg-moss/20 disabled:opacity-50"
+              >
+                <ArrowSquareOut size={13} weight="bold" />
+                {converting ? "Перетворення..." : "Перетворити на завдання"}
+              </button>
+            )}
+          </div>
+        </div>
+      ) : homework?.text ? (
+        <div className="rounded-[16px] border border-ink/10 bg-ink/[0.02] p-4">
+          <p className="text-sm leading-relaxed text-ink/80">{homework.text}</p>
+          {homework.dueDate && (
+            <p className="mt-2 text-xs text-ink/40">
+              Дедлайн:{" "}
+              {new Date(homework.dueDate).toLocaleDateString("uk-UA", {
+                day: "numeric",
+                month: "long",
+              })}
+            </p>
+          )}
+        </div>
+      ) : (
+        <p className="py-4 text-sm text-ink/30">Домашнє завдання ще не задано</p>
+      )}
+    </div>
+  );
+}
+
+// ---- BoardTab ----
 
 function BoardTab({
   session,
@@ -629,81 +1163,115 @@ function BoardTab({
   onAgendaChange,
   notesEditingRef,
   agendaEditingRef,
+  onPatchAndRefresh,
 }: BoardTabProps) {
-  const updatedAt = new Date(session.event.startTime);
-
   return (
-    <div className="grid gap-6 p-6 md:grid-cols-[1fr_2fr]">
-      {/* Agenda */}
-      <div>
-        <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-ink/40">
-          {locale === "uk" ? "План уроку" : "Plan zajęć"}
-        </label>
-        {isTeacher ? (
-          <textarea
-            value={localAgenda}
-            onChange={(e) => onAgendaChange(e.target.value)}
-            onFocus={() => (agendaEditingRef.current = true)}
-            onBlur={() => (agendaEditingRef.current = false)}
-            rows={12}
-            placeholder={
-              locale === "uk"
-                ? "Напишіть план уроку:\n1. Привітання\n2. Повторення\n3. Нова тема..."
-                : "Plan zajęć:\n1. Powitanie\n2. Powtórzenie\n3. Nowy temat..."
-            }
-            className="w-full resize-none rounded-[16px] border border-ink/15 bg-ink/[0.02] px-4 py-3 text-sm text-ink focus:border-moss/40 focus:bg-paper focus:outline-none focus:ring-2 focus:ring-moss/10 leading-relaxed"
-          />
-        ) : (
-          <div className="min-h-[200px] rounded-[16px] border border-ink/10 bg-ink/[0.02] px-4 py-3 text-sm text-ink/80 leading-relaxed whitespace-pre-wrap">
-            {localAgenda || (
-              <span className="text-ink/30">
-                {locale === "uk" ? "Викладач ще не написав план" : "Nauczyciel nie napisał planu"}
-              </span>
-            )}
-          </div>
-        )}
+    <div className="divide-y divide-ink/10">
+      {/* Vocabulary */}
+      <div className="p-6">
+        <VocabSection
+          cards={session.vocabularyCards || []}
+          isTeacher={isTeacher}
+          onPatch={onPatchAndRefresh}
+        />
       </div>
 
-      {/* Shared notes */}
-      <div>
-        <div className="mb-2 flex items-center justify-between">
-          <label className="text-xs font-semibold uppercase tracking-wider text-ink/40">
-            {locale === "uk" ? "Нотатки уроку (спільні)" : "Notatki z lekcji (wspólne)"}
+      {/* Grammar */}
+      <div className="p-6">
+        <GrammarSection
+          blocks={session.grammarBlocks || []}
+          isTeacher={isTeacher}
+          onPatch={onPatchAndRefresh}
+        />
+      </div>
+
+      {/* Notes: Agenda + Shared Notes */}
+      <div className="grid gap-6 p-6 md:grid-cols-[1fr_2fr]">
+        {/* Agenda */}
+        <div>
+          <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-ink/40">
+            {locale === "uk" ? "План уроку" : "Plan zajęć"}
           </label>
-          {isTeacher && (
-            <span className="text-xs text-ink/30">
-              {locale === "uk" ? "Автозбереження" : "Autozapis"}
-            </span>
+          {isTeacher ? (
+            <textarea
+              value={localAgenda}
+              onChange={(e) => onAgendaChange(e.target.value)}
+              onFocus={() => (agendaEditingRef.current = true)}
+              onBlur={() => (agendaEditingRef.current = false)}
+              rows={10}
+              placeholder={
+                locale === "uk"
+                  ? "Напишіть план уроку:\n1. Привітання\n2. Повторення\n3. Нова тема..."
+                  : "Plan zajęć:\n1. Powitanie\n2. Powtórzenie\n3. Nowy temat..."
+              }
+              className="w-full resize-none rounded-[16px] border border-ink/15 bg-ink/[0.02] px-4 py-3 text-sm text-ink focus:border-moss/40 focus:bg-paper focus:outline-none focus:ring-2 focus:ring-moss/10 leading-relaxed"
+            />
+          ) : (
+            <div className="min-h-[180px] rounded-[16px] border border-ink/10 bg-ink/[0.02] px-4 py-3">
+              {localAgenda ? (
+                <SimpleMarkdown text={localAgenda} />
+              ) : (
+                <span className="text-sm text-ink/30">
+                  {locale === "uk" ? "Викладач ще не написав план" : "Nauczyciel nie napisał planu"}
+                </span>
+              )}
+            </div>
           )}
         </div>
-        {isTeacher ? (
-          <textarea
-            value={localNotes}
-            onChange={(e) => onNotesChange(e.target.value)}
-            onFocus={() => (notesEditingRef.current = true)}
-            onBlur={() => (notesEditingRef.current = false)}
-            rows={12}
-            placeholder={
-              locale === "uk"
-                ? "Пишіть нотатки тут — студенти бачать у реальному часі..."
-                : "Pisz notatki tutaj — studenci widzą je na żywo..."
-            }
-            className="w-full resize-none rounded-[16px] border border-ink/15 bg-ink/[0.02] px-4 py-3 text-sm text-ink focus:border-moss/40 focus:bg-paper focus:outline-none focus:ring-2 focus:ring-moss/10 leading-relaxed"
-          />
-        ) : (
-          <div className="min-h-[280px] rounded-[16px] border border-ink/10 bg-ink/[0.02] px-4 py-3 text-sm text-ink/80 leading-relaxed whitespace-pre-wrap">
-            {localNotes || (
-              <span className="text-ink/30">
-                {locale === "uk"
-                  ? "Викладач ще не написав нотатки..."
-                  : "Nauczyciel jeszcze nie napisał notatek..."}
-              </span>
+
+        {/* Shared Notes */}
+        <div>
+          <div className="mb-2 flex items-center justify-between">
+            <label className="text-xs font-semibold uppercase tracking-wider text-ink/40">
+              {locale === "uk" ? "Нотатки уроку" : "Notatki z lekcji"}
+            </label>
+            {isTeacher && (
+              <span className="text-xs text-ink/30">Автозбереження · 3s</span>
             )}
           </div>
-        )}
-        <p className="mt-2 text-right text-xs text-ink/30">
-          {locale === "uk" ? "Оновлюється автоматично" : "Odświeżane automatycznie"} · 3s
-        </p>
+          {isTeacher ? (
+            <>
+              <textarea
+                value={localNotes}
+                onChange={(e) => onNotesChange(e.target.value)}
+                onFocus={() => (notesEditingRef.current = true)}
+                onBlur={() => (notesEditingRef.current = false)}
+                rows={10}
+                placeholder={
+                  locale === "uk"
+                    ? "Пишіть нотатки тут — студенти бачать у реальному часі..."
+                    : "Pisz notatki tutaj — studenci widzą je na żywo..."
+                }
+                className="w-full resize-none rounded-[16px] border border-ink/15 bg-ink/[0.02] px-4 py-3 text-sm text-ink focus:border-moss/40 focus:bg-paper focus:outline-none focus:ring-2 focus:ring-moss/10 leading-relaxed"
+              />
+              <p className="mt-1 text-right text-xs text-ink/30">
+                Підтримка: **жирний**, *курсив*, ## заголовок, - список, ---
+              </p>
+            </>
+          ) : (
+            <div className="min-h-[250px] rounded-[16px] border border-ink/10 bg-ink/[0.02] px-4 py-3">
+              {localNotes ? (
+                <SimpleMarkdown text={localNotes} />
+              ) : (
+                <span className="text-sm text-ink/30">
+                  {locale === "uk"
+                    ? "Викладач ще не написав нотатки..."
+                    : "Nauczyciel jeszcze nie napisał notatek..."}
+                </span>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Homework */}
+      <div className="p-6">
+        <HomeworkSection
+          homework={session.homework || null}
+          isTeacher={isTeacher}
+          classId={session.classId}
+          onPatch={onPatchAndRefresh}
+        />
       </div>
     </div>
   );
