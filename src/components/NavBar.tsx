@@ -7,7 +7,7 @@ import { useLocale } from "@/components/LocaleProvider";
 import { csrfFetch } from "@/lib/csrf-client";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
 import { useAuthStatus } from "@/components/useAuthStatus";
-import { Bell, SignOut, List, X, CreditCard, GraduationCap, ChatCircle } from "@phosphor-icons/react";
+import { Bell, SignOut, List, X, CreditCard, GraduationCap, ChatCircle, Cards } from "@phosphor-icons/react";
 
 export default function NavBar() {
   const pathname = usePathname();
@@ -181,6 +181,14 @@ export default function NavBar() {
               <span className="hidden lg:inline text-xs font-semibold">{t.nav.school || (locale === "pl" ? "Szkoła" : "Школа")}</span>
             </Link>
             <Link
+              href={"/vocabulary" as any}
+              className="relative rounded-full border border-ink/20 px-3 py-1 text-ink/70 hover:bg-ink/10"
+              aria-label={locale === "pl" ? "Słownik" : "Словник"}
+              title={locale === "pl" ? "Słownik" : "Словник"}
+            >
+              <Cards size={18} weight="bold" />
+            </Link>
+            <Link
               href="/messages"
               className="relative rounded-full border border-ink/20 px-3 py-1 text-ink/70 hover:bg-ink/10"
               aria-label="Повідомлення"
@@ -282,6 +290,14 @@ export default function NavBar() {
             >
               <GraduationCap size={20} weight="bold" />
               <span>{t.nav.school || (locale === "pl" ? "Szkoła" : "Школа")}</span>
+            </Link>
+            <Link
+              href={"/vocabulary" as any}
+              onClick={() => setMobileMenuOpen(false)}
+              className="relative rounded-full border-2 border-ink/20 px-6 py-3.5 text-base font-medium text-ink/70 transition-all active:scale-95 active:bg-ink/10 flex items-center justify-center gap-2.5"
+            >
+              <Cards size={20} weight="bold" />
+              <span>{locale === "pl" ? "Słownik" : "Словник"}</span>
             </Link>
             <Link
               href="/messages"
