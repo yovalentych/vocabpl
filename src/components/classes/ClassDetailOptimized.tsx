@@ -18,6 +18,7 @@ import {
   CheckCircle,
   Table,
   ArrowSquareOut,
+  CalendarCheck,
 } from "@phosphor-icons/react";
 import type { Class } from "@/lib/classes";
 import AssignmentsList from "./AssignmentsList";
@@ -28,11 +29,12 @@ import CreateEventModal from "@/components/schedule/CreateEventModal";
 import StudentOverview from "./StudentOverview";
 import StudentProgress from "./StudentProgress";
 import ClassGradeBook from "./ClassGradeBook";
+import AttendanceReport from "./AttendanceReport";
 import EventDetailPanel from "@/components/schedule/EventDetailPanel";
 import UpcomingEvents from "./UpcomingEvents";
 import RecurringSeriesList from "./RecurringSeriesList";
 
-type Tab = 'overview' | 'students' | 'assignments' | 'schedule' | 'progress' | 'gradebook' | 'analytics' | 'settings';
+type Tab = 'overview' | 'students' | 'assignments' | 'schedule' | 'progress' | 'gradebook' | 'attendance' | 'analytics' | 'settings';
 
 type ClassDetailProps = {
   classId: string;
@@ -80,6 +82,7 @@ export default function ClassDetailOptimized({ classId, locale }: ClassDetailPro
     recentStudents: "Останні студенти",
     viewAll: "Переглянути всіх",
     gradebook: "Журнал",
+    attendance: "Відвідуваність",
     viewReport: "Звіт",
     loading: "Завантаження...",
     classNotFound: "Клас не знайдено"
@@ -114,6 +117,7 @@ export default function ClassDetailOptimized({ classId, locale }: ClassDetailPro
     recentStudents: "Ostatni uczniowie",
     viewAll: "Zobacz wszystkich",
     gradebook: "Dziennik",
+    attendance: "Frekwencja",
     viewReport: "Raport",
     loading: "Ładowanie...",
     classNotFound: "Klasa nie znaleziona"
@@ -124,7 +128,7 @@ export default function ClassDetailOptimized({ classId, locale }: ClassDetailPro
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       const tab = params.get('tab') as Tab;
-      if (tab && ['overview', 'students', 'assignments', 'schedule', 'progress', 'gradebook', 'analytics', 'settings'].includes(tab)) {
+      if (tab && ['overview', 'students', 'assignments', 'schedule', 'progress', 'gradebook', 'attendance', 'analytics', 'settings'].includes(tab)) {
         setActiveTab(tab);
       }
     }
@@ -196,6 +200,7 @@ export default function ClassDetailOptimized({ classId, locale }: ClassDetailPro
     { id: 'schedule', icon: Calendar },
     { id: 'progress', icon: ChartLine, studentOnly: true },
     { id: 'gradebook', icon: Table, teacherOnly: true },
+    { id: 'attendance', icon: CalendarCheck, teacherOnly: true },
     { id: 'analytics', icon: ChartLine, teacherOnly: true },
     { id: 'settings', icon: Gear, teacherOnly: true }
   ];
@@ -537,6 +542,10 @@ export default function ClassDetailOptimized({ classId, locale }: ClassDetailPro
 
         {activeTab === 'gradebook' && isTeacher && (
           <ClassGradeBook classId={classId} locale={locale} />
+        )}
+
+        {activeTab === 'attendance' && isTeacher && (
+          <AttendanceReport classId={classId} locale={locale} />
         )}
 
         {activeTab === 'analytics' && isTeacher && (
