@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { X, Check, Tag as TagIcon } from "@phosphor-icons/react";
 import Loader from "@/components/ui/Loader";
+import { csrfFetch } from "@/lib/csrf-client";
 
 type EditTemplateModalProps = {
   templateId: string;
@@ -132,7 +133,7 @@ export default function EditTemplateModal({ templateId, locale, onClose, onSucce
         defaultPassingScore: defaultPassingScore || undefined
       };
 
-      const res = await fetch(`/api/classes/templates/${templateId}`, {
+      const res = await csrfFetch(`/api/classes/templates/${templateId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)

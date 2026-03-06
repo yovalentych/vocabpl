@@ -18,6 +18,7 @@ import {
   CheckSquare
 } from "@phosphor-icons/react";
 import FeedbackTemplateSelector from "./FeedbackTemplateSelector";
+import { csrfFetch } from "@/lib/csrf-client";
 
 type AssignmentDetailProps = {
   classId: string;
@@ -254,7 +255,7 @@ export default function AssignmentDetail({
         return;
       }
 
-      const res = await fetch(
+      const res = await csrfFetch(
         `/api/classes/${classId}/assignments/${assignmentId}/submissions/${submissionId}`,
         {
           method: "PATCH",
@@ -280,7 +281,7 @@ export default function AssignmentDetail({
   async function saveBatchGrade() {
     try {
       const submissionIds = Array.from(selectedSubmissionIds);
-      const res = await fetch(
+      const res = await csrfFetch(
         `/api/classes/${classId}/assignments/${assignmentId}/submissions/bulk`,
         {
           method: "POST",

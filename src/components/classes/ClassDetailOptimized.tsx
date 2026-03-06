@@ -41,7 +41,7 @@ export default function ClassDetailOptimized({ classId, locale }: ClassDetailPro
   const [showCreateEvent, setShowCreateEvent] = useState(false);
 
   const t = locale === 'uk' ? {
-    backToAcademy: "Назад до Академії",
+    backToAcademy: "Назад до Школи",
     overview: "Огляд",
     students: "Студенти",
     assignments: "Завдання",
@@ -73,7 +73,7 @@ export default function ClassDetailOptimized({ classId, locale }: ClassDetailPro
     loading: "Завантаження...",
     classNotFound: "Клас не знайдено"
   } : {
-    backToAcademy: "Powrót do Akademii",
+    backToAcademy: "Powrót do Szkoły",
     overview: "Przegląd",
     students: "Uczniowie",
     assignments: "Zadania",
@@ -196,12 +196,12 @@ export default function ClassDetailOptimized({ classId, locale }: ClassDetailPro
     <div className="mx-auto max-w-7xl space-y-8 p-6 sm:p-8">
       {/* Breadcrumbs */}
       <nav className="flex items-center gap-2 text-sm">
-        <Link href="/school/teacher" className="flex items-center gap-1 text-ink/60 transition-colors hover:text-moss">
+        <Link href={isTeacher ? "/school/teacher" : "/school/student"} className="flex items-center gap-1 text-ink/60 transition-colors hover:text-moss">
           <House size={16} weight="fill" />
           <span>{locale === 'uk' ? 'Школа' : 'Szkoła'}</span>
         </Link>
         <span className="text-ink/30">/</span>
-        <Link href="/school/teacher?tab=classes" className="flex items-center gap-1 text-ink/60 transition-colors hover:text-moss">
+        <Link href={isTeacher ? "/school/teacher?tab=classes" : "/school/student?tab=classes"} className="flex items-center gap-1 text-ink/60 transition-colors hover:text-moss">
           <Books size={16} weight="fill" />
           <span>{locale === 'uk' ? 'Класи' : 'Klasy'}</span>
         </Link>

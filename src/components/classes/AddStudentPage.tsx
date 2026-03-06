@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { ArrowLeft, Plus, Check, User, MagnifyingGlass } from "@phosphor-icons/react";
+import { csrfFetch } from "@/lib/csrf-client";
 
 type AddStudentPageProps = {
   classId: string;
@@ -114,7 +115,7 @@ export default function AddStudentPage({ classId, locale }: AddStudentPageProps)
     setJustAdded(null);
 
     try {
-      const res = await fetch(`/api/classes/${classId}/students`, {
+      const res = await csrfFetch(`/api/classes/${classId}/students`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: trimmed }),

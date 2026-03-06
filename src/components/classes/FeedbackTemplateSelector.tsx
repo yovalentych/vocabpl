@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Plus, X, Trash, ChatText } from "@phosphor-icons/react";
+import { csrfFetch } from "@/lib/csrf-client";
 
 type FeedbackTemplate = {
   _id: string;
@@ -82,7 +83,7 @@ export default function FeedbackTemplateSelector({ locale, onSelect }: FeedbackT
 
     try {
       setCreating(true);
-      const response = await fetch('/api/feedback-templates', {
+      const response = await csrfFetch('/api/feedback-templates', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -111,7 +112,7 @@ export default function FeedbackTemplateSelector({ locale, onSelect }: FeedbackT
     }
 
     try {
-      const response = await fetch(`/api/feedback-templates/${templateId}`, {
+      const response = await csrfFetch(`/api/feedback-templates/${templateId}`, {
         method: 'DELETE'
       });
 
@@ -126,7 +127,7 @@ export default function FeedbackTemplateSelector({ locale, onSelect }: FeedbackT
   async function selectTemplate(template: FeedbackTemplate) {
     // Increment usage count
     try {
-      await fetch(`/api/feedback-templates/${template._id}`, {
+      await csrfFetch(`/api/feedback-templates/${template._id}`, {
         method: 'PATCH'
       });
     } catch (error) {

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { X, Plus, Tag as TagIcon } from "@phosphor-icons/react";
 import Loader from "@/components/ui/Loader";
+import { csrfFetch } from "@/lib/csrf-client";
 
 type CreateTemplateModalProps = {
   locale: "uk" | "pl";
@@ -159,7 +160,7 @@ export default function CreateTemplateModal({ locale, onClose, onSuccess }: Crea
         // exerciseConfig can be added later through edit
       }
 
-      const res = await fetch("/api/classes/templates", {
+      const res = await csrfFetch("/api/classes/templates", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)

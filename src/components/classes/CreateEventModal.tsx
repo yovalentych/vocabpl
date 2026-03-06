@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { X } from "@phosphor-icons/react";
 import type { EventType } from "@/lib/schedule";
+import { csrfFetch } from "@/lib/csrf-client";
 
 type CreateEventModalProps = {
   classId: string;
@@ -77,7 +78,7 @@ export default function CreateEventModal({
 
     try {
       setSubmitting(true);
-      const res = await fetch(`/api/classes/${classId}/schedule`, {
+      const res = await csrfFetch(`/api/classes/${classId}/schedule`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData)

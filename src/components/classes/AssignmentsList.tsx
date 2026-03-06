@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Clock, Users, CheckCircle, XCircle, Calendar, CheckSquare, Square, Star } from "@phosphor-icons/react";
+import { csrfFetch } from "@/lib/csrf-client";
 import BulkActionToolbar from "./BulkActionToolbar";
 import SelectClassModal from "./SelectClassModal";
 import UpdateDeadlineModal from "./UpdateDeadlineModal";
@@ -195,7 +196,7 @@ export default function AssignmentsList({ classId, isTeacher, locale }: Assignme
 
   async function performBulkCopy(targetClassId: string) {
     try {
-      const res = await fetch("/api/classes/assignments/bulk", {
+      const res = await csrfFetch("/api/classes/assignments/bulk", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -225,7 +226,7 @@ export default function AssignmentsList({ classId, isTeacher, locale }: Assignme
     if (!confirm(`Архівувати ${selectedIds.size} завдань?`)) return;
 
     try {
-      const res = await fetch("/api/classes/assignments/bulk", {
+      const res = await csrfFetch("/api/classes/assignments/bulk", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -257,7 +258,7 @@ export default function AssignmentsList({ classId, isTeacher, locale }: Assignme
     if (confirmation !== count.toString()) return;
 
     try {
-      const res = await fetch("/api/classes/assignments/bulk", {
+      const res = await csrfFetch("/api/classes/assignments/bulk", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -292,7 +293,7 @@ export default function AssignmentsList({ classId, isTeacher, locale }: Assignme
       if (dueAt) updates.dueAt = dueAt;
       if (publishAt) updates.publishAt = publishAt;
 
-      const res = await fetch("/api/classes/assignments/bulk", {
+      const res = await csrfFetch("/api/classes/assignments/bulk", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

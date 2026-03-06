@@ -13,6 +13,7 @@ import {
   Check,
   X
 } from "@phosphor-icons/react";
+import { csrfFetch } from "@/lib/csrf-client";
 import Loader from "@/components/ui/Loader";
 
 type ClassSettingsProps = {
@@ -122,7 +123,7 @@ export default function ClassSettings({ classId, classData, locale, onUpdate }: 
 
     try {
       setSaving(true);
-      const res = await fetch(`/api/classes/${classId}`, {
+      const res = await csrfFetch(`/api/classes/${classId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -155,7 +156,7 @@ export default function ClassSettings({ classId, classData, locale, onUpdate }: 
 
     try {
       setRegenerating(true);
-      const res = await fetch(`/api/classes/${classId}/regenerate-code`, {
+      const res = await csrfFetch(`/api/classes/${classId}/regenerate-code`, {
         method: "POST"
       });
 
@@ -181,7 +182,7 @@ export default function ClassSettings({ classId, classData, locale, onUpdate }: 
 
     try {
       setArchiving(true);
-      const res = await fetch(`/api/classes/${classId}`, {
+      const res = await csrfFetch(`/api/classes/${classId}`, {
         method: "DELETE"
       });
 
@@ -214,7 +215,7 @@ export default function ClassSettings({ classId, classData, locale, onUpdate }: 
 
     try {
       setDeleting(true);
-      const res = await fetch(`/api/classes/${classId}/hard-delete`, {
+      const res = await csrfFetch(`/api/classes/${classId}/hard-delete`, {
         method: "DELETE"
       });
 

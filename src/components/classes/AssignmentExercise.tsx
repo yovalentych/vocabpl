@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Loader from "@/components/ui/Loader";
+import { csrfFetch } from "@/lib/csrf-client";
 import SentencesAIPractice from "@/components/workbook/exercises/sentences/SentencesAIPractice";
 import ClozeAIPractice from "@/components/workbook/exercises/cloze/ClozeAIPractice";
 import MatchAIPractice from "@/components/workbook/exercises/match/MatchAIPractice";
@@ -102,7 +103,7 @@ export default function AssignmentExercise({ classId, assignmentId }: Assignment
       const attempt = latestData.attempt;
 
       if (attempt) {
-        await fetch(`/api/classes/${classId}/assignments/${assignmentId}/submit`, {
+        await csrfFetch(`/api/classes/${classId}/assignments/${assignmentId}/submit`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

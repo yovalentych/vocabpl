@@ -13,6 +13,7 @@ import {
   Tag,
   TrendUp
 } from "@phosphor-icons/react";
+import { csrfFetch } from "@/lib/csrf-client";
 import EditTemplateModal from "./EditTemplateModal";
 
 type Template = {
@@ -116,7 +117,7 @@ export default function TemplateCard({ template, locale, onUpdate }: TemplateCar
 
     try {
       setDeleting(true);
-      const res = await fetch(`/api/classes/templates/${template._id}`, {
+      const res = await csrfFetch(`/api/classes/templates/${template._id}`, {
         method: "DELETE"
       });
 
@@ -141,7 +142,7 @@ export default function TemplateCard({ template, locale, onUpdate }: TemplateCar
 
       const { template: originalTemplate } = await res.json();
 
-      const duplicateRes = await fetch("/api/classes/templates", {
+      const duplicateRes = await csrfFetch("/api/classes/templates", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
