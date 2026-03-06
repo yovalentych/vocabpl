@@ -2,15 +2,13 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { csrfFetch } from "@/lib/csrf-client";
 import {
   ArrowLeft,
-  CheckCircle,
-  XCircle,
-  Clock,
   ClipboardText,
   Calendar,
-  ChartBar,
-  Warning,
+  ChatCircle,
+  ArrowRight,
 } from "@phosphor-icons/react";
 
 interface Props {
@@ -22,6 +20,7 @@ interface Props {
 export default function StudentReportView({ classId, studentId, locale }: Props) {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [startingChat, setStartingChat] = useState(false);
 
   const t = locale === "uk" ? {
     back: "Назад до класу",
@@ -37,6 +36,7 @@ export default function StudentReportView({ classId, studentId, locale }: Props)
     attended: "Відвідано",
     attendanceRate: "Відвідуваність",
     joinedAt: "У класі з",
+    message: "Написати повідомлення",
     noAssignments: "Немає завдань",
     noAttendance: "Немає записів відвідуваності",
     statuses: {
@@ -63,6 +63,7 @@ export default function StudentReportView({ classId, studentId, locale }: Props)
     attended: "Obecny",
     attendanceRate: "Frekwencja",
     joinedAt: "W klasie od",
+    message: "Napisz wiadomość",
     noAssignments: "Brak zadań",
     noAttendance: "Brak zapisów frekwencji",
     statuses: {
@@ -85,10 +86,27 @@ export default function StudentReportView({ classId, studentId, locale }: Props)
       .finally(() => setLoading(false));
   }, [classId, studentId]);
 
+  async function handleStartChat() {
+    setStartingChat(true);
+    try {
+      const res = await csrfFetch("/api/conversations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ recipientId: studentId }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        window.location.href = `/messages?conversation=${data.conversationId}`;
+      }
+    } catch {
+      setStartingChat(false);
+    }
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-16">
-        <div className="text-ink/60">{locale === "uk" ? "Завантаження..." : "Ładowanie..."}</div>
+        <div className="h-6 w-6 animate-spin rounded-full border-2 border-moss border-t-transparent" />
       </div>
     );
   }
@@ -140,15 +158,25 @@ export default function StudentReportView({ classId, studentId, locale }: Props)
       {/* Header */}
       <div className="relative overflow-hidden rounded-[32px] border border-ink/10 bg-gradient-to-br from-moss/10 to-terracotta/10 p-8 shadow-soft">
         <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gold/20 blur-3xl" />
-        <div className="relative">
-          <p className="text-xs uppercase tracking-[0.3em] text-ink/60">{t.report}</p>
-          <h1 className="mt-2 text-3xl font-semibold">{student.name}</h1>
-          <p className="mt-1 text-ink/60">@{student.username} · {className}</p>
-          {student.joinedAt && (
-            <p className="mt-1 text-sm text-ink/50">
-              {t.joinedAt} {new Date(student.joinedAt).toLocaleDateString(locale === "uk" ? "uk-UA" : "pl-PL", { day: "numeric", month: "long", year: "numeric" })}
-            </p>
-          )}
+        <div className="relative flex items-start justify-between gap-4">
+          <div>
+            <p className="text-xs uppercase tracking-[0.3em] text-ink/60">{t.report}</p>
+            <h1 className="mt-2 text-3xl font-semibold">{student.name}</h1>
+            <p className="mt-1 text-ink/60">@{student.username} · {className}</p>
+            {student.joinedAt && (
+              <p className="mt-1 text-sm text-ink/50">
+                {t.joinedAt} {new Date(student.joinedAt).toLocaleDateString(locale === "uk" ? "uk-UA" : "pl-PL", { day: "numeric", month: "long", year: "numeric" })}
+              </p>
+            )}
+          </div>
+          <button
+            onClick={handleStartChat}
+            disabled={startingChat}
+            className="shrink-0 flex items-center gap-2 rounded-full border border-moss/20 bg-moss/10 px-4 py-2 text-sm font-medium text-moss transition-all hover:bg-moss/20 disabled:opacity-50"
+          >
+            <ChatCircle size={18} weight="fill" />
+            <span className="hidden sm:inline">{t.message}</span>
+          </button>
         </div>
       </div>
 
@@ -195,6 +223,27 @@ export default function StudentReportView({ classId, studentId, locale }: Props)
         </div>
       </div>
 
+      {/* Progress bar */}
+      {stats.totalAssignments > 0 && (
+        <div className="rounded-[24px] border border-ink/10 bg-paper p-6 shadow-soft">
+          <div className="mb-3 flex items-center justify-between text-sm">
+            <span className="text-ink/60">{locale === "uk" ? "Виконання завдань" : "Postęp zadań"}</span>
+            <span className="font-semibold">{stats.submitted}/{stats.totalAssignments}</span>
+          </div>
+          <div className="h-2.5 w-full overflow-hidden rounded-full bg-ink/10">
+            <div
+              className="h-full rounded-full bg-moss transition-all duration-500"
+              style={{ width: `${Math.round((stats.submitted / stats.totalAssignments) * 100)}%` }}
+            />
+          </div>
+          {stats.graded > 0 && (
+            <div className="mt-2 text-xs text-ink/50">
+              {locale === "uk" ? "Оцінено:" : "Oceniono:"} {stats.graded}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Assignments */}
       <div className="rounded-[24px] border border-ink/10 bg-paper p-6 shadow-soft">
         <div className="mb-4 flex items-center gap-2">
@@ -207,9 +256,10 @@ export default function StudentReportView({ classId, studentId, locale }: Props)
         ) : (
           <div className="space-y-2">
             {assignments.map((a: any) => (
-              <div
+              <Link
                 key={a.id}
-                className="flex items-center justify-between rounded-[16px] border border-ink/10 bg-ink/5 px-4 py-3"
+                href={`/classes/${classId}/assignments/${a.id}`}
+                className="flex items-center justify-between rounded-[16px] border border-ink/10 bg-ink/5 px-4 py-3 transition-all hover:shadow-soft hover:border-ink/20"
               >
                 <div className="flex-1 min-w-0">
                   <div className="truncate font-medium text-sm">{a.title}</div>
@@ -231,8 +281,9 @@ export default function StudentReportView({ classId, studentId, locale }: Props)
                   <span className={`rounded-full border px-2.5 py-1 text-xs font-medium ${assignmentStatusColor(a.status)}`}>
                     {t.statuses[a.status as keyof typeof t.statuses] || a.status}
                   </span>
+                  <ArrowRight size={14} className="text-ink/30" />
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         )}

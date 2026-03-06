@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 import { getAuthUser } from "@/lib/auth";
 import { getDb } from "@/lib/db";
+import { isCsrfValid } from "@/lib/csrf";
 
 export const dynamic = "force-dynamic";
 
@@ -63,6 +64,10 @@ export async function GET() {
 export async function POST(request: Request) {
   const auth = await getAuthUser();
   if (!auth) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  if (!isCsrfValid(request)) {
+    return NextResponse.json({ error: "Invalid CSRF token" }, { status: 403 });
+  }
 
   const { recipientId } = await request.json();
   if (!recipientId) return NextResponse.json({ error: "recipientId required" }, { status: 400 });
