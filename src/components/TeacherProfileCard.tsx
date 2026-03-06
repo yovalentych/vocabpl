@@ -171,7 +171,7 @@ export default function TeacherProfileCard({
       {/* Actions */}
       <div className="space-y-2">
         <a
-          href="/teacher/classes/new"
+          href="/classes/new"
           className="block w-full rounded-lg bg-stone-900 py-2.5 text-center font-semibold text-white transition-colors hover:bg-stone-800"
         >
           {text.createClass}
