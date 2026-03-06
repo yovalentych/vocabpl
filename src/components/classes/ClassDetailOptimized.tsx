@@ -30,6 +30,7 @@ import StudentProgress from "./StudentProgress";
 import ClassGradeBook from "./ClassGradeBook";
 import EventDetailPanel from "@/components/schedule/EventDetailPanel";
 import UpcomingEvents from "./UpcomingEvents";
+import RecurringSeriesList from "./RecurringSeriesList";
 
 type Tab = 'overview' | 'students' | 'assignments' | 'schedule' | 'progress' | 'gradebook' | 'analytics' | 'settings';
 
@@ -508,16 +509,26 @@ export default function ClassDetailOptimized({ classId, locale }: ClassDetailPro
         )}
 
         {activeTab === 'schedule' && (
-          <SimpleCalendar
-            classId={classId}
-            locale={locale}
-            isTeacher={isTeacher}
-            onCreateEvent={(date) => { setCreateEventDate(date); setShowCreateEvent(true); }}
-            onEventClick={(event, date) => {
-              setSelectedEvent(event);
-              setSelectedOccurrenceDate(date);
-            }}
-          />
+          <div className="space-y-6">
+            <SimpleCalendar
+              classId={classId}
+              locale={locale}
+              isTeacher={isTeacher}
+              onCreateEvent={(date) => { setCreateEventDate(date); setShowCreateEvent(true); }}
+              onEventClick={(event, date) => {
+                setSelectedEvent(event);
+                setSelectedOccurrenceDate(date);
+              }}
+            />
+            {isTeacher && (
+              <RecurringSeriesList
+                classId={classId}
+                locale={locale}
+                onEdit={(event) => setSelectedEvent(event)}
+                onCreateRecurring={() => setShowCreateEvent(true)}
+              />
+            )}
+          </div>
         )}
 
         {activeTab === 'progress' && !isTeacher && (

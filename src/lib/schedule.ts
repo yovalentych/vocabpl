@@ -202,7 +202,13 @@ export function generateOccurrences(
         currentDate.setDate(currentDate.getDate() + interval);
         break;
       case "weekly":
-        currentDate.setDate(currentDate.getDate() + (7 * interval));
+        // When specific days of week are set, advance 1 day at a time to hit each match.
+        // Otherwise jump full weeks.
+        if (daysOfWeek && daysOfWeek.length > 0) {
+          currentDate.setDate(currentDate.getDate() + 1);
+        } else {
+          currentDate.setDate(currentDate.getDate() + 7 * interval);
+        }
         break;
       case "monthly":
         currentDate.setMonth(currentDate.getMonth() + interval);
