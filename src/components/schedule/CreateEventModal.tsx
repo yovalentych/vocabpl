@@ -22,10 +22,11 @@ import type { EventType, RecurrenceFrequency } from "@/lib/schedule";
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  classId?: string; // Optional when classes[] is provided
-  classes?: { id: string; name: string }[]; // For class picker (teacher panel)
+  classId?: string;
+  classes?: { id: string; name: string }[];
   onEventCreated: () => void;
-  existingEvent?: any; // For editing
+  existingEvent?: any;
+  initialDate?: Date; // Pre-fill date when clicking a calendar day
 }
 
 const EVENT_TYPE_OPTIONS: { value: EventType; icon: any; labelUk: string; labelPl: string }[] = [
@@ -64,7 +65,8 @@ export default function CreateEventModal({
   classId: classIdProp,
   classes,
   onEventCreated,
-  existingEvent
+  existingEvent,
+  initialDate,
 }: Props) {
   const { t, locale } = useLocale();
   const isEditing = !!existingEvent;
@@ -75,7 +77,11 @@ export default function CreateEventModal({
   const [title, setTitle] = useState(existingEvent?.title || "");
   const [description, setDescription] = useState(existingEvent?.description || "");
   const [startDate, setStartDate] = useState(
-    existingEvent?.startTime ? new Date(existingEvent.startTime).toISOString().slice(0, 16) : ""
+    existingEvent?.startTime
+      ? new Date(existingEvent.startTime).toISOString().slice(0, 16)
+      : initialDate
+        ? new Date(initialDate.setHours(10, 0, 0, 0)).toISOString().slice(0, 16)
+        : ""
   );
   const [duration, setDuration] = useState(existingEvent ?
     Math.round((new Date(existingEvent.endTime).getTime() - new Date(existingEvent.startTime).getTime()) / (1000 * 60)) : 60

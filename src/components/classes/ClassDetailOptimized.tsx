@@ -24,7 +24,7 @@ import AssignmentsList from "./AssignmentsList";
 import ClassStatistics from "./ClassStatistics";
 import ClassSettings from "./ClassSettings";
 import SimpleCalendar from "./SimpleCalendar";
-import CreateEventModal from "./CreateEventModal";
+import CreateEventModal from "@/components/schedule/CreateEventModal";
 import StudentOverview from "./StudentOverview";
 import StudentProgress from "./StudentProgress";
 import ClassGradeBook from "./ClassGradeBook";
@@ -43,7 +43,9 @@ export default function ClassDetailOptimized({ classId, locale }: ClassDetailPro
   const [loading, setLoading] = useState(true);
   const [copiedCode, setCopiedCode] = useState(false);
   const [showCreateEvent, setShowCreateEvent] = useState(false);
+  const [createEventDate, setCreateEventDate] = useState<Date | undefined>();
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
+  const [selectedOccurrenceDate, setSelectedOccurrenceDate] = useState<Date | undefined>();
 
   const t = locale === 'uk' ? {
     backToAcademy: "Назад до Школи",
@@ -501,8 +503,11 @@ export default function ClassDetailOptimized({ classId, locale }: ClassDetailPro
             classId={classId}
             locale={locale}
             isTeacher={isTeacher}
-            onCreateEvent={() => setShowCreateEvent(true)}
-            onEventClick={(event) => setSelectedEvent(event)}
+            onCreateEvent={(date) => { setCreateEventDate(date); setShowCreateEvent(true); }}
+            onEventClick={(event, date) => {
+              setSelectedEvent(event);
+              setSelectedOccurrenceDate(date);
+            }}
           />
         )}
 
@@ -540,27 +545,29 @@ export default function ClassDetailOptimized({ classId, locale }: ClassDetailPro
       {selectedEvent && (
         <EventDetailPanel
           event={selectedEvent}
+          occurrenceDate={selectedOccurrenceDate}
           isTeacher={isTeacher}
-          onClose={() => setSelectedEvent(null)}
+          onClose={() => { setSelectedEvent(null); setSelectedOccurrenceDate(undefined); }}
           onUpdated={() => {
             setSelectedEvent(null);
+            setSelectedOccurrenceDate(undefined);
             window.location.reload();
           }}
         />
       )}
 
       {/* Create Event Modal */}
-      {showCreateEvent && (
-        <CreateEventModal
-          classId={classId}
-          locale={locale}
-          onClose={() => setShowCreateEvent(false)}
-          onSuccess={() => {
-            setShowCreateEvent(false);
-            window.location.reload();
-          }}
-        />
-      )}
+      <CreateEventModal
+        isOpen={showCreateEvent}
+        classId={classId}
+        initialDate={createEventDate}
+        onClose={() => { setShowCreateEvent(false); setCreateEventDate(undefined); }}
+        onEventCreated={() => {
+          setShowCreateEvent(false);
+          setCreateEventDate(undefined);
+          window.location.reload();
+        }}
+      />
     </div>
   );
 }
