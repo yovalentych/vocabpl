@@ -45,7 +45,10 @@ export type NotificationType =
   | "credits.warning_90"
   | "credits.quota_exceeded"
   // Workbook (1)
-  | "workbook.submission.reviewed";
+  | "workbook.submission.reviewed"
+  // Schedule (2)
+  | "schedule.lesson.reminder"
+  | "schedule.lesson.cancelled";
 
 export type NotificationDocument = {
   _id?: ObjectId;
@@ -752,6 +755,49 @@ export async function notifyAICreditsExceeded(params: {
       usedCredits: params.usedCredits,
       totalCredits: params.totalCredits
     }
+  });
+}
+
+// ========== SCHEDULE ==========
+
+export async function notifyScheduleReminder(params: {
+  userIds: ObjectId[];
+  userRole: "admin" | "tutor" | "user";
+  eventId: ObjectId;
+  classId: ObjectId;
+  eventTitle: string;
+  className: string;
+  startTime: Date;
+  minutesBefore: number;
+}) {
+  const hoursLabel = params.minutesBefore >= 60
+    ? `${params.minutesBefore / 60} год`
+    : `${params.minutesBefore} хв`;
+
+  const timeStr = params.startTime.toLocaleTimeString("uk-UA", { hour: "2-digit", minute: "2-digit" });
+  const dateStr = params.startTime.toLocaleDateString("uk-UA", { day: "numeric", month: "long" });
+
+  return createNotificationForUsers(params.userIds, {
+    userRole: params.userRole,
+    category: "classes",
+    type: "schedule.lesson.reminder",
+    priority: params.minutesBefore <= 60 ? "urgent" : "normal",
+    title: `Заняття через ${hoursLabel}`,
+    message: `«${params.eventTitle}» (${params.className}) — ${dateStr} о ${timeStr}`,
+    icon: "calendar-check",
+    actions: [
+      {
+        label: "Переглянути розклад",
+        href: `/school/teacher?tab=schedule`,
+        variant: "primary",
+      },
+    ],
+    metadata: {
+      eventId: params.eventId.toString(),
+      classId: params.classId.toString(),
+      minutesBefore: params.minutesBefore,
+    },
+    ttlDays: 3,
   });
 }
 

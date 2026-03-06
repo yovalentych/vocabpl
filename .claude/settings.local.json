@@ -78,7 +78,8 @@
       "Bash(src/lib/mailer.ts << 'EOF'\n\nexport async function sendFeedbackEmail\\(params: {\n  from: string;\n  subject: string;\n  message: string;\n}\\): Promise<boolean> {\n  if \\(!hasMailConfig\\(\\)\\) {\n    console.warn\\(\"SMTP not configured, skipping email\"\\);\n    return false;\n  }\n\n  // TODO: Implement actual email sending with nodemailer or similar\n  console.log\\(\"Feedback email would be sent:\", params\\);\n  return true;\n}\n\nexport async function sendPasswordResetEmail\\(params: {\n  to: string;\n  resetLink: string;\n}\\): Promise<boolean> {\n  if \\(!hasMailConfig\\(\\)\\) {\n    console.warn\\(\"SMTP not configured, skipping email\"\\);\n    return false;\n  }\n\n  console.log\\(\"Password reset email would be sent:\", params\\);\n  return true;\n}\n\nexport async function sendPaymentReceiptEmail\\(params: {\n  to: string;\n  amount: number;\n  invoiceId: string;\n}\\): Promise<boolean> {\n  if \\(!hasMailConfig\\(\\)\\) {\n    console.warn\\(\"SMTP not configured, skipping email\"\\);\n    return false;\n  }\n\n  console.log\\(\"Payment receipt email would be sent:\", params\\);\n  return true;\n}\nEOF)",
       "Bash(xargs -I {} sh -c 'echo \"\"=== {} ===\"\" && head -60 {}')",
       "Bash(git diff:*)",
-      "Bash(sips:*)"
+      "Bash(sips:*)",
+      "Bash(rm:*)"
     ]
   }
 }

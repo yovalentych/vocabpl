@@ -3,6 +3,10 @@
     {
       "path": "/api/cron/teacher-cleanup",
       "schedule": "0 9 * * *"
+    },
+    {
+      "path": "/api/cron/schedule-reminders",
+      "schedule": "*/30 * * * *"
     }
   ]
 }

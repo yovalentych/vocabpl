@@ -15,7 +15,9 @@ import {
   Calendar,
   House,
   Books,
-  CheckCircle
+  CheckCircle,
+  Table,
+  ArrowSquareOut,
 } from "@phosphor-icons/react";
 import type { Class } from "@/lib/classes";
 import AssignmentsList from "./AssignmentsList";
@@ -25,8 +27,9 @@ import SimpleCalendar from "./SimpleCalendar";
 import CreateEventModal from "./CreateEventModal";
 import StudentOverview from "./StudentOverview";
 import StudentProgress from "./StudentProgress";
+import ClassGradeBook from "./ClassGradeBook";
 
-type Tab = 'overview' | 'students' | 'assignments' | 'schedule' | 'progress' | 'analytics' | 'settings';
+type Tab = 'overview' | 'students' | 'assignments' | 'schedule' | 'progress' | 'gradebook' | 'analytics' | 'settings';
 
 type ClassDetailProps = {
   classId: string;
@@ -70,6 +73,8 @@ export default function ClassDetailOptimized({ classId, locale }: ClassDetailPro
     description: "Опис",
     recentStudents: "Останні студенти",
     viewAll: "Переглянути всіх",
+    gradebook: "Журнал",
+    viewReport: "Звіт",
     loading: "Завантаження...",
     classNotFound: "Клас не знайдено"
   } : {
@@ -102,6 +107,8 @@ export default function ClassDetailOptimized({ classId, locale }: ClassDetailPro
     description: "Opis",
     recentStudents: "Ostatni uczniowie",
     viewAll: "Zobacz wszystkich",
+    gradebook: "Dziennik",
+    viewReport: "Raport",
     loading: "Ładowanie...",
     classNotFound: "Klasa nie znaleziona"
   };
@@ -111,7 +118,7 @@ export default function ClassDetailOptimized({ classId, locale }: ClassDetailPro
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       const tab = params.get('tab') as Tab;
-      if (tab && ['overview', 'students', 'assignments', 'schedule', 'progress', 'analytics', 'settings'].includes(tab)) {
+      if (tab && ['overview', 'students', 'assignments', 'schedule', 'progress', 'gradebook', 'analytics', 'settings'].includes(tab)) {
         setActiveTab(tab);
       }
     }
@@ -182,6 +189,7 @@ export default function ClassDetailOptimized({ classId, locale }: ClassDetailPro
     { id: 'assignments', icon: ClipboardText },
     { id: 'schedule', icon: Calendar },
     { id: 'progress', icon: ChartLine, studentOnly: true },
+    { id: 'gradebook', icon: Table, teacherOnly: true },
     { id: 'analytics', icon: ChartLine, teacherOnly: true },
     { id: 'settings', icon: Gear, teacherOnly: true }
   ];
@@ -450,8 +458,19 @@ export default function ClassDetailOptimized({ classId, locale }: ClassDetailPro
                         <Users size={20} weight="fill" className="text-moss" />
                       </div>
                     </div>
-                    <div className="text-xs text-ink/60">
-                      {t.joinedAt}: {new Date(student.joinedAt).toLocaleDateString(locale === 'uk' ? 'uk-UA' : 'pl-PL')}
+                    <div className="mt-2 flex items-center justify-between">
+                      <div className="text-xs text-ink/60">
+                        {t.joinedAt}: {new Date(student.joinedAt).toLocaleDateString(locale === 'uk' ? 'uk-UA' : 'pl-PL')}
+                      </div>
+                      {isTeacher && (
+                        <Link
+                          href={`/classes/${classId}/students/${student.id}` as any}
+                          className="inline-flex items-center gap-1 rounded-full border border-ink/10 px-2.5 py-1 text-xs text-ink/60 transition-all hover:bg-moss/10 hover:text-moss hover:border-moss/20"
+                        >
+                          <ArrowSquareOut size={12} />
+                          {t.viewReport}
+                        </Link>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -487,6 +506,10 @@ export default function ClassDetailOptimized({ classId, locale }: ClassDetailPro
 
         {activeTab === 'progress' && !isTeacher && (
           <StudentProgress classId={classId} locale={locale} />
+        )}
+
+        {activeTab === 'gradebook' && isTeacher && (
+          <ClassGradeBook classId={classId} locale={locale} />
         )}
 
         {activeTab === 'analytics' && isTeacher && (
