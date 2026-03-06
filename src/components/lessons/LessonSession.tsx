@@ -29,6 +29,7 @@ import {
   CaretUp,
 } from "@phosphor-icons/react";
 import { csrfFetch } from "@/lib/csrf-client";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 
 // ===================== Types =====================
 
@@ -361,6 +362,17 @@ export default function LessonSession({ eventId, date, userId }: Props) {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-6">
+      {/* ─── Breadcrumbs ─── */}
+      <div className="mb-4">
+        <Breadcrumbs items={[
+          { label: locale === "uk" ? "Школа" : "Szkoła", href: "/school" },
+          { label: locale === "uk" ? "Класи" : "Klasy", href: "/school?tab=classes" },
+          { label: session.className, href: `/classes/${session.classId}` },
+          { label: locale === "uk" ? "Розклад" : "Harmonogram", href: `/classes/${session.classId}?tab=schedule` },
+          { label: session.event.title },
+        ]} />
+      </div>
+
       {/* ─── Header ─── */}
       <div
         className="mb-4 overflow-hidden rounded-[24px] border border-ink/10 bg-paper shadow-soft"

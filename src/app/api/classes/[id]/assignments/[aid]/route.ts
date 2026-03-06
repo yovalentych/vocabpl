@@ -73,6 +73,7 @@ export async function GET(
 
       return NextResponse.json({
         assignment: assignmentData,
+        className: classDoc.name,
         submissions: submissions.map(s => ({
           ...s,
           _id: s._id.toString(),
@@ -111,6 +112,7 @@ export async function GET(
 
       return NextResponse.json({
         assignment: assignmentData,
+        className: classDoc.name,
         submission: {
           ...(submission as any),
           _id: (submission as any)._id.toString(),

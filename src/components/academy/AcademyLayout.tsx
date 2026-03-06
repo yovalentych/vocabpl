@@ -17,6 +17,7 @@ import {
 
 // Tab components
 import AcademyOverview from "./tabs/AcademyOverview";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import AcademyClasses from "./tabs/AcademyClasses";
 import AcademySchedule from "./tabs/AcademySchedule";
 import AcademyAssignments from "./tabs/AcademyAssignments";
@@ -202,18 +203,18 @@ export default function AcademyLayout() {
 
   return (
     <div className="mx-auto max-w-7xl space-y-8 p-6 sm:p-8">
+      {/* Breadcrumbs */}
+      <Breadcrumbs items={[
+        { label: locale === "pl" ? "Szkoła" : "Школа", href: "/school" },
+        { label: isTeacher && !isStudent
+            ? (locale === "pl" ? "Panel nauczyciela" : "Панель вчителя")
+            : (locale === "pl" ? "Panel ucznia" : "Панель учня") },
+      ]} />
+
       {/* Header */}
       <div className="relative overflow-hidden rounded-[32px] border border-ink/10 bg-gradient-to-br from-moss/10 to-terracotta/10 p-8 shadow-soft">
         <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gold/20 blur-3xl" />
         <div className="relative">
-          <div className="mb-3 flex items-center gap-2">
-            <a href="/school" className="inline-flex items-center gap-1.5 text-xs text-ink/50 hover:text-ink transition-colors">
-              <GraduationCap size={14} weight="fill" />
-              <span className="uppercase tracking-[0.3em]">
-                {locale === "pl" ? "SZKOŁA" : "ШКОЛА"}
-              </span>
-            </a>
-          </div>
           <h1 className="text-4xl font-semibold">
             {isTeacher && !isStudent
               ? (locale === "pl" ? "Panel nauczyciela" : "Панель вчителя")

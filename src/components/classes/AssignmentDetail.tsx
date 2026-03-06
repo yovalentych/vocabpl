@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import {
-  ArrowLeft,
   Clock,
   Check,
   CheckCircle,
@@ -79,6 +79,7 @@ export default function AssignmentDetail({
   locale
 }: AssignmentDetailProps) {
   const [data, setData] = useState<AssignmentResponse | null>(null);
+  const [className, setClassName] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [gradingSubmission, setGradingSubmission] = useState<Submission | null>(
     null
@@ -238,6 +239,7 @@ export default function AssignmentDetail({
       const json = await res.json();
       if (res.ok) {
         setData(json as AssignmentResponse);
+        if (json.className) setClassName(json.className);
       }
     } catch (error) {
       console.error("Failed to load assignment:", error);
@@ -424,16 +426,19 @@ export default function AssignmentDetail({
 
   return (
     <div className="mx-auto w-full max-w-4xl px-5 sm:px-6 py-10">
+      {/* Breadcrumbs */}
+      <div className="mb-6">
+        <Breadcrumbs items={[
+          { label: locale === "uk" ? "Школа" : "Szkoła", href: "/school" },
+          { label: locale === "uk" ? "Класи" : "Klasy", href: "/school?tab=classes" },
+          ...(className ? [{ label: className, href: `/classes/${classId}` }] : []),
+          { label: locale === "uk" ? "Завдання" : "Zadania", href: `/classes/${classId}?tab=assignments` },
+          { label: assignment.title },
+        ]} />
+      </div>
+
       {/* Header */}
       <div className="mb-8">
-        <a
-          href={`/classes/${classId}?tab=assignments`}
-          className="inline-flex items-center gap-2 text-sm text-ink/60 hover:text-ink transition-colors mb-4"
-        >
-          <ArrowLeft size={16} />
-          {t.backToAssignments}
-        </a>
-
         <h1 className="text-3xl font-bold text-ink mb-3">{assignment.title}</h1>
 
         <div className="flex flex-wrap items-center gap-3 mb-4">

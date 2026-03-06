@@ -30,6 +30,7 @@ import StudentOverview from "./StudentOverview";
 import StudentProgress from "./StudentProgress";
 import ClassGradeBook from "./ClassGradeBook";
 import AttendanceReport from "./AttendanceReport";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import EventDetailPanel from "@/components/schedule/EventDetailPanel";
 import UpcomingEvents from "./UpcomingEvents";
 import RecurringSeriesList from "./RecurringSeriesList";
@@ -214,19 +215,11 @@ export default function ClassDetailOptimized({ classId, locale }: ClassDetailPro
   return (
     <div className="mx-auto max-w-7xl space-y-8 p-6 sm:p-8">
       {/* Breadcrumbs */}
-      <nav className="flex items-center gap-2 text-sm">
-        <Link href={isTeacher ? "/school/teacher" : "/school/student"} className="flex items-center gap-1 text-ink/60 transition-colors hover:text-moss">
-          <House size={16} weight="fill" />
-          <span>{locale === 'uk' ? 'Школа' : 'Szkoła'}</span>
-        </Link>
-        <span className="text-ink/30">/</span>
-        <Link href={isTeacher ? "/school/teacher?tab=classes" : "/school/student?tab=classes"} className="flex items-center gap-1 text-ink/60 transition-colors hover:text-moss">
-          <Books size={16} weight="fill" />
-          <span>{locale === 'uk' ? 'Класи' : 'Klasy'}</span>
-        </Link>
-        <span className="text-ink/30">/</span>
-        <span className="font-medium text-ink">{classData.name}</span>
-      </nav>
+      <Breadcrumbs items={[
+        { label: locale === 'uk' ? 'Школа' : 'Szkoła', href: isTeacher ? "/school/teacher" : "/school/student" },
+        { label: locale === 'uk' ? 'Класи' : 'Klasy', href: isTeacher ? "/school/teacher?tab=classes" : "/school/student?tab=classes" },
+        { label: classData.name },
+      ]} />
 
       {/* Header */}
       <div className="relative overflow-hidden rounded-[32px] border border-ink/10 bg-gradient-to-br from-moss/10 to-terracotta/10 p-8 shadow-soft">

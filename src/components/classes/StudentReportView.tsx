@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { csrfFetch } from "@/lib/csrf-client";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import {
   ArrowLeft,
   ClipboardText,
@@ -142,18 +143,14 @@ export default function StudentReportView({ classId, studentId, locale }: Props)
 
   return (
     <div className="mx-auto max-w-4xl space-y-8 p-6 sm:p-8">
-      {/* Breadcrumb */}
-      <nav className="flex items-center gap-2 text-sm">
-        <Link
-          href={`/classes/${classId}?tab=students`}
-          className="flex items-center gap-1.5 text-ink/60 transition-colors hover:text-moss"
-        >
-          <ArrowLeft size={16} />
-          <span>{t.back}</span>
-        </Link>
-        <span className="text-ink/30">/</span>
-        <span className="font-medium">{student.name}</span>
-      </nav>
+      {/* Breadcrumbs */}
+      <Breadcrumbs items={[
+        { label: locale === "uk" ? "Школа" : "Szkoła", href: "/school" },
+        { label: locale === "uk" ? "Класи" : "Klasy", href: "/school?tab=classes" },
+        { label: className, href: `/classes/${classId}` },
+        { label: locale === "uk" ? "Студенти" : "Uczniowie", href: `/classes/${classId}?tab=students` },
+        { label: student.name },
+      ]} />
 
       {/* Header */}
       <div className="relative overflow-hidden rounded-[32px] border border-ink/10 bg-gradient-to-br from-moss/10 to-terracotta/10 p-8 shadow-soft">
