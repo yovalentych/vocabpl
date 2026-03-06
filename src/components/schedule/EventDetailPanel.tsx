@@ -18,6 +18,8 @@ import {
   Clock,
   Repeat,
   ArrowCounterClockwise,
+  ArrowSquareOut,
+  Lightning,
 } from "@phosphor-icons/react";
 import { getEventColor, formatEventTime, getRecurrenceDescription } from "@/lib/schedule";
 import { csrfFetch } from "@/lib/csrf-client";
@@ -171,6 +173,17 @@ export default function EventDetailPanel({
   const eventColor = event.color || getEventColor(event.type);
   const canMarkAttendance = ["lesson", "test", "meeting"].includes(event.type);
 
+  // Lesson room: available 30min before start → 30min after end
+  const canJoinRoom = ["lesson", "test", "meeting"].includes(event.type);
+  const lessonRoomUrl = (() => {
+    const dateStr = occStart.toISOString().slice(0, 10);
+    return `/lessons/${event._id}?date=${dateStr}`;
+  })();
+  const now = new Date();
+  const windowStart = new Date(occStart.getTime() - 30 * 60 * 1000);
+  const windowEnd = new Date(occEnd.getTime() + 30 * 60 * 1000);
+  const lessonRoomActive = now >= windowStart && now <= windowEnd;
+
   return (
     <>
       {/* Backdrop */}
@@ -316,6 +329,46 @@ export default function EventDetailPanel({
                   {locale === "uk" ? "Переглянути" : "Sprawdź"}
                 </button>
               </div>
+            </div>
+          )}
+
+          {/* Join Lesson Room — shown to everyone when event is lesson type */}
+          {canJoinRoom && !isCancelled && (
+            <div>
+              <a
+                href={lessonRoomUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`flex w-full items-center gap-3 rounded-[16px] border p-4 text-left transition-all ${
+                  lessonRoomActive
+                    ? "border-moss/30 bg-moss/10 hover:bg-moss/20"
+                    : "border-ink/10 bg-ink/5 opacity-60 hover:opacity-80"
+                }`}
+              >
+                <Lightning
+                  size={20}
+                  weight="fill"
+                  className={lessonRoomActive ? "text-moss" : "text-ink/40"}
+                />
+                <div className="flex-1">
+                  <div className={`font-semibold ${lessonRoomActive ? "text-moss" : "text-ink/50"}`}>
+                    {locale === "uk" ? "Кімната уроку" : "Pokój lekcyjny"}
+                  </div>
+                  <div className="mt-0.5 text-xs text-ink/40">
+                    {lessonRoomActive
+                      ? locale === "uk"
+                        ? "Сесія активна — приєднатися"
+                        : "Sesja aktywna — dołącz"
+                      : locale === "uk"
+                      ? "Відкривається за 30 хв до початку"
+                      : "Otwiera się 30 min przed początkiem"}
+                  </div>
+                </div>
+                <ArrowSquareOut
+                  size={16}
+                  className={lessonRoomActive ? "text-moss" : "text-ink/30"}
+                />
+              </a>
             </div>
           )}
 
