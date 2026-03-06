@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { ArrowLeft, Check } from "@phosphor-icons/react";
 
 export default function NewClassPage() {
@@ -74,13 +73,13 @@ export default function NewClassPage() {
     <div className="mx-auto w-full max-w-2xl px-5 sm:px-6 py-10">
       {/* Header */}
       <div className="mb-8">
-        <Link
-          href="/classes"
+        <button
+          onClick={() => router.back()}
           className="inline-flex items-center gap-2 text-sm text-ink/60 hover:text-ink transition-colors mb-4"
         >
           <ArrowLeft size={16} />
-          Назад до класів
-        </Link>
+          Назад
+        </button>
         <h1 className="text-3xl font-bold text-ink">{t.title}</h1>
       </div>
 
@@ -183,12 +182,13 @@ export default function NewClassPage() {
 
         {/* Actions */}
         <div className="flex gap-3">
-          <Link
-            href="/classes"
+          <button
+            type="button"
+            onClick={() => router.back()}
             className="flex-1 rounded-full border border-ink/20 bg-paper px-6 py-3 text-center text-sm font-semibold text-ink hover:bg-ink/5 transition-colors"
           >
             {t.cancel}
-          </Link>
+          </button>
           <button
             type="submit"
             disabled={loading || !name.trim()}

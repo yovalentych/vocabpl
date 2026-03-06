@@ -5,6 +5,7 @@ import { ObjectId } from "mongodb";
 import {
   canAccessClass,
   isTeacherOfClass,
+  generateInviteCode,
   type Class
 } from "@/lib/classes";
 import { notifyClassArchived } from "@/lib/notifications";
@@ -111,10 +112,15 @@ export async function PATCH(
     }
 
     if (settings !== undefined) {
-      updates.settings = {
+      const mergedSettings = {
         ...classDoc.settings,
         ...settings
       };
+      // Auto-generate invite code when making class public
+      if (mergedSettings.isPublic && !mergedSettings.inviteCode) {
+        mergedSettings.inviteCode = generateInviteCode();
+      }
+      updates.settings = mergedSettings;
     }
 
     await db.collection("classes").updateOne(
@@ -122,7 +128,10 @@ export async function PATCH(
       { $set: updates }
     );
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({
+      success: true,
+      ...(updates.settings?.inviteCode ? { inviteCode: updates.settings.inviteCode } : {})
+    });
   } catch (error) {
     console.error("Error updating class:", error);
     return NextResponse.json(

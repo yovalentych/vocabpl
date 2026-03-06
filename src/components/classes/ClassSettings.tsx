@@ -141,6 +141,10 @@ export default function ClassSettings({ classId, classData, locale, onUpdate }: 
         throw new Error(error.error || "Failed to update");
       }
 
+      const data = await res.json();
+      if (data.inviteCode) {
+        setInviteCode(data.inviteCode);
+      }
       setEditing(false);
       onUpdate();
     } catch (error) {
@@ -192,7 +196,7 @@ export default function ClassSettings({ classId, classData, locale, onUpdate }: 
       }
 
       alert(t.archiveSuccess);
-      router.push("/classes");
+      router.push("/school/teacher?tab=classes");
     } catch (error) {
       console.error("Error archiving class:", error);
       alert(error instanceof Error ? error.message : "Failed to archive class");
@@ -225,7 +229,7 @@ export default function ClassSettings({ classId, classData, locale, onUpdate }: 
       }
 
       alert(t.deleteSuccess);
-      router.push("/classes");
+      router.push("/school/teacher?tab=classes");
     } catch (error) {
       console.error("Error deleting class:", error);
       alert(error instanceof Error ? error.message : "Failed to delete class");
@@ -377,9 +381,15 @@ export default function ClassSettings({ classId, classData, locale, onUpdate }: 
         <h3 className="font-bold text-ink text-lg mb-4">{t.inviteCode}</h3>
 
         <div className="flex items-center gap-3">
-          <code className="flex-1 rounded-xl border border-moss/20 bg-moss/5 px-4 py-3 text-xl font-mono font-bold text-moss">
-            {inviteCode}
-          </code>
+          {inviteCode ? (
+            <code className="flex-1 rounded-xl border border-moss/20 bg-moss/5 px-4 py-3 text-xl font-mono font-bold text-moss">
+              {inviteCode}
+            </code>
+          ) : (
+            <p className="flex-1 text-sm text-ink/50 italic">
+              {locale === 'uk' ? 'Код ще не згенеровано' : 'Kod nie został jeszcze wygenerowany'}
+            </p>
+          )}
           <button
             onClick={handleRegenerateCode}
             disabled={regenerating}
@@ -390,7 +400,7 @@ export default function ClassSettings({ classId, classData, locale, onUpdate }: 
             ) : (
               <ArrowsClockwise size={18} weight="bold" />
             )}
-            {t.regenerateCode}
+            {inviteCode ? t.regenerateCode : (locale === 'uk' ? 'Згенерувати код' : 'Wygeneruj kod')}
           </button>
         </div>
       </div>

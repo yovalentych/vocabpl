@@ -15,6 +15,7 @@ export default async function ClassesPage() {
   }
 
   const { locale } = getDictionary();
+  const isTeacher = auth.role === "tutor" || auth.role === "admin";
 
-  return <ClassesList locale={locale} />;
+  return <ClassesList locale={locale} isTeacher={isTeacher} />;
 }

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { Users, Plus, Archive, GraduationCap, Student, ChartBar, ClipboardText, CheckCircle } from "@phosphor-icons/react";
+import { Users, Plus, Archive, GraduationCap, Student, ChartBar, ClipboardText, CheckCircle, House } from "@phosphor-icons/react";
 
 type ClassWithRole = {
   _id: string;
@@ -129,6 +129,16 @@ export default function ClassesList({ locale, isTeacher = false }: ClassesListPr
 
   return (
     <div className="mx-auto w-full max-w-6xl px-5 sm:px-6 py-10">
+      {/* Breadcrumb */}
+      <nav className="flex items-center gap-2 text-sm mb-6">
+        <Link href={isTeacher ? "/school/teacher" : "/school/student"} className="flex items-center gap-1 text-ink/60 transition-colors hover:text-moss">
+          <House size={16} weight="fill" />
+          <span>{locale === 'uk' ? 'Школа' : 'Szkoła'}</span>
+        </Link>
+        <span className="text-ink/30">/</span>
+        <span className="font-medium text-ink">{t.title}</span>
+      </nav>
+
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-3xl font-bold text-ink">{t.title}</h1>

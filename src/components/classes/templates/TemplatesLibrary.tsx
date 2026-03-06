@@ -182,7 +182,7 @@ export default function TemplatesLibrary({ locale }: TemplatesLibraryProps) {
       {/* Header */}
       <div className="mb-8">
         <Link
-          href="/classes"
+          href="/school/teacher?tab=classes"
           className="inline-flex items-center gap-2 text-sm text-ink/60 hover:text-ink transition-colors mb-4"
         >
           <ArrowLeft size={16} />
