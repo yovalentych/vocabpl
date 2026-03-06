@@ -262,7 +262,7 @@ export default function AcademyLayout() {
       <div className="min-h-[400px]">
         {activeTab === "overview" && <AcademyOverview isTeacher={isTeacher} isStudent={isStudent} teacherProfile={teacherProfile} studentStats={studentStats} />}
         {activeTab === "classes" && <AcademyClasses isTeacher={isTeacher} />}
-        {activeTab === "schedule" && <AcademySchedule />}
+        {activeTab === "schedule" && <AcademySchedule isTeacher={isTeacher} />}
         {activeTab === "assignments" && <AcademyAssignments isTeacher={isTeacher} />}
         {activeTab === "students" && isTeacher && <AcademyStudents />}
         {activeTab === "analytics" && <AcademyAnalytics isTeacher={isTeacher} />}

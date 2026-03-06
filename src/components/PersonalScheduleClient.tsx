@@ -1,12 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { CaretLeft, CaretRight } from "@phosphor-icons/react";
+import { CaretLeft, CaretRight, Plus } from "@phosphor-icons/react";
 import type { ScheduleEvent } from "@/lib/schedule";
 import { getEventColor, formatEventTime } from "@/lib/schedule";
+import EventDetailPanel from "@/components/schedule/EventDetailPanel";
+import CreateEventModal from "@/components/schedule/CreateEventModal";
 
 type PersonalScheduleClientProps = {
   locale: "uk" | "pl";
+  isTeacher?: boolean;
 };
 
 type EventWithClass = ScheduleEvent & {
@@ -14,13 +17,16 @@ type EventWithClass = ScheduleEvent & {
   classId: string;
 };
 
-export default function PersonalScheduleClient({ locale }: PersonalScheduleClientProps) {
+export default function PersonalScheduleClient({ locale, isTeacher = false }: PersonalScheduleClientProps) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [events, setEvents] = useState<EventWithClass[]>([]);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<"month" | "list">("month");
   const [selectedClass, setSelectedClass] = useState<string>("all");
   const [classes, setClasses] = useState<{ id: string; name: string }[]>([]);
+  const [selectedEvent, setSelectedEvent] = useState<EventWithClass | null>(null);
+  const [selectedOccurrenceDate, setSelectedOccurrenceDate] = useState<Date | undefined>();
+  const [showCreateEvent, setShowCreateEvent] = useState(false);
 
   const t = locale === "uk" ? {
     title: "Мій розклад",
@@ -56,6 +62,25 @@ export default function PersonalScheduleClient({ locale }: PersonalScheduleClien
     loadEvents();
   }, [currentDate, selectedClass]);
 
+  useEffect(() => {
+    if (isTeacher) loadTeacherClasses();
+  }, [isTeacher]);
+
+  async function loadTeacherClasses() {
+    try {
+      const res = await fetch("/api/classes");
+      if (res.ok) {
+        const data = await res.json();
+        const loaded = (data.classes || []).map((c: any) => ({ id: c._id, name: c.name }));
+        setClasses(prev => {
+          const merged = new Map(prev.map(c => [c.id, c]));
+          loaded.forEach((c: { id: string; name: string }) => merged.set(c.id, c));
+          return Array.from(merged.values());
+        });
+      }
+    } catch {}
+  }
+
   async function loadEvents() {
     try {
       setLoading(true);
@@ -71,7 +96,7 @@ export default function PersonalScheduleClient({ locale }: PersonalScheduleClien
         const allEvents = data.events || [];
         setEvents(allEvents);
 
-        // Extract unique classes
+        // Extract unique classes from events
         const classMap = new Map<string, { id: string; name: string }>();
         allEvents
           .filter((e: EventWithClass) => e.className)
@@ -81,12 +106,27 @@ export default function PersonalScheduleClient({ locale }: PersonalScheduleClien
               classMap.set(classId, { id: classId, name: e.className! });
             }
           });
-        setClasses(Array.from(classMap.values()));
+        setClasses(prev => {
+          const merged = new Map(prev.map(c => [c.id, c]));
+          Array.from(classMap.values()).forEach(c => merged.set(c.id, c));
+          return Array.from(merged.values());
+        });
       }
     } catch (error) {
       console.error("Failed to load events:", error);
     } finally {
       setLoading(false);
+    }
+  }
+
+  function handleEventClick(event: EventWithClass, day?: number) {
+    setSelectedEvent(event);
+    if (day !== undefined) {
+      setSelectedOccurrenceDate(
+        new Date(currentDate.getFullYear(), currentDate.getMonth(), day)
+      );
+    } else {
+      setSelectedOccurrenceDate(undefined);
     }
   }
 
@@ -164,6 +204,15 @@ export default function PersonalScheduleClient({ locale }: PersonalScheduleClien
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <h1 className="text-2xl font-bold text-ink">{t.title}</h1>
             <div className="flex items-center gap-2 flex-wrap">
+              {isTeacher && (
+                <button
+                  onClick={() => setShowCreateEvent(true)}
+                  className="flex items-center gap-2 rounded-full border border-moss/20 bg-moss px-4 py-1.5 text-sm font-semibold text-paper hover:bg-moss/90"
+                >
+                  <Plus size={16} weight="bold" />
+                  {locale === "uk" ? "Нова подія" : "Nowe wydarzenie"}
+                </button>
+              )}
               <select
                 value={selectedClass}
                 onChange={(e) => setSelectedClass(e.target.value)}
@@ -189,19 +238,20 @@ export default function PersonalScheduleClient({ locale }: PersonalScheduleClien
               <div className="text-center py-12 text-ink/50">{t.noEvents}</div>
             ) : (
               sortedEvents.map(event => (
-                <div
+                <button
                   key={event._id?.toString()}
-                  className="p-4 rounded-xl border border-ink/10 bg-paper hover:bg-ink/5 transition-colors"
+                  onClick={() => handleEventClick(event)}
+                  className="w-full p-4 rounded-xl border border-ink/10 bg-paper hover:bg-ink/5 transition-colors text-left"
                 >
                   <div className="flex items-start gap-3">
                     <div
-                      className="w-1 h-full rounded-full flex-shrink-0"
+                      className="mt-1 w-1 self-stretch rounded-full flex-shrink-0 min-h-[40px]"
                       style={{ backgroundColor: event.color || getEventColor(event.type) }}
                     />
                     <div className="flex-1">
                       <div className="flex items-start justify-between gap-2">
                         <h4 className="font-semibold text-ink">{event.title}</h4>
-                        <span className="text-xs text-ink/50">
+                        <span className="text-xs text-ink/50 shrink-0">
                           {new Date(event.startTime).toLocaleDateString(locale === "uk" ? "uk-UA" : "pl-PL")}
                         </span>
                       </div>
@@ -216,11 +266,31 @@ export default function PersonalScheduleClient({ locale }: PersonalScheduleClien
                       )}
                     </div>
                   </div>
-                </div>
+                </button>
               ))
             )}
           </div>
         </div>
+
+        {/* Modals */}
+        {selectedEvent && (
+          <EventDetailPanel
+            event={selectedEvent}
+            occurrenceDate={selectedOccurrenceDate}
+            isTeacher={isTeacher}
+            onClose={() => setSelectedEvent(null)}
+            onUpdated={loadEvents}
+            teacherClasses={classes}
+          />
+        )}
+        {showCreateEvent && (
+          <CreateEventModal
+            isOpen={showCreateEvent}
+            onClose={() => setShowCreateEvent(false)}
+            classes={classes}
+            onEventCreated={() => { setShowCreateEvent(false); loadEvents(); }}
+          />
+        )}
       </div>
     );
   }
@@ -249,6 +319,15 @@ export default function PersonalScheduleClient({ locale }: PersonalScheduleClien
           </div>
 
           <div className="flex items-center gap-2 flex-wrap">
+            {isTeacher && (
+              <button
+                onClick={() => setShowCreateEvent(true)}
+                className="flex items-center gap-2 rounded-full border border-moss/20 bg-moss px-4 py-1.5 text-sm font-semibold text-paper hover:bg-moss/90"
+              >
+                <Plus size={16} weight="bold" />
+                {locale === "uk" ? "Нова подія" : "Nowe wydarzenie"}
+              </button>
+            )}
             <select
               value={selectedClass}
               onChange={(e) => setSelectedClass(e.target.value)}
@@ -275,7 +354,7 @@ export default function PersonalScheduleClient({ locale }: PersonalScheduleClien
         </div>
 
         {/* Calendar Grid */}
-        <div className="border border-ink/10 rounded-xl overflow-hidden bg-white shadow-sm">
+        <div className="border border-ink/10 rounded-xl overflow-hidden bg-white shadow-sm" onClick={e => e.stopPropagation()}>
           {/* Day headers */}
           <div className="grid grid-cols-7 bg-ink/5">
             {dayNames.map(day => (
@@ -313,19 +392,28 @@ export default function PersonalScheduleClient({ locale }: PersonalScheduleClien
                   </div>
 
                   <div className="space-y-1">
-                    {dayEvents.slice(0, 3).map(event => (
-                      <div
-                        key={event._id?.toString()}
-                        className="w-full text-left px-2 py-1 rounded text-xs font-medium truncate"
-                        style={{
-                          backgroundColor: event.color || getEventColor(event.type),
-                          color: "white"
-                        }}
-                        title={`${event.title}${event.className ? ` - ${event.className}` : ''}`}
-                      >
-                        {event.title}
-                      </div>
-                    ))}
+                    {dayEvents.slice(0, 3).map(event => {
+                      const isCancelled = event.isCancelled || event.overrides?.some(
+                        (o: any) => new Date(o.originalDate).toDateString() ===
+                          new Date(currentDate.getFullYear(), currentDate.getMonth(), day).toDateString() && o.cancelled
+                      );
+                      return (
+                        <button
+                          key={event._id?.toString()}
+                          onClick={() => handleEventClick(event, day)}
+                          className="w-full text-left px-2 py-1 rounded text-xs font-medium truncate transition-opacity hover:opacity-80"
+                          style={{
+                            backgroundColor: isCancelled ? "rgba(0,0,0,0.15)" : (event.color || getEventColor(event.type)),
+                            color: "white",
+                            textDecoration: isCancelled ? "line-through" : "none",
+                            opacity: isCancelled ? 0.6 : 1,
+                          }}
+                          title={`${event.title}${event.className ? ` - ${event.className}` : ''}`}
+                        >
+                          {event.title}
+                        </button>
+                      );
+                    })}
                     {dayEvents.length > 3 && (
                       <div className="text-xs text-ink/50 px-2">
                         +{dayEvents.length - 3} більше
@@ -338,6 +426,26 @@ export default function PersonalScheduleClient({ locale }: PersonalScheduleClien
           </div>
         </div>
       </div>
+
+      {/* Modals */}
+      {selectedEvent && (
+        <EventDetailPanel
+          event={selectedEvent}
+          occurrenceDate={selectedOccurrenceDate}
+          isTeacher={isTeacher}
+          onClose={() => setSelectedEvent(null)}
+          onUpdated={loadEvents}
+          teacherClasses={classes}
+        />
+      )}
+      {showCreateEvent && (
+        <CreateEventModal
+          isOpen={showCreateEvent}
+          onClose={() => setShowCreateEvent(false)}
+          classes={classes}
+          onEventCreated={() => { setShowCreateEvent(false); loadEvents(); }}
+        />
+      )}
     </div>
   );
 }

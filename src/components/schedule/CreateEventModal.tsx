@@ -22,7 +22,8 @@ import type { EventType, RecurrenceFrequency } from "@/lib/schedule";
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  classId: string;
+  classId?: string; // Optional when classes[] is provided
+  classes?: { id: string; name: string }[]; // For class picker (teacher panel)
   onEventCreated: () => void;
   existingEvent?: any; // For editing
 }
@@ -60,12 +61,14 @@ const LESSON_TEMPLATES_PL = [
 export default function CreateEventModal({
   isOpen,
   onClose,
-  classId,
+  classId: classIdProp,
+  classes,
   onEventCreated,
   existingEvent
 }: Props) {
   const { t, locale } = useLocale();
   const isEditing = !!existingEvent;
+  const [selectedClassId, setSelectedClassId] = useState(classIdProp || existingEvent?.classId?.toString() || "");
 
   // Form state
   const [type, setType] = useState<EventType>(existingEvent?.type || "lesson");
@@ -148,9 +151,14 @@ export default function CreateEventModal({
           : undefined
       };
 
+      const effectiveClassId = selectedClassId || classIdProp;
+      if (!effectiveClassId) {
+        throw new Error(locale === "pl" ? "Wybierz klasę" : "Виберіть клас");
+      }
+
       const url = isEditing
         ? `/api/schedule/${existingEvent._id}`
-        : `/api/classes/${classId}/schedule`;
+        : `/api/classes/${effectiveClassId}/schedule`;
 
       const res = await fetch(url, {
         method: isEditing ? "PATCH" : "POST",
@@ -206,6 +214,26 @@ export default function CreateEventModal({
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6 p-6">
+          {/* Class Picker (only when classes[] provided and not editing) */}
+          {classes && classes.length > 0 && !isEditing && (
+            <div>
+              <label className="mb-2 block text-sm font-semibold">
+                {locale === "pl" ? "Klasa" : "Клас"} <span className="text-terracotta">*</span>
+              </label>
+              <select
+                value={selectedClassId}
+                onChange={e => setSelectedClassId(e.target.value)}
+                className="w-full rounded-[16px] border border-ink/10 bg-paper px-4 py-3 transition-all focus:border-moss/20 focus:outline-none focus:ring-2 focus:ring-moss/20"
+                required
+              >
+                <option value="">{locale === "pl" ? "Wybierz klasę..." : "Виберіть клас..."}</option>
+                {classes.map(c => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
+              </select>
+            </div>
+          )}
+
           {/* Event Type */}
           <div>
             <label className="mb-3 block text-sm font-semibold">

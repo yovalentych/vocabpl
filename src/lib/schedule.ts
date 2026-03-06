@@ -79,6 +79,32 @@ export type ScheduleEvent = {
   updatedAt: Date;
 };
 
+// ==================== ATTENDANCE TYPES ====================
+
+export type AttendanceStatus = "present" | "absent" | "late" | "excused";
+
+export type StudentAttendance = {
+  studentId: string;
+  studentName: string;
+  status: AttendanceStatus;
+  note?: string;
+};
+
+export type AttendanceRecord = {
+  _id?: ObjectId;
+  eventId: ObjectId;
+  classId: ObjectId;
+  teacherId: ObjectId;
+  occurrenceDate: Date;
+  conducted: boolean;
+  students: StudentAttendance[];
+  notes?: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+// ==================== CREATE INPUT ====================
+
 export type CreateScheduleEventInput = {
   classId: ObjectId;
   teacherId: ObjectId;
