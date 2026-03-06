@@ -93,6 +93,8 @@ export default function CabinetClient({ username }: { username: string }) {
   const [teacherProfile, setTeacherProfile] = useState<any>(null);
   const [teacherUsage, setTeacherUsage] = useState<any>(null);
   const [showTeacherWizard, setShowTeacherWizard] = useState(false);
+  const [adminTeacherActivating, setAdminTeacherActivating] = useState(false);
+  const [adminTeacherError, setAdminTeacherError] = useState("");
   const [studentStats, setStudentStats] = useState<any>(null);
   const [studentClasses, setStudentClasses] = useState<any[]>([]);
   const [studentDeadlines, setStudentDeadlines] = useState<any[]>([]);
@@ -167,6 +169,21 @@ export default function CabinetClient({ username }: { username: string }) {
       }
     } catch (error) {
       console.error("Failed to load admin settings:", error);
+    }
+  }
+
+  async function activateAdminTeacher() {
+    setAdminTeacherActivating(true);
+    setAdminTeacherError("");
+    try {
+      const res = await csrfFetch("/api/teacher/admin-activate", { method: "POST" });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || "Activation failed");
+      await loadTeacherData();
+    } catch (err: any) {
+      setAdminTeacherError(err.message);
+    } finally {
+      setAdminTeacherActivating(false);
     }
   }
 
@@ -1209,7 +1226,37 @@ export default function CabinetClient({ username }: { username: string }) {
           <h2 className="text-2xl font-semibold">{t.cabinet.teacherTitle}</h2>
         </div>
 
-        {teacherProfile && teacherProfile.status === "active" ? (
+        {isAdmin && (!teacherProfile || teacherProfile.status !== "active") ? (
+          <div className="rounded-3xl border border-moss/30 bg-moss/5 p-6 shadow-soft">
+            <div className="mb-4 flex items-center gap-3">
+              <span className="rounded-full bg-moss/20 px-3 py-1 text-xs font-bold text-moss uppercase tracking-wider">
+                {locale === "pl" ? "Administrator" : "Адміністратор"}
+              </span>
+            </div>
+            <p className="mb-2 text-sm font-semibold text-ink">
+              {locale === "pl"
+                ? "Pełny dostęp nauczyciela — bezpłatnie"
+                : "Повний вчительський доступ — безкоштовно"}
+            </p>
+            <p className="mb-5 text-sm text-ink/60">
+              {locale === "pl"
+                ? "Jako administrator masz nieograniczony dostęp do wszystkich funkcji nauczyciela bez abonamentu."
+                : "Як адміністратор ви маєте необмежений доступ до всіх функцій вчителя без підписки."}
+            </p>
+            {adminTeacherError && (
+              <p className="mb-3 text-sm text-red-600">{adminTeacherError}</p>
+            )}
+            <button
+              onClick={activateAdminTeacher}
+              disabled={adminTeacherActivating}
+              className="rounded-full bg-moss px-6 py-2.5 text-sm font-semibold text-paper hover:bg-moss/90 disabled:opacity-50"
+            >
+              {adminTeacherActivating
+                ? (locale === "pl" ? "Aktywowanie..." : "Активація...")
+                : (locale === "pl" ? "Aktywuj dostęp nauczyciela" : "Активувати вчительський доступ")}
+            </button>
+          </div>
+        ) : teacherProfile && teacherProfile.status === "active" ? (
           <TeacherProfileCard
             teacherProfile={teacherProfile}
             plan={getTeacherPlanById(teacherProfile.planId)}

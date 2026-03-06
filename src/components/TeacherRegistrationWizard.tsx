@@ -4,6 +4,7 @@ import { useState } from "react";
 import TeacherPlanCard from "./TeacherPlanCard";
 import { teacherPlans } from "@/lib/plans";
 import type { TeacherPlanId, TeacherExperience } from "@/lib/teacher-types";
+import { csrfFetch } from "@/lib/csrf-client";
 
 type WizardStep = "intro" | "plans" | "profile" | "payment" | "verification" | "success";
 
@@ -159,7 +160,7 @@ export default function TeacherRegistrationWizard({
     setError("");
 
     try {
-      const res = await fetch("/api/teacher/register", {
+      const res = await csrfFetch("/api/teacher/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -196,7 +197,7 @@ export default function TeacherRegistrationWizard({
     setError("");
 
     try {
-      const res = await fetch("/api/teacher/verify-email", {
+      const res = await csrfFetch("/api/teacher/verify-email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code: verificationCode }),
@@ -221,7 +222,7 @@ export default function TeacherRegistrationWizard({
     setError("");
 
     try {
-      const res = await fetch("/api/teacher/payment/create", {
+      const res = await csrfFetch("/api/teacher/payment/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ autoRenew }),
