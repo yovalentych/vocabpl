@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getAuthUser } from "@/lib/auth";
 import { getDictionary } from "@/lib/i18n-server";
 import Link from "next/link";
+import SchoolContextPanel from "@/components/SchoolContextPanel";
 import type { Route } from "next";
 import {
   Sparkle,
@@ -119,7 +120,7 @@ export default async function ClassDashboard() {
     redirect("/login");
   }
 
-  const { t } = getDictionary();
+  const { t, locale } = getDictionary();
   const stats = await getUserStats(user.id);
 
   // Pick random exercise for empty state
@@ -308,6 +309,9 @@ export default async function ClassDashboard() {
           ))}
         </div>
       </section>
+
+      {/* School Context Panel */}
+      <SchoolContextPanel locale={locale} />
 
       {/* Recent Activity */}
       {stats.recentAttempts.length > 0 && (

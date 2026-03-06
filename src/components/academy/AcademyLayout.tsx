@@ -12,7 +12,8 @@ import {
   ClipboardText,
   Users,
   Chalkboard,
-  House
+  House,
+  Lightning,
 } from "@phosphor-icons/react";
 
 // Tab components
@@ -23,8 +24,9 @@ import AcademySchedule from "./tabs/AcademySchedule";
 import AcademyAssignments from "./tabs/AcademyAssignments";
 import AcademyStudents from "./tabs/AcademyStudents";
 import AcademyAnalytics from "./tabs/AcademyAnalytics";
+import AcademyPractice from "./tabs/AcademyPractice";
 
-type Tab = "overview" | "classes" | "schedule" | "assignments" | "students" | "analytics";
+type Tab = "overview" | "classes" | "schedule" | "assignments" | "students" | "analytics" | "practice";
 
 export default function AcademyLayout() {
   const { t, locale } = useLocale();
@@ -43,7 +45,7 @@ export default function AcademyLayout() {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       const tab = params.get("tab") as Tab;
-      if (tab && ["overview", "classes", "schedule", "assignments", "students", "analytics"].includes(tab)) {
+      if (tab && ["overview", "classes", "schedule", "assignments", "students", "analytics", "practice"].includes(tab)) {
         setActiveTab(tab);
       }
     }
@@ -108,7 +110,8 @@ export default function AcademyLayout() {
     { id: "schedule", icon: Calendar, labelUk: "Розклад", labelPl: "Harmonogram" },
     { id: "assignments", icon: ClipboardText, labelUk: "Завдання", labelPl: "Zadania" },
     { id: "students", icon: Users, labelUk: "Студенти", labelPl: "Uczniowie", teacherOnly: true },
-    { id: "analytics", icon: ChartBar, labelUk: "Аналітика", labelPl: "Analityka" }
+    { id: "analytics", icon: ChartBar, labelUk: "Аналітика", labelPl: "Analityka" },
+    { id: "practice", icon: Lightning, labelUk: "Практика", labelPl: "Praktyka" },
   ];
 
   const visibleTabs = tabs.filter(tab => !tab.teacherOnly || isTeacher);
@@ -267,6 +270,7 @@ export default function AcademyLayout() {
         {activeTab === "assignments" && <AcademyAssignments isTeacher={isTeacher} />}
         {activeTab === "students" && isTeacher && <AcademyStudents />}
         {activeTab === "analytics" && <AcademyAnalytics isTeacher={isTeacher} />}
+        {activeTab === "practice" && <AcademyPractice />}
       </div>
     </div>
   );
