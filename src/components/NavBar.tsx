@@ -160,7 +160,7 @@ export default function NavBar() {
           {/* Desktop navigation */}
           <div className="hidden sm:flex flex-wrap items-center gap-2 text-xs sm:text-sm">
             <Link
-              href="/school?tab=practice"
+              href="/class"
               className="rounded-full border border-ink/20 px-3 py-1 text-ink/70 transition hover:bg-ink/10"
             >
               {t.nav.class}
@@ -268,7 +268,7 @@ export default function NavBar() {
         >
           <div className="mt-4 pt-4 pb-3 border-t border-ink/10 flex flex-col gap-3 px-1">
             <Link
-              href="/school?tab=practice"
+              href="/class"
               onClick={() => setMobileMenuOpen(false)}
               className="rounded-full border-2 border-ink/20 px-6 py-3.5 text-base font-medium text-ink/70 transition-all active:scale-95 active:bg-ink/10"
             >
