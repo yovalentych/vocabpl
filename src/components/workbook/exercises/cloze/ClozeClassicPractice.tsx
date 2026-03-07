@@ -1,12 +1,23 @@
-// @ts-nocheck
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocale } from "@/components/LocaleProvider";
-import { CheckCircle, Circle, Sparkle, PaperPlaneRight } from "@phosphor-icons/react";
+import { CheckCircle, XCircle, Sparkle, PaperPlaneRight, ArrowRight } from "@phosphor-icons/react";
 import { safeParseAIResponse } from "@/lib/workbook";
 import { calculatePoints } from "@/lib/scoring";
 import ClozeResults from "./ClozeResults";
+
+interface Gap {
+  index: number;
+  answers: string[];
+  hint?: string;
+}
+
+interface ClozeItem {
+  text: string;
+  gaps: Gap[];
+  materialTitle?: string;
+}
 
 interface ClozeClassicPracticeProps {
   config: {
@@ -16,114 +27,116 @@ interface ClozeClassicPracticeProps {
   onComplete: () => void;
 }
 
-// Static placeholder data - in real app this would come from database
-const generateStaticExercise = (level: string, count: number) => {
-  const exercises = {
-    A1: [
-      { text: "Dzisiaj jest ___ pogoda.", answer: "ładna", hint: "гарна (прикметник)" },
-      { text: "Mam ___ lata.", answer: "dwadzieścia", hint: "20 (числівник)" },
-      { text: "Lubię ___ kawę.", answer: "pić", hint: "пити (дієслово)" },
-      { text: "To jest ___ książka.", answer: "moja", hint: "моя (присвійний займенник)" },
-      { text: "Mieszkam w ___.", answer: "Warszawie", hint: "Варшава (місцевий відмінок)" },
-    ],
-    A2: [
-      { text: "Wczoraj ___ do kina.", answer: "poszedłem", hint: "пішов (минулий час)" },
-      { text: "Ona ___ po polsku.", answer: "mówi", hint: "говорить (теперішній час)" },
-      { text: "Będę ___ w bibliotece.", answer: "uczyć się", hint: "вчитися (інфінітив)" },
-      { text: "To jest ___ niż tamto.", answer: "lepsze", hint: "краще (вищий ступінь)" },
-      { text: "Spotkałem ___ przyjaciela.", answer: "mojego", hint: "мого (знахідний відмінок)" },
-    ]
-  };
-
-  const levelExercises = exercises[level] || exercises.A2;
-  return levelExercises.slice(0, Math.min(count, levelExercises.length));
-};
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
 
 export default function ClozeClassicPractice({ config, onComplete }: ClozeClassicPracticeProps) {
-  const { t } = useLocale();
-  const [items] = useState(() => generateStaticExercise(config.level, config.sentenceCount));
-  const [answers, setAnswers] = useState<Record<number, string>>({});
+  const { t, locale } = useLocale();
+  const [items, setItems] = useState<ClozeItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [noContent, setNoContent] = useState(false);
+  // answers keyed as "itemIdx-gapIdx"
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [checked, setChecked] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const [aiCheckResult, setAiCheckResult] = useState<any>(null);
   const [isCheckingAI, setIsCheckingAI] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const inputRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
-  const isProcessing = isCheckingAI || isSubmitting;
+  useEffect(() => {
+    async function load() {
+      setLoading(true);
+      try {
+        const res = await fetch(`/api/exercises?type=cloze&level=${config.level}`);
+        if (!res.ok) { setNoContent(true); return; }
+        const data = await res.json().catch(() => ({}));
+        const materials: any[] = data.items || [];
+        if (materials.length === 0) { setNoContent(true); return; }
 
-  const updateAnswer = (index: number, value: string) => {
-    setAnswers((prev) => ({ ...prev, [index]: value }));
+        // Flatten all items from all materials, attach material title
+        const allItems: ClozeItem[] = [];
+        for (const mat of materials) {
+          for (const item of (mat.content?.items || [])) {
+            allItems.push({ ...item, materialTitle: mat.title });
+          }
+        }
+
+        // Shuffle and pick sentenceCount
+        const picked = shuffle(allItems).slice(0, config.sentenceCount);
+        setItems(picked);
+      } catch {
+        setNoContent(true);
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
+  }, [config.level, config.sentenceCount]);
+
+  const updateAnswer = (key: string, value: string) => {
+    setAnswers((prev) => ({ ...prev, [key]: value }));
+    setChecked(false);
   };
 
-  const checkAnswer = (index: number): "correct" | "partial" | "empty" => {
-    const userAnswer = (answers[index] || "").trim().toLowerCase();
-    const correctAnswer = items[index].answer.toLowerCase();
+  const isGapCorrect = (gap: Gap, key: string): boolean => {
+    const val = (answers[key] || "").trim().toLowerCase();
+    if (!val) return false;
+    return gap.answers.some((a) => a.trim().toLowerCase() === val);
+  };
 
-    if (!userAnswer) return "empty";
-    if (userAnswer === correctAnswer) return "correct";
-    return "partial";
+  const totalGaps = items.reduce((s, item) => s + item.gaps.length, 0);
+  const filledCount = Object.values(answers).filter((v) => v.trim()).length;
+  const correctCount = items.reduce((s, item, iIdx) =>
+    s + item.gaps.filter((g, gIdx) => isGapCorrect(g, `${iIdx}-${gIdx}`)).length, 0);
+
+  const handleCheck = () => {
+    setChecked(true);
   };
 
   const handleCheckWithAI = async () => {
-    const filledAnswers = Object.entries(answers).filter(([_, value]) => value.trim());
-
-    if (filledAnswers.length === 0) {
-      setError(t.workbook.clozeAtLeastOne);
-      return;
-    }
-
+    if (filledCount === 0) { setError(t.workbook.clozeAtLeastOne); return; }
     setIsCheckingAI(true);
     setError(null);
-
     try {
-      const exerciseItems = filledAnswers.map(([indexStr, userAnswer]) => {
-        const index = parseInt(indexStr);
-        return {
-          sentence: items[index].text,
-          correctAnswer: items[index].answer,
-          userAnswer: userAnswer.trim(),
-          hint: items[index].hint
-        };
-      });
+      const exerciseItems = items.map((item, iIdx) => ({
+        sentence: item.text,
+        gaps: item.gaps.map((g, gIdx) => ({
+          correctAnswers: g.answers,
+          userAnswer: (answers[`${iIdx}-${gIdx}`] || "").trim()
+        }))
+      }));
 
       const res = await fetch("/api/ai/run", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           mode: "cloze_check",
-          userInput: JSON.stringify({
-            exerciseType: "cloze",
-            action: "check",
-            level: config.level,
-            items: exerciseItems
-          }),
-          context: JSON.stringify({ uiLanguage: t.locale || "uk" })
+          userInput: JSON.stringify({ exerciseType: "cloze", action: "check", level: config.level, items: exerciseItems }),
+          context: JSON.stringify({ uiLanguage: locale || "uk" })
         })
       });
 
       const data = await res.json().catch(() => ({}));
-
       if (!res.ok) {
         const errorCode = data?.code;
-        const message =
-          errorCode === "ai_quota"
-            ? t.workbook.classicAiQuotaError
-            : errorCode === "pvs_unavailable"
-              ? t.workbook.classicAiPlanRequired
-              : data?.error || t.workbook.classicAiError;
-        setError(message);
+        setError(errorCode === "ai_quota" ? t.workbook.classicAiQuotaError
+          : errorCode === "pvs_unavailable" ? t.workbook.classicAiPlanRequired
+          : data?.error || t.workbook.classicAiError);
         return;
       }
 
       const result = safeParseAIResponse(data?.text);
+      if (!result || !result.items) { setError(t.workbook.classicAiFormatError); return; }
 
-      if (!result || !result.items) {
-        setError(t.workbook.classicAiFormatError);
-        return;
-      }
-
-      // Save points to database
       if (result?.overall?.score01 != null) {
         try {
           await fetch("/api/exercises/attempt", {
@@ -131,19 +144,15 @@ export default function ClozeClassicPractice({ config, onComplete }: ClozeClassi
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               exercise: "cloze",
-              points: calculatePoints({ score01: result.overall.score01, level: config.level, itemCount: items.length, exercise: "cloze" })
+              points: calculatePoints({ score01: result.overall.score01, level: config.level, itemCount: totalGaps, exercise: "cloze" })
             })
           });
-        } catch (err) {
-          console.error("Failed to save points:", err);
-        }
+        } catch {}
       }
 
-      // Store AI result and show results
       setAiCheckResult(result);
       setShowResults(true);
-    } catch (err) {
-      console.error("Failed to check with AI:", err);
+    } catch {
       setError(t.workbook.classicCheckError);
     } finally {
       setIsCheckingAI(false);
@@ -151,70 +160,78 @@ export default function ClozeClassicPractice({ config, onComplete }: ClozeClassi
   };
 
   const handleSubmitForReview = async () => {
-    const filledAnswers = Object.entries(answers).filter(([_, value]) => value.trim());
-
-    if (filledAnswers.length === 0) {
-      setError(t.workbook.clozeAtLeastOne);
-      return;
-    }
-
+    if (filledCount === 0) { setError(t.workbook.clozeAtLeastOne); return; }
     setIsSubmitting(true);
     setError(null);
-
     try {
-      const exerciseItems = filledAnswers.map(([indexStr, userAnswer]) => {
-        const index = parseInt(indexStr);
-        return {
-          sentence: items[index].text,
-          correctAnswer: items[index].answer,
-          userAnswer: userAnswer.trim(),
-          hint: items[index].hint
-        };
-      });
+      const exerciseItems = items.map((item, iIdx) => ({
+        sentence: item.text,
+        gaps: item.gaps.map((g, gIdx) => ({
+          correctAnswers: g.answers,
+          userAnswer: (answers[`${iIdx}-${gIdx}`] || "").trim()
+        }))
+      }));
 
       const res = await fetch("/api/workbook/exercises/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          exerciseType: "cloze",
-          level: config.level,
-          items: exerciseItems
-        })
+        body: JSON.stringify({ exerciseType: "cloze", level: config.level, items: exerciseItems })
       });
 
       if (!res.ok) {
-        let data = {};
+        let data: any = {};
         try { data = await res.json(); } catch {}
         setError(data?.error || t.workbook.classicSubmitError);
         return;
       }
 
-      // Save minimal points for submission
       try {
         await fetch("/api/exercises/attempt", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             exercise: "cloze",
-            points: calculatePoints({ score01: 0.5, level: config.level, itemCount: items.length, exercise: "cloze" })
+            points: calculatePoints({ score01: 0.5, level: config.level, itemCount: totalGaps, exercise: "cloze" })
           })
         });
-      } catch (err) {
-        console.error("Failed to save points:", err);
-      }
+      } catch {}
 
       setSuccessMessage(t.workbook.classicSubmitSuccess);
       setTimeout(() => onComplete(), 2000);
-    } catch (err) {
-      console.error("Failed to submit:", err);
+    } catch {
       setError(t.workbook.classicSubmitError);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const filledCount = Object.values(answers).filter((a) => a.trim()).length;
-  const correctCount = items.filter((_, idx) => checkAnswer(idx) === "correct").length;
+  const isProcessing = isCheckingAI || isSubmitting;
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-16">
+        <span className="h-6 w-6 animate-spin rounded-full border-2 border-gold/20 border-t-gold" />
+      </div>
+    );
+  }
+
+  if (noContent || items.length === 0) {
+    return (
+      <div className="rounded-3xl border border-ink/10 bg-paper/80 p-10 text-center shadow-soft">
+        <p className="text-ink/60">
+          {locale === "pl"
+            ? `Brak ćwiczeń dla poziomu ${config.level}. Wybierz inny poziom.`
+            : `Немає вправ для рівня ${config.level}. Оберіть інший рівень.`}
+        </p>
+        <button
+          onClick={onComplete}
+          className="mt-4 inline-flex items-center gap-2 rounded-full border border-ink/20 px-5 py-2 text-sm text-ink/70 hover:bg-ink/5"
+        >
+          {locale === "pl" ? "Wróć" : "Назад"}
+        </button>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -230,11 +247,13 @@ export default function ClozeClassicPractice({ config, onComplete }: ClozeClassi
                 {t.workbook.clozeFillGaps}
               </h2>
               <p className="mt-1 text-sm text-ink/60">
-                {t.workbook.clozeLevelAndCount.replace("{level}", config.level).replace("{count}", String(items.length))}
+                {t.workbook.clozeLevelAndCount
+                  .replace("{level}", config.level)
+                  .replace("{count}", String(items.length))}
               </p>
             </div>
             <div className="text-right">
-              <div className="text-2xl font-bold text-gold">{filledCount}/{items.length}</div>
+              <div className="text-2xl font-bold text-gold">{filledCount}/{totalGaps}</div>
               <div className="text-xs text-ink/50">{t.workbook.clozeFilled}</div>
             </div>
           </div>
@@ -242,55 +261,85 @@ export default function ClozeClassicPractice({ config, onComplete }: ClozeClassi
 
         {/* Exercise items */}
         <div className="space-y-4">
-          {items.map((item, index) => {
-            const status = checkAnswer(index);
-            const userAnswer = answers[index] || "";
-
-            // Split text by gap marker
+          {items.map((item, iIdx) => {
             const parts = item.text.split("___");
-
             return (
-              <div
-                key={index}
-                className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft"
-              >
+              <div key={iIdx} className="rounded-3xl border border-ink/10 bg-paper/80 p-6 shadow-soft">
                 <div className="flex items-start gap-3">
                   <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-fog text-xs font-semibold text-ink">
-                    {index + 1}
+                    {iIdx + 1}
                   </div>
                   <div className="flex-1">
-                    {/* Sentence with gap */}
-                    <div className="mb-3 flex flex-wrap items-center gap-2 text-base text-ink">
-                      <span>{parts[0]}</span>
-                      <input
-                        type="text"
-                        value={userAnswer}
-                        onChange={(e) => updateAnswer(index, e.target.value)}
-                        placeholder="..."
-                        maxLength={100}
-                        className="inline-block min-w-[120px] rounded-xl border border-ink/20 bg-paper px-3 py-1.5 text-sm text-ink placeholder:text-ink/30 focus:border-gold/40 focus:outline-none"
-                      />
-                      <span>{parts[1]}</span>
-                    </div>
-
-                    {/* Hint */}
-                    <div className="rounded-xl border border-gold/20 bg-gold/5 px-3 py-2">
-                      <p className="text-xs text-ink/70">
-                        <span className="font-semibold text-gold">{t.workbook.clozeHintLabel}</span> {item.hint}
+                    {item.materialTitle && (
+                      <p className="mb-2 text-[10px] uppercase tracking-wider text-ink/40">
+                        {item.materialTitle}
                       </p>
+                    )}
+                    {/* Sentence with gaps interleaved */}
+                    <div className="mb-3 flex flex-wrap items-center gap-x-1 gap-y-2 text-base text-ink leading-relaxed">
+                      {parts.map((part, pIdx) => {
+                        const gapKey = `${iIdx}-${pIdx}`;
+                        const gap = item.gaps[pIdx];
+                        const val = answers[gapKey] || "";
+                        const correct = checked && gap ? isGapCorrect(gap, gapKey) : null;
+                        return (
+                          <span key={pIdx} className="inline-flex flex-wrap items-center gap-x-1">
+                            {part && <span>{part}</span>}
+                            {gap && (
+                              <span className="relative inline-flex items-center">
+                                <input
+                                  ref={(el) => { inputRefs.current[gapKey] = el; }}
+                                  type="text"
+                                  value={val}
+                                  onChange={(e) => updateAnswer(gapKey, e.target.value)}
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                      // Move to next gap
+                                      const nextKey = `${iIdx}-${pIdx + 1}`;
+                                      const nextGlobal = `${iIdx + 1}-0`;
+                                      const next = inputRefs.current[nextKey] || inputRefs.current[nextGlobal];
+                                      if (next) next.focus();
+                                    }
+                                  }}
+                                  placeholder="___"
+                                  maxLength={60}
+                                  className={`inline-block min-w-[100px] rounded-xl border px-3 py-1 text-sm placeholder:text-ink/30 focus:outline-none transition ${
+                                    correct === true
+                                      ? "border-moss/40 bg-moss/10 text-moss"
+                                      : correct === false
+                                        ? "border-terracotta/40 bg-terracotta/10 text-terracotta"
+                                        : "border-ink/20 bg-paper text-ink focus:border-gold/40"
+                                  }`}
+                                />
+                                {checked && correct === true && (
+                                  <CheckCircle size={14} weight="fill" className="absolute -right-4 text-moss" />
+                                )}
+                                {checked && correct === false && (
+                                  <XCircle size={14} weight="fill" className="absolute -right-4 text-terracotta" />
+                                )}
+                              </span>
+                            )}
+                          </span>
+                        );
+                      })}
                     </div>
 
-                    {/* Status indicator (after checking) */}
-                    {userAnswer && status !== "empty" && (
-                      <div className="mt-2 flex items-center gap-2">
-                        {status === "correct" ? (
-                          <CheckCircle size={16} weight="fill" className="text-moss" />
-                        ) : (
-                          <Circle size={16} weight="fill" className="text-terracotta" />
-                        )}
-                        <span className={`text-xs ${status === "correct" ? "text-moss" : "text-terracotta"}`}>
-                          {status === "correct" ? t.workbook.clozeCorrect : t.workbook.clozeCheckAnswer}
-                        </span>
+                    {/* Show correct answers after checking */}
+                    {checked && (
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {item.gaps.map((gap, gIdx) => {
+                          const key = `${iIdx}-${gIdx}`;
+                          if (isGapCorrect(gap, key)) return null;
+                          return (
+                            <span key={gIdx} className="inline-flex items-center gap-1 rounded-lg border border-terracotta/20 bg-terracotta/5 px-2 py-0.5 text-xs">
+                              <ArrowRight size={10} className="text-terracotta/60" />
+                              <span className="font-semibold text-terracotta">{gap.answers[0]}</span>
+                              {gap.answers.length > 1 && (
+                                <span className="text-ink/40"> / {gap.answers.slice(1).join(" / ")}</span>
+                              )}
+                            </span>
+                          );
+                        })}
                       </div>
                     )}
                   </div>
@@ -300,40 +349,61 @@ export default function ClozeClassicPractice({ config, onComplete }: ClozeClassi
           })}
         </div>
 
-        {/* Success message */}
+        {/* Success / Error */}
         {successMessage && (
           <div className="rounded-2xl border border-moss/20 bg-moss/5 p-4 text-sm text-moss">
             {successMessage}
           </div>
         )}
-
-        {/* Error message */}
         {error && (
           <div className="rounded-2xl border border-terracotta/20 bg-terracotta/5 p-4 text-sm text-terracotta">
             {error}
           </div>
         )}
 
+        {/* Score after local check */}
+        {checked && (
+          <div className="rounded-2xl border border-gold/20 bg-gold/5 p-4 text-center">
+            <p className="text-lg font-semibold">
+              {correctCount} / {totalGaps}
+              <span className="ml-2 text-sm font-normal text-ink/60">
+                ({Math.round((correctCount / totalGaps) * 100)}%)
+              </span>
+            </p>
+          </div>
+        )}
+
         {/* Actions */}
         <div className="space-y-4">
           <div className="flex flex-wrap items-center justify-center gap-3">
-            <button
-              onClick={handleCheckWithAI}
-              disabled={isProcessing || filledCount === 0}
-              className="inline-flex items-center gap-2 rounded-full bg-moss px-6 py-3 text-sm font-semibold text-paper transition hover:bg-moss/90 disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              {isCheckingAI ? (
-                <>
-                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-paper/20 border-t-paper" />
-                  <span>{t.workbook.classicAiChecking}</span>
-                </>
-              ) : (
-                <>
-                  <Sparkle size={18} weight="fill" />
-                  <span>{t.workbook.classicCheckWithAI}</span>
-                </>
-              )}
-            </button>
+            {!checked ? (
+              <button
+                onClick={handleCheck}
+                disabled={filledCount === 0}
+                className="inline-flex items-center gap-2 rounded-full bg-gold px-6 py-3 text-sm font-semibold text-paper transition hover:bg-gold/90 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                <CheckCircle size={18} weight="fill" />
+                <span>{locale === "pl" ? "Sprawdź" : "Перевірити"}</span>
+              </button>
+            ) : (
+              <button
+                onClick={handleCheckWithAI}
+                disabled={isProcessing}
+                className="inline-flex items-center gap-2 rounded-full bg-moss px-6 py-3 text-sm font-semibold text-paper transition hover:bg-moss/90 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                {isCheckingAI ? (
+                  <>
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-paper/20 border-t-paper" />
+                    <span>{t.workbook.classicAiChecking}</span>
+                  </>
+                ) : (
+                  <>
+                    <Sparkle size={18} weight="fill" />
+                    <span>{t.workbook.classicCheckWithAI}</span>
+                  </>
+                )}
+              </button>
+            )}
 
             <button
               onClick={handleSubmitForReview}
@@ -359,7 +429,9 @@ export default function ClozeClassicPractice({ config, onComplete }: ClozeClassi
           </p>
 
           <div className="text-center text-sm text-ink/60">
-            {t.workbook.clozeFilledOf.replace("{filled}", String(filledCount)).replace("{total}", String(items.length))}
+            {t.workbook.clozeFilledOf
+              .replace("{filled}", String(filledCount))
+              .replace("{total}", String(totalGaps))}
           </div>
         </div>
       </div>
@@ -369,9 +441,9 @@ export default function ClozeClassicPractice({ config, onComplete }: ClozeClassi
         <ClozeResults
           results={{
             mode: "classic",
-            totalGaps: items.length,
+            totalGaps,
             correctCount,
-            score: correctCount / items.length,
+            score: correctCount / totalGaps,
             aiCheck: aiCheckResult,
             level: config.level
           }}
